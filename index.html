@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="综合网管系统" />
+  <!-- 页面描述 -->
+  <meta name="keywords" content="综合网管系统" />
+  <!-- 页面关键词 -->
+  <meta name="author" content="yasin" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>DDI</title>
+
+</head>
+
+<body>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
+<script >
+var isIE = function(){ 
+    return (window.navigator.userAgent.indexOf("MSIE")>=1);  
+}
+
+// 修复IE10及以下版本不支持dataset属性的问题，兼容transfer-dom.js中使用了dataset的问题
+if (isIE() && window.HTMLElement) {
+    if (Object.getOwnPropertyNames(HTMLElement.prototype).indexOf('dataset') === -1) {
+        Object.defineProperty(HTMLElement.prototype, 'dataset', {
+            get: function() {
+                var attributes = this.attributes;
+                var name = [],
+                    value = [];
+                var obj = {};
+                for (var i = 0; i < attributes.length; i++) {
+                    if (attributes[i].nodeName.slice(0, 5) == 'data-') {
+                        name.push(attributes[i].nodeName.slice(5));
+                        value.push(attributes[i].nodeValue);
+                    }
+                }
+                for (var j = 0; j < name.length; j++) {
+                    obj[name[j]] = value[j];
+                }
+                return obj;
+            }
+        });
+    }
+}
+
+
+// 解决IE9下报错 “requestAnimationFrame”未定义
+(function () {
+  var lastTime = 0;
+  var vendors = ['ms', 'moz', 'webkit', 'o'];
+  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+      window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+      window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
+          window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame) {
+      window.requestAnimationFrame = function (callback, element) {
+          var currTime = new Date().getTime();
+          var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+          var id = window.setTimeout(function () { callback(currTime + timeToCall); },
+              timeToCall);
+          lastTime = currTime + timeToCall;
+          return id;
+      };
+  }
+
+  if (!window.cancelAnimationFrame) {
+      window.cancelAnimationFrame = function (id) {
+          clearTimeout(id);
+      };
+  }
+}());
+</script>
+
+</html>
