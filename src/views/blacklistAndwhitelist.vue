@@ -16,7 +16,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in this.acls" :key="item.id">
+                        <tr v-for="item in this.list" :key="item.id">
                             <td>{{item.name}}</td>
                             <td>
                                 <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button>
@@ -38,8 +38,9 @@ export default {
     name: 'blacklistAndwhitelist',
     data () {
         return {
-        listL:[],
+        list:[],
         acls:[],
+        name:'',
         }
     },
     mounted () {
@@ -57,11 +58,6 @@ export default {
           })
           .then(res=> {
            this.list=res.data.data
-            for(var key in this.list){
-             this.acls = this.list[key].acls
-              console.log(this.acls)
-              console.log(2222222);
-            }
            })
          .catch(err=> {
             console.log(err)
