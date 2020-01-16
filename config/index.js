@@ -36,7 +36,7 @@ module.exports = {
         //target: 'http://10.2.21.32:8088',
         //target: 'https://172.25.3.93:8088',
         // target: 'http://218.13.22.62:8093',
-        target: 'http://10.0.0.19:8081/apis',
+        target: 'http://10.0.0.19:8081',
         // target: 'https://webdata.china-ipv6.cn:8088',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数

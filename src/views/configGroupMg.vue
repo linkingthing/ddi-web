@@ -56,7 +56,7 @@ export default {
     },
     methods: {
     getConfig(){
-        this.$axios.get('/linkingthing.com/example/v1/views', {
+        this.$axios.get('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/views', {
           })
           .then(res => {
               this.list = res.data.data;
