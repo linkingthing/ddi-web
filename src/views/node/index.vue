@@ -1,8 +1,6 @@
 <template>
-  <div class="index-main" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">节点管理</span>
-    </div>
+  <div class="node-manager" :style="{minHeight:docHeight-200+'px'}">
+    <div class="header-title">节点管理</div>
 
     <div class="middle">
       <Row>
@@ -17,9 +15,13 @@
           </div>
           <Row>
             <i-col span="8" v-for="dash in dashboardList" :key="dash.name">
-              <my-chart :values="dash"></my-chart>
+              <div>
+                <my-chart :values="dash" @click="hanldeClick"></my-chart>
+                <div class="view">查看</div>
+              </div>
             </i-col>
           </Row>
+          <line-bar></line-bar>
         </i-col>
       </Row>
     </div>
@@ -27,13 +29,15 @@
 </template>
 
 <script>
-import services from "../services";
-import myChart from "./node/myChart";
+import services from "@/services";
+import myChart from "./dashboard";
+import line from "./line";
 
 export default {
-  name: "indexMain",
+  name: "node-manage",
   components: {
-    "my-chart": myChart
+    "my-chart": myChart,
+    "line-bar": line
   },
   data() {
     return {
@@ -139,20 +143,27 @@ export default {
         this.query.node = value;
         this.getInitNodeData();
       }
+    },
+    hanldeClick(value) {
+      console.log(value);
     }
   }
 };
 </script>
 
 <style scoped lang="less">
-.index-main {
+.node-manager {
   padding: 0px;
   background-color: white;
   border-radius: 6px;
-}
-.index-main .header-title {
-  border-bottom: 0px solid #d7d7d7;
-  height: 72px;
+  .header-title {
+    font-size: 16px;
+    height: 72px;
+    line-height: 72px;
+    padding-left: 30px;
+    padding-right: 30px;
+    font-size: 16px;
+  }
 }
 
 .tree {
@@ -175,5 +186,19 @@ export default {
     font-size: 16px;
     color: #666;
   }
+}
+
+.view {
+  position: relative;
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  z-index: 100;
+  margin-top: -70px;
+}
+
+.view:hover {
+  cursor: pointer;
+  color: #4796ff;
 }
 </style>

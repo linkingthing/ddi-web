@@ -94,7 +94,7 @@ export default {
                 title: '提示',
                 content: '确定删除？',
                onOk: () => {
-            this.$axios.delete('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/defaultdns64s/'+data,{
+            this.$axios.delete('/linkingthing.com/example/v1/defaultdns64s/'+data,{
         } )
         .then(res=>{
             this.$Message.success('删除成功');
