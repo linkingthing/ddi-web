@@ -1,5 +1,5 @@
 <template>
-  <chart :options="options" @click="handleClick" style="width:100%;height:400px"></chart>
+  <chart :options="options" style="width:100%;height:400px"></chart>
 </template>
 
 <script>
@@ -8,9 +8,14 @@ import echarts from "echarts";
 export default {
   props: {
     values: {
-      centerName: String,
-      value: String,
-      name: String
+      type: Object,
+      default() {
+        return {
+          name: String,
+          value: String,
+          type: String
+        };
+      }
     }
   },
   computed: {
@@ -32,19 +37,15 @@ export default {
         ...dashboardBaseConfig,
         series: [
           {
-            name: val.name,
+            name: val.type,
             type: "gauge",
             detail: { formatter: "{value}%" },
-            data: [{ value: val.value, name: val.centerName }]
+            data: [{ value: val.value, name: val.name }]
           }
         ]
       };
     }
   },
-  methods: {
-    handleClick(e) {
-      console.log(e);
-    }
-  }
+  methods: {}
 };
 </script>

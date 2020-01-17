@@ -7,22 +7,32 @@ import echarts from "echarts";
 
 export default {
   props: {
-    values: {}
+    labels: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    values: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
   },
   computed: {
     options() {
-      //   const val = this.values;
       return {
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+          data: this.labels
         },
         yAxis: {
           type: "value"
         },
         series: [
           {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            data: this.values,
             type: "line"
           }
         ]

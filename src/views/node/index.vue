@@ -10,18 +10,37 @@
         <i-col span="18">
           <div class="qps">
             <span class="qps-title">QPS</span>
-            <span class="count">{{qps}}</span>
+            <span class="count">{{ qps }}</span>
             <span>个/秒</span>
           </div>
           <Row>
-            <i-col span="8" v-for="dash in dashboardList" :key="dash.name">
+            <i-col span="8" v-for="dash in dashboardList" :key="dash.type">
               <div>
-                <my-chart :values="dash" @click="hanldeClick"></my-chart>
-                <div class="view">查看</div>
+                <my-chart :values="dash"></my-chart>
               </div>
             </i-col>
           </Row>
-          <line-bar></line-bar>
+
+          <div class="line-graph">
+            <div class="filter-wrapper">
+              <div class="tab-device">
+                <Tabs active-key="lineParams.type" @on-click="handleChangeType">
+                  <Tab-pane
+                    :name="dash.type"
+                    :label="dash.name"
+                    v-for="dash in dashboardList"
+                    :key="dash.type"
+                  ></Tab-pane>
+                </Tabs>
+              </div>
+              <div class="date-pick-content">
+                <date-picker @onSearch="handleSearch"></date-picker>
+              </div>
+            </div>
+
+            <line-bar :values="usageData" :labels="dateData"></line-bar>
+            <Spin size="large" fix v-if="spinShow"></Spin>
+          </div>
         </i-col>
       </Row>
     </div>
@@ -32,54 +51,74 @@
 import services from "@/services";
 import myChart from "./dashboard";
 import line from "./line";
+import datePicker from "@/components/datePicker";
+import { dateFormat } from "@/util/common";
 
 export default {
   name: "node-manage",
   components: {
     "my-chart": myChart,
-    "line-bar": line
+    "line-bar": line,
+    "date-picker": datePicker
   },
   data() {
     return {
       query: {
-        node: ""
+        node: "" // ip
       },
       qps: "",
       dashboardList: [
         {
-          centerName: "CPU利用率",
+          name: "CPU利用率",
           value: "0",
-          name: "cpu"
+          type: "cpu"
         },
         {
-          centerName: "内存利用率",
+          name: "内存利用率",
           value: "0",
-          name: "mem"
+          type: "mem"
         },
         {
-          centerName: "磁盘利用率",
+          name: "磁盘利用率",
           value: "0",
-          name: "disk"
+          type: "disk"
         }
       ],
-      nodeList: []
+      nodeList: [],
+
+      // 折线图请求参数
+      lineParams: {
+        node: "",
+        type: "cpu",
+        start: "",
+        end: "",
+        step: ""
+      },
+      usageData: [],
+      dateData: [],
+      spinShow: false
     };
   },
   mounted() {
     this.getInitNodeData();
   },
   methods: {
+    /**
+     * think: 获取到的而对象是map结构，解析出的结果的顺序可能偏离预设顺序
+     */
     getInitNodeData() {
       services.getNodeList(this.query).then(res => {
         this.baseData = [];
         if (res.data.status === "success") {
           const { nodes, usage } = res.data.data;
           this.nodeList = [this.analysisNodeListAndGroup(nodes)];
-          const usageObj = Object.values(usage)[0];
+          const [[node, usageObj]] = Object.entries(usage); // 取第一条作为当前node/ip 和 右边饼图展示信息
+          this.query.node = node;
+          this.lineParams.node = node; // 初始化
           this.dashboardList = this.dashboardList.map(dash => {
             return {
               ...dash,
-              value: usageObj[dash.name]
+              value: usageObj[dash.type]
             };
           });
           this.qps = usageObj.qps;
@@ -144,8 +183,36 @@ export default {
         this.getInitNodeData();
       }
     },
-    hanldeClick(value) {
-      console.log(value);
+    getDeviceHistoryInfo(params) {
+      this.spinShow = true;
+      services.getDeviceHistoryInfo(params).then(res => {
+        console.log(res);
+        if (res.data.status === "success") {
+          // optimize：一行代码解决
+          this.dateData = res.data.data.values.map(item =>
+            dateFormat(item[0], "yyyy-MM-dd")
+          );
+          this.usageData = res.data.data.values.map(item => item[1]);
+        }
+        this.spinShow = false;
+      });
+    },
+    handleChangeType(type) {
+      this.lineParams.type = type;
+    },
+    handleSearch(options) {
+      this.lineParams = {
+        ...this.lineParams,
+        ...options
+      };
+    }
+  },
+  watch: {
+    lineParams: {
+      handler(values) {
+        this.getDeviceHistoryInfo(values);
+      },
+      deep: true
     }
   }
 };
@@ -200,5 +267,20 @@ export default {
 .view:hover {
   cursor: pointer;
   color: #4796ff;
+}
+
+.line-graph {
+  position: relative;
+  padding: 30px;
+}
+.filter-wrapper {
+  display: flex;
+
+  .date-pick-content {
+    flex: 1;
+    position: relative;
+    z-index: 200;
+    text-align: right;
+  }
 }
 </style>
