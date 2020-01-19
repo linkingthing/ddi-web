@@ -4,7 +4,7 @@ import Login from '../views/login'
 import Index from '../views/index'
 // space6
 import space6Layout from '../views/space6Layout'
-import space6 from '../views/space6'
+import nodeManage from '../views/node'
 const networkSwitching = r => require.ensure([], () => r(require('../views/networkSwitching')), 'space6Layout')
 const appUpgrade = r => require.ensure([], () => r(require('../views/appUpgrade')), 'space6Layout')
 const alarmList = r => require.ensure([], () => r(require('../views/alarmList')), 'space6Layout')
@@ -124,7 +124,7 @@ export default new Router({
             path: '/',
             name: 'Index',
             component: Index,
-            redirect: '/space6Layout/space6',
+            redirect: '/manage/node',
             meta: {
               range: 'space6Layout',
             },
@@ -132,14 +132,13 @@ export default new Router({
             children: [{
                 path: '/space6Layout',
                 name: 'space6Layout',
-                redirect: '/space6Layout/space6',
+                redirect: '/manage/node',
                 component: space6Layout,
                 children: [
                 {
-                    // space6
                     name: 'space6',
-                    path: '/space6Layout/space6',
-                    component: space6,
+                    path: '/manage/node',
+                    component: nodeManage,
                     meta: {
                       range: 'space6Layout',
                       title: 'Home'

@@ -21,4 +21,22 @@ npm run build --report
 ```
 
 
+### 目录说明
+
+> components
+
+用于存放公用组件
+
+> services 
+
+用于统一管理 api ，配置多业务系统代理地址前缀
+
+|变量|用途|
+|-|-|
+|nodeBaseUrl| api地址前缀，用于指向node模块api部署的服务器地址|
+|dnsBaseUrl| api地址前缀，用于指向dns模块api部署的服务器地址|
+|DHCP | 规划中|
+|IPAM|规划中|
+|System|规划中|
+
 

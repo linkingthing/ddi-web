@@ -9,10 +9,34 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 Vue.use(iView)
 
+
+// 导入vue-echarts插件
+import ECharts from 'vue-echarts/components/ECharts'
+// 按需导入echarts的图形类型
+import 'echarts/lib/chart/radar'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
+// 导入工具部分
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/title';
+// register component to use
+import 'echarts/lib/component/legendScroll';
+// register component to use
+import 'echarts/lib/component/dataZoom';
+import 'echarts/lib/component/markPoint';
+import 'echarts/lib/component/markLine';
+import 'echarts/lib/component/markArea';
+import 'echarts/lib/component/dataZoom';
+// 全局注册chart组件
+Vue.component('chart', ECharts)
+
+
 import axios from 'axios'
 Vue.prototype.$axios = axios
-axios.defaults.baseURL = '/api'
-Vue.config.productionTip = false 
+
+// axios.defaults.baseURL = '/api'
+Vue.config.productionTip = false
 
 // 滚动条以及配置
 import vuescroll from 'vuescroll';

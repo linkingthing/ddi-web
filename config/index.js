@@ -45,6 +45,17 @@ module.exports = {
         pathRewrite: {
           '^/api': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
+      },
+      '/node': {
+        target: 'http://10.0.0.15:1210/apis',
+        // target: 'https://webdata.china-ipv6.cn:8088',
+        changeOrigin: true,
+        // ws: true,        //如果要代理 websockets，配置这个参数
+        // secure: false,  // 如果是https接口，需要配置这个参数
+        //重写路径
+        pathRewrite: {
+          '^/node': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
+        },
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
