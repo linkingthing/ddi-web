@@ -12,7 +12,7 @@ Vue.use(iView)
 import axios from 'axios'
 Vue.prototype.$axios = axios
 axios.defaults.baseURL = '/api'
-Vue.config.productionTip = false
+Vue.config.productionTip = false 
 
 // 滚动条以及配置
 import vuescroll from 'vuescroll';

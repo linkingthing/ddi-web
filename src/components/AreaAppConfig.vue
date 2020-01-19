@@ -48,7 +48,7 @@
 <script>
 import {isURL, isNumber, isEmpty} from '../util/common'
 export default {
-    name: 'DeviceMonitorConfig',
+    name: 'AreaAppConfig',
     data () {
         // 校验配置组名
         const validator1 = (rule, value, callback) => {

@@ -37,8 +37,8 @@
                             <Icon type="navicon-round"></Icon>递归管理
                         </template>
                         
-                        <MenuItem name="limitingWebsiteBroadband" to="/space6Layout/limitingWebsiteBroadband">默认A4地址合成</MenuItem>
-                        <MenuItem name="limitingUserBroadband" to="/space6Layout/limitingUserBroadband">A4地址合成</MenuItem>
+                        <MenuItem name="limitingWebsiteBroadband" to="/space6Layout/limitingWebsiteBroadband">默认4A地址合成</MenuItem>
+                        <MenuItem name="limitingUserBroadband" to="/space6Layout/limitingUserBroadband">4A地址合成</MenuItem>
                         <!-- <MenuItem name="restrictWebsiteVisits" to="/space6Layout/restrictWebsiteVisits">A4地址合成</MenuItem> -->
                     </Submenu>
                     <!-- <Submenu name='7'>
@@ -79,18 +79,18 @@
                         </template>
                         <MenuItem name="logStatistics" to="/space6Layout/logStatistics">DDOS防护</MenuItem>
                         <MenuItem name="blacklistAndwhitelist" to="/space6Layout/blacklistAndwhitelist">地址黑名单</MenuItem>
-                        <MenuItem name="developmentcontrol" to="/space6Layout/developmentcontrol">开发控制</MenuItem>
+                        <MenuItem name="developmentcontrol" to="/space6Layout/developmentcontrol">并发控制</MenuItem>
                     </Submenu>
                     <!-- <MenuItem name="appUpgradeBusinessAnalysis" to="/space6Layout/appUpgradeBusinessAnalysis">
                         <Icon type="md-trending-up" />
                         统计分析
                     </MenuItem> -->
-                    <Submenu name='2'>
+                    <!-- <Submenu name='2'>
                         <template slot="title">
                             <Icon type="navicon-round"></Icon>系统管理
                         </template>
                         <MenuItem name="registration" to="/space6Layout/registration">用户注册</MenuItem>
-                    </Submenu>
+                    </Submenu> -->
                     
                 </Menu>
 

@@ -20,9 +20,9 @@
                         <tbody>
                             <tr v-for="item in this.list" :key="item.id">
                                 <td><router-link :to="{name:'appUpgradeBusinessAnalysis',query:{id:item.id}}">{{item.name}}</router-link></td>
-                                <td>{{number}}</td>
+                                <td>{{item.zonesize}}</td>
                                 <td>{{item.priority}}</td>
-                                <td><p v-for="value in item.aclids" :key="value.id">{{value}}</p></td>
+                                <td><p v-for="value in item.acls" :key="value.id">{{value.name}}</p></td>
                             </tr>
                         </tbody>
                     </table>
@@ -66,15 +66,9 @@ export default {
              this.priority = this.list[key].priority
              this.aclids = this.list[key].aclids
              this.zones = this.list[key].links.zones
+             this.zonesize=this.list[key].links.zonesize
             }
-            return this.$axios.get('http://10.0.0.19:8081'+this.zones, {
-          })
-          .then(res => {
-            this.areaList=res.data.data
-            this.number=this.areaList.length
-           })
-           })
-          
+           })     
          .catch(function (err) {
             console.log(err)
          })

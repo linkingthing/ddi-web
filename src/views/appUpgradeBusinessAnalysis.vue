@@ -22,7 +22,7 @@
                         <tbody>
                             <tr v-for="item in this.arealist" :key="item.id">
                                 <td><router-link :to="{name:'appUpgrade',query:{id:item.id,self}}">{{item.name}}</router-link></td>
-                                <td>{{number}}</td>
+                                <td>{{item.rrsize}}</td>
                                 <td>{{item.isused === 0?'否':'是'}}</td>
                                 <td>
                                 <!-- <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button> -->
@@ -82,13 +82,9 @@ export default {
              this.id1=this.arealist[key].id
              this.name=this.arealist[key].name
              this.isused=this.arealist[key].isused
+             this.rrsize=this.arealist[key].rrsize
+       
             }
-            return this.$axios.get('http://10.0.0.19:8081'+this.self+'/'+this.id1+'/rrs', {
-          })
-          .then(res => {
-            this.list=res.data.data
-            this.number=this.list.length
-           })
            })
          .catch(err =>{
             console.log(err)

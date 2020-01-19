@@ -1,7 +1,7 @@
 <template>
     <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
         <div class="header-title">
-            <span class="tit">默认A4地址合成</span>
+            <span class="tit">默认4A地址合成</span>
              <div class="button-box fr">
                 <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
             </div>
@@ -14,7 +14,7 @@
                         <tr>
                             <th width="170">前缀</th>
                             <th width="250">客户IP白名单</th>
-                            <th width="250">客户IP白名单</th>
+                            <th width="250">客户IP黑名单</th>
                              <th width="250">目标IPv4地址</th>
                             <th width="250">操作</th>
                         </tr>

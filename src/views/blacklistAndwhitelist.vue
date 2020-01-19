@@ -3,7 +3,7 @@
         <div class="header-title">
             <span class="tit">地址黑名单配置</span>
             <div class="button-box fr">
-                <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig()">新增</i-button>
+                <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig">新建</i-button>
             </div>
         </div>
         <div class="table-box">
@@ -27,13 +27,15 @@
                 </table>
             </div>
         </div>
-        <blacklist-config ref="configRef"></blacklist-config>
+        <blacklist-config ref="blacklistRef"></blacklist-config>
+        <role-config ref="roleRef"></role-config>
     </div>
 </template>
 
 <script>
 import axios from "axios"
 import blacklistConfig from '../components/BlacklistConfig';
+import RoleConfig from '../components/RoleConfig';
 export default {
     name: 'blacklistAndwhitelist',
     data () {
@@ -48,10 +50,10 @@ export default {
     },
     methods: {
        goConfig(){
-         this.$refs.configRef.openModel();
+         this.$refs.blacklistRef.openModel();
         },
-        goConfig1(){
-        this.$refs.configRef.openModel();
+        goConfig1(data){
+        this.$refs.roleRef.openModel(data);
         },
         getView(){
         this.$axios.get('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/ipblackholes', {
@@ -70,7 +72,7 @@ export default {
                 title: '提示',
                 content: '确定删除？',
                onOk: () => {
-            this.$axios.delete('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/defaultdns64s/'+data,{
+            this.$axios.delete('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/ipblackholes/'+data,{
         } )
         .then(res=>{
             this.$Message.success('删除成功');
@@ -84,7 +86,8 @@ export default {
         }
     },
     components: {
-        blacklistConfig
+        blacklistConfig,
+        RoleConfig
     }
 }
 </script>

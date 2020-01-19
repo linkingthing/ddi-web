@@ -34,14 +34,12 @@
                 </div>
             </div>
         </div>
-        <div class="header-bottom">
+        <!-- <div class="header-bottom">
           <Breadcrumb>
             <BreadcrumbItem :to="item.path" v-for="item in BreadcrumbItem">{{item.oneTitle+'/'+item.title}}</BreadcrumbItem>
-           <!-- <BreadcrumbItem to="/components/breadcrumb">Components</BreadcrumbItem>
-            <BreadcrumbItem>Breadcrumb</BreadcrumbItem>-->
           </Breadcrumb>
        
-        </div>
+        </div> -->
     </header>
 </template>
 

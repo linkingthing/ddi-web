@@ -1,105 +1,121 @@
 <template>
     <modal
-        v-model="blacklistConfig"
+        v-model="blacklistModal"
         class-name="pop vertical-center-modal"
         :mask-closable="false"
-        width="961"
+         width="500"
         :closable="false">
-        <div slot="header">{{dataConfig.title}}</div>
+        <div slot="header">新建访问控制列表</div>
         <div>
-            <i-form 
-            :model="dataConfig" 
-            label-position="right"
-            :label-width="80">
-                <div class="pop-content">
-                    <div class="pop-box">
-                        <p class="title">信息内容</p>
-                            <div class="pop-body">
-                                <Row>
-                                    <i-col span="12">
-                                        <form-item label="IP地址">
-                                            <i-input v-model="dataConfig.t1" placeholder="请填写IP地址"></i-input>
-                                        </form-item>
-                                    </i-col>
-                                    <i-col span="12">
-                                        <form-item label="掩码/前缀">
-                                            <i-select v-model="dataConfig.t2">
-                                                <i-option value="32">32</i-option>
+            <vue-scroll style="height: 500px;"  ref="vs">
+                <i-form 
+                    :model="dataConfig" 
+                    label-position="right"
+                    :label-width="80"
+                    ref="formValidate">
+                    <div class="pop-content">
+                        <div class="pop-box">
+                                <div class="pop-body">
+                                    <form-item 
+                                            label="新建访问控制列表"
+                                            prop="name"
+                                            :label-width="137">
+                                            <i-select v-model="dataConfig.id">
+                                                <i-option v-for="item in select" :key="item.id" :value="item.id">{{item.name}}</i-option>
                                             </i-select>
-                                        </form-item>
-                                    </i-col>
-                                </Row>
-                                <Row>
-                                    <i-col span="12">
-                                        <form-item label="IP类型">
-                                            <i-select v-model="dataConfig.t3">
-                                                <i-option value="IP4">IP4</i-option>
-                                                <i-option value="IP6">IP6</i-option>
-                                            </i-select>
-                                        </form-item>
-                                    </i-col>
-                                    <i-col span="12">
-                                        <form-item label="备注">
-                                            <i-input v-model="dataConfig.t4" type="textarea" :autosize="true" placeholder="请填写备注"></i-input>
-                                        </form-item>
-                                    </i-col>
-                                </Row>
-                            </div>
-                    </div>
-                    <div class="pop-box">
-                        <p class="title">功能设置</p>
-                        <div class="pop-body">
-                            <Row>
-                                <i-col span="24">
-                                    <FormItem label="状态" style="padding:0">
-                                        <i-switch v-model="dataConfig.t5" size="large">
-                                            <span slot="open">启用</span>
-                                            <span slot="close">暂停</span>
-                                        </i-switch>
-                                        <!-- <RadioGroup v-model="dataConfig.t5">
-                                            <Radio label="启用"></Radio>
-                                            <Radio label="停用"></Radio>
-                                        </RadioGroup> -->
-                                    </FormItem> 
-                                </i-col>
-                            </Row>
+                                    </form-item>
+                                </div>
                         </div>
+                        
                     </div>
-                </div>
-            </i-form>
+                </i-form>
+            </vue-scroll>
+            
         </div>
         <div slot="footer">
-            <i-button class="me-button k-btn" @click="blacklistConfig = false">取消</i-button>
-            <i-button type="primary" class="me-button add-btn">应用</i-button>
+            <i-button class="me-button k-btn" @click="blacklistModal = false">取消</i-button>
+            <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
         </div>
     </modal>
 </template>
 
 <script>
+import {isURL, isNumber, isEmpty} from '../util/common'
 export default {
     name: 'BlacklistConfig',
     data () {
         return {
-            blacklistConfig: false,
+            blacklistModal: false,
+            self:'',
+            id:'',
+            select:[],
+            aclid:'',
+            // 表单数据
             dataConfig: {
-                title: '',
-                t1: '',
-                t2: '',
-                t3: 'IP6',
-                t4: '',
-                t5: true
-            }
+                name: '',
+            },
+            loading: false,
+
         }
     },
+    mounted () {
+      this.getSelct();   
+    },
     methods: {
-        openModel(data){
-            this.blacklistConfig = true;
-            this.dataConfig.title = data.title;
-        }
+        openModel(){
+         this.blacklistModal = true;
+         },
+         getSelct(){
+            this.$axios.get('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/acls',{
+         })
+        .then(res=>{
+           this.select=res.data.data
+        }).catch(err=>{
+           console.log(err)
+        })
+         },
+        //新建
+        update(){
+            this.$axios.post('http://10.0.0.19:8081/apis/linkingthing.com/example/v1/ipblackholes',{
+               aclid: this.dataConfig.id,
+        })
+        .then(res=>{
+            console.log(res);
+        }).catch(err=>{
+           console.log(err)
+        })
+        },
+        // 确定
+        handleSubmit(){
+        this.$refs.formValidate.validate((valid) => {
+                if (valid) {
+                    this.update()
+                    this.$Message.success('新建成功!');
+                    this.cancelModel();
+                } else {
+                    this.$Message.error('新建失败!');
+                }
+        })
+        },
+        //关闭弹窗
+        cancelModel() {
+            this.deviceModal = false
+            this.$refs.formValidate.resetFields()
+        },
     }
 }
 </script>
 
 <style scoped>
- 
+ .ivu-divider-dashed {
+    /* background: 0 0; */
+    border-top: 0px dashed #e8eaec;
+}
+
+.ivu-col-span-4 >.ivu-btn{
+  padding:0px 0px;
+  border:0px solid transparent; 
+  margin-left:100px;
+  color:#4796FF;
+}
 </style>
