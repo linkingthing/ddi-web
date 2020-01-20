@@ -1,7 +1,7 @@
 <template>
-  <div class="menu fl">
+  <div class="menu fl left-menu">
     <div class="menu-list">
-      <vue-scroll :style="{minHeight:docHeight-200+'px'}" class="pr">
+      <vue-scroll  class="pr">
         <Menu :theme="theme" :active-name="tab" :open-names="[openName]" :accordion="true">
           <Submenu name="1">
             <template slot="title">
@@ -127,11 +127,7 @@ export default {
     }
   },
   methods: {
-    // 获取浏览器文档高度
-    getDocHeight() {
-      this.docHeight = document.documentElement.clientHeight;
-      //   console.log(this.docHeight);
-    }
+  
   }
 };
 </script>
@@ -142,5 +138,9 @@ a:visited,
 a:hover,
 a:active {
   color: #515a6e;
+}
+
+.left-menu {
+    height: 100%;
 }
 </style>
