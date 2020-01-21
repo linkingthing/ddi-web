@@ -5,7 +5,7 @@
         <Menu :theme="theme" :active-name="tab" :open-names="[openName]" :accordion="true">
           <Submenu name="1">
             <template slot="title">
-              <Icon type="navicon-round"></Icon>权威管理
+              <Icon type="ios-aperture-outline"></Icon>权威管理
             </template>
             <MenuItem name="configGroupMg" to="/dns/configGroupMg">配置管理</MenuItem>
             <MenuItem name="parameterSet" to="/dns/parameterSet">重定向</MenuItem>
@@ -56,14 +56,6 @@ export default {
     return {
       theme: "light", // menu主题
       tab: this.$route.params.tab || this.$route.name //路由tab
-    };
-  },
-  mounted() {
-    const slef = this;
-
-    this.getDocHeight();
-    window.onresize = () => {
-      slef.getDocHeight();
     };
   },
   computed: {

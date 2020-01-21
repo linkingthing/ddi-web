@@ -32,23 +32,18 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
-        //target: 'http://10.2.21.32:8088',
-        //target: 'https://172.25.3.93:8088',
-        // target: 'http://218.13.22.62:8093',
-        target: 'http://10.0.0.19:8081',
-        // target: 'https://webdata.china-ipv6.cn:8088',
+      '/dns': {
+        target: 'http://10.0.0.19:8081/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
         //重写路径
         pathRewrite: {
-          '^/api': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
+          '^/dns': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
       },
       '/node': {
         target: 'http://10.0.0.15:1210/apis',
-        // target: 'https://webdata.china-ipv6.cn:8088',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数

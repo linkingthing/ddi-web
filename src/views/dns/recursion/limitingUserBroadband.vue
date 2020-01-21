@@ -1,7 +1,7 @@
 <template>
   <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
     <div class="header-title">
-      <span class="tit">默认转发</span>
+      <span class="tit">A4地址合成</span>
     </div>
     <div class="tab-select pding select2">
       <div class="table-box">
@@ -9,42 +9,43 @@
           <table class="table-default">
             <thead>
               <tr>
-                <th width="170">服务器地址列表</th>
-                <th width="250">转发方式</th>
-                <th width="250">操作</th>
+                <th width="170">视图</th>
+                <th width="250">规则数量</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr v-for="item in this.resList" :key="item.id">
-                <td v-if="item.ip== undefined || item.ip.length <= 0">
-                  <p>-</p>
-                </td>
-                <td v-else>
-                  <p v-for="value in item.ip" :key="value.id">{{value}}</p>
-                </td>
-                <td>{{item.id == 0 ?'-':item.type}}</td>
+              <tr v-for="item in this.list" :key="item.id">
                 <td>
-                  <i-button class="k-btn" @click="goConfig()">修改</i-button>
-                  <i-button class="k-btn" @click="delect()">删除</i-button>
+                  <router-link
+                    :to="{
+                      name:'restrictWebsiteVisits',
+                      query:{
+                        id:item.id,
+                        dns64s:item.links.dns64s
+                      }
+                    }"
+                  >{{item.name}}</router-link>
                 </td>
+                <td>{{item.dns64size}}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <network-security-config ref="networkRef"></network-security-config>
+      <NetworkSwitch ref="networkRef"></NetworkSwitch>
+      <subnet-list-config ref="subnetRef"></subnet-list-config>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import NetworkSecurityConfig from "@/components/NetworkSecurityConfig";
 import services from "@/services";
+import NetworkSwitch from "@/components/NetworkSwitch";
+import SubnetListConfig from "@/components/SubnetListConfig";
 
 export default {
-  name: "networkSecurity",
+  name: "limitingUserBroadband",
   data() {
     return {
       list: [],
@@ -54,29 +55,24 @@ export default {
       modal1: false,
       priority: "",
       acls: [],
-      resList: [],
-      ip: [],
-      type: ""
+      dns64s: ""
     };
   },
   components: {
-    NetworkSecurityConfig
+    NetworkSwitch,
+    SubnetListConfig
   },
   mounted() {
     this.getView();
   },
   methods: {
-    goConfig() {
-      this.$refs.networkRef.openConfig();
-    },
     getView() {
       services
-        .getDefaultForward()
+        .getViewList()
         .then(res => {
-          this.resList = res.data.data;
-          for (var key in this.resList) {
-            this.id = this.resList[key].id;
-            this.ip = this.resList[key].ip;
+          this.list = res.data.data;
+          for (var key in this.list) {
+            this.dns64s = this.list[key].links.dns64s;
           }
         })
         .catch(err => {
@@ -92,7 +88,8 @@ export default {
         onOk: () => {
           this.$axios
             .delete(
-              "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/forwards/123",
+              "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/defaultdns64s/" +
+                data,
               {}
             )
             .then(res => {
@@ -110,4 +107,7 @@ export default {
 </script>
 
 <style scoped>
+.table-box table a {
+  text-decoration: none;
+}
 </style>

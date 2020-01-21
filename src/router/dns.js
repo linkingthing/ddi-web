@@ -1,3 +1,10 @@
+const configGroupMg = r => require.ensure([], () => r(require('@/views/dns/authority/configGroupMg')), 'dnsLayout')
+const parameterSet = r => require.ensure([], () => r(require('@/views/dns/authority/parameterSet')), 'dnsLayout')
+
+
+const limitingUserBroadband = r => require.ensure([], () => r(require('@/views/dns/recursion/limitingUserBroadband')), 'dnsLayout')
+const limitingWebsiteBroadband = r => require.ensure([], () => r(require('@/views/dns/recursion/limitingWebsiteBroadband')), 'dnsLayout')
+
 const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
 const appUpgrade = r => require.ensure([], () => r(require('@/views/dns/appUpgrade')), 'dnsLayout')
 const alarmList = r => require.ensure([], () => r(require('@/views/dns/alarmList')), 'dnsLayout')
@@ -8,21 +15,17 @@ const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66
 const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
 const dsliteBusinessAnalysis = r => require.ensure([], () => r(require('@/views/dns/dsliteBusinessAnalysis')), 'dnsLayout')
 const appUpgradeBusinessAnalysis = r => require.ensure([], () => r(require('@/views/dns/appUpgradeBusinessAnalysis')), 'dnsLayout')
-const configGroupMg = r => require.ensure([], () => r(require('@/views/dns/configGroupMg')), 'dnsLayout')
 const ipv6Support = r => require.ensure([], () => r(require('@/views/dns/ipv6Support')), 'dnsLayout')
 const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logStatistics')), 'dnsLayout')
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
 const thresholdList = r => require.ensure([], () => r(require('@/views/dns/thresholdList')), 'dnsLayout')
-const limitingUserBroadband = r => require.ensure([], () => r(require('@/views/dns/limitingUserBroadband')), 'dnsLayout')
-const limitingWebsiteBroadband = r => require.ensure([], () => r(require('@/views/dns/limitingWebsiteBroadband')), 'dnsLayout')
 const restrictWebsiteVisits = r => require.ensure([], () => r(require('@/views/dns/restrictWebsiteVisits')), 'dnsLayout')
 const networkSecurity = r => require.ensure([], () => r(require('@/views/dns/networkSecurity')), 'dnsLayout')
 const applicationFirewall = r => require.ensure([], () => r(require('@/views/dns/applicationFirewall')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
 const registration = r => require.ensure([], () => r(require('@/views/dns/registration')), 'dnsLayout')
 const redirect = r => require.ensure([], () => r(require('@/views/dns/redirect')), 'dnsLayout')
-const parameterSet = r => require.ensure([], () => r(require('@/views/dns/parameterSet')), 'dnsLayout')
 
 const dnsLayout = r => require.ensure([], () => r(require('@/views/dns/dnsLayout')), 'dnsLayout')
 
@@ -41,7 +44,7 @@ export default {
                 range: 'dns',
                 oneTitle: '配置管理',
                 title: '配置管理',
-                icon: 'dashboard',
+                icon: 'ios-aperture-outline',
             }
         },
         {
