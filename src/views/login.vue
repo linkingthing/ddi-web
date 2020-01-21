@@ -1,88 +1,116 @@
 <template>
-    <div class="body">
-        <div id="mian">   
-            <!-- <img class="logo" src="../assets/images/logo2.png"> -->
-            <div id="loginForm">
-                <input type="hidden" id="enPassword" name="enPassword"/>
-                <h1>DDI配置管理平台</h1>
-                <ul>
-                    <li class="pr in-list">
-                        <Icon custom="i-icon i-icon-loginUser"></Icon>
-                        <input type="text" name="username" id="username" v-model="username" placeholder="用户名称" @keyup.enter="login" autofocus="autofocus"/>
-                        <span class="err-tips" v-show="errTips.userShow">请输入用户名称</span>
-                    </li>
-                    <li class="pr in-list">
-                        <Icon custom="i-icon i-icon-loginPass"></Icon>
-                        <input type="password" name="password" id="password" v-model="enPassword" placeholder="登录密码" @keyup.enter="login"/>
-                        <span class="err-tips" v-show="errTips.passwordShow">请输入登录密码</span>
-                    </li>
-                    <li class="clearfix pr in-list">
-                        <Icon custom="i-icon i-icon-loginCode"></Icon>
-                        <input type="text" name="captcha" id="captcha" v-model="captcha2" placeholder="验证码" style="width:156px;" class="fl"  @keyup.enter="login"/>
-                        <div class="code-img clearfix fl" style="margin-left:5px;cursor: pointer;" @click="getCaptcha">
-                            <img :src="imgs" class="fl code">
-                            <p class="code-tips fl" style="margin-top:4px;margin-left:2px">
-                                <span class="db">看不清</span>
-                                <span class="db">换一张</span>
-                            </p>
-                        </div>
-                        <span class="err-tips fl" v-show="errTips.codeShow">请输入验证码</span>
-                    </li>
-                    <!-- <li>
-                        <span>
-                            <input type="checkbox" id="Check" class="Check"><label for="Check"></label>
-                        </span> 
-                    </li> -->
-                    <li style="margin-bottom: 0;">
-                        <input type="submit" name="" value="登录" @click="login"/>
-                    </li>
-                </ul>   
+  <div class="body">
+    <div id="mian">
+      <img class="logo" src="../assets/images/logo2.png" />
+      <div id="loginForm">
+        <input type="hidden" id="enPassword" name="enPassword" />
+        <h1>DDI配置管理平台</h1>
+        <ul>
+          <li class="pr in-list">
+            <Icon custom="i-icon i-icon-loginUser"></Icon>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              v-model="username"
+              placeholder="用户名称"
+              @keyup.enter="login"
+              autofocus="autofocus"
+            />
+            <span class="err-tips" v-show="errTips.userShow">请输入用户名称</span>
+          </li>
+          <li class="pr in-list">
+            <Icon custom="i-icon i-icon-loginPass"></Icon>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              v-model="enPassword"
+              placeholder="登录密码"
+              @keyup.enter="login"
+            />
+            <span class="err-tips" v-show="errTips.passwordShow">请输入登录密码</span>
+          </li>
+          <li class="clearfix pr in-list">
+            <Icon custom="i-icon i-icon-loginCode"></Icon>
+            <input
+              type="text"
+              name="captcha"
+              id="captcha"
+              v-model="captcha2"
+              placeholder="验证码"
+              style="width:156px;"
+              class="fl"
+              @keyup.enter="login"
+            />
+            <div
+              class="code-img clearfix fl"
+              style="margin-left:5px;cursor: pointer;"
+              @click="getCaptcha"
+            >
+              <img :src="imgs" class="fl code" />
+              <p class="code-tips fl" style="margin-top:4px;margin-left:2px">
+                <span class="db">看不清</span>
+                <span class="db">换一张</span>
+              </p>
             </div>
-        </div>
+            <span class="err-tips fl" v-show="errTips.codeShow">请输入验证码</span>
+          </li>
+          <li>
+            <span>
+              <input type="checkbox" id="Check" class="Check" />
+              <label for="Check"></label>
+            </span>
+          </li>
+          <li style="margin-bottom: 0;">
+            <input type="submit" name value="登录" @click="login" />
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 // import {loginParamsApi,loginApi,captchaApi,getPermissionsApi,deviceGetDefaultClusterApi} from '../service/index'
 // import {API} from '../config'
-import { isEmpty } from '../util/common';
-const Cache = require('../util/store').default('localStorage');
-const Cache2 = require('../util/store').default('sessionStorage');
+import { isEmpty } from "../util/common";
+const Cache = require("../util/store").default("localStorage");
+const Cache2 = require("../util/store").default("sessionStorage");
 export default {
-  name: 'login',
-  data () {
+  name: "login",
+  data() {
     return {
-        modulus: '',
-        exponent: '',
-        username: '',
-        enPassword: '',
-        captcha2: '',
+      modulus: "",
+      exponent: "",
+      username: "",
+      enPassword: "",
+      captcha2: "",
 
-        imgs: '',
+      imgs: "",
 
-        errTips: {
-            userShow: false,
-            passwordShow: false,
-            codeShow: false,
-        },
+      errTips: {
+        userShow: false,
+        passwordShow: false,
+        codeShow: false
+      },
 
-        loading: false
-    }   
+      loading: false,
+    };
   },
-  mounted () {
+  mounted() {
     this.loginParams();
-    
   },
   methods: {
-        login(errTips) {
-            this.$refs[errTips].validate((valid) => {
-                if (valid) {
-                    this.$Message.success('提交成功!');
-                } else {
-                    this.$Message.error('表单验证失败!');
-                }
-            })
-        },
+    login(errTips) {
+      this.$refs[errTips].validate(valid => {
+        if (valid) {
+          this.$Message.success("提交成功!");
+        } else {
+          this.$Message.error("表单验证失败!");
+        }
+      });
+    }
     //   loginParams(){
     //     loginParamsApi().then(data=>{
     //         if(data.body.type == 'error'){
@@ -207,53 +235,53 @@ export default {
     //   getCaptcha(){
     //       this.imgs = API.captcha +'?time='+Date.parse(new Date());
     //   }
-  },
-//   watch: {
-//       username(val){
-//         if(!isEmpty(val)){
-//             this.errTips.userShow = true;
-//         }else{
-//             this.errTips.userShow = false;
-//         }
-//       },
-//       enPassword(val){
-//         if(!isEmpty(val)){
-//             this.errTips.passwordShow = true;
-//         }else{
-//             this.errTips.passwordShow = false;
-//         }
-//       },
-//       captcha2(val){
-//         if(!isEmpty(val)){
-//             this.errTips.codeShow = true;
-//         }else{
-//             this.errTips.codeShow = false;
-//         }
-//       }
-//   }
-}
+  }
+  //   watch: {
+  //       username(val){
+  //         if(!isEmpty(val)){
+  //             this.errTips.userShow = true;
+  //         }else{
+  //             this.errTips.userShow = false;
+  //         }
+  //       },
+  //       enPassword(val){
+  //         if(!isEmpty(val)){
+  //             this.errTips.passwordShow = true;
+  //         }else{
+  //             this.errTips.passwordShow = false;
+  //         }
+  //       },
+  //       captcha2(val){
+  //         if(!isEmpty(val)){
+  //             this.errTips.codeShow = true;
+  //         }else{
+  //             this.errTips.codeShow = false;
+  //         }
+  //       }
+  //   }
+};
 </script>
 
 <style>
-    .code{
-        height: 45px;
-        width: 129px;
-    }
-    .err-tips{
-        color: #ed4014;
-        position: absolute!important;
-        left: 0;
-        bottom: -18px;
-    }
-    .pr{
-        position: relative;
-    }
-    *{
+.code {
+  height: 45px;
+  width: 129px;
+}
+.err-tips {
+  color: #ed4014;
+  position: absolute !important;
+  left: 0;
+  bottom: -18px;
+}
+.pr {
+  position: relative;
+}
+* {
   padding: 0;
   margin: 0;
 }
-li{
-  list-style-type:none;
+li {
+  list-style-type: none;
 }
 
 .body {
@@ -316,8 +344,10 @@ li{
   border: 1px solid #d7d7d7;
   height: 45px;
 }
-input:-webkit-autofill{ -webkit-box-shadow:0 0 0px 1000px #fff inset;}
-#mian #loginForm ul li input[type='submit'] {
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+}
+#mian #loginForm ul li input[type="submit"] {
   color: #fff;
   font-size: 16px;
   /* background: @mainColor;
@@ -369,7 +399,7 @@ input:-webkit-autofill{ -webkit-box-shadow:0 0 0px 1000px #fff inset;}
   left: -1px;
 }
 #mian #loginForm ul li .Check + label:before {
-  content: '记住密码';
+  content: "记住密码";
   display: inline-block;
   color: #999;
   width: 50px;
@@ -383,8 +413,7 @@ input:-webkit-autofill{ -webkit-box-shadow:0 0 0px 1000px #fff inset;}
   box-sizing: border-box;
 }
 
-
-.logo{
+.logo {
   display: block;
   margin: auto;
   margin-bottom: 30px;

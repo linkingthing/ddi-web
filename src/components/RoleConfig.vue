@@ -24,13 +24,8 @@
           </div>
       </i-form>-->
 
-      <Select>
-        <Option value="1">1</Option>
-      </Select>
+  
 
-      <select name="" id="">
-          <option value="1">1</option>
-      </select>
       <!-- </vue-scroll> -->
     </div>
     <div slot="footer">
@@ -57,7 +52,17 @@ export default {
       dataConfig: {
         name: ""
       },
-      loading: false
+      loading: false,
+      list: [
+        {
+          name: "ramcl",
+          id: 1
+        },
+        {
+          name: "sofy",
+          id: 2
+        }
+      ]
     };
   },
   mounted() {

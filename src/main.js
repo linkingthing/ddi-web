@@ -6,9 +6,14 @@ import App from './App.vue'
 
 // iview UI 框架
 import iView from 'iview';
+// import { Button, Table, Select } from 'iview';
+
 import 'iview/dist/styles/iview.css';
 Vue.use(iView)
 
+// Vue.component('Button', Button);
+// Vue.component('Table', Table);
+// Vue.component('Select', Select);
 
 // 导入vue-echarts插件
 import ECharts from 'vue-echarts/components/ECharts'
