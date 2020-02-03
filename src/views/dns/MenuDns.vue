@@ -39,7 +39,7 @@
             <template slot="title">
               <Icon type="navicon-round"></Icon>安全管理
             </template>
-            <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem>
+            <!-- <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem> -->
             <MenuItem name="blacklistAndwhitelist" to="/dns/blacklistAndwhitelist">地址黑名单</MenuItem>
             <MenuItem name="developmentcontrol" to="/dns/developmentcontrol">并发控制</MenuItem>
           </Submenu>
