@@ -27,7 +27,7 @@
         </table>
       </div>
     </div>
-    <!-- <blacklist-config ref="blacklistRef"></blacklist-config> -->
+    <blacklist-config ref="blacklistRef"></blacklist-config>
     <role-config ref="roleRef"></role-config>
   </div>
 </template>
@@ -54,7 +54,7 @@ export default {
       this.$refs.blacklistRef.openModel();
     },
     goConfig1(data) {
-      // this.$refs.roleRef.openModel(data);
+      this.$refs.roleRef.openModel(data);
     },
     getView() {
       services

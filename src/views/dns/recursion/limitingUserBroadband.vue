@@ -78,29 +78,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
-
-    // 删除
-    delect(data) {
-      this.$Modal.confirm({
-        title: "提示",
-        content: "确定删除？",
-        onOk: () => {
-          this.$axios
-            .delete(
-              "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/defaultdns64s/" +
-                data,
-              {}
-            )
-            .then(res => {
-              this.$Message.success("删除成功");
-              this.getView();
-            })
-            .catch(err => {
-              this.$Message.success("删除失败");
-            });
-        }
-      });
     }
   }
 };

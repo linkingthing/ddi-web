@@ -59,8 +59,21 @@ export default {
     deleteDefaultDNS64ById(id) {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s/${id}`)
     },
-    updateDefaultDNS64(params) {
+    createDefaultDNS64(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s`, params)
+    },
+    updateDefaultDNS64(id, params) {
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s/${id}`, params)
+    },
+
+    getDNS64sByViewId(viewId) {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`)
+    },
+    deleteDNS64sByViewIdAndDnsId(viewId, dns64Id) {
+        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s/${dns64Id}`)
+    },
+    updateDNS64(viewId, dns64Id, params) {
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s/${dns64Id}`, params)
     },
 
 
@@ -90,6 +103,11 @@ export default {
     saveRecursiveConcurrents(params) {
         return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/recursiveconcurrents/con`, params)
     },
+    createBlackList(aclid) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/ipblackholes`, aclid)
+    },
+
+
 
     getNodeList(params) {
         // todo: 后期建议改成标砖restfull

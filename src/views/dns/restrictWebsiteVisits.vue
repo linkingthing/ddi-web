@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import RestrictWebsiteVisitsConfig from "@/components/RestrictWebsiteVisitsConfig";
 import PowerConfig from "@/components/PowerConfig";
+import services from "@/services";
 
 export default {
   name: "limitingWebsiteBroadband",
@@ -86,9 +86,8 @@ export default {
     },
     getView() {
       let _self = this;
-      console.log(this.dns64s)
-      this.$axios
-        .get("http://10.0.0.19:8081" + this.dns64s, {})
+      services
+        .getDNS64sByViewId(this.id)
         .then(function(res) {
           _self.list = res.data.data;
         })
@@ -103,8 +102,8 @@ export default {
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          this.$axios
-            .delete("http://10.0.0.19:8081" + this.dns64s + "/" + data, {})
+          services
+            .deleteDNS64sByViewIdAndDnsId(this.id, data)
             .then(res => {
               this.$Message.success("删除成功");
               this.getView();

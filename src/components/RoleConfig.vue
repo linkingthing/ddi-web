@@ -8,8 +8,8 @@
   >
     <div slot="header">修改访问控制列表</div>
     <div>
-      <!-- <vue-scroll style="height: 500px;" ref="vs"> -->
-      <!-- <i-form :model="dataConfig" label-position="right" :label-width="80" ref="formValidate">
+      <vue-scroll style="height: 500px;" ref="vs">
+        <i-form :model="dataConfig" label-position="right" :label-width="80" ref="formValidate">
           <div class="pop-content">
             <div class="pop-box">
               <div class="pop-body">
@@ -17,16 +17,12 @@
                   <i-select v-model="dataConfig.id">
                     <i-option v-for="item in select" :key="item.id" :value="item.id">{{item.name}}</i-option>
                   </i-select>
-                  
                 </form-item>
               </div>
             </div>
           </div>
-      </i-form>-->
-
-  
-
-      <!-- </vue-scroll> -->
+        </i-form>
+      </vue-scroll>
     </div>
     <div slot="footer">
       <i-button class="me-button k-btn" @click="blacklistModal = false">取消</i-button>
@@ -43,7 +39,7 @@ export default {
   name: "BlacklistConfig",
   data() {
     return {
-      blacklistModal: true,
+      blacklistModal: false,
       self: "",
       id: "",
       select: [],

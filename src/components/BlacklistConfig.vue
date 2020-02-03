@@ -14,13 +14,9 @@
             <div class="pop-box">
               <div class="pop-body">
                 <form-item label="新建访问控制列表" prop="name" :label-width="137">
-                  <!-- <i-select v-model="dataConfig.id">
+                  <i-select v-model="dataConfig.id">
                     <i-option v-for="item in select" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                  </i-select> -->
-
-                  <!-- <Select v-model="dataConfig.id">
-                    <Option v-for="item in select" :key="item.id" :value="item.id">{{item.name}}</Option>
-                  </Select> -->
+                  </i-select>
                 </form-item>
               </div>
             </div>
@@ -37,7 +33,7 @@
 
 <script>
 import { isURL, isNumber, isEmpty } from "../util/common";
-import services from '@/services';
+import services from "@/services";
 
 export default {
   name: "BlacklistConfig",
@@ -74,13 +70,8 @@ export default {
     },
     //新建
     update() {
-      this.$axios
-        .post(
-          "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/ipblackholes",
-          {
-            aclid: this.dataConfig.id
-          }
-        )
+      services
+        .createBlackList({ aclid: this.dataConfig.id })
         .then(res => {
           console.log(res);
         })

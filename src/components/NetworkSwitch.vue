@@ -135,7 +135,7 @@ export default {
     },
     update() {
       services
-        .updateDefaultDNS64({
+        .createDefaultDNS64({
           prefix: this.upgradeConfig.t1,
           clientwhite: this.upgradeConfig.t2,
           clientblack: this.upgradeConfig.t3,
