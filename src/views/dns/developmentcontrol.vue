@@ -4,26 +4,23 @@
       <span class="tit">开发控制</span>
     </div>
     <div class="tab-select pding select2">
-      <!-- <div class="table-box"> -->
       <div class="pop-body">
-        <i-form :model="formItem" style="margin-left:20%;">
+        <i-form :label-width="260" :model="formItem">
           <Row>
             <i-col span="18">
-              <form-item label="递归并发数" prop="recursiveClients" style="font-size:20px;">
-                <i-input v-model="formItem.recursiveClients" style="margin-left:10px; width:300px;"></i-input>
-                <span>个</span>
-              </form-item>
-            </i-col>
-            <i-col span="18">
-              <form-item label="单一域递归并发数" prop="fetchesPerZone" style="font-size:20px;">
-                <i-input v-model="formItem.fetchesPerZone" style="margin-left:10px; width:300px;"></i-input>
-                <span>个</span>
-              </form-item>
-            </i-col>
-            <i-col span="18">
-              <Form-item style="font-size:20px;margin-left:30%;margin-top:5%;">
+              <form-item  label="递归并发数（个）" prop="recursiveClients" style="font-size:20px;">
+                <i-input v-model="formItem.recursiveClients" style=" width:300px;"></i-input>
                 <i-button type="primary" @click="primary">保存</i-button>
-              </Form-item>
+              </form-item>
+            </i-col>
+            <i-col span="18">
+              <form-item label="单一域递归并发数（个）" prop="fetchesPerZone" style="font-size:20px;">
+                <i-input v-model="formItem.fetchesPerZone" style="width:300px;"></i-input>
+                <i-button type="primary" @click="primary">保存</i-button>
+              </form-item>
+            </i-col>
+            <i-col span="18">
+              <Form-item style="font-size:20px;margin-left:30%;margin-top:5%;"></Form-item>
             </i-col>
           </Row>
         </i-form>
