@@ -139,7 +139,7 @@ export default {
         title: "",
         name: "",
         priority: 1,
-        isused: "",
+        isused: '1',
         model10: [],
         // 例外规则
         exception: [
@@ -182,8 +182,8 @@ export default {
         this.id = this.dataConfig.exception[key].id;
         this.aclids.push(this.id);
       }
-      this.$axios
-        .post("http://10.0.0.19:8081/apis/linkingthing.com/example/v1/views", {
+      services
+        .createView({
           name: this.dataConfig.name,
           aclids: this.aclids,
           priority: this.dataConfig.priority,

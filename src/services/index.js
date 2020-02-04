@@ -23,9 +23,18 @@ function params2Query(params) {
 
 export default {
     // 权威管理
+
+    // 视图
+    createView(params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views`, params)
+    },
     getViewList() {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views`)
     },
+    deleteViewById(id) {
+        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${id}`)
+    },
+
     getZoneByViewId(id) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${id}/zones`)
     },
@@ -39,19 +48,19 @@ export default {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs`)
     },
 
-    getAccessById(id){
+    getAccessById(id) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`)
     },
     getAccessList() {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/acls`)
     },
-    createAccess(params){
+    createAccess(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/acls`, params)
     },
-    updateAccess(id, params){
+    updateAccess(id, params) {
         return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`, params)
     },
-    deleteAccess(id){
+    deleteAccess(id) {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`)
     },
 

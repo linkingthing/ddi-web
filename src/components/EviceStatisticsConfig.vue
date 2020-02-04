@@ -196,7 +196,7 @@ export default {
           IP: [...this.IP, ...this.dataConfig.acls]
         })
         .then(res => {
-          console.log(res);
+          this.$emit('onSuccess')
         })
         .catch(err => {
           console.log(err);

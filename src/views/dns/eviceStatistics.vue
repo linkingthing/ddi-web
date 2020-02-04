@@ -33,10 +33,9 @@
             </tbody>
           </table>
         </div>
-        <!-- <Page show-sizer :page-size="20" :page-size-opts="[10, 20, 30]" :total="100" show-total show-elevator placement="top"/> -->
       </div>
       <config-group-mg-config ref="configRef" @onSuccess="createSuccess" :accessList="list"></config-group-mg-config>
-      <evice-statistics-config ref="eviceRef" :accessList="list"></evice-statistics-config>
+      <evice-statistics-config ref="eviceRef" @onSuccess="getManger" :accessList="list"></evice-statistics-config>
     </div>
   </div>
 </template>

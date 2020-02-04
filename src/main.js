@@ -11,6 +11,8 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 Vue.use(iView)
 
+import tags from '@/components/tags';
+Vue.component('Tags', tags)
 // Vue.component('Button', Button);
 // Vue.component('Table', Table);
 // Vue.component('Select', Select);

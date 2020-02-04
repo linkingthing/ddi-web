@@ -27,7 +27,7 @@
                 <td>{{item.zonesize}}</td>
                 <td>{{item.priority}}</td>
                 <td>
-                  <p v-for="value in item.acls" :key="value.id">{{value.name}}</p>
+                  <Tag color="default" v-for="value in item.acls" :key="value.id">{{value.name}}</Tag>
                 </td>
               </tr>
             </tbody>

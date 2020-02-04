@@ -12,7 +12,7 @@
           <table class="table-default">
             <thead>
               <tr>
-                <th width="170">名称</th>
+                <th>名称</th>
                 <th width="250">访问控制列表</th>
                 <th width="250">优先级</th>
                 <th width="250">是否启用</th>
@@ -24,7 +24,7 @@
               <tr v-for="item in this.list" :key="item.id">
                 <td>{{item.name}}</td>
                 <td>
-                  <p v-for="value in item.acls" :key="value.id">{{value.name}}</p>
+                  <Tags :list="item.acls"/>
                 </td>
                 <td>{{item.priority}}</td>
                 <td>{{item.isused === 0?'否':'是'}}</td>
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import DeviceMonitorConfig from "@/components/DeviceMonitorConfig";
 import Analysis2 from "@/components/Analysis2";
 import services from "@/services";
@@ -102,12 +101,8 @@ export default {
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          this.$axios
-            .delete(
-              "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/views/" +
-                data,
-              {}
-            )
+          services
+            .deleteViewById(data)
             .then(res => {
               this.$Message.success("删除成功");
               this.getView();
