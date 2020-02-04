@@ -21,7 +21,9 @@
                   <p>-</p>
                 </td>
                 <td v-else>
-                  <p v-for="value in item.ip" :key="value.id">{{value}}</p>
+                  <!-- <p v-for="value in item.ip" :key="value.id">{{value}}</p> -->
+                                    <Tags :list=" item.ip" />
+
                 </td>
                 <td>{{item.id == 0 ?'-':item.type}}</td>
                 <td>

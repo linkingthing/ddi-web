@@ -1,11 +1,13 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
+  <div class="index-main columns t-box" >
     <div class="header-title">
       <span class="tit">视图管理</span>
       <div class="button-box fr">
         <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
       </div>
     </div>
+    <!-- <Table :columns="columns" :data="list"></Table> -->
+
     <div class="tab-select pding select2">
       <div class="table-box">
         <div class="table-s">
@@ -24,7 +26,7 @@
               <tr v-for="item in this.list" :key="item.id">
                 <td>{{item.name}}</td>
                 <td>
-                  <Tags :list="item.acls"/>
+                  <Tags :list="item.acls" :field="name"/>
                 </td>
                 <td>{{item.priority}}</td>
                 <td>{{item.isused === 0?'否':'是'}}</td>
@@ -52,6 +54,35 @@ export default {
   name: "deviceMonitor",
   data() {
     return {
+      columns: [
+        {
+          title: "名称",
+          key: "name"
+        },
+        {
+          title: "访问控制列表",
+          key: "acls",
+          render: (h, params) => {
+            return h("Tags", {
+              props: {
+                list: params.row.acls
+              }
+            });
+          }
+        },
+        {
+          title: "优先级",
+          key: "priority"
+        },
+        {
+          title: "是否启用",
+          key: "isused"
+        },
+        {
+          title: "操作",
+          key: "action"
+        }
+      ],
       list: [],
       id: "",
       name: "",

@@ -23,7 +23,9 @@
               <tr v-for="item in this.list" :key="item.id">
                 <td>{{item.name}}</td>
                 <td>
-                  <p v-for="value in item.IP" :key="value.id">{{value}}</p>
+                  <Tags :list="item.IP" :field="item"/>
+
+                  <!-- <p v-for="value in item.IP" :key="value.id">{{value}}</p> -->
                 </td>
                 <td>
                   <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button>
@@ -53,7 +55,7 @@ export default {
       id: "",
       name: "",
       remove: "",
-      modal1: false,
+      modal1: false
     };
   },
   components: {
