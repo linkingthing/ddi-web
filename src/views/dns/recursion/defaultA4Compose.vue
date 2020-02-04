@@ -30,7 +30,7 @@
                 <td>{{item.clientaclname}}</td>
                 <td>{{item.addressname}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button>
+                  <i-button class="k-btn" @click="handleOpenEdit(item.id)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
@@ -39,14 +39,14 @@
         </div>
       </div>
       <createDefaultA4 ref="createRef" @createSuccess="onCreateSuccess"></createDefaultA4>
-      <subnet-list-config ref="subnetRef"></subnet-list-config>
+      <editDefaultA4 ref="subnetRef" @createSuccess="onCreateSuccess"></editDefaultA4>
     </div>
   </div>
 </template>
 
 <script>
 import createDefaultA4 from "./createDefaultA4";
-import SubnetListConfig from "@/components/SubnetListConfig";
+import editDefaultA4 from "./editDefaultA4";
 import services from "@/services";
 
 export default {
@@ -64,7 +64,7 @@ export default {
   },
   components: {
     createDefaultA4,
-    SubnetListConfig
+    editDefaultA4
   },
   mounted() {
     this.getView();
@@ -78,7 +78,7 @@ export default {
     onCreateSuccess() {
       this.getView();
     },
-    goConfig1(b) {
+    handleOpenEdit(b) {
       this.$refs.subnetRef.openConfig(b);
     },
     getView() {

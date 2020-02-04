@@ -34,7 +34,7 @@
         </div>
       </div>
       <createDefaultA4 ref="networkRef"></createDefaultA4>
-      <subnet-list-config ref="subnetRef"></subnet-list-config>
+      <editDefaultA4 ref="subnetRef"></editDefaultA4>
     </div>
   </div>
 </template>
@@ -42,7 +42,7 @@
 <script>
 import services from "@/services";
 import createDefaultA4 from "./createDefaultA4";
-import SubnetListConfig from "@/components/SubnetListConfig";
+import editDefaultA4 from "./editDefaultA4";
 
 export default {
   name: "limitingUserBroadband",
@@ -60,7 +60,7 @@ export default {
   },
   components: {
     createDefaultA4,
-    SubnetListConfig
+    editDefaultA4
   },
   mounted() {
     this.getView();

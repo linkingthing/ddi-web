@@ -65,8 +65,6 @@ export default {
       },
       self: "",
       id: "",
-      fileSSL: null,
-      fileSSL2: null,
       // 表单验证规则
       ruleValidate: {
         prefix: [
