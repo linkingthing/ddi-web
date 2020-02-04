@@ -35,7 +35,7 @@
         </div>
         <!-- <Page show-sizer :page-size="20" :page-size-opts="[10, 20, 30]" :total="100" show-total show-elevator placement="top"/> -->
       </div>
-      <config-group-mg-config ref="configRef"></config-group-mg-config>
+      <config-group-mg-config ref="configRef" @onSuccess="createSuccess"></config-group-mg-config>
       <evice-statistics-config ref="eviceRef"></evice-statistics-config>
     </div>
   </div>
@@ -67,7 +67,8 @@ export default {
   methods: {
     getManger() {
       let _self = this;
-        services.getAccessList()
+      services
+        .getAccessList()
         .then(function(res) {
           _self.list = res.data.data;
           for (var key in _self.list) {
@@ -89,18 +90,17 @@ export default {
     goConfig1(data) {
       this.$refs.eviceRef.openConfig({ data });
     },
+    createSuccess() {
+      this.getManger();
+    },
     // 删除
     delect(data) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          this.$axios
-            .delete(
-              "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/acls/" +
-                data,
-              {}
-            )
+          services
+            .deleteAccess(data)
             .then(res => {
               this.$Message.success("删除成功");
               this.getManger();

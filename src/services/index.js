@@ -42,6 +42,15 @@ export default {
     getAccessList() {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/acls`)
     },
+    createAccess(params){
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/acls`, params)
+    },
+    updateAccess(id, params){
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`, params)
+    },
+    deleteAccess(id){
+        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`)
+    },
 
     geRedirectionsByViewId(viewId) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/redirections`)

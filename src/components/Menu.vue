@@ -7,7 +7,7 @@
             <template slot="title">
               <Icon type="navicon-round"></Icon>权威管理
             </template>
-            <MenuItem name="configGroupMg" to="/dns/configGroupMg">配置管理</MenuItem>
+            <MenuItem name="configGroupMg" to="/dns/config">配置管理</MenuItem>
             <MenuItem name="parameterSet" to="/dns/parameterSet">重定向</MenuItem>
           </Submenu>
 

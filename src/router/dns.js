@@ -1,4 +1,4 @@
-const configGroupMg = r => require.ensure([], () => r(require('@/views/dns/authority/configGroupMg')), 'dnsLayout')
+const config = r => require.ensure([], () => r(require('@/views/dns/authority/config')), 'dnsLayout')
 const parameterSet = r => require.ensure([], () => r(require('@/views/dns/authority/parameterSet')), 'dnsLayout')
 
 
@@ -32,19 +32,17 @@ const dnsLayout = r => require.ensure([], () => r(require('@/views/dns/dnsLayout
 export default {
     path: '/dns',
     name: 'dns',
-    redirect: '/dns/configGroupMg',
+    redirect: '/dns/config',
     component: dnsLayout,
     children: [
         {
             // 配置组管理
             name: 'configGroupMg',
-            path: '/dns/configGroupMg',
-            component: configGroupMg,
+            path: '/dns/config',
+            component: config,
             meta: {
                 range: 'dns',
-                oneTitle: '配置管理',
                 title: '配置管理',
-                icon: 'ios-aperture-outline',
             }
         },
         {
@@ -54,7 +52,6 @@ export default {
             component: eviceStatistics,
             meta: {
                 range: 'dns',
-                oneTitle: '访问控制',
                 title: '访问控制列表'
             }
         },
@@ -83,7 +80,6 @@ export default {
             component: deviceMonitor,
             meta: {
                 range: 'dns',
-                oneTitle: '访问控制',
                 title: '视图管理'
             }
         },
@@ -138,7 +134,7 @@ export default {
         },
         {
             // 资源记录
-            name: 'appUpgrade',
+            name: 'resourceRecord',
             path: '/dns/appUpgrade',
             component: appUpgrade,
             meta: {
@@ -163,7 +159,6 @@ export default {
             component: logStatistics,
             meta: {
                 range: 'dns',
-                oneTitle: '安全管理',
                 title: 'DDOS防护'
             }
         },
@@ -174,7 +169,6 @@ export default {
             component: blacklistAndwhitelist,
             meta: {
                 range: 'dns',
-                oneTitle: '安全管理',
                 title: '黑白名单'
             }
         },
@@ -185,7 +179,6 @@ export default {
             component: developmentcontrol,
             meta: {
                 range: 'dns',
-                oneTitle: '安全管理',
                 title: '开发控制'
             }
         },
@@ -196,7 +189,6 @@ export default {
             component: registration,
             meta: {
                 range: 'dns',
-                oneTitle: '系统管理',
                 title: '用户注册'
 
             }
@@ -208,9 +200,7 @@ export default {
             component: redirect,
             meta: {
                 range: 'dns',
-                oneTitle: '权威管理',
                 title: '重定向'
-
             }
         },
         {
@@ -238,7 +228,6 @@ export default {
             component: limitingWebsiteBroadband,
             meta: {
                 range: 'dns',
-                oneTitle: '递归管理',
                 title: 'A4地址合成'
             }
         },
@@ -258,7 +247,6 @@ export default {
             component: networkSecurity,
             meta: {
                 range: 'dns',
-                oneTitle: '转发管理',
                 title: '默认转发'
             }
         },
@@ -269,7 +257,6 @@ export default {
             component: applicationFirewall,
             meta: {
                 range: 'dns',
-                oneTitle: '转发管理',
                 title: '区域转发'
 
             }

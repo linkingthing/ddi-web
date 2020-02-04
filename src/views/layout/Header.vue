@@ -34,13 +34,7 @@
       </div>
     </div>
     <div class="header-bottom">
-      <Breadcrumb>
-        <BreadcrumbItem
-          :key="item.path"
-          :to="item.path"
-          v-for="item in BreadcrumbItem"
-        >{{item.oneTitle+'/'+item.title}}</BreadcrumbItem>
-      </Breadcrumb>
+     
     </div>
   </header>
 </template>
@@ -51,18 +45,9 @@ export default {
   data() {
     return {
       path: this.$route.meta.range,
-      BreadcrumbItem: []
     };
   },
-  watch: {
-    $route(to, from) {
-      this.path = to.meta.range;
-      this.eve_breadcrumbItem_change();
-    }
-  },
-  mounted() {
-    this.eve_breadcrumbItem_change();
-  },
+
   methods: {
     // 菜单跳转
     dropdownMenu(name) {
@@ -71,12 +56,6 @@ export default {
         path
       });
     },
-    eve_breadcrumbItem_change() {
-      const list = this.$route.fullPath.split("/"); //list[0]:是空格
-      this.BreadcrumbItem = [];
-
-      console.log(list, this.$route);
-    }
   }
 };
 </script>

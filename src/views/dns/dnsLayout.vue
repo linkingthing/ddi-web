@@ -1,30 +1,53 @@
 <template>
-    <main class="main-content">
-        <!-- 菜单 -->
-        <menu-nav-dns></menu-nav-dns>
-        <section class="content">
-          <router-view></router-view>
-        </section>
-    </main>
+  <main class="main-content">
+    <!-- 菜单 -->
+    <menu-nav-dns></menu-nav-dns>
+    <section class="content">
+      <div class="bread">
+        <Breadcrumb>
+          <BreadcrumbItem
+            :key="item.path"
+            :to="item.path"
+            v-for="item in breadcrumbList"
+          >{{item.title}}</BreadcrumbItem>
+        </Breadcrumb>
+      </div>
+
+      <router-view></router-view>
+    </section>
+  </main>
 </template>
 
 <script>
-import menuNavDns from './MenuDns';
+import menuNavDns from "./MenuDns";
 
 export default {
-  name: 'DnsLayout',
-  data () {
+  name: "DnsLayout",
+  data() {
     return {
-     
-    }
+      breadcrumbList: []
+    };
   },
-  mounted () {
-   
+  mounted() {
+    this.excuteBreadcrumbList();
   },
   components: {
-      menuNavDns
+    menuNavDns
+  },
+  methods: {
+    excuteBreadcrumbList() {
+      console.log(this.$route.meta,)
+      console.log( this)
+      const { title } = this.$route.meta;
+      this.breadcrumbList = [
+        {
+          path: "/",
+          title: "首页"
+        }
+      ];
+    }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -37,5 +60,9 @@ export default {
 
 .content {
   height: 100%;
+}
+
+.bread {
+  padding: 20px;
 }
 </style>
