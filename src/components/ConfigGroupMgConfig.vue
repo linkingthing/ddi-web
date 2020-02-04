@@ -26,7 +26,7 @@
                     </form-item>
                     <form-item label="acls" prop="acls">
                       <Select filterable multiple v-model="dataConfig.acls">
-                        <Option v-for="item in acls" :key="item.id" :value="item.name">{{item.name}}</Option>
+                        <Option v-for="item in accessList" :key="item.id" :value="item.name">{{item.name}}</Option>
                       </Select>
                     </form-item>
                   </i-col>
@@ -82,6 +82,7 @@ import { isURL, isNumber, isEmpty } from "../util/common";
 import services from "@/services";
 export default {
   name: "ConfigGroupMgConfig",
+  props: ['accessList'],
   data() {
     // 校验配置组名
     const validator1 = (rule, value, callback) => {
@@ -125,18 +126,9 @@ export default {
       }
     };
   },
-  mounted() {
-    this.getAccessList();
-  },
   methods: {
-    getAccessList() {
-      services.getAccessList().then(res => {
-        this.acls = res.data.data;
-      });
-    },
-    openConfig(data) {
+    openConfig() {
       this.configModal = true;
-      this.title = data.title;
     },
     //新建
     update() {

@@ -39,6 +39,9 @@ export default {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs`)
     },
 
+    getAccessById(id){
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`)
+    },
     getAccessList() {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/acls`)
     },

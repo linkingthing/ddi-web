@@ -24,6 +24,15 @@
                     <form-item label="名称" prop="name">
                       <i-input v-model="dataConfig.name" placeholder="请填访问控制名称"></i-input>
                     </form-item>
+                    <form-item label="acls" prop="acls">
+                      <Select filterable multiple v-model="dataConfig.acls">
+                        <Option
+                          v-for="item in accessList"
+                          :key="item.id"
+                          :value="item.name"
+                        >{{item.name}}</Option>
+                      </Select>
+                    </form-item>
                   </i-col>
                 </Row>
               </div>
@@ -78,6 +87,7 @@ import { isURL, isNumber, isEmpty } from "../util/common";
 import services from "@/services";
 export default {
   name: "EviceStatisticsConfig",
+  props: ["accessList", "id"],
   data() {
     // 校验配置组名
     const validator1 = (rule, value, callback) => {
@@ -106,6 +116,7 @@ export default {
       dataConfig: {
         title: "",
         name: "",
+        acls: [],
         // 例外规则
         exception: [
           {
@@ -122,10 +133,42 @@ export default {
       }
     };
   },
+  mounted() {},
   methods: {
+    getInitAccessById(id) {
+      this.dataConfig = {
+        title: "",
+        name: "",
+        acls: [],
+        // 例外规则
+        exception: [
+          {
+            value: "",
+            index: 1,
+            status: 1
+          }
+        ]
+      };
+      services.getAccessById(id).then(res => {
+        const { IP, name } = res.data;
+        this.dataConfig.name = name;
+        IP.forEach(item => {
+          if (item.includes(".")) {
+            this.dataConfig.exception.unshift({
+              value: item,
+              index: ++this.index,
+              status: 1
+            });
+          } else {
+            this.dataConfig.acls.push(item);
+          }
+        });
+      });
+    },
     openConfig(data) {
       this.eviceModal = true;
       this.id = data.data;
+      this.getInitAccessById(data.data);
     },
 
     // 确定
@@ -150,7 +193,7 @@ export default {
       services
         .updateAccess(this.id, {
           name: this.dataConfig.name,
-          IP: this.IP
+          IP: [...this.IP, ...this.dataConfig.acls]
         })
         .then(res => {
           console.log(res);
@@ -159,7 +202,7 @@ export default {
           console.log(err);
         });
     },
-    //    添加IP地址
+    //  添加IP地址
     handleAdd() {
       this.index++;
       this.dataConfig.exception.push({
