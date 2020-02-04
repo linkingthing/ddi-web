@@ -3,7 +3,7 @@
     <div class="header-title">
       <span class="tit">区域查询</span>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(id2)">新建</i-button>
+        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(id)">新建</i-button>
       </div>
     </div>
     <div class="tab-select pding select2">
@@ -59,6 +59,7 @@ export default {
   name: "appUpgradeBusinessAnalysis",
   data() {
     return {
+      id: '',
       viewId: "",
       id1: "",
       name: "",
@@ -72,12 +73,10 @@ export default {
       isused: "",
       data1: "",
       obj: "",
-      id2: ""
     };
   },
   created() {
     this.id = this.$route.query.id;
-    this.id2 = this.id;
     this.viewId = this.$route.query.id;
   },
   mounted() {

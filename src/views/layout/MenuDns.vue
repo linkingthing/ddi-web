@@ -1,11 +1,11 @@
 <template>
-  <div class="menu fl">
+  <div class="menu fl left-menu">
     <div class="menu-list">
-      <vue-scroll :style="{minHeight:docHeight-200+'px'}" class="pr">
+      <vue-scroll  class="pr">
         <Menu :theme="theme" :active-name="tab" :open-names="[openName]" :accordion="true">
           <Submenu name="1">
             <template slot="title">
-              <Icon type="navicon-round"></Icon>权威管理
+              <Icon type="ios-aperture-outline"></Icon>权威管理
             </template>
             <MenuItem name="configGroupMg" to="/dns/config">配置管理</MenuItem>
             <MenuItem name="parameterSet" to="/dns/parameterSet">重定向</MenuItem>
@@ -16,7 +16,7 @@
               <Icon type="navicon-round"></Icon>递归管理
             </template>
 
-            <MenuItem name="limitingWebsiteBroadband" to="/dns/limitingWebsiteBroadband">默认4A地址合成</MenuItem>
+            <MenuItem name="limitingWebsiteBroadband" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
             <MenuItem name="limitingUserBroadband" to="/dns/limitingUserBroadband">4A地址合成</MenuItem>
           </Submenu>
 
@@ -39,7 +39,7 @@
             <template slot="title">
               <Icon type="navicon-round"></Icon>安全管理
             </template>
-            <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem>
+            <!-- <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem> -->
             <MenuItem name="blacklistAndwhitelist" to="/dns/blacklistAndwhitelist">地址黑名单</MenuItem>
             <MenuItem name="developmentcontrol" to="/dns/developmentcontrol">并发控制</MenuItem>
           </Submenu>
@@ -56,14 +56,6 @@ export default {
     return {
       theme: "light", // menu主题
       tab: this.$route.params.tab || this.$route.name //路由tab
-    };
-  },
-  mounted() {
-    const slef = this;
-
-    this.getDocHeight();
-    window.onresize = () => {
-      slef.getDocHeight();
     };
   },
   computed: {
@@ -127,11 +119,7 @@ export default {
     }
   },
   methods: {
-    // 获取浏览器文档高度
-    getDocHeight() {
-      this.docHeight = document.documentElement.clientHeight;
-      //   console.log(this.docHeight);
-    }
+  
   }
 };
 </script>
@@ -142,5 +130,9 @@ a:visited,
 a:hover,
 a:active {
   color: #515a6e;
+}
+
+.left-menu {
+    height: 100%;
 }
 </style>

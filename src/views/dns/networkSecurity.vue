@@ -21,9 +21,7 @@
                   <p>-</p>
                 </td>
                 <td v-else>
-                  <!-- <p v-for="value in item.ip" :key="value.id">{{value}}</p> -->
-                                    <Tags :list=" item.ip" />
-
+                  <Tags :list=" item.ip" />
                 </td>
                 <td>{{item.id == 0 ?'-':item.type}}</td>
                 <td>
@@ -92,11 +90,8 @@ export default {
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          this.$axios
-            .delete(
-              "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/forwards/123",
-              {}
-            )
+          services
+            .deleteForwardById(data)
             .then(res => {
               this.$Message.success("删除成功");
               this.getView();

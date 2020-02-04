@@ -11,8 +11,8 @@
       <div class="header-nav clearfix" :class="path">
         <router-link class="nav-list fl" to="/node">节点管理</router-link>
         <router-link class="nav-list fl" to="/dns">域名解析</router-link>
-        <router-link class="nav-list fl" to="/dhcp">地址管理</router-link>
-        <router-link class="nav-list fl" to="/sys">系统管理</router-link>
+        <!-- <router-link class="nav-list fl" to="/dhcp">地址管理</router-link>
+        <router-link class="nav-list fl" to="/sys">系统管理</router-link> -->
       </div>
       <div class="header-right clearfix">
         <div class="user-pic fl">

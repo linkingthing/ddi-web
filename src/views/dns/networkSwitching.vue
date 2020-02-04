@@ -146,7 +146,7 @@
             </div>
         </div>
 
-        <network-switch ref="networkSwitchRef"></network-switch>
+        <!-- <network-switch ref="networkSwitchRef"></network-switch> -->
         <nat64 ref="nat64Ref"></nat64>
         <nat66 ref="nat66Ref"></nat66>
         <dslite ref="dsliteRef"></dslite>
@@ -155,7 +155,7 @@
 </template>
 
 <script>
-import NetworkSwitch from '@/components/NetworkSwitch';
+// import NetworkSwitch from '@/components/NetworkSwitch';
 import Nat64 from '@/components/Nat64';
 import Nat66 from '@/components/Nat66';
 import Dslite from '@/components/Dslite';
@@ -241,7 +241,7 @@ export default {
         }
   },
   components: {
-      NetworkSwitch,
+    //   NetworkSwitch,
       Nat64,
       Nat66,
       Dslite,

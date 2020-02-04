@@ -33,7 +33,7 @@
           </table>
         </div>
       </div>
-      <NetworkSwitch ref="networkRef"></NetworkSwitch>
+      <createDefaultA4 ref="networkRef"></createDefaultA4>
       <subnet-list-config ref="subnetRef"></subnet-list-config>
     </div>
   </div>
@@ -41,7 +41,7 @@
 
 <script>
 import services from "@/services";
-import NetworkSwitch from "@/components/NetworkSwitch";
+import createDefaultA4 from "./createDefaultA4";
 import SubnetListConfig from "@/components/SubnetListConfig";
 
 export default {
@@ -59,7 +59,7 @@ export default {
     };
   },
   components: {
-    NetworkSwitch,
+    createDefaultA4,
     SubnetListConfig
   },
   mounted() {

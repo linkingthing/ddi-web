@@ -104,6 +104,9 @@ export default {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards`)
     },
 
+    deleteForwardById(id) {
+        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards/${id}`)
+    },
 
 
 

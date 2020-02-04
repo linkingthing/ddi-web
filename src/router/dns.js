@@ -1,9 +1,10 @@
 const config = r => require.ensure([], () => r(require('@/views/dns/authority/config')), 'dnsLayout')
 const parameterSet = r => require.ensure([], () => r(require('@/views/dns/authority/parameterSet')), 'dnsLayout')
+const authorityZoneQuery = r => require.ensure([], () => r(require('@/views/dns/authority/zoneQuery')), 'dnsLayout')
 
 
 const limitingUserBroadband = r => require.ensure([], () => r(require('@/views/dns/recursion/limitingUserBroadband')), 'dnsLayout')
-const limitingWebsiteBroadband = r => require.ensure([], () => r(require('@/views/dns/recursion/limitingWebsiteBroadband')), 'dnsLayout')
+const defaultA4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/defaultA4Compose')), 'dnsLayout')
 
 const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
 const appUpgrade = r => require.ensure([], () => r(require('@/views/dns/appUpgrade')), 'dnsLayout')
@@ -14,7 +15,6 @@ const dsliteAnalysis = r => require.ensure([], () => r(require('@/views/dns/dsli
 const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66Analysis')), 'dnsLayout')
 const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
 const dsliteBusinessAnalysis = r => require.ensure([], () => r(require('@/views/dns/dsliteBusinessAnalysis')), 'dnsLayout')
-const appUpgradeBusinessAnalysis = r => require.ensure([], () => r(require('@/views/dns/appUpgradeBusinessAnalysis')), 'dnsLayout')
 const ipv6Support = r => require.ensure([], () => r(require('@/views/dns/ipv6Support')), 'dnsLayout')
 const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logStatistics')), 'dnsLayout')
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
@@ -24,10 +24,9 @@ const restrictWebsiteVisits = r => require.ensure([], () => r(require('@/views/d
 const networkSecurity = r => require.ensure([], () => r(require('@/views/dns/networkSecurity')), 'dnsLayout')
 const applicationFirewall = r => require.ensure([], () => r(require('@/views/dns/applicationFirewall')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
-const registration = r => require.ensure([], () => r(require('@/views/dns/registration')), 'dnsLayout')
 const redirect = r => require.ensure([], () => r(require('@/views/dns/redirect')), 'dnsLayout')
 
-const dnsLayout = r => require.ensure([], () => r(require('@/views/dns/dnsLayout')), 'dnsLayout')
+const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLayout')), 'dnsLayout')
 
 export default {
     path: '/dns',
@@ -43,6 +42,18 @@ export default {
             meta: {
                 range: 'dns',
                 title: '配置管理',
+            }
+        },
+        {
+            // 权威区域查询
+            name: 'appUpgradeBusinessAnalysis',
+            path: '/dns/authority/zoneQuery',
+            component: authorityZoneQuery,
+            meta: {
+                range: 'dns',
+                title: '区域查询',
+                parent: 'configGroupMg',
+                icon: 'dashboard'
             }
         },
         {
@@ -121,17 +132,7 @@ export default {
             }
         },
 
-        {
-            // 区域查询
-            name: 'appUpgradeBusinessAnalysis',
-            path: '/dns/appUpgradeBusinessAnalysis',
-            component: appUpgradeBusinessAnalysis,
-            meta: {
-                range: 'dns',
-                title: '区域查询',
-                icon: 'dashboard'
-            }
-        },
+       
         {
             // 资源记录
             name: 'resourceRecord',
@@ -183,17 +184,6 @@ export default {
             }
         },
         {
-            // 用户注册
-            name: 'registration',
-            path: '/dns/registration',
-            component: registration,
-            meta: {
-                range: 'dns',
-                title: '用户注册'
-
-            }
-        },
-        {
             // 重定向
             name: 'redirect',
             path: '/dns/redirect',
@@ -223,12 +213,12 @@ export default {
         },
         {
             // A4地址合成
-            name: 'limitingWebsiteBroadband',
-            path: '/dns/limitingWebsiteBroadband',
-            component: limitingWebsiteBroadband,
+            name: 'defaultA4Compose',
+            path: '/dns/recursion/defaultA4Compose',
+            component: defaultA4Compose,
             meta: {
                 range: 'dns',
-                title: 'A4地址合成'
+                title: '默认A4地址合成'
             }
         },
         {
