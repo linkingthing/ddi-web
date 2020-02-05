@@ -16,8 +16,8 @@
               <Icon type="navicon-round"></Icon>递归管理
             </template>
 
-            <MenuItem name="limitingWebsiteBroadband" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
-            <MenuItem name="limitingUserBroadband" to="/dns/limitingUserBroadband">4A地址合成</MenuItem>
+            <MenuItem name="defaultA4Compose" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
+            <MenuItem name="A4Compose" to="/dns/recursion/A4ComposeView">4A地址合成</MenuItem>
           </Submenu>
 
           <Submenu name="7">

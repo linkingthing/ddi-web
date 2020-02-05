@@ -15,11 +15,11 @@
             </thead>
 
             <tbody>
-              <tr v-for="item in this.list" :key="item.id">
+              <tr v-for="item in list" :key="item.id">
                 <td>
                   <router-link
                     :to="{
-                      name:'restrictWebsiteVisits',
+                      name: 'A4Compose',
                       query:{
                         id:item.id,
                         dns64s:item.links.dns64s
@@ -45,7 +45,7 @@ import createDefaultA4 from "./createDefaultA4";
 import editDefaultA4 from "./editDefaultA4";
 
 export default {
-  name: "limitingUserBroadband",
+  name: "A4ComposeView",
   data() {
     return {
       list: [],

@@ -7,7 +7,7 @@
           type="primary"
           class="me-button add-btn"
           icon="md-add"
-          @click="goConfig(dns64s)"
+          @click="handleOpenCreate"
         >新建</i-button>
       </div>
     </div>
@@ -18,8 +18,7 @@
             <thead>
               <tr>
                 <th width="170">前缀</th>
-                <th width="250">客户IP白名单</th>
-                <th width="250">客户IP白名单</th>
+                <th width="250">客户IP地址</th>
                 <th width="250">目标IPv4地址</th>
                 <th width="250">操作</th>
               </tr>
@@ -28,11 +27,10 @@
             <tbody>
               <tr v-for="item in this.list" :key="item.id">
                 <td>{{item.prefix}}</td>
-                <td>{{item.whitename}}</td>
-                <td>{{item.blackname}}</td>
+                <td>{{item.clientaclname}}</td>
                 <td>{{item.addressname}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(dns64s,item.id)">修改</i-button>
+                  <i-button class="k-btn" @click="handleOpenEdit(dns64s,item.id)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
@@ -40,19 +38,19 @@
           </table>
         </div>
       </div>
-      <RestrictWebsiteVisitsConfig ref="resRef"></RestrictWebsiteVisitsConfig>
+      <createA4 ref="resRef" @onCreateSuccess="getView"></createA4>
       <power-config ref="powerRef"></power-config>
     </div>
   </div>
 </template>
 
 <script>
-import RestrictWebsiteVisitsConfig from "@/components/RestrictWebsiteVisitsConfig";
+import createA4 from "./createA4";
 import PowerConfig from "@/components/PowerConfig";
 import services from "@/services";
 
 export default {
-  name: "limitingWebsiteBroadband",
+  name: "A4Compose",
   data() {
     return {
       list: [],
@@ -71,17 +69,17 @@ export default {
     this.dns64s = this.$route.query.dns64s;
   },
   components: {
-    RestrictWebsiteVisitsConfig,
+    createA4,
     PowerConfig
   },
   mounted() {
     this.getView();
   },
   methods: {
-    goConfig(dns64s) {
-      this.$refs.resRef.openConfig(dns64s);
+    handleOpenCreate() {
+      this.$refs.resRef.openConfig(this.id);
     },
-    goConfig1(dns64s, b) {
+    handleOpenEdit(dns64s, b) {
       this.$refs.powerRef.openConfig(dns64s, b);
     },
     getView() {

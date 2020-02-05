@@ -10,7 +10,7 @@
     <div>
       <vue-scroll style="height: 500px;" ref="vs">
         <i-form
-          :model="upgradeConfig"
+          :model="params"
           label-position="right"
           :label-width="500"
           :rules="ruleValidate"
@@ -18,23 +18,18 @@
         >
           <div class="pop-content">
             <div class="pop-box">
-              <!-- <p class="title">应用域名</p> -->
               <div class="pop-body" style="padding-bottom:0">
-                <form-item label="前缀" :label-width="110" prop="t1">
-                  <i-input v-model="upgradeConfig.t1" placeholder="请填写资源名称"></i-input>
+                <form-item label="前缀" :label-width="110" prop="prefix">
+                  <i-input v-model="params.prefix" placeholder="请填写前缀"></i-input>
                 </form-item>
-                <form-item label="客户IP白名单" prop="t2" :label-width="110">
-                  <i-select v-model="upgradeConfig.t2">
+                <form-item label="客户IP地址" prop="clientacl" :label-width="110">
+                  <i-select v-model="params.clientacl">
                     <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
                   </i-select>
                 </form-item>
-                <form-item label="客户IP黑名单" prop="t3" :label-width="110">
-                  <i-select v-model="upgradeConfig.t3">
-                    <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                  </i-select>
-                </form-item>
-                <form-item label="目标IPv4地址" prop="t4" :label-width="110">
-                  <i-select v-model="upgradeConfig.t4">
+
+                <form-item label="目标IPv4地址" prop="aaddress" :label-width="110">
+                  <i-select v-model="params.aaddress">
                     <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
                   </i-select>
                 </form-item>
@@ -52,59 +47,34 @@
 </template>
 
 <script>
-import axios from "axios";
-import { isURL, isIPv4, isIPv6, isEmpty } from "../util/common";
+import { isURL, isIPv4, isIPv6, isEmpty } from "@/util/common";
 import services from "@/services";
 
 export default {
   name: "RestrictWebsiteVisitsConfig",
   data() {
-    // 校验域名/IP
-    const validateDmainIp = (rule, value, callback) => {
-      if (!isEmpty(value)) {
-        callback("请输入记录值");
-      } else {
-        if (!isURL(value)) {
-          callback(new Error("请正确输入记录值"));
-        } else {
-          callback();
-        }
-      }
-    };
-
-    const validateDmainIp4 = (rule, value, callback) => {
-      if (!Number.isInteger(+value)) {
-        callback(new Error("请输入数字值"));
-      } else {
-        callback();
-      }
-    };
-
     return {
       // 是否显示mode
       restrictModal: false,
       list: [],
-      dns64s: "",
+      viewId: "",
       // 表单数据
-      upgradeConfig: {
-        title: "",
-        t1: "",
-        t2: "",
-        t3: "",
-        t4: ""
+      params: {
+        prefix: "",
+        clientacl: "",
+        aaddress: ""
       },
-      self: "",
-      id: "",
-      fileSSL: null,
-      fileSSL2: null,
       // 表单验证规则
       ruleValidate: {
-        t1: [
+        prefix: [
           { required: true, message: "请填正确的地址前缀", trigger: "change" }
         ],
-        t2: [{ message: "请选择客户IP白名单", trigger: "change" }],
-        t3: [{ message: "请选择客户IP黑名单", trigger: "change" }],
-        t4: [{ message: "请选择目标IPv4地址", trigger: "change" }]
+        clientacl: [
+          { required: true, message: "请选择客户IP地址", trigger: "change" }
+        ],
+        aaddress: [
+          { required: true, message: "请选择目标IPv4地址", trigger: "change" }
+        ]
       }
     };
   },
@@ -112,8 +82,8 @@ export default {
     this.getChoose();
   },
   methods: {
-    openConfig(dns64s) {
-      this.dns64s = dns64s;
+    openConfig(viewId) {
+      this.viewId = viewId;
       this.restrictModal = true;
       setTimeout(() => {
         this.$refs["vs"].scrollTo(
@@ -135,18 +105,15 @@ export default {
         });
     },
     update() {
-      this.$axios
-        .post("http://10.0.0.19:8081" + this.dns64s, {
-          prefix: this.upgradeConfig.t1,
-          clientwhite: this.upgradeConfig.t2,
-          clientblack: this.upgradeConfig.t3,
-          aaddress: this.upgradeConfig.t4
-        })
+      services
+        .createDNS64(this.viewId, this.params)
         .then(res => {
-          console.log(res);
+          this.restrictModal = false;
+          this.$emit("onCreateSuccess");
+          this.$Message.success("新建成功!");
         })
         .catch(err => {
-          console.log(err);
+          this.$Message.error("新建失败");
         });
     },
     // 应用
@@ -154,9 +121,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.update();
-          this.$Message.success("新建成功!");
-        } else {
-          this.$Message.error("新建失败");
         }
       });
     }

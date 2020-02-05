@@ -83,11 +83,15 @@ export default {
     createDefaultDNS64(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s`, params)
     },
-    getDefaultDNS64ById(id){
+    getDefaultDNS64ById(id) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s/${id}`)
     },
     updateDefaultDNS64(id, params) {
         return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s/${id}`, params)
+    },
+
+    createDNS64(viewId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`, params)
     },
 
     getDNS64sByViewId(viewId) {

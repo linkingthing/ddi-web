@@ -2,9 +2,9 @@ const config = r => require.ensure([], () => r(require('@/views/dns/authority/co
 const parameterSet = r => require.ensure([], () => r(require('@/views/dns/authority/parameterSet')), 'dnsLayout')
 const authorityZoneQuery = r => require.ensure([], () => r(require('@/views/dns/authority/zoneQuery')), 'dnsLayout')
 
-
-const limitingUserBroadband = r => require.ensure([], () => r(require('@/views/dns/recursion/limitingUserBroadband')), 'dnsLayout')
 const defaultA4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/defaultA4Compose')), 'dnsLayout')
+const A4ComposeView = r => require.ensure([], () => r(require('@/views/dns/recursion/A4ComposeView')), 'dnsLayout')
+const A4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/A4Compose')), 'dnsLayout')
 
 const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
 const appUpgrade = r => require.ensure([], () => r(require('@/views/dns/appUpgrade')), 'dnsLayout')
@@ -20,7 +20,6 @@ const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logSt
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
 const thresholdList = r => require.ensure([], () => r(require('@/views/dns/thresholdList')), 'dnsLayout')
-const restrictWebsiteVisits = r => require.ensure([], () => r(require('@/views/dns/restrictWebsiteVisits')), 'dnsLayout')
 const networkSecurity = r => require.ensure([], () => r(require('@/views/dns/networkSecurity')), 'dnsLayout')
 const applicationFirewall = r => require.ensure([], () => r(require('@/views/dns/applicationFirewall')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
@@ -64,6 +63,35 @@ export default {
             meta: {
                 range: 'dns',
                 title: '访问控制列表'
+            }
+        },
+        {
+            // A4地址合成
+            name: 'defaultA4Compose',
+            path: '/dns/recursion/defaultA4Compose',
+            component: defaultA4Compose,
+            meta: {
+                range: 'dns',
+                title: '默认A4地址合成'
+            }
+        },
+        {
+            name: 'A4ComposeView',
+            path: '/dns/recursion/A4ComposeView',
+            component: A4ComposeView,
+            meta: {
+                range: 'dns',
+                title: 'A4地址合成'
+            }
+        },
+        {
+            // 限制网站访问量
+            name: 'A4Compose',
+            path: '/dns/recursion/view/A4Compose',
+            component: A4Compose,
+            meta: {
+                range: 'dns',
+                parent: 'A4ComposeView'
             }
         },
         {
@@ -202,34 +230,8 @@ export default {
                 range: 'dns'
             }
         },
-        {
-            // 限制用户带宽
-            name: 'limitingUserBroadband',
-            path: '/dns/limitingUserBroadband',
-            component: limitingUserBroadband,
-            meta: {
-                range: 'dns'
-            }
-        },
-        {
-            // A4地址合成
-            name: 'defaultA4Compose',
-            path: '/dns/recursion/defaultA4Compose',
-            component: defaultA4Compose,
-            meta: {
-                range: 'dns',
-                title: '默认A4地址合成'
-            }
-        },
-        {
-            // 限制网站访问量
-            name: 'restrictWebsiteVisits',
-            path: '/dns/restrictWebsiteVisits',
-            component: restrictWebsiteVisits,
-            meta: {
-                range: 'dns'
-            }
-        },
+       
+       
         {
             // 默认转发
             name: 'networkSecurity',
