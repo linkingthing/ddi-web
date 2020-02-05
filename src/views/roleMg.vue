@@ -44,7 +44,7 @@
 
 <script>
 import roleConfig from '../components/RoleConfig';
-import powerConfig from '../components/PowerConfig';
+// import powerConfig from '../components/PowerConfig';
 
 export default {
     name: 'roleMg',

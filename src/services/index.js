@@ -90,12 +90,16 @@ export default {
         return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s/${id}`, params)
     },
 
-    createDNS64(viewId, params) {
-        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`, params)
-    },
+   
 
     getDNS64sByViewId(viewId) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`)
+    },
+    createDNS64(viewId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`, params)
+    },
+    getOneDNS64ById (viewId, dnsId) {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s/${dnsId}`)
     },
     deleteDNS64sByViewIdAndDnsId(viewId, dns64Id) {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s/${dns64Id}`)

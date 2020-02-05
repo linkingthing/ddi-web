@@ -30,7 +30,7 @@
                 <td>{{item.clientaclname}}</td>
                 <td>{{item.addressname}}</td>
                 <td>
-                  <i-button class="k-btn" @click="handleOpenEdit(dns64s,item.id)">修改</i-button>
+                  <i-button class="k-btn" @click="handleOpenEdit(id,item.id)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
@@ -39,14 +39,14 @@
         </div>
       </div>
       <createA4 ref="resRef" @onCreateSuccess="getView"></createA4>
-      <power-config ref="powerRef"></power-config>
+      <editA4 ref="powerRef" @onEditSuccess="getView"></editA4>
     </div>
   </div>
 </template>
 
 <script>
 import createA4 from "./createA4";
-import PowerConfig from "@/components/PowerConfig";
+import editA4 from "./editA4";
 import services from "@/services";
 
 export default {
@@ -70,7 +70,7 @@ export default {
   },
   components: {
     createA4,
-    PowerConfig
+    editA4
   },
   mounted() {
     this.getView();
@@ -79,8 +79,8 @@ export default {
     handleOpenCreate() {
       this.$refs.resRef.openConfig(this.id);
     },
-    handleOpenEdit(dns64s, b) {
-      this.$refs.powerRef.openConfig(dns64s, b);
+    handleOpenEdit(viewId, dnsId) {
+      this.$refs.powerRef.openConfig(viewId, dnsId);
     },
     getView() {
       let _self = this;

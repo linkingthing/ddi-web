@@ -51,7 +51,7 @@ import { isURL, isIPv4, isIPv6, isEmpty } from "@/util/common";
 import services from "@/services";
 
 export default {
-  name: "RestrictWebsiteVisitsConfig",
+  name: "createA4",
   data() {
     return {
       // 是否显示mode
