@@ -108,7 +108,7 @@ export default {
     return {
       value: "",
       IP: [],
-      id: "",
+      accessId: "",
       // name:'',
       index: 1,
       eviceModal: false,
@@ -167,7 +167,7 @@ export default {
     },
     openConfig(data) {
       this.eviceModal = true;
-      this.id = data.data;
+      this.accessId = data.data;
       this.getInitAccessById(data.data);
     },
 
@@ -191,7 +191,7 @@ export default {
         this.IP.push(this.value);
       }
       services
-        .updateAccess(this.id, {
+        .updateAccess(this.accessId, {
           name: this.dataConfig.name,
           IP: [...this.IP, ...this.dataConfig.acls]
         })

@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { isURL, isIPv4, isIPv6, isEmpty } from "@/util/common";
 import services from "@/services";
 
@@ -100,7 +99,6 @@ export default {
     },
     getInitParams(viewId, dnsId) {
       services.getOneDNS64ById(viewId, dnsId).then(res => {
-        console.log(res.data);
         this.params = res.data;
       });
     },

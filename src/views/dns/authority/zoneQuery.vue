@@ -22,28 +22,18 @@
               <tr v-for="item in this.arealist" :key="item.id">
                 <td>
                   <router-link
-                    :to="{name:'appUpgrade',query:{viewId, zoneId:item.id,self}}"
+                    :to="{name:'resourceRecord',query:{viewId, zoneId:item.id,}}"
                   >{{item.name}}</router-link>
                 </td>
                 <td>{{item.rrsize}}</td>
                 <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
-                  <!-- <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button> -->
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <Page
-          show-sizer
-          :page-size="20"
-          :page-size-opts="[10, 20, 30]"
-          :total="100"
-          show-total
-          show-elevator
-          placement="top"
-        />
       </div>
       <area-app-config ref="areaRef"></area-app-config>
       <evice-statistics-config ref="eviceRef"></evice-statistics-config>
@@ -59,7 +49,7 @@ export default {
   name: "appUpgradeBusinessAnalysis",
   data() {
     return {
-      id: '',
+      id: "",
       viewId: "",
       id1: "",
       name: "",
@@ -72,7 +62,7 @@ export default {
       list: [],
       isused: "",
       data1: "",
-      obj: "",
+      obj: ""
     };
   },
   created() {

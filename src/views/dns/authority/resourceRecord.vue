@@ -61,7 +61,7 @@ import WebsiteUpConfig from "@/components/WebsiteUpConfig";
 import Analysis from "@/components/Analysis";
 
 export default {
-  name: "appUpgrade",
+  name: "resourceRecord",
   data() {
     return {
       viewId: "",

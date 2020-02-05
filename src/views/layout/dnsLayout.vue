@@ -7,8 +7,8 @@
         <Breadcrumb>
           <BreadcrumbItem
             :key="item.path"
-            :to="item.path"
-            v-for="item in breadcrumbList"
+            :to="index === breadcrumbList.length-1 ? '': item.path"
+            v-for="(item, index) in breadcrumbList"
           >{{item.title}}</BreadcrumbItem>
         </Breadcrumb>
       </div>
@@ -28,23 +28,53 @@ export default {
       breadcrumbList: []
     };
   },
-  mounted() {
-    this.excuteBreadcrumbList();
-  },
   components: {
     menuNavDns
   },
+  mounted() {
+    this.excuteBreadcrumbList(this.$route, this.$route);
+  },
   methods: {
-    excuteBreadcrumbList() {
-      console.log(this.$route.meta,)
-      console.log( this)
-      const { title } = this.$route.meta;
-      this.breadcrumbList = [
-        {
-          path: "/",
-          title: "首页"
-        }
-      ];
+    excuteBreadcrumbList(currentRoute, prevRoute) {
+      const {
+        fullPath: currentFullPath,
+        meta: { parent, title: currentTitle }
+      } = currentRoute;
+      const {
+        fullPath,
+        meta: { title }
+      } = prevRoute;
+      if (prevRoute.name === parent) {
+        this.breadcrumbList.pop();
+        this.breadcrumbList.push({
+          path: fullPath,
+          title
+        });
+      } else if (
+        this.breadcrumbList.map(item => item.path).includes(currentFullPath)
+      ) {
+        // 面包屑回退
+        const index = this.breadcrumbList
+          .map(item => item.path)
+          .indexOf(currentFullPath);
+        this.breadcrumbList = this.breadcrumbList.slice(0, index);
+      } else {
+        this.breadcrumbList = [
+          {
+            title: "首页",
+            path: "/"
+          }
+        ];
+      }
+      this.breadcrumbList.push({
+        path: currentFullPath,
+        title: currentTitle
+      });
+    }
+  },
+  watch: {
+    $route(currentRoute, prevRoute) {
+      this.excuteBreadcrumbList(currentRoute, prevRoute);
     }
   }
 };

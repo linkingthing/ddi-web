@@ -1,13 +1,13 @@
 const config = r => require.ensure([], () => r(require('@/views/dns/authority/config')), 'dnsLayout')
 const parameterSet = r => require.ensure([], () => r(require('@/views/dns/authority/parameterSet')), 'dnsLayout')
 const authorityZoneQuery = r => require.ensure([], () => r(require('@/views/dns/authority/zoneQuery')), 'dnsLayout')
+const resourceRecord = r => require.ensure([], () => r(require('@/views/dns/authority/resourceRecord')), 'dnsLayout')
 
 const defaultA4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/defaultA4Compose')), 'dnsLayout')
 const A4ComposeView = r => require.ensure([], () => r(require('@/views/dns/recursion/A4ComposeView')), 'dnsLayout')
 const A4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/A4Compose')), 'dnsLayout')
 
 const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
-const appUpgrade = r => require.ensure([], () => r(require('@/views/dns/appUpgrade')), 'dnsLayout')
 const alarmList = r => require.ensure([], () => r(require('@/views/dns/alarmList')), 'dnsLayout')
 const eviceStatistics = r => require.ensure([], () => r(require('@/views/dns/eviceStatistics')), 'dnsLayout')
 const deviceMonitor = r => require.ensure([], () => r(require('@/views/dns/deviceMonitor')), 'dnsLayout')
@@ -35,24 +35,35 @@ export default {
     children: [
         {
             // 配置组管理
-            name: 'configGroupMg',
+            name: 'configGroup',
             path: '/dns/config',
             component: config,
             meta: {
                 range: 'dns',
                 title: '配置管理',
+                parent: null,
             }
         },
         {
             // 权威区域查询
-            name: 'appUpgradeBusinessAnalysis',
+            name: 'authorityZoneQuery',
             path: '/dns/authority/zoneQuery',
             component: authorityZoneQuery,
             meta: {
                 range: 'dns',
                 title: '区域查询',
-                parent: 'configGroupMg',
-                icon: 'dashboard'
+                parent: 'configGroup',
+            }
+        },
+        {
+            // 资源记录
+            name: 'resourceRecord',
+            path: '/dns/authority/resourceRecord',
+            component: resourceRecord,
+            meta: {
+                range: 'dns',
+                title: '资源记录',
+                parent: 'authorityZoneQuery'
             }
         },
         {
@@ -160,18 +171,8 @@ export default {
             }
         },
 
-       
-        {
-            // 资源记录
-            name: 'resourceRecord',
-            path: '/dns/appUpgrade',
-            component: appUpgrade,
-            meta: {
-                range: 'dns',
-                title: '资源记录',
-                icon: 'dashboard'
-            }
-        },
+
+
         {
             // IPv6支持度
             name: 'ipv6Support',
@@ -230,8 +231,8 @@ export default {
                 range: 'dns'
             }
         },
-       
-       
+
+
         {
             // 默认转发
             name: 'networkSecurity',
