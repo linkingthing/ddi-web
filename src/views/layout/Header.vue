@@ -33,9 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="header-bottom">
-     
-    </div>
+   
   </header>
 </template>
 
@@ -61,23 +59,6 @@ export default {
 </script>
 
 <style scoped>
-.header-bottom {
-  padding: 0 15px;
-  height: 30px;
-  line-height: 30px;
-  white-space: nowrap;
-}
-.ivu-breadcrumb {
-  display: inline-block;
-  font-size: 14px;
-  line-height: 50px;
-}
-.ivu-breadcrumb > span:last-child {
-  color: #97a8be;
-  cursor: test;
-}
-.ivu-breadcrumb[data-v-5330e53c] {
-  line-height: 30px;
-  font-size: 18px;
-}
+
+
 </style>

@@ -90,7 +90,7 @@ export default {
         return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/defaultdns64s/${id}`, params)
     },
 
-   
+
 
     getDNS64sByViewId(viewId) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`)
@@ -98,7 +98,7 @@ export default {
     createDNS64(viewId, params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s`, params)
     },
-    getOneDNS64ById (viewId, dnsId) {
+    getOneDNS64ById(viewId, dnsId) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/dns64s/${dnsId}`)
     },
     deleteDNS64sByViewIdAndDnsId(viewId, dns64Id) {
@@ -110,7 +110,6 @@ export default {
 
 
     // 转发
-
     getDefaultForward() {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards`)
     },
@@ -119,6 +118,14 @@ export default {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards/${id}`)
     },
 
+    getForwardList(viewId, zoneId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}?action=forward`, params)
+    },
+
+    deleteForwardById(viewId, zoneId, params) {
+        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}?action=forward
+        `, params)
+    },
 
 
 

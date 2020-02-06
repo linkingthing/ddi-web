@@ -7,21 +7,25 @@ const defaultA4Compose = r => require.ensure([], () => r(require('@/views/dns/re
 const A4ComposeView = r => require.ensure([], () => r(require('@/views/dns/recursion/A4ComposeView')), 'dnsLayout')
 const A4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/A4Compose')), 'dnsLayout')
 
+const zoneForward = r => require.ensure([], () => r(require('@/views/dns/forward/zoneForward')), 'dnsLayout')
+const zoneQueryForward = r => require.ensure([], () => r(require('@/views/dns/forward/zoneQueryForward')), 'dnsLayout')
+const forwardList = r => require.ensure([], () => r(require('@/views/dns/forward/forwardList')), 'dnsLayout')
+
+
+
+const viewManage = r => require.ensure([], () => r(require('@/views/dns/accessControl/viewManage')), 'dnsLayout')
+
+
 const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
 const alarmList = r => require.ensure([], () => r(require('@/views/dns/alarmList')), 'dnsLayout')
 const eviceStatistics = r => require.ensure([], () => r(require('@/views/dns/eviceStatistics')), 'dnsLayout')
-const deviceMonitor = r => require.ensure([], () => r(require('@/views/dns/deviceMonitor')), 'dnsLayout')
-const dsliteAnalysis = r => require.ensure([], () => r(require('@/views/dns/dsliteAnalysis')), 'dnsLayout')
 const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66Analysis')), 'dnsLayout')
 const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
-const dsliteBusinessAnalysis = r => require.ensure([], () => r(require('@/views/dns/dsliteBusinessAnalysis')), 'dnsLayout')
 const ipv6Support = r => require.ensure([], () => r(require('@/views/dns/ipv6Support')), 'dnsLayout')
 const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logStatistics')), 'dnsLayout')
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
-const thresholdList = r => require.ensure([], () => r(require('@/views/dns/thresholdList')), 'dnsLayout')
 const networkSecurity = r => require.ensure([], () => r(require('@/views/dns/networkSecurity')), 'dnsLayout')
-const applicationFirewall = r => require.ensure([], () => r(require('@/views/dns/applicationFirewall')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
 const redirect = r => require.ensure([], () => r(require('@/views/dns/redirect')), 'dnsLayout')
 
@@ -92,17 +96,17 @@ export default {
             component: A4ComposeView,
             meta: {
                 range: 'dns',
-                title: 'A4地址合成'
+                title: 'A4地址合成视图'
             }
         },
         {
-            // 限制网站访问量
             name: 'A4Compose',
             path: '/dns/recursion/view/A4Compose',
             component: A4Compose,
             meta: {
                 range: 'dns',
-                parent: 'A4ComposeView'
+                parent: 'A4ComposeView',
+                title: 'A4地址合成'
             }
         },
         {
@@ -123,25 +127,7 @@ export default {
                 range: 'dns',
             }
         },
-        {
-            // 视图管理
-            name: 'deviceMonitor',
-            path: '/dns/deviceMonitor',
-            component: deviceMonitor,
-            meta: {
-                range: 'dns',
-                title: '视图管理'
-            }
-        },
-        {
-            // DSLITE统计分析
-            name: 'dsliteAnalysis',
-            path: '/dns/dsliteAnalysis',
-            component: dsliteAnalysis,
-            meta: {
-                range: 'dns',
-            }
-        },
+
         {
             // NAT66统计分析
             name: 'nat66Analysis',
@@ -160,18 +146,60 @@ export default {
                 range: 'dns',
             }
         },
+
+
         {
-            // 区域转发
-            name: 'dsliteBusinessAnalysis',
-            path: '/dns/dsliteBusinessAnalysis',
-            component: dsliteBusinessAnalysis,
+            // 默认转发
+            name: 'networkSecurity',
+            path: '/dns/networkSecurity',
+            component: networkSecurity,
             meta: {
                 range: 'dns',
-                title: '区域转发'
+                title: '默认转发'
+            }
+        },
+        {
+            // 区域转发
+            name: 'zoneForward',
+            path: '/dns/forward/zoneForward',
+            component: zoneForward,
+            meta: {
+                range: 'dns',
+                title: '转发视图'
+            }
+        },
+        {
+            name: 'zoneQueryForward',
+            path: '/dns/forword/zoneQueryForward',
+            component: zoneQueryForward,
+            meta: {
+                range: 'dns',
+                title: '转发区域',
+                parent: 'zoneForward'
+            }
+        },
+        {
+            name: 'forwardList',
+            path: '/dns/forword/forwardList',
+            component: forwardList,
+            meta: {
+                range: 'dns',
+                title: '区域转发列表',
+                parent: 'zoneQueryForward'
             }
         },
 
-
+        // 访问控制
+        {
+            // 视图管理
+            name: 'viewManage',
+            path: '/dns/accessControl/viewManage',
+            component: viewManage,
+            meta: {
+                range: 'dns',
+                title: '视图管理'
+            }
+        },
 
         {
             // IPv6支持度
@@ -222,38 +250,10 @@ export default {
                 title: '重定向'
             }
         },
-        {
-            // 告警阀值列表
-            name: 'thresholdList',
-            path: '/dns/thresholdList',
-            component: thresholdList,
-            meta: {
-                range: 'dns'
-            }
-        },
 
 
-        {
-            // 默认转发
-            name: 'networkSecurity',
-            path: '/dns/networkSecurity',
-            component: networkSecurity,
-            meta: {
-                range: 'dns',
-                title: '默认转发'
-            }
-        },
-        {
-            // 区域转发
-            name: 'applicationFirewall',
-            path: '/dns/applicationFirewall',
-            component: applicationFirewall,
-            meta: {
-                range: 'dns',
-                title: '区域转发'
 
-            }
-        },
+
         {
             // 告警设置
             name: 'alarmSet',

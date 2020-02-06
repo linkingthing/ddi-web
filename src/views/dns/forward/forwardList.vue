@@ -41,9 +41,10 @@
 <script>
 import axios from "axios";
 import AlarmListConfig from "@/components/AlarmListConfig";
+import services from "@/services";
 
 export default {
-  name: "dsliteBusinessAnalysis",
+  name: "forwardList",
   data() {
     return {
       list: [],
@@ -57,12 +58,14 @@ export default {
       ips: [],
       type: "",
       self: "",
-      id1: ""
+      id1: "",
+      viewId: "",
+      zoneId: ""
     };
   },
   created() {
-    this.id = this.$route.query.id;
-    this.self = this.$route.query.self;
+    this.viewId = this.$route.query.viewId;
+    this.zoneId = this.$route.query.zoneId;
   },
   components: {
     AlarmListConfig
@@ -71,22 +74,14 @@ export default {
     this.getView();
   },
   methods: {
-    goConfig(id1, self) {
-      this.$refs.alarmRef.openModel(id1, self);
+    goConfig(viewId, zoneId) {
+      this.$refs.alarmRef.openModel(viewId, zoneId);
     },
     getView() {
-      this.$axios
-        .post(
-          "http://10.0.0.19:8081" +
-            this.self +
-            "/" +
-            this.id +
-            "?" +
-            "action=forward",
-          {
-            oper: "GET"
-          }
-        )
+      services
+        .getForwardList(this.viewId, this.zoneId, {
+          oper: "GET"
+        })
         .then(res => {
           this.type = res.data.type;
           this.id1 = res.data.id;

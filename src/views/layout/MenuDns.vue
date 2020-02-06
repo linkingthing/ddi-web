@@ -25,7 +25,7 @@
               <Icon type="navicon-round"></Icon>转发管理
             </template>
             <MenuItem name="networkSecurity" to="/dns/networkSecurity">默认转发</MenuItem>
-            <MenuItem name="applicationFirewall" to="/dns/applicationFirewall">区转发</MenuItem>
+            <MenuItem name="applicationFirewall" to="/dns/forward/zoneForward">区转发</MenuItem>
           </Submenu>
 
           <Submenu name="4">
@@ -33,7 +33,7 @@
               <Icon type="navicon-round"></Icon>访问控制
             </template>
             <MenuItem name="eviceStatistics" to="/dns/eviceStatistics">访问控制列表</MenuItem>
-            <MenuItem name="deviceMonitor" to="/dns/deviceMonitor">视图管理</MenuItem>
+            <MenuItem name="viewManage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
           </Submenu>
           <Submenu name="5">
             <template slot="title">

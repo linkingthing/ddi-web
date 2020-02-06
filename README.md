@@ -25,7 +25,7 @@ npm run build --report
 
 > components
 
-用于存放公用组件
+用于存放公用组件,仅在模块中使用过的组件属于模块组件，应该放在对应模块文件夹下，不放在components文件夹
 
 > services 
 

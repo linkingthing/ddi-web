@@ -1,12 +1,16 @@
 <template>
-  <div class="index-main columns t-box" >
+  <div class="index-main columns t-box">
     <div class="header-title">
       <span class="tit">视图管理</span>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
+        <i-button
+          type="primary"
+          class="me-button add-btn"
+          icon="md-add"
+          @click="handleOpenCreate"
+        >新建</i-button>
       </div>
     </div>
-    <!-- <Table :columns="columns" :data="list"></Table> -->
 
     <div class="tab-select pding select2">
       <div class="table-box">
@@ -26,7 +30,7 @@
               <tr v-for="item in this.list" :key="item.id">
                 <td>{{item.name}}</td>
                 <td>
-                  <Tags :list="item.acls" :field="name"/>
+                  <Tags :list="item.acls" :field="name" />
                 </td>
                 <td>{{item.priority}}</td>
                 <td>{{item.isused === 0?'否':'是'}}</td>
@@ -39,14 +43,14 @@
           </table>
         </div>
       </div>
-      <device-monitor-config ref="deviceRef"></device-monitor-config>
+      <createView ref="deviceRef"></createView>
       <analysis2 ref="analysis2Ref"></analysis2>
     </div>
   </div>
 </template>
 
 <script>
-import DeviceMonitorConfig from "@/components/DeviceMonitorConfig";
+import createView from "./createView";
 import Analysis2 from "@/components/Analysis2";
 import services from "@/services";
 
@@ -93,17 +97,15 @@ export default {
     };
   },
   components: {
-    DeviceMonitorConfig,
+    createView,
     Analysis2
   },
   mounted() {
     this.getView();
   },
   methods: {
-    goConfig(type) {
-      if (type == 0) {
-        this.$refs.deviceRef.openConfig();
-      }
+    handleOpenCreate() {
+      this.$refs.deviceRef.openConfig();
     },
     goConfig1(a, b) {
       this.$refs.analysis2Ref.openConfig(a, b);

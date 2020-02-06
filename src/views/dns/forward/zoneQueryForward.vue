@@ -16,9 +16,7 @@
           <tbody>
             <tr v-for="item in this.dsliteList" :key="item.id">
               <td>
-                <router-link
-                  :to="{name:'dsliteBusinessAnalysis',query:{id:item.id,self}}"
-                >{{item.name}}</router-link>
+                <router-link :to="{name:'forwardList',query:{viewId,zoneId: item.id}}">{{item.name}}</router-link>
               </td>
               <td>{{item.forwardsize}}</td>
             </tr>
@@ -36,13 +34,12 @@ export default {
   name: "dsliteAnalysis",
   data() {
     return {
-      id: "",
-      dsliteList: [],
-      self: ""
+      viewId: "",
+      dsliteList: []
     };
   },
   created() {
-    this.id = this.$route.query.id;
+    this.viewId = this.$route.query.id;
   },
   mounted() {
     this.getManger();
@@ -50,9 +47,8 @@ export default {
   methods: {
     getManger() {
       services
-        .getZoneByViewId(this.id)
+        .getZoneByViewId(this.viewId)
         .then(res => {
-          this.self = res.data.links.self;
           this.dsliteList = res.data.data;
         })
         .catch(err => {

@@ -107,9 +107,9 @@
 
 <script>
 import services from "@/services";
-import { isURL, isNumber, isEmpty } from "../util/common";
+import { isURL, isNumber, isEmpty } from "@/util/common";
 export default {
-  name: "ConfigGroupMgConfig",
+  name: "createView",
   data() {
     // 校验配置组名
     const validator1 = (rule, value, callback) => {

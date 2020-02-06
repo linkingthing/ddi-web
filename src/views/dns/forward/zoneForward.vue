@@ -18,7 +18,7 @@
               <tr v-for="item in this.list" :key="item.id">
                 <td>
                   <router-link :to="{
-                      name:'dsliteAnalysis',
+                      name:'zoneQueryForward',
                       query:{id:item.id}
                     }">{{item.name}}</router-link>
                 </td>

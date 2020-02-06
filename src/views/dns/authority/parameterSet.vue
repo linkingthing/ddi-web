@@ -2,9 +2,7 @@
   <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
     <div class="header-title">
       <span class="tit">重定向</span>
-      <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
-      </div>
+      <div class="button-box fr"></div>
     </div>
     <div class="tab-select pding select2">
       <div class="table-box">
@@ -29,16 +27,13 @@
             </tbody>
           </table>
         </div>
-        <!-- <Page show-sizer :page-size="20" :page-size-opts="[10, 20, 30]" :total="100" show-total show-elevator placement="top"/> -->
       </div>
-      <device-monitor-config ref="deviceRef"></device-monitor-config>
     </div>
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import DeviceMonitorConfig from "@/components/DeviceMonitorConfig";
 
 export default {
   name: "parameterSet",
@@ -52,9 +47,6 @@ export default {
       priority: "",
       aclids: []
     };
-  },
-  components: {
-    DeviceMonitorConfig
   },
   mounted() {
     this.getView();
