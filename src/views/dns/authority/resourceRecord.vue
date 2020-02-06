@@ -7,7 +7,7 @@
           type="primary"
           class="me-button add-btn"
           icon="md-add"
-          @click="goConfig(self,id)"
+          @click="handleOpenCreate(viewId,zoneId)"
         >新建</i-button>
       </div>
     </div>
@@ -33,7 +33,7 @@
                 <td>{{item.ttl+'s'}}</td>
                 <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goAnalysis(self,id,item.id)">修改</i-button>
+                  <i-button class="k-btn" @click="goAnalysis(viewId, zoneId, item.id)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
@@ -41,24 +41,16 @@
           </table>
         </vue-scroll>
       </div>
-      <Page
-        show-sizer
-        :page-size="20"
-        :page-size-opts="[10, 20, 30]"
-        :total="100"
-        show-total
-        show-elevator
-      />
     </div>
-    <website-up-config ref="configRef"></website-up-config>
-    <analysis ref="analysisRef"></analysis>
+    <createResource ref="configRef" @onCreateSuccess="getResources"></createResource>
+    <editResource ref="analysisRef" @onEditSuccess="getResources"></editResource>
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import WebsiteUpConfig from "@/components/WebsiteUpConfig";
-import Analysis from "@/components/Analysis";
+import createResource from "./createResource";
+import editResource from "./editResource";
 
 export default {
   name: "resourceRecord",
@@ -72,17 +64,16 @@ export default {
   created() {
     this.viewId = this.$route.query.viewId;
     this.zoneId = this.$route.query.zoneId;
-    this.self = this.$route.query.self;
   },
   mounted() {
     this.getResources();
   },
   methods: {
-    goConfig(self, id) {
-      this.$refs.configRef.openConfig(self, id);
+    handleOpenCreate(viewId, zoneId) {
+      this.$refs.configRef.openConfig(viewId, zoneId);
     },
-    goAnalysis(self, id, data) {
-      this.$refs.analysisRef.openModel(self, id, data);
+    goAnalysis(viewId, zoneId, id) {
+      this.$refs.analysisRef.openModel(viewId, zoneId, id);
     },
     getResources() {
       services
@@ -100,16 +91,8 @@ export default {
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          this.$axios
-            .delete(
-              "http://10.0.0.19:8081" +
-                this.self +
-                "/" +
-                this.id +
-                "/rrs/" +
-                data,
-              {}
-            )
+          services
+            .deleteResourceById(this.viewId, this.zoneId, data)
             .then(res => {
               this.$Message.success("删除成功");
               this.getResources();
@@ -122,9 +105,8 @@ export default {
     }
   },
   components: {
-    WebsiteUpConfig,
-    Analysis
-    // Analysis2
+    createResource,
+    editResource
   }
 };
 </script>

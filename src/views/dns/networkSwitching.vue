@@ -159,7 +159,7 @@
 import Nat64 from '@/components/Nat64';
 import Nat66 from '@/components/Nat66';
 import Dslite from '@/components/Dslite';
-import Analysis from '@/components/Analysis';
+// import Analysis from '@/components/Analysis';
 
 export default {
   name: 'networkSwitching',

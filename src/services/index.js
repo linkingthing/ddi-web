@@ -47,8 +47,22 @@ export default {
     createZone(viewId, params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones`, params)
     },
+
+    // 资源记录
     getResourceRecord(viewId, zoneId) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs`)
+    },
+    createResourceRecord(viewId, zoneId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs`, params)
+    },
+    deleteResourceById(viewId, zoneId, id) {
+        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs/${id}`)
+    },
+    getResourceRecordById(viewId, zoneId, id) {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs/${id}`)
+    },
+    updateResource(viewId, zoneId, id, params) {
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}/rrs/${id}`, params)
     },
 
     getAccessById(id) {
