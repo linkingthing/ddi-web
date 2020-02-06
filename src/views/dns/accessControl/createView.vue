@@ -72,11 +72,11 @@
                 </Row>
                 <Row>
                   <i-col span="24">
-                    <form-item label="优先级" prop="name">
+                    <form-item label="优先级" prop="priority">
                       <Input-number
                         :max="10"
                         :min="1"
-                        :value="dataConfig.priority"
+                        v-model="dataConfig.priority"
                         style="margin-left:10px;"
                       ></Input-number>
                     </form-item>
@@ -84,7 +84,7 @@
                 </Row>
                 <Row>
                   <i-col span="24">
-                    <FormItem label="是否启用" prop="name" :label-width="90">
+                    <FormItem label="是否启用" prop="isused" :label-width="90">
                       <RadioGroup v-model="dataConfig.isused" style="margin-left:10px;">
                         <Radio label="1" isused="1">是</Radio>
                         <Radio label="0" isused="0">否</Radio>
@@ -129,7 +129,6 @@ export default {
     };
     return {
       value: "",
-      aclids: [],
       index: 1,
       deviceModal: false,
       list: [],
@@ -139,7 +138,7 @@ export default {
         title: "",
         name: "",
         priority: 1,
-        isused: '1',
+        isused: "1",
         model10: [],
         // 例外规则
         exception: [
@@ -153,7 +152,9 @@ export default {
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, validator: validator1, trigger: "blur" }]
+        name: [{ required: true, validator: validator1, trigger: "blur" }],
+        priority: [],
+        isused: []
       }
     };
   },
@@ -177,20 +178,18 @@ export default {
     },
     //新建
     update() {
-      // let _self = this;
-      for (var key in this.dataConfig.exception) {
-        this.id = this.dataConfig.exception[key].id;
-        this.aclids.push(this.id);
-      }
       services
         .createView({
           name: this.dataConfig.name,
-          aclids: this.aclids,
+          aclids: this.dataConfig.exception.map(item => item.id),
           priority: this.dataConfig.priority,
           isused: this.dataConfig.isused
         })
         .then(res => {
           console.log(res);
+          this.$emit("onCreateSuccess");
+          this.$Message.success("添加成功!");
+          this.cancelModel();
         })
         .catch(err => {
           console.log(err);
@@ -201,8 +200,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.update();
-          this.$Message.success("添加成功!");
-          this.cancelModel();
         } else {
           this.$Message.error("添加失败!");
         }

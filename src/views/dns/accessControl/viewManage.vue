@@ -43,7 +43,7 @@
           </table>
         </div>
       </div>
-      <createView ref="deviceRef"></createView>
+      <createView ref="deviceRef" @onCreateSuccess="getView"></createView>
       <analysis2 ref="analysis2Ref"></analysis2>
     </div>
   </div>
