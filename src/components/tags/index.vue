@@ -1,6 +1,6 @@
 <template>
   <div class="myTag">
-    <template v-if="list.length>3">
+    <template v-if="list && list.length>3">
       <Tag
         color="default"
         v-for="value in unfold ? list : list.slice(0, 3) "
@@ -18,7 +18,7 @@ export default {
     list: {
       type: Array,
       default: () => []
-    },
+    }
   },
   data() {
     return {
@@ -27,7 +27,6 @@ export default {
   },
   methods: {
     handleUnfold() {
-      console.log(123);
       this.unfold = !this.unfold;
     }
   }

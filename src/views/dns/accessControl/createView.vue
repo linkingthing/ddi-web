@@ -44,9 +44,7 @@
                     :rules="{required: true, message: '控制列表 ' + item.index +'不能为空', trigger: 'blur'}"
                   >
                     <Row>
-                      <!-- IP列表 -->
                       <Col span="18">
-                        <!-- @change="filtrate" -->
                         <i-select v-model="item.id">
                           <i-option
                             v-for="item in list"
@@ -55,7 +53,6 @@
                           >{{item.name}}</i-option>
                         </i-select>
                       </Col>
-                      <!-- 删除 -->
                       <Col span="4" offset="1">
                         <Button @click="handleRemove(index)">
                           <Icon type="md-trash" />
@@ -86,8 +83,8 @@
                   <i-col span="24">
                     <FormItem label="是否启用" prop="isused" :label-width="90">
                       <RadioGroup v-model="dataConfig.isused" style="margin-left:10px;">
-                        <Radio label="1" isused="1">是</Radio>
-                        <Radio label="0" isused="0">否</Radio>
+                        <Radio label="1" :value="1">是</Radio>
+                        <Radio label="0" :value="0">否</Radio>
                       </RadioGroup>
                     </FormItem>
                   </i-col>
@@ -138,7 +135,7 @@ export default {
         title: "",
         name: "",
         priority: 1,
-        isused: "1",
+        isused: 1,
         model10: [],
         // 例外规则
         exception: [
@@ -164,6 +161,13 @@ export default {
   methods: {
     openConfig(data) {
       this.deviceModal = true;
+      this.dataConfig.exception = [
+        {
+          id: "",
+          index: 1,
+          status: 1
+        }
+      ];
     },
 
     accessList() {
@@ -181,12 +185,13 @@ export default {
       services
         .createView({
           name: this.dataConfig.name,
-          aclids: this.dataConfig.exception.map(item => item.id),
+          aclids: this.dataConfig.exception
+            .map(item => item.id)
+            .filter(item => item),
           priority: this.dataConfig.priority,
           isused: this.dataConfig.isused
         })
         .then(res => {
-          console.log(res);
           this.$emit("onCreateSuccess");
           this.$Message.success("添加成功!");
           this.cancelModel();
