@@ -31,7 +31,7 @@
             <template slot="title">
               <Icon type="ios-eye-outline" />访问控制
             </template>
-            <MenuItem name="eviceStatistics" to="/dns/eviceStatistics">访问控制列表</MenuItem>
+            <MenuItem name="accessControlList" to="/dns/accessControl/accessControlList">访问控制列表</MenuItem>
             <MenuItem name="viewManage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
           </Submenu>
           <Submenu name="5">

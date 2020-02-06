@@ -36,9 +36,8 @@
                     <i-option value="URL">URL</i-option>
                   </i-select>
                 </form-item>
-                <form-item label="记录值" :label-width="110" prop="t3">
+                <form-item label="记录值（s）" :label-width="110" prop="t3">
                   <i-input v-model="upgradeConfig.t3" placeholder="请填写记录值"></i-input>
-                  <span>s</span>
                 </form-item>
                 <form-item label="TTL" prop="t4" :label-width="110">
                   <i-input type="text" v-model="upgradeConfig.t4" placeholder="请输入延缓时间" number></i-input>
@@ -64,32 +63,10 @@
 
 <script>
 import axios from "axios";
-import { isURL, isIPv4, isIPv6, isEmpty } from "@/util/common";
 import services from "@/services";
 export default {
   name: "createResource",
   data() {
-    // 校验域名/IP
-    const validateDmainIp = (rule, value, callback) => {
-      if (!isEmpty(value)) {
-        callback("请输入记录值");
-      } else {
-        if (!isURL(value)) {
-          callback(new Error("请正确输入记录值"));
-        } else {
-          callback();
-        }
-      }
-    };
-
-    const validateDmainIp4 = (rule, value, callback) => {
-      if (!Number.isInteger(+value)) {
-        callback(new Error("请输入数字值"));
-      } else {
-        callback();
-      }
-    };
-
     return {
       // 是否显示mode
       configModal: false,
@@ -108,11 +85,8 @@ export default {
       ruleValidate: {
         t1: [{ required: true, message: "请填写资源名称", trigger: "blur" }],
         t2: [{ message: "请选择资源类型", trigger: "blur" }],
-        t3: [{ required: true, validator: validateDmainIp, trigger: "blur" }],
-        t4: [
-          { required: true, message: "请填写ttl", trigger: "blur" }
-          // { validator: validateDmainIp4, h }
-        ]
+        t3: [{ required: true, message: "请填写记录值" }],
+        t4: [{ required: true, message: "请填写ttl" }]
       }
     };
   },

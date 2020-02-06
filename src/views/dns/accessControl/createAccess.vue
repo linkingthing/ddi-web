@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { isURL, isNumber, isEmpty } from "../util/common";
+import { isURL, isNumber, isEmpty } from "@/util/common";
 import services from "@/services";
 export default {
   name: "ConfigGroupMgConfig",
@@ -140,7 +140,7 @@ export default {
       services
         .createAccess({
           name: this.dataConfig.name,
-          IP: [..._self.IP, ..._self.dataConfig.acls]
+          IP: [..._self.IP, ..._self.dataConfig.acls].filter(item => item)
         })
         .then(res => {
           this.$emit('onSuccess')

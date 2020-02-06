@@ -41,7 +41,6 @@
         </div>
       </div>
       <area-app-config ref="areaRef" @onCreateSuccess="getArea"></area-app-config>
-      <evice-statistics-config ref="eviceRef"></evice-statistics-config>
     </div>
   </div>
 </template>
@@ -49,7 +48,6 @@
 <script>
 import services from "@/services";
 import AreaAppConfig from "./AreaAppConfig";
-import EviceStatisticsConfig from "@/components/EviceStatisticsConfig";
 export default {
   name: "zoneQuery",
   data() {
@@ -100,10 +98,7 @@ export default {
     handleOpenCreate(id2) {
       this.$refs.areaRef.openConfig(id2);
     },
-    // 修改
-    goConfig1(data) {
-      this.$refs.eviceRef.openConfig({ data });
-    },
+   
     // 删除
     delect(zoneId) {
       this.$Modal.confirm({

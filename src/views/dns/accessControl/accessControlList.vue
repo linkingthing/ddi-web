@@ -23,7 +23,7 @@
               <tr v-for="item in this.list" :key="item.id">
                 <td>{{item.name}}</td>
                 <td>
-                  <Tags :list="item.IP" :field="item"/>
+                  <Tags :list="item.IP" :field="item" />
 
                   <!-- <p v-for="value in item.IP" :key="value.id">{{value}}</p> -->
                 </td>
@@ -36,18 +36,18 @@
           </table>
         </div>
       </div>
-      <config-group-mg-config ref="configRef" @onSuccess="createSuccess" :accessList="list"></config-group-mg-config>
-      <evice-statistics-config ref="eviceRef" @onSuccess="getManger" :accessList="list"></evice-statistics-config>
+      <createAccess ref="configRef" @onSuccess="createSuccess" :accessList="list"></createAccess>
+      <editAccess ref="eviceRef" @onSuccess="getManger" :accessList="list"></editAccess>
     </div>
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import ConfigGroupMgConfig from "@/components/ConfigGroupMgConfig";
-import EviceStatisticsConfig from "@/components/EviceStatisticsConfig";
+import createAccess from "./createAccess";
+import editAccess from "./editAccess";
 export default {
-  name: "eviceStatistics",
+  name: "accessControlList",
   data() {
     return {
       list: [],
@@ -59,8 +59,8 @@ export default {
     };
   },
   components: {
-    ConfigGroupMgConfig,
-    EviceStatisticsConfig
+    createAccess,
+    editAccess
   },
   mounted() {
     this.getManger();

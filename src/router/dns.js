@@ -12,13 +12,12 @@ const zoneQueryForward = r => require.ensure([], () => r(require('@/views/dns/fo
 const forwardList = r => require.ensure([], () => r(require('@/views/dns/forward/forwardList')), 'dnsLayout')
 
 
-
+const accessControlList = r => require.ensure([], () => r(require('@/views/dns/accessControl/accessControlList')), 'dnsLayout')
 const viewManage = r => require.ensure([], () => r(require('@/views/dns/accessControl/viewManage')), 'dnsLayout')
 
 
 const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
 const alarmList = r => require.ensure([], () => r(require('@/views/dns/alarmList')), 'dnsLayout')
-const eviceStatistics = r => require.ensure([], () => r(require('@/views/dns/eviceStatistics')), 'dnsLayout')
 const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66Analysis')), 'dnsLayout')
 const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
 const ipv6Support = r => require.ensure([], () => r(require('@/views/dns/ipv6Support')), 'dnsLayout')
@@ -70,16 +69,7 @@ export default {
                 parent: 'authorityZoneQuery'
             }
         },
-        {
-            // 访问控制列表
-            name: 'eviceStatistics',
-            path: '/dns/eviceStatistics',
-            component: eviceStatistics,
-            meta: {
-                range: 'dns',
-                title: '访问控制列表'
-            }
-        },
+       
         {
             // A4地址合成
             name: 'defaultA4Compose',
@@ -190,6 +180,16 @@ export default {
         },
 
         // 访问控制
+        {
+            // 访问控制列表
+            name: 'accessControlList',
+            path: '/dns/accessControl/accessControlList',
+            component: accessControlList,
+            meta: {
+                range: 'dns',
+                title: '访问控制列表'
+            }
+        },
         {
             // 视图管理
             name: 'viewManage',

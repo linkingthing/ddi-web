@@ -52,14 +52,3 @@ export const fetchDeviceUpdate = params => Vue.http.post(API.deviceUpdate, param
 
 
 
-
-
-
-
-
-
-
-
-
-// test
-export const fetchTest = params => Vue.http.get('http://v6viewtest.6aas.com/open/queryWeb/pb0c', { params })

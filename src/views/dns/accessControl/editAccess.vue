@@ -83,7 +83,7 @@
 
 <script>
 import axios from "axios";
-import { isURL, isNumber, isEmpty } from "../util/common";
+import { isURL, isNumber, isEmpty } from "@/util/common";
 import services from "@/services";
 export default {
   name: "EviceStatisticsConfig",
@@ -193,10 +193,10 @@ export default {
       services
         .updateAccess(this.accessId, {
           name: this.dataConfig.name,
-          IP: [...this.IP, ...this.dataConfig.acls]
+          IP: [...this.IP, ...this.dataConfig.acls].filter(item => item)
         })
         .then(res => {
-          this.$emit('onSuccess')
+          this.$emit("onSuccess");
         })
         .catch(err => {
           console.log(err);
