@@ -80,7 +80,8 @@ export default {
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, validator: validator1, trigger: "blur" }]
+        name: [{ required: true, validator: validator1, trigger: "blur" }],
+        isused: [{ required: true, message: "" }]
       }
     };
   },
@@ -91,9 +92,8 @@ export default {
     },
     //新建
     update() {
-      console.log(1)
       services
-        .createZone(id2, this.dataConfig)
+        .createZone(this.id, this.dataConfig)
         .then(res => {
           this.$Message.success("添加成功!");
           this.cancelModel();
@@ -106,7 +106,7 @@ export default {
     handleSubmit() {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
-          console.log(valid)
+          console.log(valid);
           this.update();
         }
       });

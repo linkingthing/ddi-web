@@ -15,17 +15,16 @@
             <template slot="title">
               <Icon type="ios-git-branch" />递归管理
             </template>
-
-            <MenuItem name="defaultA4Compose" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
             <MenuItem name="A4Compose" to="/dns/recursion/A4ComposeView">4A地址合成</MenuItem>
+            <MenuItem name="defaultA4Compose" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
           </Submenu>
 
           <Submenu name="7">
             <template slot="title">
               <Icon type="ios-arrow-round-forward" />转发管理
             </template>
-            <MenuItem name="networkSecurity" to="/dns/networkSecurity">默认转发</MenuItem>
             <MenuItem name="applicationFirewall" to="/dns/forward/zoneForward">区转发</MenuItem>
+            <MenuItem name="networkSecurity" to="/dns/networkSecurity">默认转发</MenuItem>
           </Submenu>
 
           <Submenu name="4">
