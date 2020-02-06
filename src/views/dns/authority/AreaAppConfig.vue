@@ -26,10 +26,10 @@
                     </form-item>
                   </i-col>
                 </Row>
-                <FormItem label="是否启用" prop="name" style="margin-left:28px;">
+                <FormItem label="是否启用" prop="isused" style="margin-left:28px;">
                   <RadioGroup v-model="dataConfig.isused">
-                    <Radio label="1" isused="1">是</Radio>
-                    <Radio label="0" isused="0">否</Radio>
+                    <Radio label="1" :value="1">是</Radio>
+                    <Radio label="0" :value="0">否</Radio>
                   </RadioGroup>
                 </FormItem>
               </div>
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { isURL, isNumber, isEmpty } from "../util/common";
+import { isURL, isNumber, isEmpty } from "@/util/common";
 import services from "@/services";
 
 export default {
@@ -91,24 +91,23 @@ export default {
     },
     //新建
     update() {
+      console.log(1)
       services
         .createZone(id2, this.dataConfig)
         .then(res => {
-          console.log(res);
+          this.$Message.success("添加成功!");
+          this.cancelModel();
         })
         .catch(err => {
-          console.log(err);
+          this.$Message.error("添加失败!");
         });
     },
     // 确定
     handleSubmit() {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
+          console.log(valid)
           this.update();
-          this.$Message.success("添加成功!");
-          this.cancelModel();
-        } else {
-          this.$Message.error("添加失败!");
         }
       });
     },

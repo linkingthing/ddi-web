@@ -3,7 +3,7 @@
     <div class="header-title">
       <span class="tit">区域查询</span>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(id)">新建</i-button>
+        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="handleOpenCreate(id)">新建</i-button>
       </div>
     </div>
     <div class="tab-select pding select2">
@@ -43,10 +43,10 @@
 
 <script>
 import services from "@/services";
-import AreaAppConfig from "@/components/AreaAppConfig";
+import AreaAppConfig from "./AreaAppConfig";
 import EviceStatisticsConfig from "@/components/EviceStatisticsConfig";
 export default {
-  name: "appUpgradeBusinessAnalysis",
+  name: "zoneQuery",
   data() {
     return {
       id: "",
@@ -92,7 +92,7 @@ export default {
         });
     },
     //新建
-    goConfig(id2) {
+    handleOpenCreate(id2) {
       this.$refs.areaRef.openConfig(id2);
     },
     // 修改
