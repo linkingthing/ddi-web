@@ -3,7 +3,12 @@
     <div class="header-title">
       <span class="tit">区域查询</span>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="handleOpenCreate(id)">新建</i-button>
+        <i-button
+          type="primary"
+          class="me-button add-btn"
+          icon="md-add"
+          @click="handleOpenCreate(id)"
+        >新建</i-button>
       </div>
     </div>
     <div class="tab-select pding select2">
@@ -35,7 +40,7 @@
           </table>
         </div>
       </div>
-      <area-app-config ref="areaRef"></area-app-config>
+      <area-app-config ref="areaRef" @onCreateSuccess="getArea"></area-app-config>
       <evice-statistics-config ref="eviceRef"></evice-statistics-config>
     </div>
   </div>

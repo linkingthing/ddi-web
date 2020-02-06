@@ -34,6 +34,9 @@ export default {
     deleteViewById(id) {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${id}`)
     },
+    updateView(id, params) {
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${id}`, params)
+    },
 
     getZoneByViewId(id) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${id}/zones`)

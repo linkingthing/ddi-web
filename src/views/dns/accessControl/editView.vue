@@ -47,8 +47,7 @@
                     <Row>
                       <!-- IP列表 -->
                       <Col span="18">
-                        <!-- @change="filtrate" -->
-                        <i-select v-model="item.id" @on-change="filtrate" v-show="true">
+                        <i-select v-model="item.id" v-show="true">
                           <i-option
                             v-for="item in list"
                             :key="item.id"
@@ -87,8 +86,8 @@
                   <i-col span="24">
                     <FormItem label="是否启用" prop="name" :label-width="90">
                       <RadioGroup v-model="dataConfig.isused" style="margin-left:10px;">
-                        <Radio label="1" isused="1">是</Radio>
-                        <Radio label="0" isused="0">否</Radio>
+                        <Radio :label="1" isused="1">是</Radio>
+                        <Radio :label="0" isused="0">否</Radio>
                       </RadioGroup>
                     </FormItem>
                   </i-col>
@@ -107,7 +106,7 @@
 </template>
 
 <script>
-import { isURL, isNumber, isEmpty } from "../util/common";
+import { isURL, isNumber, isEmpty } from "@/util/common";
 import services from "@/services";
 
 export default {
@@ -146,7 +145,7 @@ export default {
         title: "",
         name: "",
         priority: 1,
-        isused: "",
+        isused: 1,
         model10: [],
         // 例外规则
         exception: [
@@ -168,16 +167,17 @@ export default {
     this.accessList();
   },
   methods: {
-    openConfig(a, b) {
-      this.id1 = a;
-      this.dataConfig.name = b;
+    openConfig(id, current) {
+      this.id1 = id;
+      this.dataConfig = { ...current };
+      this.dataConfig.exception = Array.isArray(current.acls)
+        ? current.acls.map((item, index) => ({
+            index,
+            ...item
+          }))
+        : [];
+      this.index = Array.isArray(current.acls) ? current.acls.length || 1 : 1;
       this.analysis2Modal = true;
-      // this.title = data.title
-    },
-    filtrate(data) {
-      //   if(this.id2 == data){
-      //     this.list.hidden(data,1);
-      //   }
     },
 
     accessList() {
@@ -192,22 +192,15 @@ export default {
     },
     //新建
     getModify() {
-      // let _self = this;
-      for (var key in this.dataConfig.exception) {
-        this.id = this.dataConfig.exception[key].id;
-        this.aclids.push(this.id);
-      }
-      this.$axios
-        .put(
-          "http://10.0.0.19:8081/apis/linkingthing.com/example/v1/views/" +
-            this.id1,
-          {
-            name: this.dataConfig.name,
-            aclids: this.aclids,
-            priority: this.dataConfig.priority,
-            isused: this.dataConfig.isused
-          }
-        )
+      services
+        .updateView(this.id1, {
+          name: this.dataConfig.name,
+          aclids: this.dataConfig.exception
+            .map(item => item.id)
+            .filter(item => item),
+          priority: this.dataConfig.priority,
+          isused: this.dataConfig.isused
+        })
         .then(res => {
           console.log(res);
         })
@@ -228,18 +221,19 @@ export default {
         }
       });
     },
-    //    添加IP地址
+    // 添加IP地址
     handleAdd() {
       this.index++;
-      // this.filtrate();
       this.dataConfig.exception.push({
         value: "",
         index: this.index,
         status: 1
       });
+      this.$forceUpdate();
     },
     handleRemove(index) {
       this.dataConfig.exception.splice(index, 1);
+      this.$forceUpdate();
     },
     //关闭弹窗
     cancelModel() {

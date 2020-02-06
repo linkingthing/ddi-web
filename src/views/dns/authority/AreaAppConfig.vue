@@ -28,8 +28,8 @@
                 </Row>
                 <FormItem label="是否启用" prop="isused" style="margin-left:28px;">
                   <RadioGroup v-model="dataConfig.isused">
-                    <Radio label="1" :value="1">是</Radio>
-                    <Radio label="0" :value="0">否</Radio>
+                    <Radio :label="1" :value="1">是</Radio>
+                    <Radio :label="0" :value="0">否</Radio>
                   </RadioGroup>
                 </FormItem>
               </div>
@@ -75,13 +75,13 @@ export default {
       // 表单数据
       dataConfig: {
         name: "",
-        isused: ""
+        isused: 1
       },
       loading: false,
       // 表单验证规则
       ruleValidate: {
         name: [{ required: true, validator: validator1, trigger: "blur" }],
-        isused: [{ required: true, message: "" }]
+        isused: [{ required: true, message: "请选择是否启用" }]
       }
     };
   },
@@ -97,6 +97,7 @@ export default {
         .then(res => {
           this.$Message.success("添加成功!");
           this.cancelModel();
+          this.$emit('onCreateSuccess')
         })
         .catch(err => {
           this.$Message.error("添加失败!");
@@ -106,14 +107,13 @@ export default {
     handleSubmit() {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
-          console.log(valid);
           this.update();
         }
       });
     },
     //关闭弹窗
     cancelModel() {
-      this.deviceModal = false;
+      this.areaModal = false;
       this.$refs.formValidate.resetFields();
     }
   }

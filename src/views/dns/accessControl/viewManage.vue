@@ -35,7 +35,7 @@
                 <td>{{item.priority}}</td>
                 <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(item.id,item.name)">修改</i-button>
+                  <i-button class="k-btn" @click="goConfig1(item.id, item)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
@@ -44,14 +44,14 @@
         </div>
       </div>
       <createView ref="deviceRef" @onCreateSuccess="getView"></createView>
-      <analysis2 ref="analysis2Ref"></analysis2>
+      <editView ref="analysis2Ref"></editView>
     </div>
   </div>
 </template>
 
 <script>
 import createView from "./createView";
-import Analysis2 from "@/components/Analysis2";
+import editView from "./editView";
 import services from "@/services";
 
 export default {
@@ -98,7 +98,7 @@ export default {
   },
   components: {
     createView,
-    Analysis2
+    editView
   },
   mounted() {
     this.getView();
