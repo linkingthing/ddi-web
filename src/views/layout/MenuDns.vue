@@ -1,7 +1,7 @@
 <template>
   <div class="menu fl left-menu">
     <div class="menu-list">
-      <vue-scroll  class="pr">
+      <vue-scroll class="pr">
         <Menu :theme="theme" :active-name="tab" :open-names="[openName]" :accordion="true">
           <Submenu name="1">
             <template slot="title">
@@ -13,7 +13,7 @@
 
           <Submenu name="6">
             <template slot="title">
-              <Icon type="navicon-round"></Icon>递归管理
+              <Icon type="ios-git-branch" />递归管理
             </template>
 
             <MenuItem name="defaultA4Compose" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
@@ -22,7 +22,7 @@
 
           <Submenu name="7">
             <template slot="title">
-              <Icon type="navicon-round"></Icon>转发管理
+              <Icon type="ios-arrow-round-forward" />转发管理
             </template>
             <MenuItem name="networkSecurity" to="/dns/networkSecurity">默认转发</MenuItem>
             <MenuItem name="applicationFirewall" to="/dns/forward/zoneForward">区转发</MenuItem>
@@ -30,14 +30,14 @@
 
           <Submenu name="4">
             <template slot="title">
-              <Icon type="navicon-round"></Icon>访问控制
+              <Icon type="ios-eye-outline" />访问控制
             </template>
             <MenuItem name="eviceStatistics" to="/dns/eviceStatistics">访问控制列表</MenuItem>
             <MenuItem name="viewManage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
           </Submenu>
           <Submenu name="5">
             <template slot="title">
-              <Icon type="navicon-round"></Icon>安全管理
+              <Icon type="ios-medkit-outline" />安全管理
             </template>
             <!-- <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem> -->
             <MenuItem name="blacklistAndwhitelist" to="/dns/blacklistAndwhitelist">地址黑名单</MenuItem>
@@ -118,9 +118,7 @@ export default {
       }
     }
   },
-  methods: {
-  
-  }
+  methods: {}
 };
 </script>
 
@@ -133,6 +131,6 @@ a:active {
 }
 
 .left-menu {
-    height: 100%;
+  height: 100%;
 }
 </style>
