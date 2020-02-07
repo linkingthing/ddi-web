@@ -161,7 +161,6 @@ export default {
           this.getModify();
           this.$Message.success("修改成功!");
           this.cancelModel();
-          this.getManger();
         } else {
           this.$Message.error("修改失败!");
         }
@@ -169,14 +168,11 @@ export default {
     },
     //  修改
     getModify() {
-      for (var key in this.dataConfig.exception) {
-        this.value = this.dataConfig.exception[key].value;
-        this.IP.push(this.value);
-      }
+      const ips = this.dataConfig.exception.map(item => item.value);
       services
         .updateAccess(this.accessId, {
           name: this.dataConfig.name,
-          IP: [...this.IP, ...this.dataConfig.acls].filter(item => item)
+          IP: [...ips, ...this.dataConfig.acls].filter(item => item)
         })
         .then(res => {
           this.$emit("onSuccess");
