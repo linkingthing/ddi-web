@@ -19,7 +19,6 @@
             <tr v-for="item in this.list" :key="item.id">
               <td>{{item.name}}</td>
               <td>
-                <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button>
                 <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
               </td>
             </tr>
@@ -27,15 +26,13 @@
         </table>
       </div>
     </div>
-    <blacklist-config ref="blacklistRef"></blacklist-config>
-    <role-config ref="roleRef"></role-config>
+    <blacklist-config ref="blacklistRef" @onCreateSuccess="getView"></blacklist-config>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import blacklistConfig from "@/components/BlacklistConfig";
-import RoleConfig from "@/components/RoleConfig";
 import services from "@/services";
 export default {
   name: "blacklistAndwhitelist",
@@ -87,8 +84,7 @@ export default {
     }
   },
   components: {
-    blacklistConfig,
-    RoleConfig
+    blacklistConfig
   }
 };
 </script>

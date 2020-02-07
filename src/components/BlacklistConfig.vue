@@ -73,7 +73,9 @@ export default {
       services
         .createBlackList({ aclid: this.dataConfig.id })
         .then(res => {
-          console.log(res);
+          this.$Message.success("新建成功!");
+          this.cancelModel();
+          this.$emit("onCreateSuccess");
         })
         .catch(err => {
           console.log(err);
@@ -84,8 +86,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.update();
-          this.$Message.success("新建成功!");
-          this.cancelModel();
         } else {
           this.$Message.error("新建失败!");
         }
@@ -93,7 +93,7 @@ export default {
     },
     //关闭弹窗
     cancelModel() {
-      this.deviceModal = false;
+      this.blacklistModal = false;
       this.$refs.formValidate.resetFields();
     }
   }

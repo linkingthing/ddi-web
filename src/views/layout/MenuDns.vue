@@ -23,8 +23,8 @@
             <template slot="title">
               <Icon type="ios-arrow-round-forward" />转发管理
             </template>
-            <MenuItem name="applicationFirewall" to="/dns/forward/zoneForward">区转发</MenuItem>
-            <MenuItem name="networkSecurity" to="/dns/networkSecurity">默认转发</MenuItem>
+            <MenuItem name="zoneForward" to="/dns/forward/zoneForward">区转发</MenuItem>
+            <MenuItem name="defaultForward" to="/dns/forword/defaultForward">默认转发</MenuItem>
           </Submenu>
 
           <Submenu name="4">

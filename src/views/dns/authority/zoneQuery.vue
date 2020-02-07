@@ -120,7 +120,6 @@ export default {
   },
   components: {
     AreaAppConfig,
-    EviceStatisticsConfig
   }
 };
 </script>

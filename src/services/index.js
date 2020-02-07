@@ -131,8 +131,11 @@ export default {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards`)
     },
 
-    deleteForwardById(id) {
+    deleteDefaultForwardById(id) {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards/${id}`)
+    },
+    updateDefaultForward(params) {
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/forwards/forward`, params)
     },
 
     getForwardList(viewId, zoneId, params) {

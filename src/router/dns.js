@@ -10,6 +10,7 @@ const A4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion
 const zoneForward = r => require.ensure([], () => r(require('@/views/dns/forward/zoneForward')), 'dnsLayout')
 const zoneQueryForward = r => require.ensure([], () => r(require('@/views/dns/forward/zoneQueryForward')), 'dnsLayout')
 const forwardList = r => require.ensure([], () => r(require('@/views/dns/forward/forwardList')), 'dnsLayout')
+const defaultForward = r => require.ensure([], () => r(require('@/views/dns/forward/defaultForward')), 'dnsLayout')
 
 
 const accessControlList = r => require.ensure([], () => r(require('@/views/dns/accessControl/accessControlList')), 'dnsLayout')
@@ -24,7 +25,6 @@ const ipv6Support = r => require.ensure([], () => r(require('@/views/dns/ipv6Sup
 const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logStatistics')), 'dnsLayout')
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
-const networkSecurity = r => require.ensure([], () => r(require('@/views/dns/networkSecurity')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
 const redirect = r => require.ensure([], () => r(require('@/views/dns/redirect')), 'dnsLayout')
 
@@ -69,7 +69,7 @@ export default {
                 parent: 'authorityZoneQuery'
             }
         },
-       
+
         {
             // A4地址合成
             name: 'defaultA4Compose',
@@ -138,16 +138,7 @@ export default {
         },
 
 
-        {
-            // 默认转发
-            name: 'networkSecurity',
-            path: '/dns/networkSecurity',
-            component: networkSecurity,
-            meta: {
-                range: 'dns',
-                title: '默认转发'
-            }
-        },
+
         {
             // 区域转发
             name: 'zoneForward',
@@ -178,7 +169,16 @@ export default {
                 parent: 'zoneQueryForward'
             }
         },
-
+        {
+            // 默认转发
+            name: 'defaultForward',
+            path: '/dns/forword/defaultForward',
+            component: defaultForward,
+            meta: {
+                range: 'dns',
+                title: '默认转发'
+            }
+        },
         // 访问控制
         {
             // 访问控制列表
