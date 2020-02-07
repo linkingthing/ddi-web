@@ -118,7 +118,6 @@ export default {
       this.params.list.splice(index, 1);
     },
     update() {
-      let _self = this;
       const ips = this.params.list.map(item => item.name);
       services
         .createAccess({
