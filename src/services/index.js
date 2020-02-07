@@ -81,11 +81,18 @@ export default {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/acls/${id}`)
     },
 
+    // 重定向
     geRedirectionsByViewId(viewId) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/redirections`)
     },
     deleteRedirection(viewId, redirectionId) {
         return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/redirections/${redirectionId}`)
+    },
+    createRedirect(viewId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/redirections`, params)
+    },
+    updateRedirect(viewId, redirectionId, params) {
+        return axios.put(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/redirections/${redirectionId}`, params)
     },
 
 

@@ -8,7 +8,7 @@
               <Icon type="ios-aperture-outline"></Icon>权威管理
             </template>
             <MenuItem name="configGroupMg" to="/dns/config">配置管理</MenuItem>
-            <MenuItem name="parameterSet" to="/dns/parameterSet">重定向</MenuItem>
+            <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
           </Submenu>
 
           <Submenu name="6">

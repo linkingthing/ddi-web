@@ -1,5 +1,5 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
+  <div class="index-main columns t-box" >
     <div class="header-title">
       <span class="tit">重定向</span>
       <div class="button-box fr"></div>

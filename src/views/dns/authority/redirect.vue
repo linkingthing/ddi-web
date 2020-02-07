@@ -3,7 +3,12 @@
     <div class="header-title">
       <span class="tit">查询重定向</span>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(id)">新建</i-button>
+        <i-button
+          type="primary"
+          class="me-button add-btn"
+          icon="md-add"
+          @click="handleOpenCreate(id)"
+        >新建</i-button>
       </div>
     </div>
     <div class="tab-select pding select2">
@@ -30,7 +35,7 @@
                 <td v-if="item.redirecttype=='rpc'">直接重定向</td>
                 <td v-else-if="item.redirecttype=='redirect'">NXDOMAIN重定向</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(id,item.id)">修改</i-button>
+                  <i-button class="k-btn" @click="handleOpenEdit(id, item.id, item)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>
               </tr>
@@ -38,15 +43,15 @@
           </table>
         </div>
       </div>
-      <ip-library-config ref="ipRef"></ip-library-config>
-      <LinkConfig ref="linkRef"></LinkConfig>
+      <createRedirect ref="ipRef" @onCreateSuccess="getView"></createRedirect>
+      <editRedirect ref="linkRef" @onSuccess="getView"></editRedirect>
     </div>
   </div>
 </template>
 
 <script>
-import IpLibraryConfig from "@/components/IpLibraryConfig";
-import LinkConfig from "@/components/LinkConfig";
+import createRedirect from "./createRedirect";
+import editRedirect from "./editRedirect";
 import services from "@/services";
 
 export default {
@@ -63,8 +68,8 @@ export default {
     };
   },
   components: {
-    IpLibraryConfig,
-    LinkConfig
+    createRedirect,
+    editRedirect
   },
   created() {
     this.id = this.$route.query.id;
@@ -73,11 +78,11 @@ export default {
     this.getView();
   },
   methods: {
-    goConfig(data) {
+    handleOpenCreate(data) {
       this.$refs.ipRef.openConfig(data);
     },
-    goConfig1(a, b) {
-      this.$refs.linkRef.openConfig(a, b);
+    handleOpenEdit(a, b, item) {
+      this.$refs.linkRef.openConfig(a, b, item);
     },
     getView() {
       let _self = this;

@@ -1,7 +1,8 @@
 const config = r => require.ensure([], () => r(require('@/views/dns/authority/config')), 'dnsLayout')
-const parameterSet = r => require.ensure([], () => r(require('@/views/dns/authority/parameterSet')), 'dnsLayout')
 const authorityZoneQuery = r => require.ensure([], () => r(require('@/views/dns/authority/zoneQuery')), 'dnsLayout')
 const resourceRecord = r => require.ensure([], () => r(require('@/views/dns/authority/resourceRecord')), 'dnsLayout')
+const redirectView = r => require.ensure([], () => r(require('@/views/dns/authority/redirectView')), 'dnsLayout')
+const redirect = r => require.ensure([], () => r(require('@/views/dns/authority/redirect')), 'dnsLayout')
 
 const defaultA4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/defaultA4Compose')), 'dnsLayout')
 const A4ComposeView = r => require.ensure([], () => r(require('@/views/dns/recursion/A4ComposeView')), 'dnsLayout')
@@ -26,7 +27,6 @@ const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logSt
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
-const redirect = r => require.ensure([], () => r(require('@/views/dns/redirect')), 'dnsLayout')
 
 const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLayout')), 'dnsLayout')
 
@@ -67,6 +67,26 @@ export default {
                 range: 'dns',
                 title: '资源记录',
                 parent: 'authorityZoneQuery'
+            }
+        },
+        {
+            // 重定向
+            name: 'redirectView',
+            path: '/dns/authority/redirectView',
+            component: redirectView,
+            meta: {
+                range: 'dns',
+                title: '重定向'
+            }
+        },
+        {
+            // 重定向
+            name: 'redirect',
+            path: '/dns/authority/redirect',
+            component: redirect,
+            meta: {
+                range: 'dns',
+                title: '重定向'
             }
         },
 
@@ -240,19 +260,6 @@ export default {
                 title: '开发控制'
             }
         },
-        {
-            // 重定向
-            name: 'redirect',
-            path: '/dns/redirect',
-            component: redirect,
-            meta: {
-                range: 'dns',
-                title: '重定向'
-            }
-        },
-
-
-
 
         {
             // 告警设置
@@ -263,14 +270,6 @@ export default {
                 range: 'dns'
             }
         },
-        {
-            // 重定向
-            name: 'parameterSet',
-            path: '/dns/parameterSet',
-            component: parameterSet,
-            meta: {
-                range: 'dns',
-                title: '重定向'
-            }
-        }]
+
+    ]
 }
