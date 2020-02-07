@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import { isURL, isIPv4, isIPv6, isEmpty } from "@/util/common";
 import services from "@/services";
 
 export default {

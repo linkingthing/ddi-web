@@ -46,28 +46,11 @@
 </template>
 
 <script>
-import { isURL, isNumber, isEmpty } from "@/util/common";
 import services from "@/services";
 
 export default {
   name: "AreaAppConfig",
   data() {
-    // 校验配置组名
-    const validator1 = (rule, value, callback) => {
-      var name = /^[a-zA-Z0-9_]{1,}$/;
-      if (!isEmpty(value)) {
-        callback(new Error("请输入控制表名(字母和数字)"));
-      } else {
-        if (!value.match(name)) {
-          callback(new Error("请正确输入控制表名(字母和数字)"));
-        } else {
-          if (isNumber(value.substr(0, 1))) {
-            callback(new Error("控制表名不能以数字开头"));
-          }
-          callback();
-        }
-      }
-    };
     return {
       areaModal: false,
       self: "",
@@ -80,7 +63,7 @@ export default {
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, validator: validator1, trigger: "blur" }],
+        name: [{ required: true, message: "请填区域名称" }],
         isused: [{ required: true, message: "请选择是否启用" }]
       }
     };
@@ -97,7 +80,7 @@ export default {
         .then(res => {
           this.$Message.success("添加成功!");
           this.cancelModel();
-          this.$emit('onCreateSuccess')
+          this.$emit("onCreateSuccess");
         })
         .catch(err => {
           this.$Message.error("添加失败!");

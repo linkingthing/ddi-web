@@ -26,7 +26,11 @@
                     </form-item>
                     <form-item label="acls" prop="acls">
                       <Select filterable multiple v-model="dataConfig.acls">
-                        <Option v-for="item in accessList" :key="item.id" :value="item.name">{{item.name}}</Option>
+                        <Option
+                          v-for="item in accessList"
+                          :key="item.id"
+                          :value="item.name"
+                        >{{item.name}}</Option>
                       </Select>
                     </form-item>
                   </i-col>
@@ -78,28 +82,11 @@
 </template>
 
 <script>
-import { isURL, isNumber, isEmpty } from "@/util/common";
 import services from "@/services";
 export default {
   name: "ConfigGroupMgConfig",
-  props: ['accessList'],
+  props: ["accessList"],
   data() {
-    // 校验配置组名
-    const validator1 = (rule, value, callback) => {
-      var name = /^[a-zA-Z0-9_]{1,}$/;
-      if (!isEmpty(value)) {
-        callback(new Error("请输入控制表名(字母和数字)"));
-      } else {
-        if (!value.match(name)) {
-          callback(new Error("请正确输入控制表名(字母和数字)"));
-        } else {
-          if (isNumber(value.substr(0, 1))) {
-            callback(new Error("控制表名不能以数字开头"));
-          }
-          callback();
-        }
-      }
-    };
     return {
       value: "",
       IP: [],
@@ -122,7 +109,7 @@ export default {
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, validator: validator1, trigger: "blur" }]
+        name: [{ required: true, message: "请填访问控制名称" }]
       }
     };
   },
@@ -143,7 +130,7 @@ export default {
           IP: [..._self.IP, ..._self.dataConfig.acls].filter(item => item)
         })
         .then(res => {
-          this.$emit('onSuccess')
+          this.$emit("onSuccess");
         })
         .catch(err => {
           console.log(err);

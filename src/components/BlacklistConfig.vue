@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import { isURL, isNumber, isEmpty } from "../util/common";
 import services from "@/services";
 
 export default {
