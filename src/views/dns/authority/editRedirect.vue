@@ -41,7 +41,7 @@
                   <i-input v-model="params.value" placeholder="请填写记录值"></i-input>
                 </form-item>
                 <form-item label="TTL" prop="ttl" :label-width="110">
-                  <i-input type="number" v-model="params.ttl" placeholder="请输入延缓时间"></i-input>
+                  <InputNumber v-model="params.ttl" style="width: 260px" placeholder="请输入延缓时间"></InputNumber>
                 </form-item>
                 <form-item label="重定向方式" prop="redirecttype" :label-width="110">
                   <i-select v-model="params.redirecttype">
@@ -91,7 +91,14 @@ export default {
           { required: true, message: "请选择资源类型", trigger: "change" }
         ],
         value: [{ required: true, message: "请填写记录值", trigger: "change" }],
-        ttl: [{ required: true, message: "请输入延缓时间", trigger: "change" }],
+        ttl: [
+          {
+            required: true,
+            type: "number",
+            message: "请输入延缓时间",
+            trigger: "change"
+          }
+        ],
         redirecttype: [
           { required: true, message: "请选择重定向方式", trigger: "change" }
         ]
