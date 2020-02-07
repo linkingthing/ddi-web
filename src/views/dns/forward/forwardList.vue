@@ -21,26 +21,28 @@
                   <p>-</p>
                 </td>
                 <td v-else>
-                  <p v-for="value in this.ips" :key="value">{{value}}</p>
+                  <Tags :list="this.ips"/>  
                 </td>
                 <td>{{this.id1 == 0 ?'-':type}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig(id,self)">修改</i-button>
-                  <i-button class="k-btn" @click="delect()">删除</i-button>
+                  <i-button
+                    class="k-btn"
+                    @click="goConfig(viewId, zoneId)"
+                  >{{this.id1 == 0 ?'新增':'修改'}}</i-button>
+                  <i-button class="k-btn" @click="delect">删除</i-button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <alarm-list-config ref="alarmRef"></alarm-list-config>
+      <editForward ref="alarmRef" @onSuccess="getView"></editForward>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import AlarmListConfig from "@/components/AlarmListConfig";
+import editForward from "./editForward";
 import services from "@/services";
 
 export default {
@@ -49,18 +51,16 @@ export default {
     return {
       list: [],
       id: "",
-      name: "",
-      remove: "",
       modal1: false,
       priority: "",
       acls: [],
       resList: [],
       ips: [],
       type: "",
-      self: "",
       id1: "",
       viewId: "",
-      zoneId: ""
+      zoneId: "",
+      current: {}
     };
   },
   created() {
@@ -68,14 +68,14 @@ export default {
     this.zoneId = this.$route.query.zoneId;
   },
   components: {
-    AlarmListConfig
+    editForward
   },
   mounted() {
     this.getView();
   },
   methods: {
     goConfig(viewId, zoneId) {
-      this.$refs.alarmRef.openModel(viewId, zoneId);
+      this.$refs.alarmRef.openModel(viewId, zoneId, this.current);
     },
     getView() {
       services
@@ -86,9 +86,10 @@ export default {
           this.type = res.data.type;
           this.id1 = res.data.id;
           this.ips = res.data.ips;
+          this.current = res.data;
         })
         .catch(err => {
-          console.log(err);
+          this.$Message.error(err.message);
         });
     },
 
@@ -98,18 +99,10 @@ export default {
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          this.$axios
-            .post(
-              "http://10.0.0.19:8081" +
-                this.self +
-                "/" +
-                this.id +
-                "?" +
-                "action=forward",
-              {
-                oper: "DEL"
-              }
-            )
+          services
+            .deleteForward(this.viewId, this.zoneId, {
+              oper: "DEL"
+            })
             .then(res => {
               this.$Message.success("删除成功");
               this.getView();

@@ -1,12 +1,12 @@
 <template>
   <modal
-    v-model="networkSecurity"
+    v-model="alarmlistconfig"
     class-name="pop vertical-center-modal"
     :mask-closable="false"
     width="500"
     :closable="false"
   >
-    <div slot="header">修改默认转发列表</div>
+    <div slot="header">修改区转发列表</div>
     <div>
       <vue-scroll style="height: 500px;" ref="vs">
         <i-form
@@ -65,7 +65,7 @@
       </vue-scroll>
     </div>
     <div slot="footer">
-      <i-button class="me-button k-btn" @click="networkSecurity = false">取消</i-button>
+      <i-button class="me-button k-btn" @click="alarmlistconfig = false">取消</i-button>
       <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
     </div>
   </modal>
@@ -73,16 +73,20 @@
 
 <script>
 import services from "@/services";
+
 export default {
-  name: "editDefaultForward",
+  name: "editForward",
   data() {
     return {
+      // value:"",
+      ips: [],
       index: 1,
-
-      networkSecurity: false,
+      viewId: "",
+      zoneId: "",
+      alarmlistconfig: false,
       // 表单数据
       dataConfig: {
-        type: "first",
+        type: "",
         // 例外规则
         exception: [
           {
@@ -99,28 +103,37 @@ export default {
     };
   },
   methods: {
-    openConfig(item) {
-      this.networkSecurity = true;
-      this.dataConfig.type = item.type;
-      this.dataConfig.exception = Array.isArray(item.ip)
-        ? item.ip.map((item, index) => ({
-            value: item,
-            index: index + 1
-          }))
-        : [
+    openModel(viewId, zoneId, current) {
+      this.viewId = viewId;
+      this.zoneId = zoneId;
+      this.alarmlistconfig = true;
+      this.dataConfig.type = current.type;
+      if (Array.isArray(current.ips)) {
+        this.dataConfig.exception = current.ips.map((value, index) => ({
+          value,
+          index: index + 1
+        }));
+        this.index = current.ips.length;
+      } else {
+        this.dataConfig = {
+          type: "",
+          // 例外规则
+          exception: [
             {
               value: "",
               index: 1
             }
-          ];
-      this.index = item.ip ? item.ip.length : 1;
+          ]
+        };
+      }
     },
     //新建
     getModify() {
       services
-        .updateDefaultForward({
+        .updateForward(this.viewId, this.zoneId, {
+          oper: "MOD",
           type: this.dataConfig.type,
-          ip: this.dataConfig.exception
+          ips: this.dataConfig.exception
             .map(item => item.value)
             .filter(item => item)
         })
@@ -130,7 +143,7 @@ export default {
           this.$emit("onSuccess");
         })
         .catch(err => {
-          this.$Message.error("修改失败!");
+          console.log(err);
         });
     },
     // 确定
@@ -139,6 +152,7 @@ export default {
         if (valid) {
           this.getModify();
         } else {
+          this.$Message.error("修改失败!");
         }
       });
     },
@@ -147,7 +161,8 @@ export default {
       this.index++;
       this.dataConfig.exception.push({
         value: "",
-        index: this.index
+        index: this.index,
+        status: 1
       });
     },
     handleRemove(index) {
@@ -155,9 +170,18 @@ export default {
     },
     //关闭弹窗
     cancelModel() {
-      this.index = 1;
-      this.networkSecurity = false;
+      this.alarmlistconfig = false;
       this.$refs.formValidate.resetFields();
+      this.dataConfig = {
+        type: "",
+        // 例外规则
+        exception: [
+          {
+            value: "",
+            index: 1
+          }
+        ]
+      };
     }
   }
 };

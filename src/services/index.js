@@ -142,12 +142,13 @@ export default {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}?action=forward`, params)
     },
 
-    deleteForwardById(viewId, zoneId, params) {
-        return axios.delete(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}?action=forward
-        `, params)
+    deleteForward(viewId, zoneId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}?action=forward`, params)
     },
 
-
+    updateForward(viewId, zoneId, params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/views/${viewId}/zones/${zoneId}?action=forward`, params)
+    },
 
 
     // 安全管理
