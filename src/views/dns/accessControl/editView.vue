@@ -76,7 +76,7 @@
                       <Input-number
                         :max="10"
                         :min="1"
-                        :value="dataConfig.priority"
+                        v-model="dataConfig.priority"
                         style="margin-left:10px;"
                       ></Input-number>
                     </form-item>
@@ -185,7 +185,9 @@ export default {
           isused: this.dataConfig.isused
         })
         .then(res => {
-          console.log(res);
+          this.$Message.success("修改成功!");
+          this.cancelModel();
+          this.$emit("onEditSuccess");
         })
         .catch(err => {
           console.log(err);
@@ -196,9 +198,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.getModify();
-          this.$Message.success("修改成功!");
-          this.cancelModel();
-          this.getManger();
         } else {
           this.$Message.error("修改失败!");
         }

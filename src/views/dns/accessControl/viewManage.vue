@@ -44,7 +44,7 @@
         </div>
       </div>
       <createView ref="deviceRef" @onCreateSuccess="getView"></createView>
-      <editView ref="analysis2Ref"></editView>
+      <editView ref="analysis2Ref" @onEditSuccess="getView"></editView>
     </div>
   </div>
 </template>
