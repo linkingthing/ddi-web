@@ -3,7 +3,6 @@
         <div class="header-title">
             <span class="tit">用户列表</span>
             <div class="button-box fr">
-                <!-- <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goAdjunction(0)">新增</i-button> -->
             </div>
         </div>
         <div class="table-box">

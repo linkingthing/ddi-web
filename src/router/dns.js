@@ -76,7 +76,8 @@ export default {
             component: redirectView,
             meta: {
                 range: 'dns',
-                title: '重定向'
+                title: '重定向视图',
+
             }
         },
         {
@@ -86,7 +87,8 @@ export default {
             component: redirect,
             meta: {
                 range: 'dns',
-                title: '重定向'
+                title: '重定向',
+                parent: 'redirectView'
             }
         },
 
