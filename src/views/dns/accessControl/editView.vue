@@ -74,6 +74,7 @@
                   <i-col span="24">
                     <form-item label="优先级" prop="name">
                       <Input-number
+                        :disabled="dataConfig.name === 'default'"
                         :max="10"
                         :min="1"
                         v-model="dataConfig.priority"
