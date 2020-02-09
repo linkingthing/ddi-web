@@ -12,7 +12,7 @@
         <i-form
           :model="dataConfig"
           label-position="right"
-          :label-width="80"
+          :label-width="100"
           :rules="ruleValidate"
           ref="formValidate"
         >
@@ -22,12 +22,7 @@
                 <Row>
                   <i-col span="18">
                     <form-item label="名称" prop="name">
-                      <i-input
-                        v-model="dataConfig.name"
-                        placeholder="请填访问控制名称"
-                        :disabled="true"
-                        style="margin-left:10px;"
-                      ></i-input>
+                      <i-input v-model="dataConfig.name" placeholder="请填访问控制名称" :disabled="true"></i-input>
                     </form-item>
                   </i-col>
                 </Row>
@@ -36,13 +31,13 @@
 
             <div class="pop-box" style="margin-top:-50px;">
               <div class="pop-body">
-                <Form ref="dataConfig" :model="dataConfig" :label-width="90" style="width: 300px">
+                <div style="width: 300px">
                   <FormItem
                     v-for="(item, index) in dataConfig.exception"
                     :key="index"
                     :label="'控制列表' + item.index"
-                    :prop="'exception.' + index + '.value'"
-                    :rules="{required: true, message: '控制列表 ' + item.index +'不能为空', trigger: 'blur'}"
+                    :prop="'exception.' + index + '.id'"
+                    :rules="{required: true, message: '控制列表 ' + item.index +'不能为空'}"
                   >
                     <Row>
                       <!-- IP列表 -->
@@ -63,7 +58,7 @@
                       </Col>
                     </Row>
                   </FormItem>
-                </Form>
+                </div>
 
                 <Row style="margin-top:-10px;">
                   <i-col span="24">
@@ -78,15 +73,14 @@
                         :max="10"
                         :min="1"
                         v-model="dataConfig.priority"
-                        style="margin-left:10px;"
                       ></Input-number>
                     </form-item>
                   </i-col>
                 </Row>
                 <Row>
                   <i-col span="24">
-                    <FormItem label="是否启用" prop="name" :label-width="90">
-                      <RadioGroup v-model="dataConfig.isused" style="margin-left:10px;">
+                    <FormItem label="是否启用" prop="name">
+                      <RadioGroup v-model="dataConfig.isused">
                         <Radio :label="1" isused="1">是</Radio>
                         <Radio :label="0" isused="0">否</Radio>
                       </RadioGroup>
@@ -192,6 +186,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
+          this.$Message.error("修改失败!");
         });
     },
     // 确定
@@ -199,8 +194,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.getModify();
-        } else {
-          this.$Message.error("修改失败!");
         }
       });
     },
@@ -208,7 +201,7 @@ export default {
     handleAdd() {
       this.index++;
       this.dataConfig.exception.push({
-        value: "",
+        id: "",
         index: this.index,
         status: 1
       });
