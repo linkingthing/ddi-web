@@ -70,7 +70,7 @@
                     <form-item label="优先级" prop="name">
                       <Input-number
                         :disabled="dataConfig.name === 'default'"
-                        :max="10"
+                        :max="maxPriority+1"
                         :min="1"
                         v-model="dataConfig.priority"
                       ></Input-number>
@@ -105,6 +105,7 @@ import services from "@/services";
 
 export default {
   name: "ConfigGroupMgConfig",
+  props: ["maxPriority"],
   data() {
     return {
       value: "",
@@ -185,7 +186,6 @@ export default {
           this.$emit("onEditSuccess");
         })
         .catch(err => {
-          console.log(err);
           this.$Message.error("修改失败!");
         });
     },

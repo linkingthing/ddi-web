@@ -50,7 +50,10 @@
                         </i-select>
                       </Col>
                       <Col span="4" offset="1">
-                        <Button @click="handleRemove(index)" style="font-size: 20px;marin-left: 20px;">
+                        <Button
+                          @click="handleRemove(index)"
+                          style="font-size: 20px;marin-left: 20px;"
+                        >
                           <Icon type="md-trash" />
                         </Button>
                       </Col>
@@ -66,7 +69,7 @@
                 <Row>
                   <i-col span="24">
                     <form-item label="优先级" prop="priority">
-                      <Input-number :max="10" :min="1" v-model="dataConfig.priority"></Input-number>
+                      <Input-number :max="maxPriority" :min="1" v-model="dataConfig.priority"></Input-number>
                     </form-item>
                   </i-col>
                 </Row>
@@ -97,6 +100,7 @@
 import services from "@/services";
 export default {
   name: "createView",
+  props: ["maxPriority"],
   data() {
     return {
       value: "",

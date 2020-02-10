@@ -36,15 +36,15 @@
                 <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
                   <i-button class="k-btn" @click="goConfig1(item.id, item)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
+                  <i-button class="k-btn" @click="delect(item.id)" v-if="item.name !== 'default'">删除</i-button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <createView ref="deviceRef" @onCreateSuccess="getView"></createView>
-      <editView ref="analysis2Ref" @onEditSuccess="getView"></editView>
+      <createView ref="deviceRef" @onCreateSuccess="getView" :maxPriority="list.length"></createView>
+      <editView ref="analysis2Ref" @onEditSuccess="getView" :maxPriority="list.length"></editView>
     </div>
   </div>
 </template>
