@@ -39,7 +39,6 @@ export default {
   },
   methods: {
     excuteBreadcrumbList(currentRoute, prevRoute) {
-      console.log(currentRoute);
       const {
         fullPath: currentFullPath,
         meta: { parent, title: currentTitle },
