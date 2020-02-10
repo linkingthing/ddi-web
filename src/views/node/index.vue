@@ -222,10 +222,14 @@ export default {
       services.getDeviceHistoryInfo(params).then(res => {
         if (res.data.status === "success") {
           // optimize：一行代码解决
-          this.dateData = res.data.data.values.map(item =>
-            dateFormat(item[0], "yyyy-MM-dd")
-          );
-          this.usageData = res.data.data.values.map(item => item[1]);
+          this.dateData = Array.isArray(res.data.data.values)
+            ? res.data.data.values.map(item =>
+                dateFormat(item[0], "yyyy-MM-dd")
+              )
+            : [];
+          this.usageData = Array.isArray(res.data.data.values)
+            ? res.data.data.values.map(item => item[1])
+            : [];
         }
         this.spinShow = false;
       });
