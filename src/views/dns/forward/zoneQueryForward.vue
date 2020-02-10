@@ -16,7 +16,9 @@
           <tbody>
             <tr v-for="item in this.dsliteList" :key="item.id">
               <td>
-                <router-link :to="{name:'forwardList',query:{viewId,zoneId: item.id}}">{{item.name}}</router-link>
+                <router-link
+                  :to="{name:'forwardList',query:{viewId,zoneId: item.id,name:item.name}}"
+                >{{item.name}}</router-link>
               </td>
               <td>{{item.forwardsize}}</td>
             </tr>

@@ -22,7 +22,8 @@
                       name: 'A4Compose',
                       query:{
                         id:item.id,
-                        dns64s:item.links.dns64s
+                        dns64s:item.links.dns64s,
+                        name: item.name
                       }
                     }"
                   >{{item.name}}</router-link>

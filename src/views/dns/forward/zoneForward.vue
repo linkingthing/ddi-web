@@ -17,10 +17,12 @@
             <tbody>
               <tr v-for="item in this.list" :key="item.id">
                 <td>
-                  <router-link :to="{
+                  <router-link
+                    :to="{
                       name:'zoneQueryForward',
-                      query:{id:item.id}
-                    }">{{item.name}}</router-link>
+                      query:{id:item.id,name:item.name}
+                    }"
+                  >{{item.name}}</router-link>
                 </td>
                 <td>{{item.zonesize}}</td>
               </tr>

@@ -7,7 +7,7 @@
             <template slot="title">
               <Icon type="ios-aperture-outline"></Icon>权威管理
             </template>
-            <MenuItem name="configGroupMg" to="/dns/config">配置管理</MenuItem>
+            <MenuItem name="configGroupMg" to="/dns/authority/config">配置管理</MenuItem>
             <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
           </Submenu>
 

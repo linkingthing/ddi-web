@@ -1,5 +1,5 @@
 <template>
-  <div class="index-main columns t-box" >
+  <div class="index-main columns t-box">
     <div class="header-title">
       <span class="tit">重定向</span>
       <div class="button-box fr"></div>
@@ -19,7 +19,9 @@
             <tbody>
               <tr v-for="item in this.list" :key="item.id">
                 <td>
-                  <router-link :to="{name:'redirect',query:{id:item.id}}">{{item.name}}</router-link>
+                  <router-link
+                    :to="{name:'redirect',query:{id:item.id,name:item.name}}"
+                  >{{item.name}}</router-link>
                 </td>
                 <td>{{item.rpzsize}}</td>
                 <td>{{item.redirectsize}}</td>

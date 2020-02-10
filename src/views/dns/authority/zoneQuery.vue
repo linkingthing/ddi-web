@@ -27,7 +27,7 @@
               <tr v-for="item in this.arealist" :key="item.id">
                 <td>
                   <router-link
-                    :to="{name:'resourceRecord',query:{viewId, zoneId:item.id,}}"
+                    :to="{name:'resourceRecord',query:{viewId, zoneId: item.id,name: item.name}}"
                   >{{item.name}}</router-link>
                 </td>
                 <td>{{item.rrsize}}</td>
@@ -98,7 +98,7 @@ export default {
     handleOpenCreate(id2) {
       this.$refs.areaRef.openConfig(id2);
     },
-   
+
     // 删除
     delect(zoneId) {
       this.$Modal.confirm({
@@ -119,7 +119,7 @@ export default {
     }
   },
   components: {
-    AreaAppConfig,
+    AreaAppConfig
   }
 };
 </script>

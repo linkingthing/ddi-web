@@ -9,7 +9,10 @@
             :key="item.path"
             :to="index === breadcrumbList.length-1 ? '': item.path"
             v-for="(item, index) in breadcrumbList"
-          >{{item.title}}</BreadcrumbItem>
+          >
+            {{item.title}}
+            <template v-if="item.name">({{item.name}})</template>
+          </BreadcrumbItem>
         </Breadcrumb>
       </div>
 
@@ -36,9 +39,11 @@ export default {
   },
   methods: {
     excuteBreadcrumbList(currentRoute, prevRoute) {
+      console.log(currentRoute);
       const {
         fullPath: currentFullPath,
-        meta: { parent, title: currentTitle }
+        meta: { parent, title: currentTitle },
+        query: { name }
       } = currentRoute;
       const {
         fullPath,
@@ -48,7 +53,8 @@ export default {
         this.breadcrumbList.pop();
         this.breadcrumbList.push({
           path: fullPath,
-          title
+          title,
+          name
         });
       } else if (
         this.breadcrumbList.map(item => item.path).includes(currentFullPath)
@@ -59,10 +65,17 @@ export default {
           .indexOf(currentFullPath);
         this.breadcrumbList = this.breadcrumbList.slice(0, index);
       } else {
+        const { path } = this.$route;
+        const [, , menu] = path.split("/");
+        const menuConfig = {
+          authority: "权威管理",
+          recursion: "递归管理",
+          forward: "转发管理",
+          accessControl: "访问控制"
+        };
         this.breadcrumbList = [
           {
-            title: "首页",
-            path: "/"
+            title: menuConfig[menu]
           }
         ];
       }

@@ -33,13 +33,13 @@ const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLay
 export default {
     path: '/dns',
     name: 'dns',
-    redirect: '/dns/config',
+    redirect: '/dns/authority/config',
     component: dnsLayout,
     children: [
         {
             // 配置组管理
             name: 'configGroup',
-            path: '/dns/config',
+            path: '/dns/authority/config',
             component: config,
             meta: {
                 range: 'dns',
