@@ -132,6 +132,7 @@ export default {
      * "role": 0, //节点的类型，0是控制器，1是数据库，2是消息队列 分组
      */
     analysisNodeListAndGroup(data) {
+      const self = this;
       const controller = {
         expand: true,
         role: 0,
@@ -158,7 +159,40 @@ export default {
         const obj = {
           ...item,
           title: item.hostname,
-          value: item.ip
+          // value: item.ip
+          render: (h, { root, node, data }) => {
+            return h(
+              "span",
+              {
+                style: {
+                  display: "inline-block",
+                  width: "100%",
+                  cursor: "pointer"
+                },
+                on: {
+                  click: () => {
+                    self.handleSelectNode(node, { ...data, value: item.ip });
+                  }
+                }
+              },
+              [
+                h(
+                  "span",
+                  {
+                    style: {
+                      paddingRight: "10px"
+                    }
+                  },
+                  data.ip
+                ),
+                h("Badge", {
+                  props: {
+                    status: data.state ? "success" : "error"
+                  }
+                })
+              ]
+            );
+          }
         };
         if (item.role === 0) {
           controller.children.push(obj);
@@ -186,7 +220,6 @@ export default {
     getDeviceHistoryInfo(params) {
       this.spinShow = true;
       services.getDeviceHistoryInfo(params).then(res => {
-        console.log(res);
         if (res.data.status === "success") {
           // optimize：一行代码解决
           this.dateData = res.data.data.values.map(item =>
