@@ -24,12 +24,18 @@
                 <td>{{item.name}}</td>
                 <td>
                   <Tags :list="item.IP" :field="item" />
-
-                  <!-- <p v-for="value in item.IP" :key="value.id">{{value}}</p> -->
                 </td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(item.id)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
+                  <i-button
+                    class="k-btn"
+                    @click="goConfig1(item.id)"
+                    v-if="!['any','none'].includes(item.name)"
+                  >修改</i-button>
+                  <i-button
+                    class="k-btn"
+                    @click="delect(item.id)"
+                    v-if="!['any','none'].includes(item.name)"
+                  >删除</i-button>
                 </td>
               </tr>
             </tbody>
