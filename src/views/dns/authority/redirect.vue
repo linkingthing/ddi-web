@@ -32,7 +32,7 @@
                 <td>{{item.ttl+'s'}}</td>
                 <td>{{item.datatype}}</td>
                 <td>{{item.value}}</td>
-                <td v-if="item.redirecttype=='rpc'">直接重定向</td>
+                <td v-if="item.redirecttype=='rpz'">直接重定向</td>
                 <td v-else-if="item.redirecttype=='redirect'">NXDOMAIN重定向</td>
                 <td>
                   <i-button class="k-btn" @click="handleOpenEdit(id, item.id, item)">修改</i-button>
@@ -109,7 +109,7 @@ export default {
               this.getView();
             })
             .catch(err => {
-              this.id + this.$Message.success("删除失败");
+              this.$Message.success("删除失败");
             });
         }
       });
