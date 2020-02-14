@@ -1,6 +1,5 @@
 import axios from 'axios'
-import dns from '../router/dns';
-
+import store from '@/store'
 const dnsBaseUrl = '/dns';
 const nodeBaseUrl = '/node'
 
@@ -19,9 +18,23 @@ function params2Query(params) {
     }).join('&')
 }
 
+axios.interceptors.request.use(
+    config => {
+        const token = store.getters.token;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    });
 
 
 export default {
+    login(params) {
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/login`, params)
+    },
     // 权威管理
 
     // 视图

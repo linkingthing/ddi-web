@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+const Cache = require("../util/store").default("localStorage");
+
 import Login from '../views/login'
 import Index from '../views/index'
 import node from './node';
@@ -12,8 +14,7 @@ const roleMg = r => require.ensure([], () => r(require('../views/roleMg')), 'sys
 const sysLog = r => require.ensure([], () => r(require('../views/sysLog')), 'sysLayout')
 
 Vue.use(Router)
-
-export default new Router({
+const router = new Router({
     mode: 'hash',
     routes: [{
         path: '/',
@@ -71,3 +72,18 @@ export default new Router({
     },
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login') {
+        next();
+    } else {
+        let token = Cache.get('token');
+        if (token === null || token === '') {
+            next('/login');
+        } else {
+            next();
+        }
+    }
+});
+
+export default router;
