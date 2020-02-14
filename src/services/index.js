@@ -1,5 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
+import router from '@/router'
+import { Message } from 'iview'
 const dnsBaseUrl = '/dns';
 const nodeBaseUrl = '/node'
 
@@ -28,7 +30,19 @@ axios.interceptors.request.use(
     },
     error => {
         return Promise.reject(error);
-    });
+    },
+);
+
+axios.interceptors.response.use(
+    res => {
+        return res
+    }, err => {
+        if (err.response.data.code === 401) {
+            Message.error(err.response.data.message)
+            router.push('/login')
+        }
+    },
+)
 
 
 export default {
