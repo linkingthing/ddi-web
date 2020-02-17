@@ -44,8 +44,14 @@ axios.interceptors.response.use(
     },
 )
 
-
 export default {
+    getCaptcha() {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/getcheckimage.jpeg`)
+    },
+    verifyCaptcha(params) {
+        // CheckValueToken CheckValue
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/checkvalue`, { params })
+    },
     login(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/login`, params)
     },
