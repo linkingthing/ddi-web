@@ -33,16 +33,34 @@
         </div>
       </div>
     </div>
+    <Modal v-model="visible" title="修改密码">
+      <Form :label-width="80" style="width: 400px;margin:0 auto">
+        <FormItem label="账号">admin</FormItem>
+        <FormItem label="密码">
+          <Input v-model="password" type="password" placeholder="请输入密码" />
+        </FormItem>
+        <FormItem label="再次输入">
+          <Input v-model="rePassword" type="password" placeholder="请在此输入密码" />
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="primary" size="large" @click="handleSubmit">确认</Button>
+      </div>
+    </Modal>
   </header>
 </template>
 
 <script>
 import { mapMutations } from "vuex";
-
+import services from "@/services";
 export default {
   name: "Header",
   data() {
     return {
+      visible: false,
+      // loading: true,
+      password: "",
+      rePassword: "",
       path: this.$route.meta.range
     };
   },
@@ -58,6 +76,29 @@ export default {
           path: "/login"
         });
       }
+      if (name === "password") {
+        console.log("pa");
+        this.visible = true;
+      }
+    },
+    handleSubmit() {
+      if (this.password === this.rePassword) {
+        services
+          .updatePassword({
+            username: "admin",
+            password: this.password
+          })
+          .then(res => {
+            this.$Message.success("修改成功");
+            this.visible = false;
+          });
+      } else {
+        this.visible = true;
+        this.$Message.error("两次密码输入不一致");
+      }
+    },
+    cancel() {
+      this.visible = false;
     }
   }
 };

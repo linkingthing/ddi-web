@@ -118,6 +118,7 @@ export default {
         this.checkvaluetoken = res.headers.get("checkvaluetoken");
 
         const reader = res.body.getReader();
+        console.log(reader);
         const stream = new ReadableStream({
           start(controller) {
             async function push() {
@@ -135,12 +136,6 @@ export default {
           }
         });
       });
-      // services.getCaptcha().then(res => {
-      //   console.log(res);
-      //   const blob = new Blob([res.data], { type: "image/jpg" });
-      //   console.log(blob);
-      //   this.img = URL.createObjectURL(blob); // API.captcha +'?time='+Date.parse(new Date());
-      // });
     },
     login() {
       this.$refs["formLogin"].validate(valid => {
@@ -151,7 +146,7 @@ export default {
               CheckValue: this.captcha
             })
             .then(res => {
-              if (res.data !== "check value fail!") {
+              // if (res.data !== "check value fail!") {
                 services
                   .login(this.params)
                   .then(res => {
@@ -164,10 +159,10 @@ export default {
                   .catch(res => {
                     this.$Message.error(res.response.data.message);
                   });
-              } else {
-                this.$Message.error("图片验证失败");
-                this.getCaptcha();
-              }
+              // } else {
+              //   this.$Message.error("图片验证失败");
+              //   this.getCaptcha();
+              // }
             });
         }
       });

@@ -55,6 +55,9 @@ export default {
     login(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/login`, params)
     },
+    updatePassword(params){
+        return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/changepwd`, params)
+    },
     // 权威管理
 
     // 视图
