@@ -105,7 +105,6 @@ export default {
 
 <style scoped>
 .ivu-divider-dashed {
-  /* background: 0 0; */
   border-top: 0px dashed #e8eaec;
 }
 

@@ -1,47 +1,69 @@
 @import 'var.less';
 
 .menu{
-    background-color: @white;
+    background-color: #66615B;
     width: @menuW;
-    border-radius: 6px;
     overflow: hidden;
     float: left;
+    .logo {
+        height: 100px;
+        box-sizing: border-box;
+        padding: 30px;
+        border-bottom: 2px solid #CFCFCA;
+    }
     .title{
         height: 72px;
         line-height: 72px;
         border-bottom: 1px solid @lineColor;
-        font-size: @f16;
+        font-size: @f24;
         padding-left: 27px;
     }
     .menu-list{
         position: relative;
         .ivu-menu-submenu{
             .ivu-menu-item{
-                padding-left: 50px!important;
+                padding-left: 63px!important;
             }
         }
         .ivu-menu{
             width: auto!important;
         }
+        .ivu-menu-light {
+            background-color: #66615B;
+        }
         .ivu-menu-vertical.ivu-menu-light:after{
             background-color: transparent;
         }
         .ivu-menu-submenu-title{
-            font-size: @f14;
+            font-size: @f22;
+            color: #D1D0CE;
         }
         .ivu-icon{
-            font-size: @f16;
+            font-size: @f22;
             margin-right: 10px;
+        }
+        .ivu-menu-submenu-title {
+            font-size: 18px;
+        }
+        .ivu-menu-item {
+            font-size: 16px;
         }
         .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu){
             background: @menuActive;
             &:after{
-                left: 0;
-                right: auto;
+                top: 16px;
+                right: 0;
+                background-color: @menuActive;
+                height: 0;
+                width: 0;
+                border: 16px solid;
+                border-color: transparent  #F8F4F0 transparent transparent;
             }
         }
         .ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title{
-            padding: 19px 24px;
+            padding: 20px 30px;
+            color: #D1D0CE;
+
         }
         
         .toggle{
@@ -84,7 +106,7 @@
                 color: #546478;
                 z-index: 1000;
                 width: 20px;
-                background: url(../images/menus.png) center no-repeat;
+                // background: url(../images/menus.png) center no-repeat;
                 background-size: 100%;
                 transition: all 0.3s;
                 -moz-transition: all 0.3s;	/* Firefox 4 */

@@ -1,5 +1,8 @@
 <template>
   <div class="menu fl left-menu">
+    <div class="logo">
+      <img src="../../assets/images/logo.png" alt="">
+    </div>
     <div class="menu-list">
       <vue-scroll class="pr">
         <Menu :theme="theme" :active-name="tab" :open-names="[openName]" :accordion="true">

@@ -1,13 +1,14 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
+  <div class="index-main columns t-box">
+    <div class="content-header">
       <span class="tit">访问控制表</span>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
-        <!-- <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig('新增参数')">新建</i-button> -->
+        <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
+        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">编辑</i-button>
+        <i-button type="error" class="me-button add-btn" icon="md-add" @click="goConfig(0)">删除</i-button>
       </div>
     </div>
-    <div class="tab-select pding select2">
+    <div class>
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">
@@ -123,4 +124,12 @@ export default {
 </script>
 
 <style scoped>
+.content-header {
+  height: 120px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.me-button {
+  margin-top: 50px;
+}
 </style>

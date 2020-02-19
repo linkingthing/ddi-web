@@ -2,7 +2,7 @@
   <div>
     <div class="login">
       <div class="login-head">
-        <img class="logo" src="../assets/images/logo2.png" />
+        <img class="logo" src="../assets/images/logo.png" />
         <h1>DDI配置管理平台</h1>
       </div>
       <div>
@@ -110,29 +110,37 @@ export default {
       const self = this;
       fetch("/dns/linkingthing.com/example/v1/getcheckimage.jpeg").then(res => {
         console.log(res.body);
-        console.log(res.headers);
-        // const headers = {}
-        // res.headers.forEach((val, key) => {
-        //   console.log(key + " -> " + val);
-        // });
+
         this.checkvaluetoken = res.headers.get("checkvaluetoken");
 
         const reader = res.body.getReader();
         console.log(reader);
+        const imageArr = [];
         const stream = new ReadableStream({
           start(controller) {
-            async function push() {
+            function push() {
               // "done"是一个布尔型，"value"是一个Unit8Array
-              const arr = await reader.read();
-              const blob = new Blob([arr.value]);
-              const file = new FileReader();
-              file.onload = function(e) {
-                console.log(444, e, e.target.result);
-                self.img = e.target.result;
-              };
-              file.readAsDataURL(blob);
+              reader.read().then(({ done, value }) => {
+                if (done) {
+                  console.log("ok");
+                  const blob = new Blob(imageArr);
+                  const file = new FileReader();
+                  file.onload = function(e) {
+                    self.img = e.target.result;
+                  };
+                  file.readAsDataURL(blob);
+                  return;
+                }
+                console.log(value);
+                imageArr.push(value);
+
+                push();
+              });
             }
             push();
+          },
+          pull() {
+            console.log("pull");
           }
         });
       });
@@ -146,23 +154,25 @@ export default {
               CheckValue: this.captcha
             })
             .then(res => {
-              // if (res.data !== "check value fail!") {
+              if (res.data !== "check value fail!") {
                 services
                   .login(this.params)
                   .then(res => {
                     if (res.data.code === 200) {
                       this.$Message.success("Success!");
                       this.SET_TOKEN(res.data.token);
-                      this.$router.push({ path: "/" });
+                      this.$router.push({
+                        path: "/dns/accessControl/accessControlList"
+                      });
                     }
                   })
                   .catch(res => {
                     this.$Message.error(res.response.data.message);
                   });
-              // } else {
-              //   this.$Message.error("图片验证失败");
-              //   this.getCaptcha();
-              // }
+              } else {
+                this.$Message.error("图片验证失败");
+                this.getCaptcha();
+              }
             });
         }
       });

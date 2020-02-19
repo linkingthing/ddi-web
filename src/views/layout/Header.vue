@@ -2,7 +2,7 @@
   <header class="clearfix">
     <div class="header-main">
       <div class="header-left fl clearfix">
-        <img class="fl" src="../../assets/images/login.png" alt="logo" />
+        <img class="fl" src="../../assets/images/logo.png" alt="logo" />
         <p class="title fl">
           <span class="line"></span>
           DDI配置管理平台
@@ -16,7 +16,7 @@
       </div>
       <div class="header-right clearfix">
         <div class="user-pic fl">
-          <Avatar :src="require('../../assets/images/icon-people.png')" />
+          <!-- <Avatar :src="require('../../assets/images/icon-people.png')" /> -->
         </div>
         <div class="nva fl">
           <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
