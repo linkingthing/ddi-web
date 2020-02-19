@@ -167,7 +167,7 @@ export default {
   margin: 0;
   bottom: 0px;
   top: 0px;
-  background: #f7f2ef;
+  background: #f4f3ef;
 }
 
 .content {

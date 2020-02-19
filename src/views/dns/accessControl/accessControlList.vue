@@ -1,10 +1,19 @@
 <template>
   <div class="index-main columns t-box">
     <div class="content-header">
-      <span class="tit">访问控制表</span>
+      <Select style="width:300px" @on-change="handleGo">
+        <Option value="/dns/accessControl/accessControlList">访问控制列表</Option>
+        <Option value="/dns/accessControl/viewManage">视图管理</Option>
+      </Select>
+
       <div class="button-box fr">
         <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">编辑</i-button>
+        <i-button
+          type="primary"
+          class="me-button add-btn"
+          icon="md-add"
+          @click="goConfig1(0, true)"
+        >编辑</i-button>
         <i-button type="error" class="me-button add-btn" icon="md-add" @click="goConfig(0)">删除</i-button>
       </div>
     </div>
@@ -14,6 +23,9 @@
           <table class="table-default">
             <thead>
               <tr>
+                <th width="60">
+                  <div class="checkbox"></div>
+                </th>
                 <th width="170">名称</th>
                 <th width="250">IP</th>
                 <th width="250">操作</th>
@@ -22,6 +34,13 @@
 
             <tbody>
               <tr v-for="item in this.list" :key="item.id">
+                <td>
+                  <div
+                    class="checkbox"
+                    :class="{checked: checkList.includes(item.id)}"
+                    @click="handleCheck(item.id)"
+                  ></div>
+                </td>
                 <td>{{item.name}}</td>
                 <td>
                   <Tags :list="item.IP" :field="item" />
@@ -57,6 +76,7 @@ export default {
   name: "accessControlList",
   data() {
     return {
+      checkList: ["1"],
       list: [],
       IP: [],
       id: "",
@@ -73,6 +93,19 @@ export default {
     this.getManger();
   },
   methods: {
+    handleGo(path) {
+      this.$router.push({
+        path
+      });
+    },
+    handleCheck(id) {
+      const index = this.checkList.indexOf(id);
+      if (index === -1) {
+        this.checkList.push(id);
+      } else {
+        this.checkList.splice(index, 1);
+      }
+    },
     getManger() {
       let _self = this;
       services
@@ -95,8 +128,12 @@ export default {
         this.$refs.configRef.openConfig();
       }
     },
-    goConfig1(data) {
-      this.$refs.eviceRef.openConfig({ data });
+    goConfig1(data, checked) {
+      if (checked) {
+        this.$refs.eviceRef.openConfig({ data: this.checkList[0] });
+      } else {
+        this.$refs.eviceRef.openConfig({ data });
+      }
     },
     createSuccess() {
       this.getManger();
@@ -131,5 +168,16 @@ export default {
 }
 .me-button {
   margin-top: 50px;
+}
+
+.checkbox {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  border: 1px solid #66615b;
+  cursor: pointer;
+}
+.checked {
+  background-image: url("../../../assets/images/checked.png");
 }
 </style>
