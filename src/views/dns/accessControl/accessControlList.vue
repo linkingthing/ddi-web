@@ -8,54 +8,51 @@
 
       <div class="button-box fr">
         <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
-        <i-button
-          type="primary"
-          class="me-button add-btn"
-          icon="md-add"
-          @click="goConfig1(0, true)"
-        >编辑</i-button>
-        <i-button type="error" class="me-button add-btn" icon="md-add" @click="goConfig(0)">删除</i-button>
       </div>
     </div>
-    <div class>
+    <div>
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">
             <thead>
               <tr>
-                <th width="60">
-                  <div class="checkbox"></div>
-                </th>
                 <th width="170">名称</th>
                 <th width="250">IP</th>
+                <th width="250">创建时间</th>
                 <th width="250">操作</th>
               </tr>
             </thead>
 
             <tbody>
               <tr v-for="item in this.list" :key="item.id">
-                <td>
-                  <div
-                    class="checkbox"
-                    :class="{checked: checkList.includes(item.id)}"
-                    @click="handleCheck(item.id)"
-                  ></div>
-                </td>
                 <td>{{item.name}}</td>
                 <td>
                   <Tags :list="item.IP" :field="item" />
                 </td>
+                <td>{{item.creationTimestamp}}</td>
                 <td>
-                  <i-button
+                  <!-- <i-button
                     class="k-btn"
                     @click="goConfig1(item.id)"
                     v-if="!['any','none'].includes(item.name)"
-                  >修改</i-button>
-                  <i-button
+                  >修改</i-button>-->
+                  <Icon
+                    class="btn-icon btn-edit"
+                    type="ios-create-outline"
+                    @click="goConfig1(item.id)"
+                    v-if="!['any','none'].includes(item.name)"
+                  />
+                  <Icon
+                    class="btn-icon btn-del"
+                    type="md-close"
+                    @click="delect(item.id)"
+                    v-if="!['any','none'].includes(item.name)"
+                  />
+                  <!-- <i-button
                     class="k-btn"
                     @click="delect(item.id)"
                     v-if="!['any','none'].includes(item.name)"
-                  >删除</i-button>
+                  >删除</i-button>-->
                 </td>
               </tr>
             </tbody>
@@ -76,7 +73,6 @@ export default {
   name: "accessControlList",
   data() {
     return {
-      checkList: ["1"],
       list: [],
       IP: [],
       id: "",
@@ -98,14 +94,7 @@ export default {
         path
       });
     },
-    handleCheck(id) {
-      const index = this.checkList.indexOf(id);
-      if (index === -1) {
-        this.checkList.push(id);
-      } else {
-        this.checkList.splice(index, 1);
-      }
-    },
+
     getManger() {
       let _self = this;
       services
@@ -128,12 +117,8 @@ export default {
         this.$refs.configRef.openConfig();
       }
     },
-    goConfig1(data, checked) {
-      if (checked) {
-        this.$refs.eviceRef.openConfig({ data: this.checkList[0] });
-      } else {
-        this.$refs.eviceRef.openConfig({ data });
-      }
+    goConfig1(data) {
+      this.$refs.eviceRef.openConfig({ data });
     },
     createSuccess() {
       this.getManger();
@@ -179,5 +164,15 @@ export default {
 }
 .checked {
   background-image: url("../../../assets/images/checked.png");
+}
+.btn-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+.btn-edit {
+  color: #68b3c8;
+}
+.btn-del {
+  color: #eb5e28;
 }
 </style>
