@@ -1,10 +1,18 @@
 <template>
   <div class="index-main columns t-box">
     <div class="content-header">
-      <Select style="width:300px" @on-change="handleGo">
-        <Option value="/dns/accessControl/accessControlList">访问控制列表</Option>
-        <Option value="/dns/accessControl/viewManage">视图管理</Option>
-      </Select>
+      <div class="bread">
+        <Breadcrumb>
+          <BreadcrumbItem
+            :key="item.path"
+            :to="index === breadcrumbList.length-1 ? '': item.path"
+            v-for="(item, index) in breadcrumbList"
+          >
+            {{item.title}}
+            <template v-if="item.name">({{item.name}})</template>
+          </BreadcrumbItem>
+        </Breadcrumb>
+      </div>
 
       <div class="button-box fr">
         <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
@@ -73,6 +81,7 @@ export default {
   name: "accessControlList",
   data() {
     return {
+      breadcrumbList: [],
       list: [],
       IP: [],
       id: "",
@@ -87,6 +96,7 @@ export default {
   },
   mounted() {
     this.getManger();
+    this.excuteBreadcrumbList(this.$route, this.$route);
   },
   methods: {
     handleGo(path) {
@@ -140,6 +150,56 @@ export default {
             });
         }
       });
+    },
+    excuteBreadcrumbList(currentRoute, prevRoute) {
+      const {
+        fullPath: currentFullPath,
+        meta: { parent, title: currentTitle },
+        query: { name }
+      } = currentRoute;
+      const {
+        fullPath,
+        meta: { title }
+      } = prevRoute;
+      if (prevRoute.name === parent) {
+        this.breadcrumbList.pop();
+        this.breadcrumbList.push({
+          path: fullPath,
+          title,
+          name
+        });
+      } else if (
+        this.breadcrumbList.map(item => item.path).includes(currentFullPath)
+      ) {
+        // 面包屑回退
+        const index = this.breadcrumbList
+          .map(item => item.path)
+          .indexOf(currentFullPath);
+        this.breadcrumbList = this.breadcrumbList.slice(0, index);
+      } else {
+        const { path } = this.$route;
+        const [, , menu] = path.split("/");
+        const menuConfig = {
+          authority: "权威管理",
+          recursion: "递归管理",
+          forward: "转发管理",
+          accessControl: "访问控制"
+        };
+        this.breadcrumbList = [
+          {
+            title: menuConfig[menu]
+          }
+        ];
+      }
+      this.breadcrumbList.push({
+        path: currentFullPath,
+        title: currentTitle
+      });
+    }
+  },
+  watch: {
+    $route(currentRoute, prevRoute) {
+      this.excuteBreadcrumbList(currentRoute, prevRoute);
     }
   }
 };
@@ -155,6 +215,9 @@ export default {
   margin-top: 50px;
 }
 
+.bread {
+  float: left;
+}
 .checkbox {
   display: inline-block;
   height: 16px;

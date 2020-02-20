@@ -5,7 +5,7 @@
     <section class="content">
       <div class="header">
         <div class="bread">
-          <Breadcrumb>
+          <!-- <Breadcrumb>
             <BreadcrumbItem
               :key="item.path"
               :to="index === breadcrumbList.length-1 ? '': item.path"
@@ -14,10 +14,13 @@
               {{item.title}}
               <template v-if="item.name">({{item.name}})</template>
             </BreadcrumbItem>
-          </Breadcrumb>
+          </Breadcrumb> -->
         </div>
 
         <div class="user">
+          <Badge :count="3">
+            <Icon type="ios-notifications-outline" style="font-size: 20px" />
+          </Badge>
           <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
             <a href="javascript:void(0)">
               <img src="../../assets/images/avatar.png" alt class="avatar" />
@@ -192,8 +195,8 @@ export default {
     font-size: 16px;
     float: right;
     .avatar {
-      height: 48px;
-      height: 48px;
+      height: 36px;
+      height: 36px;
       padding-right: 20px;
       vertical-align: middle;
     }
