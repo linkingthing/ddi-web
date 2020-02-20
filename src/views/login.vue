@@ -119,22 +119,35 @@ export default {
 
         const reader = res.body.getReader();
         console.log(reader);
+
+       const imageArr = [];
         const stream = new ReadableStream({
           start(controller) {
-            async function push() {
+            function push() {
               // "done"是一个布尔型，"value"是一个Unit8Array
-              const arr = await reader.read();
-              const blob = new Blob([arr.value]);
-              const file = new FileReader();
-              file.onload = function(e) {
-                console.log(444, e, e.target.result);
-                self.img = e.target.result;
-              };
-              file.readAsDataURL(blob);
+              reader.read().then(({ done, value }) => {
+                if (done) {
+                  console.log("ok");
+                  const blob = new Blob(imageArr);
+                  const file = new FileReader();
+                  file.onload = function(e) {
+                    self.img = e.target.result;
+                  };
+                  file.readAsDataURL(blob);
+                  return;
+                }
+                console.log(value);
+                imageArr.push(value);
+                push();
+              });
             }
             push();
+          },
+          pull() {
+            console.log("pull");
           }
         });
+
       });
     },
     login() {
