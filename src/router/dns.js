@@ -30,12 +30,20 @@ const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')
 
 const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLayout')), 'dnsLayout')
 
+import nodeManage from '@/views/node'
+
+
 export default {
     path: '/dns',
     name: 'dns',
     redirect: '/dns/authority/config',
     component: dnsLayout,
     children: [
+        {
+            name: 'nodeManage',
+            path: '/dns/node',
+            component: nodeManage,
+        },
         {
             // 配置组管理
             name: 'configGroup',

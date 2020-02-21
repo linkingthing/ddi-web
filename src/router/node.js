@@ -8,5 +8,6 @@ export default {
     meta: {
         range: 'node',
         title: 'Home'
-    }
+    },
+    
 }
