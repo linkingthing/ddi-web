@@ -31,7 +31,7 @@ const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')
 const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLayout')), 'dnsLayout')
 
 import nodeManage from '@/views/node'
-
+import DeviceInformation from '@/views/node/DeviceInformation';
 
 export default {
     path: '/dns',
@@ -43,6 +43,11 @@ export default {
             name: 'nodeManage',
             path: '/dns/node',
             component: nodeManage,
+        },
+        {
+            name: 'DeviceInformation',
+            path: '/dns/node/deviceInformation',
+            component: DeviceInformation,
         },
         {
             // 配置组管理

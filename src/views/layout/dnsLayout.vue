@@ -14,7 +14,7 @@
               {{item.title}}
               <template v-if="item.name">({{item.name}})</template>
             </BreadcrumbItem>
-          </Breadcrumb> -->
+          </Breadcrumb>-->
         </div>
 
         <div class="user">
@@ -187,6 +187,8 @@ export default {
   height: 100px;
   box-sizing: border-box;
   padding: 25px 30px;
+  border-bottom: 1px solid #66615b;
+
   .bread {
     float: left;
   }
@@ -204,7 +206,7 @@ export default {
 }
 .content-wrapper {
   background: #fff;
-  margin: 0 40px;
+  margin: 20px 40px;
   height: 100%;
 }
 </style>
