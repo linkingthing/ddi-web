@@ -77,16 +77,6 @@
                     </form-item>
                   </i-col>
                 </Row>
-                <Row>
-                  <i-col span="24">
-                    <FormItem label="是否启用" prop="name">
-                      <RadioGroup v-model="dataConfig.isused">
-                        <Radio :label="1" isused="1">是</Radio>
-                        <Radio :label="0" isused="0">否</Radio>
-                      </RadioGroup>
-                    </FormItem>
-                  </i-col>
-                </Row>
               </div>
             </div>
           </div>
@@ -124,7 +114,6 @@ export default {
         title: "",
         name: "",
         priority: 1,
-        isused: 1,
         model10: [],
         // 例外规则
         exception: [

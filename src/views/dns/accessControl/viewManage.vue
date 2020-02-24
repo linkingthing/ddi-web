@@ -21,7 +21,6 @@
                 <th>名称</th>
                 <th width="250">访问控制列表</th>
                 <th width="250">优先级</th>
-                <th width="250">是否启用</th>
                 <th width="250">操作</th>
               </tr>
             </thead>
@@ -33,7 +32,6 @@
                   <Tags :list="item.acls" :field="name" />
                 </td>
                 <td>{{item.priority}}</td>
-                <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
                   <i-button class="k-btn" @click="goConfig1(item.id, item)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)" v-if="item.name !== 'default'">删除</i-button>
@@ -77,10 +75,6 @@ export default {
         {
           title: "优先级",
           key: "priority"
-        },
-        {
-          title: "是否启用",
-          key: "isused"
         },
         {
           title: "操作",

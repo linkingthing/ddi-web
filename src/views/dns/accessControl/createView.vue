@@ -73,16 +73,6 @@
                     </form-item>
                   </i-col>
                 </Row>
-                <Row>
-                  <i-col span="24">
-                    <FormItem label="是否启用" prop="isused">
-                      <RadioGroup v-model="dataConfig.isused">
-                        <Radio :label="1" :value="1">是</Radio>
-                        <Radio :label="0" :value="0">否</Radio>
-                      </RadioGroup>
-                    </FormItem>
-                  </i-col>
-                </Row>
               </div>
             </div>
           </div>
@@ -113,7 +103,6 @@ export default {
         title: "",
         name: "",
         priority: 1,
-        isused: 1,
         model10: [],
         // 例外规则
         exception: [
@@ -129,7 +118,6 @@ export default {
       ruleValidate: {
         name: [{ required: true, message: "请填访问控制名称" }],
         priority: [],
-        isused: []
       }
     };
   },

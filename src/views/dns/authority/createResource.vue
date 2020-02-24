@@ -42,12 +42,6 @@
                 <form-item label="TTL" prop="t4" :label-width="110">
                   <i-input type="text" v-model="upgradeConfig.t4" placeholder="请输入延缓时间" number></i-input>
                 </form-item>
-                <FormItem label="是否启用" prop="name" :label-width="110">
-                  <RadioGroup v-model="upgradeConfig.isused">
-                    <Radio :label="1" isused="1">是</Radio>
-                    <Radio :label="0" isused="0">否</Radio>
-                  </RadioGroup>
-                </FormItem>
               </div>
             </div>
           </div>
@@ -77,7 +71,6 @@ export default {
         t2: "A",
         t3: "",
         t4: "",
-        isused: 1
       },
       viewId: "",
       zoneId: "",
