@@ -4,7 +4,6 @@
       <img src="../../assets/images/logo.png" alt />
     </div>
     <div class="menu-list">
-
       <vue-scroll class="pr">
         <Menu :theme="theme" :active-name="tab" :open-names="['1']" :accordion="true">
           <MenuGroup title="节点管理">
@@ -21,21 +20,25 @@
               <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
             </Submenu>
 
-            <Submenu name="6">
+            <!-- <Submenu name="6">
               <template slot="title">
                 <Icon type="ios-git-branch" />递归管理
-              </template>
-              <MenuItem name="A4Compose" to="/dns/recursion/A4ComposeView">递归管理</MenuItem>
-              <MenuItem name="defaultA4Compose" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem>
-            </Submenu>
+            </template>-->
+            <MenuItem name="A4Compose" to="/dns/recursion/A4ComposeView">
+              <Icon type="ios-git-branch" />递归管理
+            </MenuItem>
+            <!-- <MenuItem name="defaultA4Compose" to="/dns/recursion/defaultA4Compose">默认4A地址合成</MenuItem> -->
+            <!-- </Submenu> -->
 
-            <Submenu name="7">
+            <!-- <Submenu name="7">
               <template slot="title">
                 <Icon type="ios-arrow-round-forward" />转发管理
-              </template>
-              <MenuItem name="zoneForward" to="/dns/forward/zoneForward">转发管理</MenuItem>
-              <MenuItem name="defaultForward" to="/dns/forword/defaultForward">默认转发</MenuItem>
-            </Submenu>
+            </template>-->
+            <MenuItem name="zoneForward" to="/dns/forward/zoneForward">
+              <Icon type="ios-arrow-round-forward" />转发管理
+            </MenuItem>
+            <!-- <MenuItem name="defaultForward" to="/dns/forword/defaultForward">默认转发</MenuItem> -->
+            <!-- </Submenu> -->
             <!-- <MenuItem name="accessControlList" to="/dns/accessControl/accessControlList">访问控制</MenuItem> -->
 
             <Submenu name="4">
@@ -49,7 +52,7 @@
               <template slot="title">
                 <Icon type="ios-medkit-outline" />安全管理
               </template>
-              <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem>
+              <!-- <MenuItem name="logStatistics" to="/dns/logStatistics">DDOS防护</MenuItem> -->
               <MenuItem name="blacklistAndwhitelist" to="/dns/blacklistAndwhitelist">安全管理</MenuItem>
               <MenuItem name="developmentcontrol" to="/dns/developmentcontrol">并发控制</MenuItem>
             </Submenu>
