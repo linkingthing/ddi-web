@@ -84,5 +84,6 @@ export default {
 </script>
 <style lang="less" scoped>
 .wrapper {
+  padding: 12px 20px;
 }
 </style>

@@ -1,9 +1,5 @@
 <template>
   <div class="index-main t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">区查询</span>
-      <div class="button-box fr"></div>
-    </div>
     <div class="table-box">
       <div class="table-s">
         <table class="table-default">

@@ -1,14 +1,11 @@
 <template>
   <div class="index-main columns t-box">
     <div class="content-header">
-      <div class="bread">
-        
-      </div>
-
       <div class="button-box fr">
         <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
       </div>
     </div>
+
     <div>
       <div class="table-box">
         <div class="table-s">
@@ -30,28 +27,8 @@
                 </td>
                 <td>{{item.creationTimestamp}}</td>
                 <td>
-                  <!-- <i-button
-                    class="k-btn"
-                    @click="goConfig1(item.id)"
-                    v-if="!['any','none'].includes(item.name)"
-                  >修改</i-button>-->
-                  <Icon
-                    class="btn-icon btn-edit"
-                    type="ios-create-outline"
-                    @click="goConfig1(item.id)"
-                    v-if="!['any','none'].includes(item.name)"
-                  />
-                  <Icon
-                    class="btn-icon btn-del"
-                    type="md-close"
-                    @click="delect(item.id)"
-                    v-if="!['any','none'].includes(item.name)"
-                  />
-                  <!-- <i-button
-                    class="k-btn"
-                    @click="delect(item.id)"
-                    v-if="!['any','none'].includes(item.name)"
-                  >删除</i-button>-->
+                  <btn-edit @click="goConfig1(item.id)" v-if="!['any','none'].includes(item.name)" />
+                  <btn-del @click="delect(item.id)" v-if="!['any','none'].includes(item.name)" />
                 </td>
               </tr>
             </tbody>
@@ -139,46 +116,9 @@ export default {
             });
         }
       });
-    },
-    
+    }
   },
-  watch: {
-  
-  }
+  watch: {}
 };
 </script>
 
-<style scoped>
-.content-header {
-  height: 120px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-.me-button {
-  margin-top: 50px;
-}
-
-.bread {
-  float: left;
-}
-.checkbox {
-  display: inline-block;
-  height: 16px;
-  width: 16px;
-  border: 1px solid #66615b;
-  cursor: pointer;
-}
-.checked {
-  background-image: url("../../../assets/images/checked.png");
-}
-.btn-icon {
-  font-size: 20px;
-  cursor: pointer;
-}
-.btn-edit {
-  color: #68b3c8;
-}
-.btn-del {
-  color: #eb5e28;
-}
-</style>

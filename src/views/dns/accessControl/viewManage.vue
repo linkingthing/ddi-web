@@ -1,10 +1,9 @@
 <template>
   <div class="index-main columns t-box">
-    <div class="header-title">
-      <span class="tit">视图管理</span>
+    <div class="content-header">
       <div class="button-box fr">
         <i-button
-          type="primary"
+          type="success"
           class="me-button add-btn"
           icon="md-add"
           @click="handleOpenCreate"
@@ -12,7 +11,7 @@
       </div>
     </div>
 
-    <div class="tab-select pding select2">
+    <div>
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">
@@ -33,8 +32,8 @@
                 </td>
                 <td>{{item.priority}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(item.id, item)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)" v-if="item.name !== 'default'">删除</i-button>
+                  <btn-edit @click="goConfig1(item.id, item)" />
+                  <btn-del @click="delect(item.id)" v-if="item.name !== 'default'" />
                 </td>
               </tr>
             </tbody>

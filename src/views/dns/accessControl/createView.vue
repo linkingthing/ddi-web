@@ -117,7 +117,7 @@ export default {
       // 表单验证规则
       ruleValidate: {
         name: [{ required: true, message: "请填访问控制名称" }],
-        priority: [],
+        priority: []
       }
     };
   },
@@ -176,7 +176,7 @@ export default {
         }
       });
     },
-    //    添加IP地址
+    // 添加IP地址
     handleAdd() {
       this.index++;
       this.dataConfig.exception.push({
@@ -188,7 +188,7 @@ export default {
     handleRemove(index) {
       this.dataConfig.exception.splice(index, 1);
     },
-    //关闭弹窗
+    // 关闭弹窗
     cancelModel() {
       this.deviceModal = false;
       this.$refs.formValidate.resetFields();

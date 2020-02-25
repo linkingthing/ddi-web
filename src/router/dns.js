@@ -22,7 +22,6 @@ const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/ne
 const alarmList = r => require.ensure([], () => r(require('@/views/dns/alarmList')), 'dnsLayout')
 const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66Analysis')), 'dnsLayout')
 const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
-const ipv6Support = r => require.ensure([], () => r(require('@/views/dns/ipv6Support')), 'dnsLayout')
 const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logStatistics')), 'dnsLayout')
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
@@ -236,15 +235,6 @@ export default {
             }
         },
 
-        {
-            // IPv6支持度
-            name: 'ipv6Support',
-            path: '/dns/ipv6Support',
-            component: ipv6Support,
-            meta: {
-                range: 'dns'
-            }
-        },
         {
             // DDOS防护
             name: 'logStatistics',

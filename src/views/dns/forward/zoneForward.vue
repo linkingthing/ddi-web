@@ -1,9 +1,6 @@
 <template>
   <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">区转发</span>
-    </div>
-    <div class="tab-select pding select2">
+    <div>
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">

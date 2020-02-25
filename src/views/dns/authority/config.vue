@@ -1,11 +1,6 @@
 <template>
   <div class="index-main columns t-box right-content">
-    <div class="header-title">
-      <span class="tit">配置管理</span>
-    </div>
-    <!-- <Table :columns="columns" :data="list"></Table> -->
-
-    <div class="tab-select pding select2">
+    <div class="">
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">

@@ -1,9 +1,5 @@
 <template>
   <div class="index-main columns t-box">
-    <div class="header-title">
-      <span class="tit">重定向</span>
-      <div class="button-box fr"></div>
-    </div>
     <div class="tab-select pding select2">
       <div class="table-box">
         <div class="table-s">

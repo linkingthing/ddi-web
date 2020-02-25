@@ -61,6 +61,20 @@ import './components/Loading/index.css';
 import Loading from './components/Loading/index';
 Vue.use(Loading);
 
+import Bread from '@/components/Bread';
+Vue.component(
+  'bread', Bread
+)
+
+import BaseBtnEdit from '@/components/BaseBtnEdit';
+Vue.component(
+  'btn-edit', BaseBtnEdit
+)
+
+import BaseBtnDel from '@/components/BaseBtnDel';
+Vue.component(
+  'btn-del', BaseBtnDel
+)
 
 import store from './store'
 import router from './router'
