@@ -19,7 +19,6 @@
               <tr>
                 <th width="170">区名称</th>
                 <th width="250">资源记录数量</th>
-                <th width="250">是否启用</th>
                 <th width="250">操作</th>
               </tr>
             </thead>
@@ -31,7 +30,6 @@
                   >{{item.name}}</router-link>
                 </td>
                 <td>{{item.rrsize}}</td>
-                <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
                 </td>

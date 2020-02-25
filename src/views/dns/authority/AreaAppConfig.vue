@@ -26,12 +26,6 @@
                     </form-item>
                   </i-col>
                 </Row>
-                <FormItem label="是否启用" prop="isused" style="margin-left:28px;">
-                  <RadioGroup v-model="dataConfig.isused">
-                    <Radio :label="1" :value="1">是</Radio>
-                    <Radio :label="0" :value="0">否</Radio>
-                  </RadioGroup>
-                </FormItem>
               </div>
             </div>
           </div>
@@ -64,7 +58,6 @@ export default {
       // 表单验证规则
       ruleValidate: {
         name: [{ required: true, message: "请填区域名称" }],
-        isused: [{ required: true, message: "请选择是否启用" }]
       }
     };
   },
@@ -105,7 +98,6 @@ export default {
 
 <style scoped>
 .ivu-divider-dashed {
-  /* background: 0 0; */
   border-top: 0px dashed #e8eaec;
 }
 

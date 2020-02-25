@@ -339,16 +339,16 @@ export default {
     height: 100px;
     margin-left: 30px;
     &:nth-child(1) {
-      background: url("~@/assets/images/bg-01.png") center center no-repeat;
+      // background: url("~@/assets/images/bg-01.png") center center no-repeat;
     }
     &:nth-child(2) {
-      background: url("~@/assets/images/bg-02.png") center center no-repeat;
+      // background: url("~@/assets/images/bg-02.png") center center no-repeat;
     }
     &:nth-child(3) {
-      background: url("~@/assets/images/bg-03.png") center center no-repeat;
+      // background: url("~@/assets/images/bg-03.png") center center no-repeat;
     }
     &:nth-child(4) {
-      background: url("~@/assets/images/bg-04.png") center center no-repeat;
+      // background: url("~@/assets/images/bg-04.png") center center no-repeat;
       position: relative;
     }
     &:first-child {

@@ -1,10 +1,9 @@
 <template>
   <div class="index-main columns t-box">
-    <div class="header-title">
-      <span class="tit">视图管理</span>
+    <div class="content-header">
       <div class="button-box fr">
         <i-button
-          type="primary"
+          type="success"
           class="me-button add-btn"
           icon="md-add"
           @click="handleOpenCreate"
@@ -12,7 +11,7 @@
       </div>
     </div>
 
-    <div class="tab-select pding select2">
+    <div>
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">
@@ -21,7 +20,6 @@
                 <th>名称</th>
                 <th width="250">访问控制列表</th>
                 <th width="250">优先级</th>
-                <th width="250">是否启用</th>
                 <th width="250">操作</th>
               </tr>
             </thead>
@@ -33,10 +31,9 @@
                   <Tags :list="item.acls" :field="name" />
                 </td>
                 <td>{{item.priority}}</td>
-                <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
-                  <i-button class="k-btn" @click="goConfig1(item.id, item)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)" v-if="item.name !== 'default'">删除</i-button>
+                  <btn-edit @click="goConfig1(item.id, item)" />
+                  <btn-del @click="delect(item.id)" v-if="item.name !== 'default'" />
                 </td>
               </tr>
             </tbody>
@@ -77,10 +74,6 @@ export default {
         {
           title: "优先级",
           key: "priority"
-        },
-        {
-          title: "是否启用",
-          key: "isused"
         },
         {
           title: "操作",

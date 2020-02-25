@@ -1,7 +1,6 @@
 <template>
   <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
     <div class="header-title">
-      <span class="tit">查询重定向</span>
       <div class="button-box fr">
         <i-button
           type="primary"

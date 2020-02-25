@@ -2,7 +2,7 @@
   <div>
     <div class="login">
       <div class="login-head">
-        <img class="logo" src="../assets/images/logo2.png" />
+        <img class="logo" src="../assets/images/logo.png" />
         <h1>DDI配置管理平台</h1>
       </div>
       <div>
@@ -110,17 +110,12 @@ export default {
       const self = this;
       fetch("/dns/linkingthing.com/example/v1/getcheckimage.jpeg").then(res => {
         console.log(res.body);
-        console.log(res.headers);
-        // const headers = {}
-        // res.headers.forEach((val, key) => {
-        //   console.log(key + " -> " + val);
-        // });
+
         this.checkvaluetoken = res.headers.get("checkvaluetoken");
 
         const reader = res.body.getReader();
         console.log(reader);
-
-       const imageArr = [];
+        const imageArr = [];
         const stream = new ReadableStream({
           start(controller) {
             function push() {
@@ -136,7 +131,6 @@ export default {
                   file.readAsDataURL(blob);
                   return;
                 }
-                console.log(value);
                 imageArr.push(value);
                 push();
               });
@@ -159,23 +153,25 @@ export default {
               CheckValue: this.captcha
             })
             .then(res => {
-              // if (res.data !== "check value fail!") {
+              if (res.data !== "check value fail!") {
                 services
                   .login(this.params)
                   .then(res => {
                     if (res.data.code === 200) {
                       this.$Message.success("Success!");
                       this.SET_TOKEN(res.data.token);
-                      this.$router.push({ path: "/" });
+                      this.$router.push({
+                        path: "/dns/accessControl/accessControlList"
+                      });
                     }
                   })
                   .catch(res => {
                     this.$Message.error(res.response.data.message);
                   });
-              // } else {
-              //   this.$Message.error("图片验证失败");
-              //   this.getCaptcha();
-              // }
+              } else {
+                this.$Message.error("图片验证失败");
+                this.getCaptcha();
+              }
             });
         }
       });

@@ -1,9 +1,16 @@
 <template>
   <div class="index-main clusterMg t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">地址黑名单配置</span>
+    <div class="content-header">
+      <div class="bread">
+        <span class="tit">地址黑名单配置</span>
+      </div>
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig">新建</i-button>
+        <i-button
+          type="success"
+          class="me-button add-btn"
+          icon="md-add"
+          @click="handleOpenCreate"
+        >新建</i-button>
       </div>
     </div>
     <div class="table-box">
@@ -47,7 +54,7 @@ export default {
     this.getView();
   },
   methods: {
-    goConfig() {
+    handleOpenCreate() {
       this.$refs.blacklistRef.openModel();
     },
     goConfig1(data) {

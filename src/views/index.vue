@@ -2,13 +2,13 @@
   <div id="index">
     <section>
       <!-- 头部 -->
-      <iHeader></iHeader>
+      <!-- <iHeader></iHeader>c -->
     </section>
     <!-- 路由 -->
     <router-view></router-view>
 
     <!-- footer -->
-    <iFooter></iFooter>
+    <!-- <iFooter></iFooter> -->
 
     <!-- 修改密码 -->
     <modal

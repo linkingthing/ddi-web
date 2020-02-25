@@ -42,12 +42,6 @@
                 <form-item label="TTL" prop="ttl" :label-width="110">
                   <i-input type="text" v-model="params.ttl" placeholder="请输入延缓时间" number></i-input>
                 </form-item>
-                <FormItem label="是否启用" prop="isused" :label-width="110">
-                  <RadioGroup v-model="params.isused">
-                    <Radio :label="1" isused="1">是</Radio>
-                    <Radio :label="0" isused="0">否</Radio>
-                  </RadioGroup>
-                </FormItem>
               </div>
             </div>
           </div>
@@ -76,7 +70,6 @@ export default {
         type: "",
         value: "A",
         ttl: "",
-        isused: 1
       },
       viewId: "",
       zoneId: "",
@@ -88,7 +81,6 @@ export default {
         type: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
         ttl: [{ required: true }],
-        isused: [{ required: true }]
       }
     };
   },

@@ -1,323 +1,160 @@
 <template>
-  <div class="node-manager" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">节点管理</div>
-
-    <div class="middle">
-      <Row>
-        <i-col span="6">
-          <Tree :data="nodeList" @on-select-change="handleSelectNode" multiple class="tree"></Tree>
-        </i-col>
-        <i-col span="18">
-          <div class="qps">
-            <span class="qps-title">QPS</span>
-            <span class="count">{{ qps }}</span>
-            <span>个/秒</span>
+  <div class="nodeManage">
+    <Tabs @on-click="handleTab" value>
+      <TabPane label="拓扑图" name="topology">
+        <div class="parent tab-item">
+          <div class="host" @click="handleGoDeviceInfo">
+            <img src="../../assets/images/host.png" alt />
+            <ul class="host-info">
+              <li>图层服务器类型: Controller</li>
+              <li>服务器名称: Server1</li>
+              <li>服务器IP:10.1.1.1</li>
+              <li>服务器状态: (在线)</li>
+            </ul>
           </div>
-          <Row>
-            <i-col span="8" v-for="dash in dashboardList" :key="dash.type">
-              <div>
-                <my-chart :values="dash"></my-chart>
-              </div>
-            </i-col>
-          </Row>
-
-          <div class="line-graph">
-            <div class="filter-wrapper">
-              <div class="tab-device">
-                <Tabs active-key="lineParams.type" @on-click="handleChangeType">
-                  <Tab-pane
-                    :name="dash.type"
-                    :label="dash.name"
-                    v-for="dash in dashboardList"
-                    :key="dash.type"
-                  ></Tab-pane>
-                </Tabs>
-              </div>
-              <div class="date-pick-content">
-                <date-picker @onSearch="handleSearch"></date-picker>
-              </div>
-            </div>
-
-            <line-bar :values="usageData" :labels="dateData"></line-bar>
-            <Spin size="large" fix v-if="spinShow"></Spin>
+        </div>
+        <div class="children">
+          <div class="host-item">
+            <img src="../../assets/images/dns.png" alt />
+            <ul class="host-info">
+              <li>图层服务器类型: Controller</li>
+              <li>服务器名称: Server1</li>
+              <li>服务器IP:10.1.1.1</li>
+              <li>服务器状态: (在线)</li>
+            </ul>
           </div>
-        </i-col>
-      </Row>
-    </div>
+          <div class="host-item">
+            <img src="../../assets/images/dhcp.png" alt />
+            <ul class="host-info">
+              <li>图层服务器类型: Controller</li>
+              <li>服务器名称: Server1</li>
+              <li>服务器IP:10.1.1.1</li>
+              <li>服务器状态: (在线)</li>
+            </ul>
+          </div>
+          <div class="host-item">
+            <img src="../../assets/images/dhcp.png" alt />
+            <ul class="host-info">
+              <li>图层服务器类型: Controller</li>
+              <li>服务器名称: Server1</li>
+              <li>服务器IP:10.1.1.1</li>
+              <li>服务器状态: (在线)</li>
+            </ul>
+          </div>
+        </div>
+      </TabPane>
+      <TabPane label="服务器列表" name="serverList">
+        <div class="table-box tab-item">
+          <table class="table-default">
+            <thead>
+              <th>服务器类型</th>
+              <th>服务器名称</th>
+              <th>服务器IP</th>
+              <th>服务器状态</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </TabPane>
+    </Tabs>
   </div>
 </template>
 
 <script>
-import services from "@/services";
-import myChart from "./dashboard";
-import line from "./line";
-import datePicker from "@/components/datePicker";
-import { dateFormat } from "@/util/common";
-
 export default {
-  name: "node-manage",
-  components: {
-    "my-chart": myChart,
-    "line-bar": line,
-    "date-picker": datePicker
-  },
+  components: {},
+  props: {},
   data() {
-    return {
-      query: {
-        node: "" // ip
-      },
-      qps: "",
-      dashboardList: [
-        {
-          name: "CPU利用率",
-          value: "0",
-          type: "cpu"
-        },
-        {
-          name: "内存利用率",
-          value: "0",
-          type: "mem"
-        },
-        {
-          name: "磁盘利用率",
-          value: "0",
-          type: "disk"
-        }
-      ],
-      nodeList: [],
-
-      // 折线图请求参数
-      lineParams: {
-        node: "",
-        type: "cpu",
-        start: "",
-        end: "",
-        step: ""
-      },
-      usageData: [],
-      dateData: [],
-      spinShow: false
-    };
+    return {};
   },
-  mounted() {
-    this.getInitNodeData();
-  },
+  watch: {},
+  computed: {},
   methods: {
-    /**
-     * think: 获取到的而对象是map结构，解析出的结果的顺序可能偏离预设顺序
-     */
-    getInitNodeData() {
-      services.getNodeList(this.query).then(res => {
-        this.baseData = [];
-        if (res.data.status === "success") {
-          const { nodes, usage } = res.data.data;
-          this.nodeList = [this.analysisNodeListAndGroup(nodes)];
-          const [[node, usageObj]] = Object.entries(usage); // 取第一条作为当前node/ip 和 右边饼图展示信息
-          this.query.node = node;
-          this.lineParams.node = node; // 初始化
-          this.dashboardList = this.dashboardList.map(dash => {
-            return {
-              ...dash,
-              value: usageObj[dash.type]
-            };
-          });
-          this.qps = usageObj.qps;
-        }
+    handleTab(tab) {
+      console.log(tab);
+    },
+    handleGoDeviceInfo() {
+      this.$router.push({
+        name: "DeviceInformation"
       });
-    },
-
-    /**
-     * analysisNodeListAndGroup
-     * 数据解析函数, 将返回节点map转换成树形结构数据
-     * "role": 0, //节点的类型，0是控制器，1是数据库，2是消息队列 分组
-     */
-    analysisNodeListAndGroup(data) {
-      const self = this;
-      const controller = {
-        expand: true,
-        role: 0,
-        type: "controller",
-        title: "控制器",
-        children: []
-      };
-      const db = {
-        expand: true,
-        role: 1,
-        type: "db",
-        title: "数据库",
-        children: []
-      };
-      const queue = {
-        expand: true,
-        role: 2,
-        type: "queue",
-        title: "消息队列",
-        children: []
-      };
-
-      Object.values(data).forEach((item, index, arr) => {
-        const obj = {
-          ...item,
-          title: item.hostname,
-          // value: item.ip
-          render: (h, { root, node, data }) => {
-            return h(
-              "span",
-              {
-                style: {
-                  display: "inline-block",
-                  width: "100%",
-                  cursor: "pointer"
-                },
-                on: {
-                  click: () => {
-                    self.handleSelectNode(node, { ...data, value: item.ip });
-                  }
-                }
-              },
-              [
-                h(
-                  "span",
-                  {
-                    style: {
-                      paddingRight: "10px"
-                    }
-                  },
-                  data.ip
-                ),
-                h("Badge", {
-                  props: {
-                    status: data.state ? "success" : "error"
-                  }
-                })
-              ]
-            );
-          }
-        };
-        if (item.role === 0) {
-          controller.children.push(obj);
-        }
-        if (item.role === 1) {
-          db.children.push(obj);
-        }
-        if (item.role === 2) {
-          queue.children.push(obj);
-        }
-      });
-      return {
-        expand: true,
-        type: "node",
-        title: "节点管理",
-        children: [controller, db, queue]
-      };
-    },
-    handleSelectNode(_, { value }) {
-      if (value) {
-        this.query.node = value;
-        this.getInitNodeData();
-      }
-    },
-    getDeviceHistoryInfo(params) {
-      this.spinShow = true;
-      services.getDeviceHistoryInfo(params).then(res => {
-        if (res.data.status === "success") {
-          // optimize：一行代码解决
-          this.dateData = Array.isArray(res.data.data.values)
-            ? res.data.data.values.map(item =>
-                dateFormat(item[0], "yyyy-MM-dd")
-              )
-            : [];
-          this.usageData = Array.isArray(res.data.data.values)
-            ? res.data.data.values.map(item => item[1])
-            : [];
-        }
-        this.spinShow = false;
-      });
-    },
-    handleChangeType(type) {
-      this.lineParams.type = type;
-    },
-    handleSearch(options) {
-      this.lineParams = {
-        ...this.lineParams,
-        ...options
-      };
     }
   },
-  watch: {
-    lineParams: {
-      handler(values) {
-        this.getDeviceHistoryInfo(values);
-      },
-      deep: true
-    }
-  }
+  created() {},
+  mounted() {}
 };
 </script>
-
-<style scoped lang="less">
-.node-manager {
-  padding: 0px;
-  background-color: white;
-  border-radius: 6px;
-  .header-title {
-    font-size: 16px;
-    height: 72px;
-    line-height: 72px;
-    padding-left: 30px;
-    padding-right: 30px;
-    font-size: 16px;
-  }
-}
-
-.tree {
-  border-right: 1px solid #ddd;
-  min-height: 360px;
-  margin: 0 50px;
-}
-.qps {
-  font-size: 18px;
-  color: #333;
-  .qps-title {
-    display: inline-block;
-    border-left: 6px solid #4796ff;
-    padding-left: 20px;
-  }
-  .count {
-    font-weight: bold;
-  }
-  span {
-    font-size: 16px;
-    color: #666;
-  }
-}
-
-.view {
-  position: relative;
-  font-size: 16px;
-  color: #666;
-  text-align: center;
-  z-index: 100;
-  margin-top: -70px;
-}
-
-.view:hover {
-  cursor: pointer;
-  color: #4796ff;
-}
-
-.line-graph {
-  position: relative;
+<style lang="less" scoped>
+.nodeManage {
   padding: 30px;
 }
-.filter-wrapper {
+.parent {
   display: flex;
-
-  .date-pick-content {
-    flex: 1;
-    position: relative;
-    z-index: 200;
-    text-align: right;
+  justify-content: center;
+  .host-info {
   }
+  .host {
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -60px;
+      height: 80px;
+      width: 2px;
+      border-left: 2px dotted #006fe4;
+    }
+  }
+}
+.host-info {
+  display: inline-block;
+  color: #252422;
+  margin-left: 12px;
+
+  li {
+    margin-bottom: 20px;
+  }
+}
+.children {
+  text-align: center;
+  margin-top: 140px;
+
+  .host-item {
+    position: relative;
+    display: inline-block;
+    text-align: left;
+    margin: 0 20px;
+    width: 300px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -80px;
+      height: 80px;
+      width: 0;
+      border-left: 2px dotted #006fe4;
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -80px;
+      width: 340px;
+      border-top: 2px dotted #006fe4;
+    }
+    &:last-child::after {
+      border: 0;
+    }
+  }
+}
+.tab-item {
+  padding-top: 60px;
 }
 </style>

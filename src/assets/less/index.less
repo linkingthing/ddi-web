@@ -527,7 +527,7 @@ footer{
 }
 // 表格
 .table-box{
-    padding: 30px;
+    // padding: 30px;
     .table-s{
         // width: 100%;
         // margin-right: -189px;
@@ -589,17 +589,22 @@ footer{
             }
         }
     }
-    table th,table td{ border:1px solid #DDDDDD;text-align: center;}
+    table th,table td{ border-bottom:1px solid #DDDDDD;text-align: center;}
     table th{
         height: 40px;
         font-size: @f14;
+        color: #252422;
+    }
+    tr:nth-child(2n-1) td{
+        background-color: #f3f2ee;
     }
     table td{
-        height: 60px;
+        height: 50px;
         font-size: @f14;
     }
     thead{
-        background-color: @theadBgColor;
+        // background-color: @theadBgColor;
+        // background-color: rgba(102,97,91,.1);
     }
 
     .ivu-modal-body{
@@ -641,11 +646,7 @@ footer{
         }
     }
 }
-.columns{
-    .table-box{
-        padding: 30px 0;
-    }
-}
+
 
 // 页面里面切换
 .tab-select{
@@ -1007,4 +1008,15 @@ footer{
         color: @black;
         text-align: left;
     } 
+}
+
+.me-button.ivu-btn-success{
+    background-color: #7AC09A;
+}
+.me-button.ivu-btn-primary{
+    background-color: #6BB3C7;
+}
+
+.me-button.ivu-btn-error{
+   background-color:  #E95F33;
 }

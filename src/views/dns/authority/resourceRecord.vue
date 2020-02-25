@@ -21,7 +21,6 @@
                 <th width="140">类型</th>
                 <th width="160">记录值</th>
                 <th width="95">TTL</th>
-                <th width="230">是否启用</th>
                 <th width="240">操作</th>
               </tr>
             </thead>
@@ -31,7 +30,6 @@
                 <td>{{item.type}}</td>
                 <td>{{item.value}}</td>
                 <td>{{item.ttl+'s'}}</td>
-                <td>{{item.isused === 0?'否':'是'}}</td>
                 <td>
                   <i-button class="k-btn" @click="goAnalysis(viewId, zoneId, item.id)">修改</i-button>
                   <i-button class="k-btn" @click="delect(item.id)">删除</i-button>

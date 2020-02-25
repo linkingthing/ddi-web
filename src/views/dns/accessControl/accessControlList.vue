@@ -1,13 +1,12 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">访问控制表</span>
+  <div class="index-main columns t-box">
+    <div class="content-header">
       <div class="button-box fr">
-        <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
-        <!-- <i-button type="primary" class="me-button add-btn" icon="md-add" @click="goConfig('新增参数')">新建</i-button> -->
+        <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
       </div>
     </div>
-    <div class="tab-select pding select2">
+
+    <div>
       <div class="table-box">
         <div class="table-s">
           <table class="table-default">
@@ -15,6 +14,7 @@
               <tr>
                 <th width="170">名称</th>
                 <th width="250">IP</th>
+                <th width="250">创建时间</th>
                 <th width="250">操作</th>
               </tr>
             </thead>
@@ -25,17 +25,10 @@
                 <td>
                   <Tags :list="item.IP" :field="item" />
                 </td>
+                <td>{{item.creationTimestamp}}</td>
                 <td>
-                  <i-button
-                    class="k-btn"
-                    @click="goConfig1(item.id)"
-                    v-if="!['any','none'].includes(item.name)"
-                  >修改</i-button>
-                  <i-button
-                    class="k-btn"
-                    @click="delect(item.id)"
-                    v-if="!['any','none'].includes(item.name)"
-                  >删除</i-button>
+                  <btn-edit @click="goConfig1(item.id)" v-if="!['any','none'].includes(item.name)" />
+                  <btn-del @click="delect(item.id)" v-if="!['any','none'].includes(item.name)" />
                 </td>
               </tr>
             </tbody>
@@ -72,6 +65,12 @@ export default {
     this.getManger();
   },
   methods: {
+    handleGo(path) {
+      this.$router.push({
+        path
+      });
+    },
+
     getManger() {
       let _self = this;
       services
@@ -118,9 +117,8 @@ export default {
         }
       });
     }
-  }
+  },
+  watch: {}
 };
 </script>
 
-<style scoped>
-</style>
