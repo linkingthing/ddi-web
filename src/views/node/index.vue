@@ -1,46 +1,24 @@
 <template>
   <div class="nodeManage">
-    <Tabs @on-click="handleTab" value>
+    <Tabs @on-click="handleTab">
       <TabPane label="拓扑图" name="topology">
         <div class="parent tab-item">
-          <div class="host" @click="handleGoDeviceInfo">
-            <img src="../../assets/images/host.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
+          <div
+            class="host"
+            @click="handleGoDeviceInfo(item)"
+            v-for="item in serverList.filter(item => item.role === 'controller') "
+            :key="item.ip"
+          >
+            <host-node :host="item" />
           </div>
         </div>
         <div class="children">
-          <div class="host-item">
-            <img src="../../assets/images/dns.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
-          </div>
-          <div class="host-item">
-            <img src="../../assets/images/dhcp.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
-          </div>
-          <div class="host-item">
-            <img src="../../assets/images/dhcp.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
-          </div>
+          <host-node
+            @click="handleGoDeviceInfo(item)"
+            :host="item"
+            :key="item.ip"
+            v-for="item in serverList.filter(item => item.role !== 'controller') "
+          />
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
@@ -53,11 +31,14 @@
               <th>服务器状态</th>
             </thead>
             <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+              <tr v-for="item in serverList" :key="item.ip">
+                <td>{{item.role}}</td>
+                <td>{{item.hostname}}</td>
+                <td>{{item.ip}}</td>
+                <td>
+                  <Badge :status="item.state ? 'success' : 'error'" />
+                  {{item.state ? "(在线)": "(利线)" }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -68,26 +49,46 @@
 </template>
 
 <script>
+import services from "@/services";
+import HostNode from "./HostNode";
 export default {
-  components: {},
+  components: {
+    "host-node": HostNode
+  },
   props: {},
   data() {
-    return {};
+    return {
+      topology: [],
+      serverList: []
+    };
   },
-  watch: {},
-  computed: {},
+
+  mounted() {
+    // this.getTopology();
+    this.getList();
+  },
+
   methods: {
+    // getTopology() {
+    //   services.getNodeList({}).then(res => {
+    //     this.topology = res.data.data;
+    //   });
+    // },
+    getList() {
+      services.getServerList().then(res => {
+        this.serverList = res.data.data;
+      });
+    },
     handleTab(tab) {
       console.log(tab);
     },
-    handleGoDeviceInfo() {
+    handleGoDeviceInfo({ ip }) {
       this.$router.push({
-        name: "DeviceInformation"
+        name: "DeviceInformation",
+        query: { ip }
       });
     }
-  },
-  created() {},
-  mounted() {}
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -97,8 +98,6 @@ export default {
 .parent {
   display: flex;
   justify-content: center;
-  .host-info {
-  }
   .host {
     position: relative;
     &::before {
@@ -112,20 +111,12 @@ export default {
     }
   }
 }
-.host-info {
-  display: inline-block;
-  color: #252422;
-  margin-left: 12px;
 
-  li {
-    margin-bottom: 20px;
-  }
-}
 .children {
   text-align: center;
   margin-top: 140px;
 
-  .host-item {
+  .host {
     position: relative;
     display: inline-block;
     text-align: left;

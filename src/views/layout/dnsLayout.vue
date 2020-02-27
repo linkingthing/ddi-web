@@ -4,9 +4,7 @@
     <menu-nav-dns></menu-nav-dns>
     <section class="content">
       <div class="header">
-        <div class="bread">
-
-        </div>
+        <div class="bread"></div>
 
         <div class="user">
           <Badge :count="3">
@@ -59,7 +57,7 @@ export default {
     return {
       visible: false,
       password: "",
-      rePassword: "",
+      rePassword: ""
     };
   },
   components: {
@@ -96,8 +94,8 @@ export default {
     },
     cancel() {
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -124,8 +122,7 @@ export default {
   height: 100px;
   box-sizing: border-box;
   padding: 25px 30px;
-  border-bottom: 1px solid #66615b;
-
+  box-shadow: 0 0 10px #66615b;
   .bread {
     float: left;
   }
