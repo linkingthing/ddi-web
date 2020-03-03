@@ -35,7 +35,7 @@ Vue.component('chart', ECharts)
 
 
 import axios from 'axios'
-Vue.prototype.$axios = axios
+Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false
 
@@ -81,6 +81,25 @@ import router from './router'
 
 import mixin from './mixin'
 Vue.mixin(mixin);
+
+Vue.prototype.$$message = function (msg, type = "info") {
+  this.$Message[type](msg);
+}
+
+Vue.prototype.$$confirm = function({title = "消息", content}){
+  return new Promise((resolve, reject) => {
+    this.$Modal.confirm({
+      title,
+      content,
+      onOk: () => {
+          resolve()
+      },
+      onCancel: () => {
+          reject()
+      }
+    });
+  })
+}
 
 // Vue.config.productionTip = false
 

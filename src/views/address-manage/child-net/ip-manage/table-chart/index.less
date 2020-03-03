@@ -1,0 +1,89 @@
+.ip-manage-table-chart{
+  display: flex;
+  margin-top: 30px;
+
+  .table-chart-content{
+  }
+
+  .table-chart-list{
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 46px;
+
+    .item-square{
+      margin-bottom: 16px;
+      display: inline-block;
+      margin-right: 15px;
+    }
+  }
+
+  .table-chart-legend{
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .legend-title{
+    color: #575757;
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 21px;
+  }
+
+  .legend-list{
+    width: 300px;
+
+    &-item{
+      width: 110px;
+      display: inline-flex;
+      margin-right: 26px;
+      align-items: center;
+      justify-content: flex-start;  
+      margin-bottom: 27px;    
+    }
+
+    .item-label{
+      margin-left: 6px;
+      font-size: 16px;
+      color: #575757;
+    }
+  }
+
+  .item-square{
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+
+    &.is-unused{
+      border: 1px solid #66615B;      
+    }
+
+    &.is-pool{
+      background-color: #7B9E9F;
+    }
+    
+    &.is-reflect{
+      background-color: #E95F33;
+    }
+
+    &.is-keeping{
+      background-color: #6BB3C7;
+    }
+
+    &.is-active{
+      background-color: #7CC19B;
+    }
+
+    &.is-fixed{
+      background-color: #66615B;
+    }
+
+    &.is-selected{
+      border: 1px solid #7CC19B;
+    }
+
+    &.is-zombie{
+      border: 1px solid #66615B;
+      background-color: #F3F2EE;
+    }
+  }
+}
