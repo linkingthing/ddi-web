@@ -20,7 +20,7 @@ const router = new Router({
         path: '/',
         name: 'Index',
         component: Index,
-        redirect: '/node',
+        redirect: '/dns/node',
         meta: {
             range: 'node',
         },

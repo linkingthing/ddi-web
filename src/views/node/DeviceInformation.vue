@@ -1,10 +1,5 @@
 <template>
   <div class="DeviceInformation">
-    <div class="qps">
-      <span class="qps-title">QPS</span>
-      <span class="count">{{ qps }}</span>
-      <span>个/秒</span>
-    </div>
     <Row>
       <i-col span="8" v-for="dash in dashboardList" :key="dash.type">
         <div>
@@ -67,14 +62,60 @@ export default {
           value: "0",
           type: "disk"
         }
-      ]
+      ],
+      lineParams: {
+        node: "",
+        type: "cpu",
+        start: "",
+        end: "",
+        step: ""
+      },
+      usageData: [],
+      dateData: [],
+      spinShow: false
     };
   },
-  watch: {},
+  mounted() {
+    this.lineParams.node = this.$route.query.ip;
+  },
+
   computed: {},
-  methods: {},
-  created() {},
-  mounted() {}
+  methods: {
+    getDeviceHistoryInfo(params) {
+      this.spinShow = true;
+      services.getDeviceHistoryInfo(params).then(res => {
+        if (res.data.status === "success") {
+          // optimize：一行代码解决
+          this.dateData = Array.isArray(res.data.data.values)
+            ? res.data.data.values.map(item =>
+                dateFormat(item[0], "yyyy-MM-dd")
+              )
+            : [];
+          this.usageData = Array.isArray(res.data.data.values)
+            ? res.data.data.values.map(item => item[1])
+            : [];
+        }
+        this.spinShow = false;
+      });
+    },
+    handleChangeType(type) {
+      this.lineParams.type = type;
+    },
+    handleSearch(options) {
+      this.lineParams = {
+        ...this.lineParams,
+        ...options
+      };
+    }
+  },
+  watch: {
+    lineParams: {
+      handler(values) {
+        this.getDeviceHistoryInfo(values);
+      },
+      deep: true
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
