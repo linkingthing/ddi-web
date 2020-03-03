@@ -1,6 +1,7 @@
 <template>
   <div class="DeviceInformation">
     <Row>
+      <h3>设备信息</h3>
       <i-col span="8" v-for="dash in dashboardList" :key="dash.type">
         <div>
           <my-chart :values="dash"></my-chart>
@@ -18,6 +19,7 @@
               v-for="dash in dashboardList"
               :key="dash.type"
             ></Tab-pane>
+            <Tab-pane name="qps" label="qps"></Tab-pane>
           </Tabs>
         </div>
         <div class="date-pick-content">

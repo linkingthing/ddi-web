@@ -13,12 +13,13 @@
           </div>
         </div>
         <div class="children">
-          <host-node
+          <div
             @click="handleGoDeviceInfo(item)"
-            :host="item"
             :key="item.ip"
             v-for="item in serverList.filter(item => item.role !== 'controller') "
-          />
+          >
+            <host-node :host="item" />
+          </div>
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
@@ -64,16 +65,21 @@ export default {
   },
 
   mounted() {
-    // this.getTopology();
+    this.getTopology();
     this.getList();
   },
 
   methods: {
-    // getTopology() {
-    //   services.getNodeList({}).then(res => {
-    //     this.topology = res.data.data;
-    //   });
-    // },
+    getTopology() {
+      services
+        .getNodeList({
+          // node: "10.0.0.15",
+          // type: "cpu"
+        })
+        .then(res => {
+          this.topology = res.data.data;
+        });
+    },
     getList() {
       services.getServerList().then(res => {
         this.serverList = res.data.data;

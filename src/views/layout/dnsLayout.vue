@@ -27,8 +27,10 @@
         </div>
       </div>
       <div class="content-wrapper">
-        <bread />
-        <router-view></router-view>
+        <div class="content-padding">
+          <bread />
+          <router-view></router-view>
+        </div>
       </div>
     </section>
     <Modal v-model="visible" title="修改密码">
@@ -139,8 +141,10 @@ export default {
   }
 }
 .content-wrapper {
-  background: #fff;
-  margin: 20px 40px;
   height: 100%;
+}
+.content-padding {
+  margin: 20px 40px;
+  background: #fff;
 }
 </style>

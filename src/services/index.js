@@ -55,7 +55,7 @@ export default {
     login(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/login`, params)
     },
-    updatePassword(params){
+    updatePassword(params) {
         return axios.post(`${dnsBaseUrl}/linkingthing.com/example/v1/changepwd`, params)
     },
     // 权威管理
@@ -216,13 +216,12 @@ export default {
 
 
     getNodeList(params) {
-        // todo: 后期建议改成标砖restfull
-        return axios.post(`${nodeBaseUrl}/linkingthing/node/v1/nodes?${params2Query(params)}`)
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/nodes`, { params })
     },
-    getServerList () {
-        return axios.get(`${nodeBaseUrl}/linkingthing/node/v1/servers`)
+    getServerList() {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/servers`)
     },
     getDeviceHistoryInfo(params) {
-        return axios.post(`${nodeBaseUrl}/linkingthing/node/v1/hists?${params2Query(params)}`)
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/hists`, { params })
     }
 }
