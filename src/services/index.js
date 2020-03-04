@@ -5,21 +5,6 @@ import { Message } from 'iview'
 const dnsBaseUrl = '/dns';
 const nodeBaseUrl = '/node'
 
-/**
- * 
- * const p = {
-    name: 'ranck',
-    age: 27
-   }
-    name=ranck&age=27
-*/
-
-function params2Query(params) {
-    return Object.entries(params).map((item) => {
-        return item.join('=')
-    }).join('&')
-}
-
 axios.interceptors.request.use(
     config => {
         const token = store.getters.token;

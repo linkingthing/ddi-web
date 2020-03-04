@@ -1,42 +1,8 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">A4地址合成</span>
-    </div>
-    <div class="tab-select pding select2">
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">视图</th>
-                <th width="250">规则数量</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr v-for="item in list" :key="item.id">
-                <td>
-                  <router-link
-                    :to="{
-                      name: 'A4Compose',
-                      query:{
-                        id:item.id,
-                        dns64s:item.links.dns64s,
-                        name: item.name
-                      }
-                    }"
-                  >{{item.name}}</router-link>
-                </td>
-                <td>{{item.dns64size}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <createDefaultA4 ref="networkRef"></createDefaultA4>
-      <editDefaultA4 ref="subnetRef"></editDefaultA4>
-    </div>
+  <div class="A4ComposeView">
+    <table-page title="A4地址合成" :data="list" :columns="columns" :paginationEnable="false" />
+    <createDefaultA4 ref="networkRef"></createDefaultA4>
+    <editDefaultA4 ref="subnetRef"></editDefaultA4>
   </div>
 </template>
 
@@ -49,6 +15,41 @@ export default {
   name: "A4ComposeView",
   data() {
     return {
+      columns: [
+        {
+          title: "视图",
+          key: "name",
+          align: "center",
+          render: (h, { row }) => {
+            return h(
+              "router-link",
+              {
+                props: {
+                  to: {
+                    name: "A4Compose",
+                    query: {
+                      id: row.id,
+                      dns64s: row.links.dns64s,
+                      name: row.name
+                    }
+                  }
+                }
+              },
+              row.name
+            );
+          }
+        },
+        {
+          title: "规则数量",
+          key: "dns64size",
+          align: "center"
+        },
+        {
+          title: "创建时间",
+          key: "creationTimestamp",
+          align: "center"
+        }
+      ],
       list: [],
       id: "",
       name: "",

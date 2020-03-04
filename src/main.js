@@ -4,10 +4,11 @@ import Vue from 'vue'
 import App from './App.vue'
 
 // iview UI 框架
-import iView from 'iview';
+// import iView from 'iview';
 
-import 'iview/dist/styles/iview.css';
-Vue.use(iView)
+import ViewUI from 'view-design';
+import '@/assets/less/theme.less'
+Vue.use(ViewUI)
 
 import tags from '@/components/tags';
 Vue.component('Tags', tags)
@@ -62,19 +63,16 @@ import Loading from './components/Loading/index';
 Vue.use(Loading);
 
 import Bread from '@/components/Bread';
-Vue.component(
-  'bread', Bread
-)
+Vue.component('bread', Bread)
 
 import BaseBtnEdit from '@/components/BaseBtnEdit';
-Vue.component(
-  'btn-edit', BaseBtnEdit
-)
+Vue.component('btn-edit', BaseBtnEdit)
 
 import BaseBtnDel from '@/components/BaseBtnDel';
-Vue.component(
-  'btn-del', BaseBtnDel
-)
+Vue.component('btn-del', BaseBtnDel)
+
+import TablePagination from '@/components/TablePagination';
+Vue.component('table-page', TablePagination);
 
 import store from './store'
 import router from './router'
@@ -86,16 +84,16 @@ Vue.prototype.$$message = function (msg, type = "info") {
   this.$Message[type](msg);
 }
 
-Vue.prototype.$$confirm = function({title = "消息", content}){
+Vue.prototype.$$confirm = function ({ title = "消息", content }) {
   return new Promise((resolve, reject) => {
     this.$Modal.confirm({
       title,
       content,
       onOk: () => {
-          resolve()
+        resolve()
       },
       onCancel: () => {
-          reject()
+        reject()
       }
     });
   })

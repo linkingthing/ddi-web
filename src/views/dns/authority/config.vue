@@ -1,35 +1,6 @@
 <template>
-  <div class="index-main columns t-box right-content">
-    <div class="">
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">视图名称</th>
-                <th width="250">区数量</th>
-                <th width="250">优先级</th>
-                <th width="250">访问控制列表</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in this.list" :key="item.id">
-                <td>
-                  <router-link
-                    :to="{name:'authorityZoneQuery',query:{id: item.id, name: item.name}}"
-                  >{{item.name}}</router-link>
-                </td>
-                <td>{{item.zonesize}}</td>
-                <td>{{item.priority}}</td>
-                <td>
-                  <Tags :list=" item.acls" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div class>
+    <table-page title="权威管理" :data="list" :columns="columns" :paginationEnable="false" />
   </div>
 </template>
 
@@ -40,11 +11,53 @@ export default {
   name: "configGroupMg",
   data() {
     return {
+      columns: [
+        {
+          title: "视图名称",
+          key: "name",
+          align: "center",
+          render: (h, { row }) => {
+            return h(
+              "router-link",
+              {
+                props: {
+                  to: {
+                    name: "authorityZoneQuery",
+                    query: { id: row.id, name: row.name }
+                  }
+                }
+              },
+              row.name
+            );
+          }
+        },
+        {
+          title: "区数量",
+          key: "zonesize",
+          align: "center"
+        },
+        {
+          title: "优先级",
+          key: "priority",
+          align: "center"
+        },
+        {
+          title: "访问控制列表",
+          key: "action",
+          align: "center",
+          render: (h, { row }) => {
+            return h("Tags", {
+              props: {
+                list: row.acls
+              }
+            });
+          }
+        }
+      ],
       list: [],
       IP: [],
       id: "",
       name: "",
-      remove: "",
       modal1: false,
       aclids: [],
       zones: "",
@@ -77,12 +90,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.table-box table a {
-  text-decoration: none;
-}
-.right-content {
-  height: 100%;
-}
-</style>

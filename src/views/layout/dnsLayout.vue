@@ -4,26 +4,26 @@
     <menu-nav-dns></menu-nav-dns>
     <section class="content">
       <div class="header">
-        <div class="bread"></div>
+        <div class="header-inner">
+          <div class="user">
+            <Badge :count="3">
+              <Icon type="ios-notifications-outline" style="font-size: 20px" />
+            </Badge>
+            <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
+              <a href="javascript:void(0)">
+                <img src="../../assets/images/avatar.png" alt class="avatar" />
 
-        <div class="user">
-          <Badge :count="3">
-            <Icon type="ios-notifications-outline" style="font-size: 20px" />
-          </Badge>
-          <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
-            <a href="javascript:void(0)">
-              <img src="../../assets/images/avatar.png" alt class="avatar" />
-
-              <!-- <img src="../../assets/images/setting.png" alt /> -->
-              Admin
-              <Icon type="md-arrow-dropdown" />
-            </a>
-            <dropdownMenu slot="list">
-              <DropdownItem name="user" key="user">用户信息</DropdownItem>
-              <DropdownItem name="password" key="password">修改密码</DropdownItem>
-              <DropdownItem name="out" key="out">退出系统</DropdownItem>
-            </dropdownMenu>
-          </Dropdown>
+                <!-- <img src="../../assets/images/setting.png" alt /> -->
+                Admin
+                <Icon type="md-arrow-dropdown" />
+              </a>
+              <dropdownMenu slot="list">
+                <DropdownItem name="user" key="user">用户信息</DropdownItem>
+                <DropdownItem name="password" key="password">修改密码</DropdownItem>
+                <DropdownItem name="out" key="out">退出系统</DropdownItem>
+              </dropdownMenu>
+            </Dropdown>
+          </div>
         </div>
       </div>
       <div class="content-wrapper">
@@ -120,13 +120,23 @@ export default {
 }
 
 .header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding-left: 240px;
   display: flow-root;
   height: 100px;
   box-sizing: border-box;
-  padding: 25px 30px;
   box-shadow: 0 0 10px #66615b;
-  .bread {
-    float: left;
+  .header-inner {
+    position: relative;
+    background: #f4f3ef;
+    width: 100%;
+    height: 100px;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    z-index: 10;
   }
 
   .user {
@@ -141,10 +151,11 @@ export default {
   }
 }
 .content-wrapper {
+  padding: 120px 40px 20px 40px;
   height: 100%;
 }
 .content-padding {
-  margin: 20px 40px;
   background: #fff;
+  height: 100%;
 }
 </style>
