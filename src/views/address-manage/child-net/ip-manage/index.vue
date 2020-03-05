@@ -40,11 +40,21 @@
       </div>
     </div>
 
-    <Table 
-      v-show="tab === 'table'"
-      :data="tableData"
-      :columns="columns" 
-    /> 
+    <div>
+      <Table 
+        v-show="tab === 'table'"
+        :data="tableData"
+        :columns="columns" 
+      /> 
+
+      <Page 
+        :current="currentPage" 
+        :total="totalPage"
+        prev-text="上一页" 
+        next-text="下一页"
+        @on-change="handlePageChange"
+      />
+    </div>
 
     <TableChart 
       v-show="tab === 'chart'"
@@ -166,13 +176,13 @@ export default {
       editData:null,
       showMergSplit:false,
       mergeSplitData:null,
-      mergeSplitType:null
+      mergeSplitType:null,
+      currentPage:1,
+      totalPage:0
     }
   },
 
   mounted(){
-    // this.tableData = [];
-
     this.currentIp = "10.0.3.54";
   },
 
@@ -194,6 +204,10 @@ export default {
     },
 
     handleKeep(data){
+
+    },
+    
+    handlePageChange(val){
 
     }
   }

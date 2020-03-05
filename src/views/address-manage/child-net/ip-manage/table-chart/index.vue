@@ -19,7 +19,11 @@
           @click="handleSelect(item)"
         />
       </div>
+      <div class="ip-range">当前IP段{{`${ipPrefix}.0~${ipPrefix}.255`}}</div>
+
+      <div class="item-title">IP地址</div>
     </div>
+
     <div class="table-chart-legend">
       <div class="legend-title">地址类别</div>
       <div class="legend-list">
@@ -45,6 +49,14 @@
         </div>
       </div>
     </div>
+
+    <Page 
+      :current="currentPage" 
+      :total="totalPage"
+      prev-text="上一页" 
+      next-text="下一页"
+      @on-change="handlePageChange"
+      />
   </div>
 </template>
 
@@ -70,7 +82,10 @@ export default {
     return {
       list:[],
       legendList,
-      statusList
+      statusList,
+      ipPrefix:"",
+      currentPage:1,
+      totalPage:0
     }
   },
 
@@ -82,17 +97,23 @@ export default {
 
       ipArr.splice(2, 1);
 
-      const ipPrefix = ipArr.join(".");
+      this.ipPrefix = ipArr.join(".");
 
       for(let i = 0; i < 256; i++){
         arr.push({
           status:statusList.isPool,
-          ip:`${ipPrefix}.${i}`
+          ip:`${this.ipPrefix}.${i}`
         });
       }
 
       this.list = arr;
       
+    }
+  },
+
+  methods:{
+    handlePageChange(val){
+
     }
   }
 }
