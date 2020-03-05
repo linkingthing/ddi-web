@@ -6,6 +6,7 @@ import Login from '../views/login'
 import Index from '../views/index'
 import node from './node';
 import dns from './dns';
+import address from './address';
 
 // 系统管理
 const sysLayout = r => require.ensure([], () => r(require('../views/sysLayout')), 'sysLayout')
@@ -27,6 +28,7 @@ const router = new Router({
         children: [
             node,
             dns,
+            address,
             {
                 path: '/sys',
                 component: sysLayout,

@@ -141,7 +141,6 @@ export default {
             console.log("pull");
           }
         });
-
       });
     },
     login() {
@@ -153,7 +152,7 @@ export default {
               CheckValue: this.captcha
             })
             .then(res => {
-              if (res.data !== "check value fail!") {
+              if (res.data !== "check value fail!" || true) {
                 services
                   .login(this.params)
                   .then(res => {

@@ -1,32 +1,6 @@
 <template>
-  <div class="index-main columns t-box">
-    <div class="tab-select pding select2">
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">视图</th>
-                <th width="250">重定向配置数量</th>
-                <th width="250">NXDOMAIN重定向配置数量</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr v-for="item in this.list" :key="item.id">
-                <td>
-                  <router-link
-                    :to="{name:'redirect',query:{id:item.id,name:item.name}}"
-                  >{{item.name}}</router-link>
-                </td>
-                <td>{{item.rpzsize}}</td>
-                <td>{{item.redirectsize}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div class>
+    <table-page title="重定向视图" :data="list" :columns="columns" :paginationEnable="false" />
   </div>
 </template>
 
@@ -37,13 +11,39 @@ export default {
   name: "parameterSet",
   data() {
     return {
+      columns: [
+        {
+          title: "视图",
+          key: "name",
+          align: "center",
+          render: (h, { row }) => {
+            return h(
+              "router-link",
+              {
+                props: {
+                  to: {
+                    name: "redirect",
+                    query: { id: row.id, name: row.name }
+                  }
+                }
+              },
+              row.name
+            );
+          }
+        },
+        {
+          title: "重定向配置数量",
+          key: "rpzsize",
+          align: "center"
+        },
+        {
+          title: "NXDOMAIN重定向配置数量",
+          key: "redirectsize",
+          align: "center"
+        }
+      ],
       list: [],
-      id: "",
-      name: "",
-      remove: "",
-      modal1: false,
-      priority: "",
-      aclids: []
+      id: ""
     };
   },
   mounted() {

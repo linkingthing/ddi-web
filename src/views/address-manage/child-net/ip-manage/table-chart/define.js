@@ -1,0 +1,53 @@
+export const legendList = [
+  {
+    label:"未使用",
+    unused:true,
+    value:0
+  },
+  {
+    label:"地址池",
+    isPool:true,
+    value:1
+  },
+  {
+    label:"冲突",
+    isActive:true,
+    value:2
+  },
+  {
+    label:"保留地址",
+    isKeeping:true,
+    value:3
+  },
+  {
+    label:"活跃地址",
+    isActive:true,
+    value:4
+  },
+  {
+    label:"固定地址",
+    isKeeping:true,
+    value:5
+  },
+  {
+    label:"当前选中IP",
+    isSelected:true,
+    value:6
+  },
+  {
+    label:"僵尸地址",
+    isZombie:true,
+    value:7
+  }
+];
+
+export const statusList = {
+  unused:0,//未使用
+  isPool:1,//地址池
+  isReflect:2,//冲突的
+  isKeeping:3,//保留的
+  isActive:4,//活跃的
+  isFixed:5,//固定的
+  isSelected:6,//被选中的
+  isZombie:7//僵尸地址
+}

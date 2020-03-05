@@ -1,45 +1,10 @@
 <template>
-  <div class="index-main appUpgrade t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">资源记录</span>
-      <div class="button-box fr">
-        <i-button
-          type="primary"
-          class="me-button add-btn"
-          icon="md-add"
-          @click="handleOpenCreate(viewId,zoneId)"
-        >新建</i-button>
-      </div>
-    </div>
-    <div class="table-box">
-      <div class="table-s">
-        <vue-scroll :style="{minHeight:tableHeight+'px'}">
-          <table class="table-default" ref="ele">
-            <thead>
-              <tr>
-                <th width="140">名称</th>
-                <th width="140">类型</th>
-                <th width="160">记录值</th>
-                <th width="95">TTL</th>
-                <th width="240">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in this.resList" :key="item.id">
-                <td>{{item.name}}</td>
-                <td>{{item.type}}</td>
-                <td>{{item.value}}</td>
-                <td>{{item.ttl+'s'}}</td>
-                <td>
-                  <i-button class="k-btn" @click="goAnalysis(viewId, zoneId, item.id)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </vue-scroll>
-      </div>
-    </div>
+  <div class>
+    <table-page title="资源记录" :data="resList" :columns="columns" :paginationEnable="false">
+      <template slot="top-right">
+        <i-button type="primary" icon="md-add" @click="handleOpenCreate(viewId,zoneId)">新建</i-button>
+      </template>
+    </table-page>
     <createResource ref="configRef" @onCreateSuccess="getResources"></createResource>
     <editResource ref="analysisRef" @onEditSuccess="getResources"></editResource>
   </div>
@@ -54,6 +19,61 @@ export default {
   name: "resourceRecord",
   data() {
     return {
+      columns: [
+        {
+          title: "名称",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "类型",
+          key: "type",
+          align: "center"
+        },
+        {
+          title: "记录值",
+          key: "value",
+          align: "center"
+        },
+        {
+          title: "TTL",
+          key: "ttl",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", [
+              h(
+                "i-button",
+                {
+                  class: "k-btn",
+                  on: {
+                    click: () => {
+                      this.goAnalysis(this.viewId, this.zoneId, row.id);
+                    }
+                  }
+                },
+                "修改"
+              ),
+              h(
+                "i-button",
+                {
+                  class: "k-btn",
+                  on: {
+                    click: () => {
+                      this.delect(item.id);
+                    }
+                  }
+                },
+                "删除"
+              )
+            ]);
+          }
+        }
+      ],
       viewId: "",
       zoneId: " ",
       resList: []

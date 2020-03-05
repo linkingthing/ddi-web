@@ -1,43 +1,13 @@
 <template>
-  <div class="index-main columns t-box">
-    <div class="content-header">
-      <div class="button-box fr">
+  <div class="acceccControlList">
+    <table-page title="访问控制列表" :data="list" :columns="columns" :paginationEnable="false">
+      <template slot="top-right">
         <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
-      </div>
-    </div>
+      </template>
+    </table-page>
 
-    <div>
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">名称</th>
-                <th width="250">IP</th>
-                <th width="250">创建时间</th>
-                <th width="250">操作</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr v-for="item in this.list" :key="item.id">
-                <td>{{item.name}}</td>
-                <td>
-                  <Tags :list="item.IP" :field="item" />
-                </td>
-                <td>{{item.creationTimestamp}}</td>
-                <td>
-                  <btn-edit @click="goConfig1(item.id)" v-if="!['any','none'].includes(item.name)" />
-                  <btn-del @click="delect(item.id)" v-if="!['any','none'].includes(item.name)" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <createAccess ref="configRef" @onSuccess="createSuccess" :accessList="list"></createAccess>
-      <editAccess ref="eviceRef" @onSuccess="getManger" :accessList="list"></editAccess>
-    </div>
+    <createAccess ref="configRef" @onSuccess="createSuccess" :accessList="list"></createAccess>
+    <editAccess ref="eviceRef" @onSuccess="getManger" :accessList="list"></editAccess>
   </div>
 </template>
 
@@ -49,6 +19,52 @@ export default {
   name: "accessControlList",
   data() {
     return {
+      columns: [
+        {
+          title: "名称",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "IP",
+          key: "",
+          align: "center",
+          render: (h, { row }) => {
+            return h("Tags", {
+              props: {
+                list: row.IP,
+                field: row
+              }
+            });
+          }
+        },
+        {
+          title: "创建时间",
+          key: "creationTimestamp",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", [
+              !["any", "none"].includes(row.name) &&
+                h("btn-edit", {
+                  on: {
+                    click: () => this.goConfig1(row.id, row)
+                  }
+                }),
+              !["any", "none"].includes(row.name) &&
+                h("btn-del", {
+                  on: {
+                    click: () => this.delect(row.id)
+                  }
+                })
+            ]);
+          }
+        }
+      ],
       list: [],
       IP: [],
       id: "",
