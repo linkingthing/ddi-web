@@ -5,6 +5,24 @@
 <script>
 import Chart from "./Chart";
 
+const ThemeConfig = {
+  blue: {
+    primaryColor: "#47B3FF",
+    gradualColor: "rgba(71, 179, 255, 0.6)"
+  },
+  purple: {
+    primaryColor: "#A485FD",
+    gradualColor: "rgba(164, 133, 253, 0.6)"
+  },
+  brown: {
+    primaryColor: "#FAA888",
+    gradualColor: "rgba(250, 168, 136, 0.6)"
+  },
+  golden: {
+    primaryColor: "#FECD5D",
+    gradualColor: "rgba(254, 205, 93, 0.6)"
+  }
+};
 export default {
   name: "ChartLine",
   props: {
@@ -19,11 +37,17 @@ export default {
       default: () => {
         return [];
       }
+    },
+    lineTheme: {
+      type: String,
+      default: "blue"
     }
   },
   components: { Chart },
   computed: {
     options() {
+      const { primaryColor, gradualColor } =
+        ThemeConfig[this.lineTheme] || ThemeConfig.blue;
       return {
         color: "#f80",
         grid: {
@@ -75,10 +99,10 @@ export default {
             data: this.values,
             type: "line",
             smooth: true,
-            lineStyle: { color: "#7BB0FF", width: 2 }, // 47B3FF
+            lineStyle: { color: primaryColor, width: 2 },
             itemStyle: {
               borderWidth: 4,
-              borderColor: "#7BB0FF"
+              borderColor: primaryColor
             },
             areaStyle: {
               color: {
@@ -88,11 +112,11 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: "#47B3FF" // 0% 处的颜色
+                    color: primaryColor // 0% 处的颜色
                   },
                   {
                     offset: 0.1,
-                    color: "rgba(71, 179, 255, 0.6)" // 100% 处的颜色
+                    color: gradualColor // 100% 处的颜色
                   },
                   {
                     offset: 1,
