@@ -27,254 +27,237 @@ const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/d
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
 const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
 
-const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLayout')), 'dnsLayout')
+const Layout = r => require.ensure([], () => r(require('@/views/layout')), 'dnsLayout')
 
-import nodeManage from '@/views/node'
-import DeviceInformation from '@/views/node/DeviceInformation';
 
-export default {
-    path: '/dns',
-    name: 'dns',
-    redirect: '/dns/authority/config',
-    component: dnsLayout,
-    children: [
-        {
-            name: 'nodeManage',
-            path: '/dns/node',
-            component: nodeManage,
-        },
-        {
-            name: 'DeviceInformation',
-            path: '/dns/node/deviceInformation',
-            component: DeviceInformation,
-        },
-        {
-            // 配置组管理
-            name: 'configGroup',
-            path: '/dns/authority/config',
-            component: config,
-            meta: {
-                range: 'dns',
-                title: '配置管理',
-                parent: null,
-            }
-        },
-        {
-            // 权威区域查询
-            name: 'authorityZoneQuery',
-            path: '/dns/authority/zoneQuery',
-            component: authorityZoneQuery,
-            meta: {
-                range: 'dns',
-                title: '区域查询',
-                parent: 'configGroup',
-            }
-        },
-        {
-            // 资源记录
-            name: 'resourceRecord',
-            path: '/dns/authority/resourceRecord',
-            component: resourceRecord,
-            meta: {
-                range: 'dns',
-                title: '资源记录',
-                parent: 'authorityZoneQuery'
-            }
-        },
-        {
-            // 重定向
-            name: 'redirectView',
-            path: '/dns/authority/redirectView',
-            component: redirectView,
-            meta: {
-                range: 'dns',
-                title: '重定向视图',
+export default [
 
-            }
-        },
-        {
-            // 重定向
-            name: 'redirect',
-            path: '/dns/authority/redirect',
-            component: redirect,
-            meta: {
-                range: 'dns',
-                title: '重定向',
-                parent: 'redirectView'
-            }
-        },
+    {
+        // 配置组管理
+        name: 'configGroup',
+        path: '/dns/authority/config',
+        component: config,
+        meta: {
+            range: 'dns',
+            title: '配置管理',
+            parent: null,
+        }
+    },
+    {
+        // 权威区域查询
+        name: 'authorityZoneQuery',
+        path: '/dns/authority/zoneQuery',
+        component: authorityZoneQuery,
+        meta: {
+            range: 'dns',
+            title: '区域查询',
+            parent: 'configGroup',
+        }
+    },
+    {
+        // 资源记录
+        name: 'resourceRecord',
+        path: '/dns/authority/resourceRecord',
+        component: resourceRecord,
+        meta: {
+            range: 'dns',
+            title: '资源记录',
+            parent: 'authorityZoneQuery'
+        }
+    },
+    {
+        // 重定向
+        name: 'redirectView',
+        path: '/dns/authority/redirectView',
+        component: redirectView,
+        meta: {
+            range: 'dns',
+            title: '重定向视图',
 
-        {
-            // A4地址合成
-            name: 'defaultA4Compose',
-            path: '/dns/recursion/defaultA4Compose',
-            component: defaultA4Compose,
-            meta: {
-                range: 'dns',
-                title: '默认A4地址合成'
-            }
-        },
-        {
-            name: 'A4ComposeView',
-            path: '/dns/recursion/A4ComposeView',
-            component: A4ComposeView,
-            meta: {
-                range: 'dns',
-                title: 'A4地址合成视图'
-            }
-        },
-        {
-            name: 'A4Compose',
-            path: '/dns/recursion/view/A4Compose',
-            component: A4Compose,
-            meta: {
-                range: 'dns',
-                parent: 'A4ComposeView',
-                title: 'A4地址合成'
-            }
-        },
-        {
-            // 网络转换
-            name: 'networkSwitching',
-            path: '/dns/networkSwitching/:tab',
-            component: networkSwitching,
-            meta: {
-                range: 'dns',
-            }
-        },
-        {
-            // 告警列表
-            name: 'alarmList',
-            path: '/dns/alarmList',
-            component: alarmList,
-            meta: {
-                range: 'dns',
-            }
-        },
+        }
+    },
+    {
+        // 重定向
+        name: 'redirect',
+        path: '/dns/authority/redirect',
+        component: redirect,
+        meta: {
+            range: 'dns',
+            title: '重定向',
+            parent: 'redirectView'
+        }
+    },
 
-        {
-            // NAT66统计分析
-            name: 'nat66Analysis',
-            path: '/dns/nat66Analysis',
-            component: nat66Analysis,
-            meta: {
-                range: 'dns',
-            }
-        },
-        {
-            // 网络转换业务统计
-            name: 'networkConvertAnalysis',
-            path: '/dns/networkConvertAnalysis',
-            component: networkConvertAnalysis,
-            meta: {
-                range: 'dns',
-            }
-        },
+    {
+        // A4地址合成
+        name: 'defaultA4Compose',
+        path: '/dns/recursion/defaultA4Compose',
+        component: defaultA4Compose,
+        meta: {
+            range: 'dns',
+            title: '默认A4地址合成'
+        }
+    },
+    {
+        name: 'A4ComposeView',
+        path: '/dns/recursion/A4ComposeView',
+        component: A4ComposeView,
+        meta: {
+            range: 'dns',
+            title: 'A4地址合成视图'
+        }
+    },
+    {
+        name: 'A4Compose',
+        path: '/dns/recursion/view/A4Compose',
+        component: A4Compose,
+        meta: {
+            range: 'dns',
+            parent: 'A4ComposeView',
+            title: 'A4地址合成'
+        }
+    },
+    {
+        // 网络转换
+        name: 'networkSwitching',
+        path: '/dns/networkSwitching/:tab',
+        component: networkSwitching,
+        meta: {
+            range: 'dns',
+        }
+    },
+    {
+        // 告警列表
+        name: 'alarmList',
+        path: '/dns/alarmList',
+        component: alarmList,
+        meta: {
+            range: 'dns',
+        }
+    },
+
+    {
+        // NAT66统计分析
+        name: 'nat66Analysis',
+        path: '/dns/nat66Analysis',
+        component: nat66Analysis,
+        meta: {
+            range: 'dns',
+        }
+    },
+    {
+        // 网络转换业务统计
+        name: 'networkConvertAnalysis',
+        path: '/dns/networkConvertAnalysis',
+        component: networkConvertAnalysis,
+        meta: {
+            range: 'dns',
+        }
+    },
 
 
 
-        {
-            // 区域转发
-            name: 'zoneForward',
-            path: '/dns/forward/zoneForward',
-            component: zoneForward,
-            meta: {
-                range: 'dns',
-                title: '转发视图'
-            }
-        },
-        {
-            name: 'zoneQueryForward',
-            path: '/dns/forword/zoneQueryForward',
-            component: zoneQueryForward,
-            meta: {
-                range: 'dns',
-                title: '转发区域',
-                parent: 'zoneForward'
-            }
-        },
-        {
-            name: 'forwardList',
-            path: '/dns/forword/forwardList',
-            component: forwardList,
-            meta: {
-                range: 'dns',
-                title: '区域转发列表',
-                parent: 'zoneQueryForward'
-            }
-        },
-        {
-            // 默认转发
-            name: 'defaultForward',
-            path: '/dns/forword/defaultForward',
-            component: defaultForward,
-            meta: {
-                range: 'dns',
-                title: '默认转发'
-            }
-        },
-        // 访问控制
-        {
-            // 访问控制列表
-            name: 'accessControlList',
-            path: '/dns/accessControl/accessControlList',
-            component: accessControlList,
-            meta: {
-                range: 'dns',
-                title: '访问控制列表'
-            }
-        },
-        {
-            // 视图管理
-            name: 'viewManage',
-            path: '/dns/accessControl/viewManage',
-            component: viewManage,
-            meta: {
-                range: 'dns',
-                title: '视图管理'
-            }
-        },
+    {
+        // 区域转发
+        name: 'zoneForward',
+        path: '/dns/forward/zoneForward',
+        component: zoneForward,
+        meta: {
+            range: 'dns',
+            title: '转发视图'
+        }
+    },
+    {
+        name: 'zoneQueryForward',
+        path: '/dns/forword/zoneQueryForward',
+        component: zoneQueryForward,
+        meta: {
+            range: 'dns',
+            title: '转发区域',
+            parent: 'zoneForward'
+        }
+    },
+    {
+        name: 'forwardList',
+        path: '/dns/forword/forwardList',
+        component: forwardList,
+        meta: {
+            range: 'dns',
+            title: '区域转发列表',
+            parent: 'zoneQueryForward'
+        }
+    },
+    {
+        // 默认转发
+        name: 'defaultForward',
+        path: '/dns/forword/defaultForward',
+        component: defaultForward,
+        meta: {
+            range: 'dns',
+            title: '默认转发'
+        }
+    },
+    // 访问控制
+    {
+        // 访问控制列表
+        name: 'accessControlList',
+        path: '/dns/accessControl/accessControlList',
+        component: accessControlList,
+        meta: {
+            range: 'dns',
+            title: '访问控制列表'
+        }
+    },
+    {
+        // 视图管理
+        name: 'viewManage',
+        path: '/dns/accessControl/viewManage',
+        component: viewManage,
+        meta: {
+            range: 'dns',
+            title: '视图管理'
+        }
+    },
 
-        {
-            // DDOS防护
-            name: 'logStatistics',
-            path: '/dns/logStatistics',
-            component: logStatistics,
-            meta: {
-                range: 'dns',
-                title: 'DDOS防护'
-            }
-        },
-        {
-            // 黑白名单
-            name: 'blacklistAndwhitelist',
-            path: '/dns/blacklistAndwhitelist',
-            component: blacklistAndwhitelist,
-            meta: {
-                range: 'dns',
-                title: '黑白名单'
-            }
-        },
-        {
-            // 开发控制
-            name: 'developmentcontrol',
-            path: '/dns/developmentcontrol',
-            component: developmentcontrol,
-            meta: {
-                range: 'dns',
-                title: '开发控制'
-            }
-        },
+    {
+        // DDOS防护
+        name: 'logStatistics',
+        path: '/dns/logStatistics',
+        component: logStatistics,
+        meta: {
+            range: 'dns',
+            title: 'DDOS防护'
+        }
+    },
+    {
+        // 黑白名单
+        name: 'blacklistAndwhitelist',
+        path: '/dns/blacklistAndwhitelist',
+        component: blacklistAndwhitelist,
+        meta: {
+            range: 'dns',
+            title: '黑白名单'
+        }
+    },
+    {
+        // 开发控制
+        name: 'developmentcontrol',
+        path: '/dns/developmentcontrol',
+        component: developmentcontrol,
+        meta: {
+            range: 'dns',
+            title: '开发控制'
+        }
+    },
 
-        {
-            // 告警设置
-            name: 'alarmSet',
-            path: '/dns/alarmSet',
-            component: alarmSet,
-            meta: {
-                range: 'dns'
-            }
-        },
+    {
+        // 告警设置
+        name: 'alarmSet',
+        path: '/dns/alarmSet',
+        component: alarmSet,
+        meta: {
+            range: 'dns'
+        }
+    },
 
-    ]
-}
+]

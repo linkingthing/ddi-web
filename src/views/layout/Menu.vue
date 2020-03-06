@@ -7,7 +7,7 @@
       <vue-scroll class="pr">
         <Menu :theme="theme" :active-name="tab" :open-names="['1']" :accordion="true">
           <MenuGroup title="节点管理">
-            <MenuItem name="nodeManage" to="/dns/node">
+            <MenuItem name="nodeManage" to="/node">
               <Icon type="ios-git-network" />节点管理
             </MenuItem>
           </MenuGroup>

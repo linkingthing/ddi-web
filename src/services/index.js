@@ -1,12 +1,15 @@
 import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
-import { Message } from 'iview'
+import { LoadingBar } from 'view-design';
+
 const dnsBaseUrl = '/dns';
 const nodeBaseUrl = '/node'
 
 axios.interceptors.request.use(
     config => {
+        LoadingBar.start();
+
         const token = store.getters.token;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -20,8 +23,11 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
     res => {
+        LoadingBar.finish();
         return res
     }, err => {
+        LoadingBar.error();
+
         if (err.response.data.code === 401) {
             Message.error(err.response.data.message)
             router.push('/login')

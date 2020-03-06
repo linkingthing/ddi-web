@@ -1,34 +1,22 @@
 <template>
-  <header class="clearfix">
-    <div class="header-main">
-      <div class="header-left fl clearfix">
-        <img class="fl" src="../../assets/images/logo.png" alt="logo" />
-        <p class="title fl">
-          <span class="line"></span>
-          DDI配置管理平台
-        </p>
-      </div>
-      <div class="header-nav clearfix" :class="path">
-        <router-link class="nav-list fl" to="/node">仪表盘</router-link>
-        <router-link class="nav-list fl" to="/dns">域名解析</router-link>
-        <!-- <router-link class="nav-list fl" to="/dhcp">地址管理</router-link>
-        <router-link class="nav-list fl" to="/sys">系统管理</router-link>-->
-      </div>
-      <div class="header-right clearfix">
-        <div class="user-pic fl">
-          <!-- <Avatar :src="require('../../assets/images/icon-people.png')" /> -->
-        </div>
-        <div class="nva fl">
+  <div class="Head">
+    <div class="header">
+      <div class="header-inner">
+        <div class="user">
+          <Badge :count="3">
+            <Icon type="ios-notifications-outline" style="font-size: 20px" />
+          </Badge>
           <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
             <a href="javascript:void(0)">
+              <img src="../../assets/images/avatar.png" alt class="avatar" />
               Admin
               <Icon type="md-arrow-dropdown" />
             </a>
-            <dropdownMenu slot="list">
+            <DropdownMenu slot="list">
               <DropdownItem name="user" key="user">用户信息</DropdownItem>
               <DropdownItem name="password" key="password">修改密码</DropdownItem>
               <DropdownItem name="out" key="out">退出系统</DropdownItem>
-            </dropdownMenu>
+            </DropdownMenu>
           </Dropdown>
         </div>
       </div>
@@ -47,27 +35,20 @@
         <Button type="primary" size="large" @click="handleSubmit">确认</Button>
       </div>
     </Modal>
-  </header>
+  </div>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import services from "@/services";
 export default {
   name: "Header",
   data() {
     return {
       visible: false,
-      // loading: true,
       password: "",
-      rePassword: "",
-      path: this.$route.meta.range
+      rePassword: ""
     };
   },
-
   methods: {
-    ...mapMutations(["SET_TOKEN"]),
-    // 菜单跳转
     handleClickMenu(name) {
       const self = this;
       if (name === "out") {
@@ -77,7 +58,6 @@ export default {
         });
       }
       if (name === "password") {
-        console.log("pa");
         this.visible = true;
       }
     },
@@ -104,5 +84,36 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding-left: 240px;
+  display: flow-root;
+  height: 100px;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px #66615b;
+  .header-inner {
+    position: relative;
+    background: #f4f3ef;
+    width: 100%;
+    height: 100px;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    z-index: 10;
+  }
+
+  .user {
+    font-size: 16px;
+    float: right;
+    .avatar {
+      height: 36px;
+      height: 36px;
+      padding-right: 20px;
+      vertical-align: middle;
+    }
+  }
+}
 </style>
