@@ -5,7 +5,7 @@
     <Row type="flex" justify="space-between" style="margin-bottom: 50px">
       <i-col span="11">
         <Card title="服务器信息" :infos="infos">
-          <DeviceInfo />
+          <DeviceInfo :deviceState="deviceState" />
         </Card>
       </i-col>
       <i-col span="11">
@@ -43,13 +43,16 @@ import Card from "./Card";
 import DeviceInfo from "./DeviceInfo";
 import Line from "./Line";
 import Pie from "./Pie";
+import services from "@/services";
+
 export default {
-  name: "ControllerDashboard ",
+  name: "ControllerDashboard",
   components: { Card, DeviceInfo, "line-bar": Line, Pie },
   props: {},
   data() {
     return {
-      infos: ["服务器名称：Server2", "服务器IP：10.1.1.2"],
+      deviceState: {},
+      infos: [],
       ipColumns: [
         {
           title: "子网名称",
@@ -86,8 +89,36 @@ export default {
   },
   computed: {},
   created() {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getDeviceInfo();
+    this.getDeviceHistoryInfo();
+  },
+  methods: {
+    getDeviceInfo() {
+      const ip = this.$route.query.ip;
+      services.getNodeList({ node: ip }).then(res => {
+        const result = res.data.data;
+        this.deviceState = result.usage[ip];
+        const deviceInfo = result.nodes[ip];
+        this.infos = [
+          `服务器名称：${deviceInfo.hostname}`,
+          `服务器IP：${deviceInfo.ip}`
+        ];
+      });
+    },
+    getDeviceHistoryInfo() {
+      const params = {
+        node: this.$route.query.ip,
+        type: "cpu",
+        start: (new Date().getTime() - 7 * 24 * 60 * 60 * 1000) / 1000,
+        end: new Date().getTime() / 1000,
+        step: 150
+      };
+      services.getDeviceHistoryInfo(params).then(res => {
+        console.log(res.data.data);
+      });
+    }
+  },
   watch: {}
 };
 </script>

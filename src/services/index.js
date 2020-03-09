@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
-import { LoadingBar } from 'view-design';
+import { LoadingBar, Message } from 'view-design';
 
 const dnsBaseUrl = '/dns';
 const nodeBaseUrl = '/node'
@@ -9,7 +9,7 @@ const nodeBaseUrl = '/node'
 axios.interceptors.request.use(
     config => {
         LoadingBar.start();
-
+        
         const token = store.getters.token;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -26,12 +26,13 @@ axios.interceptors.response.use(
         LoadingBar.finish();
         return res
     }, err => {
-        LoadingBar.error();
-
+        console.log(err)
         if (err.response.data.code === 401) {
             Message.error(err.response.data.message)
             router.push('/login')
         }
+        LoadingBar.error();
+
     },
 )
 
