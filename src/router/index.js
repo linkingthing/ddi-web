@@ -6,7 +6,7 @@ import Login from '../views/login'
 import Index from '../views/index'
 import node from './node';
 import dns from './dns';
-import address from "./address"
+import address from './address';
 
 // 系统管理
 const sysLayout = r => require.ensure([], () => r(require('../views/sysLayout')), 'sysLayout')
@@ -21,7 +21,7 @@ const router = new Router({
         path: '/',
         name: 'Index',
         component: Index,
-        // redirect: '/node',
+        redirect: '/dns/node',
         meta: {
             range: 'node',
         },

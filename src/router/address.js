@@ -1,10 +1,11 @@
 const addressLayout = r => require.ensure([], () => r(require('./../views/layout/addressLayout')), 'addressLayout')
+const dnsLayout = r => require.ensure([], () => r(require('@/views/layout/dnsLayout')), 'dnsLayout')
 
 export default {
   path: '/address',
   name: 'address',
   // redirect: '/dns/authority/config',
-  component: addressLayout,
+  component: dnsLayout,
   children: [
     {
       name: 'address-manage/child-net',
