@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content">
     <div class="login">
       <div class="login-head">
         <img class="logo" src="../assets/images/logo.png" />
@@ -15,7 +15,7 @@
               @keyup.enter="login"
               placeholder="用户名称"
             >
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
+              <img src="../assets/images/user.png" alt slot="prepend" />
             </Input>
           </FormItem>
           <FormItem prop="password">
@@ -26,7 +26,7 @@
               @keyup.enter="login"
               placeholder="登录密码"
             >
-              <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              <img src="../assets/images/password.png" alt slot="prepend" />
             </Input>
           </FormItem>
           <FormItem>
@@ -36,7 +36,7 @@
               name="captcha"
               v-model="captcha"
               placeholder="验证码"
-              style="width:156px;"
+              style="width:330px;"
               class="fl"
               @keyup.enter="login"
             />
@@ -46,7 +46,7 @@
               @click="getCaptcha"
             >
               <img :src="img" class="fl code-captcha" />
-              <p class="code-tips fl">看不清换一张</p>
+              <!-- <p class="code-tips fl">看不清换一张</p> -->
             </div>
           </FormItem>
           <Button type="primary" long @click="login">登录</Button>
@@ -178,22 +178,53 @@ export default {
   }
 };
 </script>
-
+<style lang="less">
+.content {
+  .ivu-input-group-large .ivu-input,
+  .ivu-input-group-large > .ivu-input-group-prepend,
+  .ivu-input-group-large > .ivu-input-group-append,
+  .ivu-input {
+    height: 70px;
+    padding: 0 18px;
+  }
+  .ivu-btn {
+    height: 70px;
+    background: #2d9fff;
+    border-color: #2d9fff;
+    span {
+      font-size: 30px;
+    }
+  }
+}
+</style>
 <style lang="less" scoped>
+.content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/images/login-bg.png");
+  background-size: cover;
+}
 .login {
-  width: 500px;
-  margin: 180px auto;
+  width: 700px;
+  position: absolute;
+  right: 60px;
+  top: 200px;
   box-shadow: 0 0 10px #f5f5f5;
-  .login-head {
-    text-align: center;
+
+  .login-head h1 {
+    color: #59a2ec;
+    font-size: 40px;
+    padding: 0 70px;
   }
 
   .login-form {
-    padding: 30px;
+    padding: 70px;
   }
   .code-captcha {
-    height: 36px;
-    width: 160px;
+    height: 70px;
+    width: 200px;
+    margin-left: 24px;
   }
   .code-tips {
     margin-left: 20px;
