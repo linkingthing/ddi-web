@@ -13,13 +13,12 @@
           </div>
         </div>
         <div class="children">
-          <div
+          <host-node
+            :host="item"
             @click="handleGoDeviceInfo(item)"
             :key="item.ip"
             v-for="item in serverList.filter(item => item.role !== 'controller') "
-          >
-            <host-node :host="item" />
-          </div>
+          />
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
@@ -97,7 +96,7 @@ export default {
           query: { ip }
         });
       }
-
+      console.log(role);
       if (role === "dns") {
         this.$router.push({
           name: "DNSDashboard",

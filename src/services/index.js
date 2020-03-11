@@ -215,5 +215,69 @@ export default {
     },
     getDeviceHistoryInfo(params) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/hists`, { params })
+    },
+    getDNSTop () {
+        return axios.get(`${dnsBaseUrl}/linkingthing/example/v1/dashdns`).then(res => {
+            return {
+                "status": "200",
+                "data": {
+                    "ips": [
+                        {
+                            "key": "10.0.0.19",
+                            "doc_count": 12
+                        },
+                        {
+                            "key": "10.0.0.119",
+                            "doc_count": 1
+                        },
+                        {
+                            "key": "10.0.0.129",
+                            "doc_count": 1
+                        },
+                        {
+                            "key": "10.0.0.29",
+                            "doc_count": 1
+                        },
+                        {
+                            "key": "10.0.0.39",
+                            "doc_count": 1
+                        }
+                    ],
+                    "domains": [
+                        {
+                            "key": "mail.baidu.com",
+                            "doc_count": 6
+                        },
+                        {
+                            "key": "19.0.0.10.in-addr.arpa",
+                            "doc_count": 4
+                        },
+                        {
+                            "key": "www.baidu.com",
+                            "doc_count": 4
+                        },
+                        {
+                            "key": "www.test.com",
+                            "doc_count": 1
+                        }
+                    ],
+                    "types": [
+                        {
+                            "key": "A",
+                            "doc_count": 8
+                        },
+                        {
+                            "key": "PTR",
+                            "doc_count": 5
+                        },
+                        {
+                            "key": "AAAA",
+                            "doc_count": 3
+                        }
+                    ]
+                },
+                "message": "成功"
+            }
+        })
     }
 }

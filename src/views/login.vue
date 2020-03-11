@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="login-content">
     <div class="login">
       <div class="login-head">
         <img class="logo" src="../assets/images/logo.png" />
@@ -179,7 +179,7 @@ export default {
 };
 </script>
 <style lang="less">
-.content {
+.login-content {
   .ivu-input-group-large .ivu-input,
   .ivu-input-group-large > .ivu-input-group-prepend,
   .ivu-input-group-large > .ivu-input-group-append,
@@ -198,7 +198,7 @@ export default {
 }
 </style>
 <style lang="less" scoped>
-.content {
+.login-content {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -210,7 +210,7 @@ export default {
   position: absolute;
   right: 60px;
   top: 200px;
-  box-shadow: 0 0 10px #f5f5f5;
+  box-shadow: 0 0 20px #f5f5f5;
 
   .login-head h1 {
     color: #59a2ec;

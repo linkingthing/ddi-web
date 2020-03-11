@@ -89,6 +89,7 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
+  z-index: 10;
   width: 100%;
   padding-left: 240px;
   display: flow-root;

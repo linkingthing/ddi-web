@@ -4,9 +4,7 @@
 
     <Row type="flex" justify="space-between" style="margin-bottom: 50px">
       <i-col span="11">
-        <Card title="服务器信息" :infos="infos">
-          <DeviceInfo />
-        </Card>
+        <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="QPS">
@@ -17,24 +15,24 @@
     <Row type="flex" justify="space-between" style="margin-bottom: 50px">
       <i-col span="11">
         <Card title="TOP请求域名">
-          <Table :data="[]" :columns="topDomainColumns" style="padding-top: 30px" />
+          <Table :data="domains" :columns="topDomainColumns" style="padding-top: 30px" />
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="TOP请求IP">
-          <Table :data="[]" :columns="topIPColumns" style="padding-top: 30px" />
+          <Table :data="ips" :columns="topIPColumns" style="padding-top: 30px" />
         </Card>
       </i-col>
     </Row>
     <Row type="flex" justify="space-between">
       <i-col span="11">
         <Card title="解析状态">
-          <Pie />
+          <Pie  />
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="解析类型">
-          <Pie />
+          <Pie :values="types" />
         </Card>
       </i-col>
     </Row>
@@ -43,12 +41,14 @@
 
 <script>
 import Card from "./Card";
-import DeviceInfo from "./DeviceInfo";
+import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
+import services from "@/services";
+
 export default {
   name: "DNSDashboard",
-  components: { Card, DeviceInfo, "line-bar": Line, Pie },
+  components: { Card, HostInfo, "line-bar": Line, Pie },
   props: {},
   data() {
     return {
@@ -56,43 +56,75 @@ export default {
       topDomainColumns: [
         {
           title: "排名",
-          key: "",
+          type: "index",
           align: "center"
         },
         {
           title: "域名",
-          key: "",
+          key: "key",
           align: "center"
         },
         {
           title: "统计次数",
-          key: "",
+          key: "doc_count",
           align: "center"
         }
       ],
       topIPColumns: [
         {
           title: "排名",
-          key: "",
+          type: "index",
           align: "center"
         },
         {
           title: "IP地址",
-          key: "",
+          key: "key",
           align: "center"
         },
         {
           title: "统计次数",
-          key: "",
+          key: "doc_count",
           align: "center"
         }
-      ]
+      ],
+      qps: [],
+      ips: [],
+      domains: [],
+      types: []
     };
   },
   computed: {},
   created() {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getDNSTop();
+    this.getQpsList();
+  },
+  methods: {
+    getQpsList () {
+       const params = {
+        node: this.$route.query.ip,
+        type: "qps",
+        start: (new Date().getTime() - 7 * 24 * 60 * 60 * 1000) / 1000,
+        end: new Date().getTime() / 1000,
+        step: 150
+      };
+      services.getDeviceHistoryInfo(params).then(res => {
+
+      })
+    },
+    getDNSTop() {
+      services
+        .getDNSTop()
+        .then(res => {
+          console.log(res);
+          const { ips, domains, types } = res.data;
+          this.ips = ips;
+          this.domains = domains;
+          this.types = types;
+        })
+        .catch(err => err);
+    }
+  },
   watch: {}
 };
 </script>

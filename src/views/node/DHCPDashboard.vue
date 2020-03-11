@@ -4,9 +4,7 @@
 
     <Row type="flex" justify="space-between" style="margin-bottom: 50px">
       <i-col span="11">
-        <Card title="服务器信息" :infos="infos">
-          <DeviceInfo />
-        </Card>
+        <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="DHCP报文统计">
@@ -24,12 +22,20 @@
     <Row type="flex" justify="space-between">
       <i-col span="11">
         <Card title="DHCP使用率">
-          <line-bar lineTheme="brown" :labels="[2015,2016,2017,2020,2030]" :values="[25,22,63,40,21]"></line-bar>
+          <line-bar
+            lineTheme="brown"
+            :labels="[2015,2016,2017,2020,2030]"
+            :values="[25,22,63,40,21]"
+          ></line-bar>
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="Leases总量统计">
-          <line-bar lineTheme="golden" :labels="[2015,2016,2017,2020,2030]" :values="[25,22,63,40,21]"></line-bar>
+          <line-bar
+            lineTheme="golden"
+            :labels="[2015,2016,2017,2020,2030]"
+            :values="[25,22,63,40,21]"
+          ></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -38,12 +44,12 @@
 
 <script>
 import Card from "./Card";
-import DeviceInfo from "./DeviceInfo";
+import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
 export default {
   name: "DHCPDashboard",
-  components: { Card, DeviceInfo, "line-bar": Line, Pie },
+  components: { Card, HostInfo, "line-bar": Line, Pie },
   props: {},
   data() {
     return {

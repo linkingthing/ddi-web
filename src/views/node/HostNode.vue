@@ -1,5 +1,5 @@
 <template>
-  <div class="hostNode host">
+  <div class="hostNode host" @click="handleClick">
     <img src="../../assets/images/host.png" alt />
     <ul class="host-info">
       <li>图层服务器类型:{{host.role}}</li>
@@ -30,7 +30,11 @@ export default {
   computed: {},
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    handleClick() {
+      this.$emit('click')
+    }
+  },
   watch: {}
 };
 </script>
