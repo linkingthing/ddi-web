@@ -1,6 +1,9 @@
 <template>
   <div class="hostNode host" @click="handleClick">
-    <img src="../../assets/images/host.png" alt />
+    <img src="../../assets/images/server-top.png" v-if="host.role === 'controller'" alt />
+    <img src="../../assets/images/server-left.png" v-else-if="host.role === 'dns'" alt />
+    <img src="../../assets/images/server-right.png" v-else alt />
+
     <ul class="host-info">
       <li>图层服务器类型:{{host.role}}</li>
       <li>服务器名称: {{host.hostname}}</li>
@@ -32,7 +35,7 @@ export default {
   mounted() {},
   methods: {
     handleClick() {
-      this.$emit('click')
+      this.$emit("click");
     }
   },
   watch: {}
@@ -45,6 +48,9 @@ export default {
     width: 16px;
     height: 16px;
   }
+  img {
+    width: 80px;
+  }
 }
 .host-info {
   display: inline-block;
@@ -52,7 +58,7 @@ export default {
   margin-left: 12px;
 
   li {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 }
 </style>

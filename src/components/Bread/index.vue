@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" :v-show="showBread">
+  <div class="wrapper" v-show="showBread">
     <Breadcrumb>
       <BreadcrumbItem
         :key="item.path"

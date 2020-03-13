@@ -2,7 +2,7 @@
   <div class="acceccControlList">
     <table-page title="访问控制列表" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="success" class="me-button add-btn" icon="md-add" @click="goConfig(0)">新建</i-button>
+        <i-button type="success" size="large" @click="goConfig(0)">新建</i-button>
       </template>
     </table-page>
 

@@ -22,7 +22,7 @@
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
-        <div class="table-box tab-item">
+        <div class="tab-item">
           <Table :data="serverList" :columns="serviceColumns" />
         </div>
       </TabPane>

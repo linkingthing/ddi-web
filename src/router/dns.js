@@ -4,30 +4,23 @@ const resourceRecord = r => require.ensure([], () => r(require('@/views/dns/auth
 const redirectView = r => require.ensure([], () => r(require('@/views/dns/authority/redirectView')), 'dnsLayout')
 const redirect = r => require.ensure([], () => r(require('@/views/dns/authority/redirect')), 'dnsLayout')
 
-const defaultA4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/defaultA4Compose')), 'dnsLayout')
 const A4ComposeView = r => require.ensure([], () => r(require('@/views/dns/recursion/A4ComposeView')), 'dnsLayout')
 const A4Compose = r => require.ensure([], () => r(require('@/views/dns/recursion/A4Compose')), 'dnsLayout')
 
 const zoneForward = r => require.ensure([], () => r(require('@/views/dns/forward/zoneForward')), 'dnsLayout')
 const zoneQueryForward = r => require.ensure([], () => r(require('@/views/dns/forward/zoneQueryForward')), 'dnsLayout')
 const forwardList = r => require.ensure([], () => r(require('@/views/dns/forward/forwardList')), 'dnsLayout')
-const defaultForward = r => require.ensure([], () => r(require('@/views/dns/forward/defaultForward')), 'dnsLayout')
 
 
 const accessControlList = r => require.ensure([], () => r(require('@/views/dns/accessControl/accessControlList')), 'dnsLayout')
 const viewManage = r => require.ensure([], () => r(require('@/views/dns/accessControl/viewManage')), 'dnsLayout')
 
+// const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
+// const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66Analysis')), 'dnsLayout')
+// const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
 
-const networkSwitching = r => require.ensure([], () => r(require('@/views/dns/networkSwitching')), 'dnsLayout')
-const alarmList = r => require.ensure([], () => r(require('@/views/dns/alarmList')), 'dnsLayout')
-const nat66Analysis = r => require.ensure([], () => r(require('@/views/dns/nat66Analysis')), 'dnsLayout')
-const networkConvertAnalysis = r => require.ensure([], () => r(require('@/views/dns/networkConvertAnalysis')), 'dnsLayout')
-const logStatistics = r => require.ensure([], () => r(require('@/views/dns/logStatistics')), 'dnsLayout')
 const blacklistAndwhitelist = r => require.ensure([], () => r(require('@/views/dns/blacklistAndwhitelist')), 'dnsLayout')
 const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/developmentcontrol')), 'dnsLayout')
-const alarmSet = r => require.ensure([], () => r(require('@/views/dns/alarmSet')), 'dnsLayout')
-
-const Layout = r => require.ensure([], () => r(require('@/views/layout')), 'dnsLayout')
 
 
 export default [
@@ -89,16 +82,6 @@ export default [
     },
 
     {
-        // A4地址合成
-        name: 'defaultA4Compose',
-        path: '/dns/recursion/defaultA4Compose',
-        component: defaultA4Compose,
-        meta: {
-            range: 'dns',
-            title: '默认A4地址合成'
-        }
-    },
-    {
         name: 'A4ComposeView',
         path: '/dns/recursion/A4ComposeView',
         component: A4ComposeView,
@@ -117,45 +100,6 @@ export default [
             title: 'A4地址合成'
         }
     },
-    {
-        // 网络转换
-        name: 'networkSwitching',
-        path: '/dns/networkSwitching/:tab',
-        component: networkSwitching,
-        meta: {
-            range: 'dns',
-        }
-    },
-    {
-        // 告警列表
-        name: 'alarmList',
-        path: '/dns/alarmList',
-        component: alarmList,
-        meta: {
-            range: 'dns',
-        }
-    },
-
-    {
-        // NAT66统计分析
-        name: 'nat66Analysis',
-        path: '/dns/nat66Analysis',
-        component: nat66Analysis,
-        meta: {
-            range: 'dns',
-        }
-    },
-    {
-        // 网络转换业务统计
-        name: 'networkConvertAnalysis',
-        path: '/dns/networkConvertAnalysis',
-        component: networkConvertAnalysis,
-        meta: {
-            range: 'dns',
-        }
-    },
-
-
 
     {
         // 区域转发
@@ -187,16 +131,7 @@ export default [
             parent: 'zoneQueryForward'
         }
     },
-    {
-        // 默认转发
-        name: 'defaultForward',
-        path: '/dns/forword/defaultForward',
-        component: defaultForward,
-        meta: {
-            range: 'dns',
-            title: '默认转发'
-        }
-    },
+
     // 访问控制
     {
         // 访问控制列表
@@ -220,16 +155,6 @@ export default [
     },
 
     {
-        // DDOS防护
-        name: 'logStatistics',
-        path: '/dns/logStatistics',
-        component: logStatistics,
-        meta: {
-            range: 'dns',
-            title: 'DDOS防护'
-        }
-    },
-    {
         // 黑白名单
         name: 'blacklistAndwhitelist',
         path: '/dns/blacklistAndwhitelist',
@@ -239,6 +164,7 @@ export default [
             title: '黑白名单'
         }
     },
+
     {
         // 开发控制
         name: 'developmentcontrol',
@@ -247,16 +173,6 @@ export default [
         meta: {
             range: 'dns',
             title: '开发控制'
-        }
-    },
-
-    {
-        // 告警设置
-        name: 'alarmSet',
-        path: '/dns/alarmSet',
-        component: alarmSet,
-        meta: {
-            range: 'dns'
         }
     },
 

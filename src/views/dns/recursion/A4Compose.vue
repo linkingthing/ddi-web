@@ -2,7 +2,7 @@
   <div class="A4Compose">
     <table-page title="A4地址合成查询表" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate">新建</i-button>
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
       </template>
     </table-page>
 

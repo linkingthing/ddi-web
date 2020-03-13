@@ -2,7 +2,7 @@
   <div class="redirect">
     <table-page title="重定向" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate(id)">新建</i-button>
+        <i-button type="success" size="large" @click="handleOpenCreate(id)">新建</i-button>
       </template>
     </table-page>
     <createRedirect ref="ipRef" @onCreateSuccess="getView"></createRedirect>

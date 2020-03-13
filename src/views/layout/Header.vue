@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   name: "Header",
   data() {
@@ -49,10 +51,14 @@ export default {
     };
   },
   methods: {
+    ...mapMutations({
+      setToken: "SET_TOKEN"
+    }),
+
     handleClickMenu(name) {
       const self = this;
       if (name === "out") {
-        self.SET_TOKEN("");
+        self.setToken("");
         self.$router.push({
           path: "/login"
         });
