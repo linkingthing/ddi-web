@@ -13,17 +13,16 @@
           </div>
         </div>
         <div class="children">
-          <div
+          <host-node
+            :host="item"
             @click="handleGoDeviceInfo(item)"
             :key="item.ip"
             v-for="item in serverList.filter(item => item.role !== 'controller') "
-          >
-            <host-node :host="item" />
-          </div>
+          />
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
-        <div class="table-box tab-item">
+        <div class="tab-item">
           <Table :data="serverList" :columns="serviceColumns" />
         </div>
       </TabPane>
@@ -83,9 +82,12 @@ export default {
 
   methods: {
     getList() {
-      services.getServerList().then(res => {
-        this.serverList = res.data.data;
-      });
+      services
+        .getServerList()
+        .then(res => {
+          this.serverList = res.data.data;
+        })
+        .catch(err => err);
     },
     handleTab(tab) {
       console.log(tab);
@@ -97,7 +99,7 @@ export default {
           query: { ip }
         });
       }
-
+      console.log(role);
       if (role === "dns") {
         this.$router.push({
           name: "DNSDashboard",

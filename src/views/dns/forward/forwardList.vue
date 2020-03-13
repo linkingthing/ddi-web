@@ -35,27 +35,24 @@ export default {
           title: "操作",
           key: "action",
           align: "center",
+          width: 160,
           render: (h, { row }) => {
             return h("div", [
               h(
-                "i-button",
+                "btn-edit",
                 {
-                  class: "k-btn",
                   on: {
                     click: () => this.goConfig(this.viewId, this.zoneId)
                   }
                 },
-                row.id === "0" ? "新增" : "修改"
               ),
               h(
-                "i-button",
+                "btn-del",
                 {
-                  class: "k-btn",
                   on: {
                     click: () => this.delect()
                   }
                 },
-                "删除"
               )
             ]);
           }

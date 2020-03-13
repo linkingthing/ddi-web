@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   name: "Header",
   data() {
@@ -49,10 +51,14 @@ export default {
     };
   },
   methods: {
+    ...mapMutations({
+      setToken: "SET_TOKEN"
+    }),
+
     handleClickMenu(name) {
       const self = this;
       if (name === "out") {
-        self.SET_TOKEN("");
+        self.setToken("");
         self.$router.push({
           path: "/login"
         });
@@ -89,20 +95,23 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
+  z-index: 10;
   width: 100%;
   padding-left: 240px;
   display: flow-root;
   height: 100px;
   box-sizing: border-box;
-  box-shadow: 0 0 10px #66615b;
+
   .header-inner {
     position: relative;
     background: #f4f3ef;
     width: 100%;
     height: 100px;
+
     padding: 25px 30px;
     box-sizing: border-box;
     z-index: 10;
+    border-bottom: 1px solid #ddd;
   }
 
   .user {

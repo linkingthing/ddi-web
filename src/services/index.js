@@ -9,7 +9,7 @@ const nodeBaseUrl = '/node'
 axios.interceptors.request.use(
     config => {
         LoadingBar.start();
-        
+
         const token = store.getters.token;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -215,5 +215,15 @@ export default {
     },
     getDeviceHistoryInfo(params) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/hists`, { params })
+    },
+    getDNSTop() {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/dashdns`)
+    },
+    getDNSAnalysisState(params) {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/retcode`, { params })
+    },
+    getMemoHitRate(params) {
+        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/memhit`, { params })
     }
+
 }

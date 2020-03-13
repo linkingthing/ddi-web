@@ -92,7 +92,7 @@ export default {
         },
         {
           title: "操作",
-          align: "center",      
+          align: "right",      
           render: (h, { row }) => {
             return h('div', [
               h('label', {
