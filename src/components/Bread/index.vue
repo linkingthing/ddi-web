@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" :v-show="showBread">
     <Breadcrumb>
       <BreadcrumbItem
         :key="item.path"
@@ -19,7 +19,8 @@ export default {
   props: {},
   data() {
     return {
-      breadcrumbList: [],
+      showBread: true,
+      breadcrumbList: []
     };
   },
 
@@ -63,6 +64,7 @@ export default {
           forward: "转发管理",
           accessControl: "访问控制"
         };
+        this.showBread = menu in menuConfig;
         this.breadcrumbList = [
           {
             title: menuConfig[menu]

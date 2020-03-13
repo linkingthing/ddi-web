@@ -48,7 +48,15 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center"
+          width: 120,
+          align: "center",
+          render: (h, { row }) => {
+            return h("btn-del", {
+              on: {
+                click: () => this.delect(row.id)
+              }
+            });
+          }
         }
       ],
       id: "",

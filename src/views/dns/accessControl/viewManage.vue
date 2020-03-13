@@ -48,6 +48,7 @@ export default {
           title: "操作",
           key: "action",
           align: "center",
+          width: 160,
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {

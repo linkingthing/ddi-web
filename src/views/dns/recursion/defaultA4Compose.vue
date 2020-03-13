@@ -4,8 +4,7 @@
       <span class="tit">默认4A地址合成</span>
       <div class="button-box fr">
         <i-button
-          type="primary"
-          class="me-button add-btn"
+          type="success"
           icon="md-add"
           @click="handleOpenCreate(0)"
         >新建</i-button>

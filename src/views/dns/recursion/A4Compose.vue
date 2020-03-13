@@ -40,28 +40,20 @@ export default {
           title: "操作",
           key: "action",
           align: "center",
+          width: 160,
           render: (h, { row }) => {
             return h("div", [
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => this.handleOpenEdit(this.id, row.id)
-                  }
-                },
-                "修改"
-              ),
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => this.delect(row.id)
-                  }
-                },
-                "删除"
-              )
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEdit(this.id, row.id)
+                }
+              }),
+              h("btn-del", {
+                class: "k-btn",
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
             ]);
           }
         }

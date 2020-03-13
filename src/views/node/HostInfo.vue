@@ -18,11 +18,15 @@ export default {
   data() {
     return {
       deviceState: {},
-      infos: []
+      infos: [],
+      timer: null
     };
   },
   mounted() {
     this.getDeviceInfo();
+    this.timer = setInterval(() => {
+      this.getDeviceInfo();
+    }, 3000);
   },
   methods: {
     getDeviceInfo() {
@@ -38,7 +42,10 @@ export default {
       });
     }
   },
-  watch: {}
+  watch: {},
+  beforeDestroy() {
+    clearInterval(this.timer);
+  }
 };
 </script>
 

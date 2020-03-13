@@ -13,17 +13,12 @@ export default {
       default: () => {
         return [];
       }
-    },
+    }
   },
   components: { Chart },
   computed: {
     options() {
-      console.log(this.values.map(item => item.key))
-      const labels = this.values.map(item => item.key)
-      const data = this.values.map(item =>({
-        name: item.key,
-        value: item.doc_count
-      }))
+      const labels = this.values.map(item => item.name);
       return {
         color: ["#4089FF", "#FECD5D", "#FD8F64", "#D5E4A6"],
 
@@ -35,7 +30,7 @@ export default {
           orient: "vertical",
           right: 10,
           bottom: "center",
-          data: labels//["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"]
+          data: labels
         },
         series: [
           {
@@ -63,7 +58,7 @@ export default {
                 show: false
               }
             },
-            data: data
+            data: this.values
           }
         ]
       };

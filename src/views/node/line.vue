@@ -94,6 +94,21 @@ export default {
           // show: true,
           trigger: "axis"
         },
+        dataZoom: [
+          //   {
+          //     show: true,
+          //     realtime: true,
+          //     start: 0,
+          //     end: 100
+          // },
+          // {
+          //     type: 'inside',
+          //     realtime: true,
+          //     start: 65,
+          //     end: 85
+          // }
+        ],
+
         series: [
           {
             data: this.values,
@@ -101,7 +116,7 @@ export default {
             smooth: true,
             lineStyle: { color: primaryColor, width: 2 },
             itemStyle: {
-              borderWidth: 4,
+              // borderWidth: 4,
               borderColor: primaryColor
             },
             areaStyle: {

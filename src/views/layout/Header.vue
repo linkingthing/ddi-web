@@ -95,15 +95,17 @@ export default {
   display: flow-root;
   height: 100px;
   box-sizing: border-box;
-  box-shadow: 0 0 10px #66615b;
+
   .header-inner {
     position: relative;
     background: #f4f3ef;
     width: 100%;
     height: 100px;
+
     padding: 25px 30px;
     box-sizing: border-box;
     z-index: 10;
+    border-bottom: 1px solid #ddd;
   }
 
   .user {

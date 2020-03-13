@@ -15,7 +15,7 @@
               @keyup.enter="login"
               placeholder="用户名称"
             >
-              <img src="../assets/images/user.png" alt slot="prepend" />
+              <img src="../assets/images/user.png" class="icon" alt slot="prepend" />
             </Input>
           </FormItem>
           <FormItem prop="password">
@@ -26,7 +26,7 @@
               @keyup.enter="login"
               placeholder="登录密码"
             >
-              <img src="../assets/images/password.png" alt slot="prepend" />
+              <img src="../assets/images/password.png" class="icon" alt slot="prepend" />
             </Input>
           </FormItem>
           <FormItem>
@@ -36,7 +36,7 @@
               name="captcha"
               v-model="captcha"
               placeholder="验证码"
-              style="width:330px;"
+              style="width:200px;"
               class="fl"
               @keyup.enter="login"
             />
@@ -153,25 +153,29 @@ export default {
             })
             .then(res => {
               if (res.data !== "check value fail!" || true) {
-                services
-                  .login(this.params)
-                  .then(res => {
-                    if (res.data.code === 200) {
-                      this.$Message.success("Success!");
-                      this.SET_TOKEN(res.data.token);
-                      this.$router.push({
-                        path: "/dns/accessControl/accessControlList"
-                      });
-                    }
-                  })
-                  .catch(res => {
-                    this.$Message.error(res.response.data.message);
-                  });
               } else {
                 this.$Message.error("图片验证失败");
                 this.getCaptcha();
+                throw "";
               }
-            });
+            })
+            .finally(() => {
+              services
+                .login(this.params)
+                .then(res => {
+                  if (res.data.code === 200) {
+                    this.$Message.success("Success!");
+                    this.SET_TOKEN(res.data.token);
+                    this.$router.push({
+                      path: "/node"
+                    });
+                  }
+                })
+                .catch(res => {
+                  this.$Message.error(res.response.data.message);
+                });
+            })
+            .catch(err => err);
         }
       });
     }
@@ -180,19 +184,11 @@ export default {
 </script>
 <style lang="less">
 .login-content {
-  .ivu-input-group-large .ivu-input,
-  .ivu-input-group-large > .ivu-input-group-prepend,
-  .ivu-input-group-large > .ivu-input-group-append,
-  .ivu-input {
-    height: 70px;
-    padding: 0 18px;
-  }
   .ivu-btn {
-    height: 70px;
     background: #2d9fff;
     border-color: #2d9fff;
     span {
-      font-size: 30px;
+      font-size: 16px;
     }
   }
 }
@@ -206,9 +202,9 @@ export default {
   background-size: cover;
 }
 .login {
-  width: 700px;
+  width: 500px;
   position: absolute;
-  right: 60px;
+  right: 10%;
   top: 200px;
   box-shadow: 0 0 20px #f5f5f5;
 
@@ -219,11 +215,14 @@ export default {
   }
 
   .login-form {
-    padding: 70px;
+    padding: 30px 70px 50px;
+    .icon {
+      width: 20px;
+    }
   }
   .code-captcha {
-    height: 70px;
-    width: 200px;
+    height: 40px;
+    width: 120px;
     margin-left: 24px;
   }
   .code-tips {

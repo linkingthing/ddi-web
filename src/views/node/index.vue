@@ -82,9 +82,12 @@ export default {
 
   methods: {
     getList() {
-      services.getServerList().then(res => {
-        this.serverList = res.data.data;
-      });
+      services
+        .getServerList()
+        .then(res => {
+          this.serverList = res.data.data;
+        })
+        .catch(err => err);
     },
     handleTab(tab) {
       console.log(tab);
