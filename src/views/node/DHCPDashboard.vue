@@ -8,7 +8,7 @@
       </i-col>
       <i-col span="11">
         <Card title="DHCP报文统计">
-          <line-bar :labels="[2015,2016,2017,2020,2030]" :values="[25,22,63,40,21]"></line-bar>
+          <line-bar :labels="dhcpLabels" :values="dhcpValues"></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -24,8 +24,8 @@
         <Card title="DHCP使用率">
           <line-bar
             lineTheme="brown"
-            :labels="[2015,2016,2017,2020,2030]"
-            :values="[25,22,63,40,21]"
+            :labels="dhcpUsageLabels"
+            :values="dhcpUsageValues"
           ></line-bar>
         </Card>
       </i-col>
@@ -33,8 +33,8 @@
         <Card title="Leases总量统计">
           <line-bar
             lineTheme="golden"
-            :labels="[2015,2016,2017,2020,2030]"
-            :values="[25,22,63,40,21]"
+            :labels="dhcpLeaseLabels"
+            :values="dhcpLeaseValues"
           ></line-bar>
         </Card>
       </i-col>
@@ -47,13 +47,14 @@ import Card from "./Card";
 import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
+import { getDeviceHistoryInfo } from "./tools.js";
+
 export default {
   name: "DHCPDashboard",
   components: { Card, HostInfo, "line-bar": Line, Pie },
   props: {},
   data() {
     return {
-      infos: ["服务器名称：Server2", "服务器IP：10.1.1.2"],
       ipColumns: [
         {
           title: "子网名称",
@@ -85,14 +86,58 @@ export default {
           key: "",
           align: "center"
         }
-      ]
+      ],
+
+      dhcpLabels: [],
+      dhcpValues: [],
+
+      dhcpUsageLabels: [],
+      dhcpUsageValues: [],
+
+      dhcpLeaseLabels: [],
+      dhcpLeaseValues: [],
+
+      timer: null
     };
   },
-  computed: {},
-  created() {},
-  mounted() {},
-  methods: {},
-  watch: {}
+  mounted() {
+    this.init();
+  },
+  methods: {
+    init() {
+      this.batchExecute();
+    },
+    batchExecute() {
+      const node = this.$route.query.ip;
+      const batch = [
+        {
+          type: "dhcppacket",
+          labelsField: "dhcpLabels",
+          valuesField: "dhcpValues"
+        },
+        {
+          type: "dhcpusage",
+          labelsField: "dhcpUsageLabels",
+          valuesField: "dhcpUsageValues"
+        },
+        {
+          type: "dhcplease",
+          labelsField: "dhcpLeaseLabels",
+          valuesField: "dhcpLeaseValues"
+        }
+      ];
+
+      batch.forEach(({ type, labelsField, valuesField }) => {
+        getDeviceHistoryInfo({
+          node,
+          type
+        }).then(([labels, values]) => {
+          this[labelsField] = labels;
+          this[valuesField] = values;
+        });
+      });
+    },
+  }
 };
 </script>
 

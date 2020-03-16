@@ -8,7 +8,7 @@
       </i-col>
       <i-col span="11">
         <Card title="CPU利用率">
-          <line-bar :labels="[2015,2016,2017,2020,2030]" :values="[25,22,63,40,21]"></line-bar>
+          <line-bar :labels="cpuLabels" :values="cpuValues"></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -16,20 +16,12 @@
     <Row type="flex" justify="space-between">
       <i-col span="11">
         <Card title="内存利用率">
-          <line-bar
-            lineTheme="purple"
-            :labels="[2015,2016,2017,2020,2030]"
-            :values="[25,22,63,40,21]"
-          ></line-bar>
+          <line-bar lineTheme="purple" :labels="memoLabels" :values="memoValues"></line-bar>
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="磁盘利用率">
-          <line-bar
-            lineTheme="brown"
-            :labels="[2015,2016,2017,2020,2030]"
-            :values="[25,22,63,40,21]"
-          ></line-bar>
+          <line-bar lineTheme="brown" :labels="diskLabels" :values="diskValues"></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -41,7 +33,7 @@ import Card from "./Card";
 import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
-import services from "@/services";
+import { getDeviceHistoryInfo } from "./tools";
 
 export default {
   name: "ControllerDashboard",
@@ -49,60 +41,59 @@ export default {
   props: {},
   data() {
     return {
-      ipColumns: [
-        {
-          title: "子网名称",
-          key: "",
-          align: "center"
-        },
-        {
-          title: "网络地址",
-          key: "",
-          align: "center"
-        },
-        {
-          title: "地址总量",
-          key: "",
-          align: "center"
-        },
-        {
-          title: "已分配数量",
-          key: "",
-          align: "center"
-        },
-        {
-          title: "剩余数量",
-          key: "",
-          align: "center"
-        },
-        {
-          title: "IP地址使用率",
-          key: "",
-          align: "center"
-        }
-      ]
+      timer: null,
+      cpuLabels: [],
+      cpuValues: [],
+      memoLabels: [],
+      memoValues: [],
+      diskLabels: [],
+      diskValues: []
     };
   },
   computed: {},
   created() {},
   mounted() {
-    this.getDeviceHistoryInfo();
+    const node = this.$route.query.ip;
+    this.batchExecute(node);
+    this.timer = setInterval(() => {
+      this.batchExecute();
+    }, 3000);
   },
   methods: {
-    getDeviceHistoryInfo() {
-      const params = {
-        node: this.$route.query.ip,
-        type: "cpu",
-        start: (new Date().getTime() - 7 * 24 * 60 * 60 * 1000) / 1000,
-        end: new Date().getTime() / 1000,
-        step: 150
-      };
-      services.getDeviceHistoryInfo(params).then(res => {
-        console.log(res.data.data);
+    batchExecute(node) {
+      const batch = [
+        {
+          type: "cpu",
+          labelsField: "cpuLabels",
+          valuesField: "cpuValues"
+        },
+        {
+          type: "mem",
+          labelsField: "memoLabels",
+          valuesField: "memoValues"
+        },
+        {
+          type: "disk",
+          labelsField: "diskLabels",
+          valuesField: "diskValues"
+        }
+      ];
+
+      batch.forEach(({ type, labelsField, valuesField }) => {
+        getDeviceHistoryInfo({
+          node,
+          type
+        }).then(([labels, values]) => {
+          this[labelsField] = labels;
+          this[valuesField] = values;
+        });
       });
     }
   },
-  watch: {}
+  watch: {},
+  beforeDestroy() {
+    clearInterval(this.timer);
+  }
 };
 </script>
 

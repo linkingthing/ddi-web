@@ -24,9 +24,9 @@ export default {
   },
   mounted() {
     this.getDeviceInfo();
-    this.timer = setInterval(() => {
-      this.getDeviceInfo();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getDeviceInfo();
+    // }, 3000);
   },
   methods: {
     getDeviceInfo() {
