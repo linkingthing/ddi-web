@@ -47,23 +47,19 @@
         }
         .ivu-menu-item {
             font-size: 16px;
+            &:hover {
+                color: #fff;
+                background-color: @menuActive;
+            }
         }
         .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu){
             background: @menuActive;
             &:after{
-                top: 20px;
-                right: 0;
-                background-color: @menuActive;
-                height: 0;
-                width: 0;
-                border: 12px solid;
-                border-color: transparent  #F8F4F0 transparent transparent;
+                display: none;
             }
         }
         .ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title{
             padding: 20px 30px 20px 45px;
-            color: #D1D0CE;
-
         }
         
         .toggle{

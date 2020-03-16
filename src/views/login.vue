@@ -108,7 +108,7 @@ export default {
     ...mapMutations(["SET_TOKEN"]),
     getCaptcha() {
       const self = this;
-      fetch("/dns/linkingthing.com/example/v1/getcheckimage.jpeg").then(res => {
+      fetch("/apis/linkingthing.com/example/v1/getcheckimage.jpeg").then(res => {
         console.log(res.body);
 
         this.checkvaluetoken = res.headers.get("checkvaluetoken");

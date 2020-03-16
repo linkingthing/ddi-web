@@ -152,10 +152,14 @@ a:link,
 a:visited,
 a:hover,
 a:active {
-  color: #515a6e;
+  color: #d1d0ce;
 }
 
 .left-menu {
   height: 100%;
+}
+
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+  color: #fff;
 }
 </style>
