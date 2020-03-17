@@ -15,27 +15,19 @@
     <Row type="flex" style="margin-bottom: 50px">
       <i-col span="24">
         <Card title="IP地址分配状态">
-          <Table :data="[]" :columns="ipColumns" style="padding-top: 30px" />
+          <Table :data="assignList" :columns="ipColumns" style="padding-top: 30px" />
         </Card>
       </i-col>
     </Row>
     <Row type="flex" justify="space-between">
       <i-col span="11">
         <Card title="DHCP使用率">
-          <line-bar
-            lineTheme="brown"
-            :labels="dhcpUsageLabels"
-            :values="dhcpUsageValues"
-          ></line-bar>
+          <line-bar lineTheme="brown" :labels="dhcpUsageLabels" :values="dhcpUsageValues"></line-bar>
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="Leases总量统计">
-          <line-bar
-            lineTheme="golden"
-            :labels="dhcpLeaseLabels"
-            :values="dhcpLeaseValues"
-          ></line-bar>
+          <line-bar lineTheme="golden" :labels="dhcpLeaseLabels" :values="dhcpLeaseValues"></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -48,6 +40,7 @@ import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
 import { getDeviceHistoryInfo } from "./tools.js";
+import services from "../../services";
 
 export default {
   name: "DHCPDashboard",
@@ -58,22 +51,22 @@ export default {
       ipColumns: [
         {
           title: "子网名称",
-          key: "",
+          key: "name",
           align: "center"
         },
         {
           title: "网络地址",
-          key: "",
+          key: "addr",
           align: "center"
         },
         {
           title: "地址总量",
-          key: "",
+          key: "total",
           align: "center"
         },
         {
           title: "已分配数量",
-          key: "",
+          key: "used",
           align: "center"
         },
         {
@@ -97,11 +90,13 @@ export default {
       dhcpLeaseLabels: [],
       dhcpLeaseValues: [],
 
-      timer: null
+      timer: null,
+      assignList: []
     };
   },
   mounted() {
     this.init();
+    this.getDHCPAssignData()
   },
   methods: {
     init() {
@@ -137,6 +132,15 @@ export default {
         });
       });
     },
+    getDHCPAssignData() {
+      services
+        .getDHCPAssign()
+        .then(res => {
+          console.log(res.data)
+          this.assignList = res.data
+        })
+        .catch(err => err);
+    }
   }
 };
 </script>

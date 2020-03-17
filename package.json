@@ -5,9 +5,11 @@
   "author": "yasin",
   "private": true,
   "scripts": {
-    "dev": "node build/dev-server.js",
+    "dev": "node build/dev-server.js ",
     "start": "node build/dev-server.js",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "startDNS": "node build/dev-server.js dns node",
+    "buildDNS": "node build/build.js dns node"
   },
   "dependencies": {
     "axios": "^0.19.0",

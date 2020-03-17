@@ -213,115 +213,7 @@ export default {
         return axios.get(`${baseUrl}/servers`)
     },
     getDeviceHistoryInfo(params) {
-        return axios.get(`${baseUrl}/hists`, { params }).then(res => {
-            return {
-                "status": "success",
-                "data": {
-                    "metric": {
-                        "node": "10.0.0.55"
-                    },
-                    "values": [
-                        [
-                            1584014613,
-                            "63"
-                        ],
-                        [
-                            1584014936,
-                            "22"
-                        ],
-                        [
-                            1584015259,
-                            "74"
-                        ],
-                        [
-                            1584015582,
-                            "35"
-                        ],
-                        [
-                            1584015905,
-                            "77"
-                        ],
-                        [
-                            1584016228,
-                            "20"
-                        ],
-                        [
-                            1584016551,
-                            "20"
-                        ],
-                        [
-                            1584016874,
-                            "20"
-                        ],
-                        [
-                            1584017197,
-                            "20"
-                        ],
-                        [
-                            1584017520,
-                            "20"
-                        ],
-                        [
-                            1584017843,
-                            "20"
-                        ],
-                        [
-                            1584018166,
-                            "20"
-                        ],
-                        [
-                            1584018489,
-                            "20"
-                        ],
-                        [
-                            1584018812,
-                            "20"
-                        ],
-                        [
-                            1584019135,
-                            "20"
-                        ],
-                        [
-                            1584019458,
-                            "20"
-                        ],
-                        [
-                            1584019781,
-                            "20"
-                        ],
-                        [
-                            1584020104,
-                            "20"
-                        ],
-                        [
-                            1584020427,
-                            "20"
-                        ],
-                        [
-                            1584020750,
-                            "20"
-                        ],
-                        [
-                            1584021073,
-                            "20"
-                        ],
-                        [
-                            1584021396,
-                            "20"
-                        ],
-                        [
-                            1584021719,
-                            "20"
-                        ],
-                        [
-                            1584022042,
-                            "20"
-                        ]
-                    ]
-                },
-                "message": "ok"
-            }
-        })
+        return axios.get(`${baseUrl}/hists`, { params })
     },
     getDNSTop() {
         return axios.get(`${baseUrl}/dashdns`)
@@ -332,4 +224,8 @@ export default {
     getMemoHitRate(params) {
         return axios.get(`${baseUrl}/memhit`, { params })
     },
+
+    getDHCPAssign() {
+        return axios.get(`${baseUrl}/dhcpassign`)
+    }
 }

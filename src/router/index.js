@@ -8,6 +8,23 @@ import node from './node';
 import dns from './dns';
 import address from './address';
 
+
+const moduleList = [{
+    label: 'node',
+    modules: node
+}, {
+    label: 'dns',
+    modules: dns
+}, {
+    label: 'address',
+    modules: address
+}]
+
+const packMaterial = moduleList
+    .filter(item => PACK_SYSTEM.includes(item.label))
+    .map(item => [...item.modules])
+    .reduce((result, current) => result.concat(current), [])
+
 Vue.use(Router)
 const router = new Router({
     mode: 'hash',
@@ -19,11 +36,7 @@ const router = new Router({
         meta: {
             range: 'node',
         },
-        children: [
-            ...node,
-            ...dns,
-            ...address,
-        ]
+        children: packMaterial
     },
     {
         // 登陆页
