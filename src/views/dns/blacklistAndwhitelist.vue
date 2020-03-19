@@ -2,7 +2,7 @@
   <div class="blancList">
     <table-page title="地址黑名单配置" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate">新建</i-button>
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
       </template>
     </table-page>
 

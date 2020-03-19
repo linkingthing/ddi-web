@@ -2,7 +2,7 @@
   <div class="A4Compose">
     <table-page title="A4地址合成查询表" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate">新建</i-button>
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
       </template>
     </table-page>
 
@@ -40,28 +40,20 @@ export default {
           title: "操作",
           key: "action",
           align: "center",
+          width: 160,
           render: (h, { row }) => {
             return h("div", [
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => this.handleOpenEdit(this.id, row.id)
-                  }
-                },
-                "修改"
-              ),
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => this.delect(row.id)
-                  }
-                },
-                "删除"
-              )
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEdit(this.id, row.id)
+                }
+              }),
+              h("btn-del", {
+                class: "k-btn",
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
             ]);
           }
         }

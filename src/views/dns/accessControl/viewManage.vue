@@ -2,7 +2,7 @@
   <div class="viewManage">
     <table-page title="视图管理" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="success" icon="md-add" @click="handleOpenCreate">新建</i-button>
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
       </template>
     </table-page>
 
@@ -48,6 +48,7 @@ export default {
           title: "操作",
           key: "action",
           align: "center",
+          width: 160,
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {

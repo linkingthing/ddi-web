@@ -4,9 +4,7 @@
 
     <Row type="flex" justify="space-between" style="margin-bottom: 50px">
       <i-col span="11">
-        <Card title="服务器信息" :infos="infos">
-          <DeviceInfo :deviceState="deviceState" />
-        </Card>
+        <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="CPU利用率">
@@ -40,19 +38,17 @@
 
 <script>
 import Card from "./Card";
-import DeviceInfo from "./DeviceInfo";
+import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
 import services from "@/services";
 
 export default {
   name: "ControllerDashboard",
-  components: { Card, DeviceInfo, "line-bar": Line, Pie },
+  components: { Card, HostInfo, "line-bar": Line, Pie },
   props: {},
   data() {
     return {
-      deviceState: {},
-      infos: [],
       ipColumns: [
         {
           title: "子网名称",
@@ -90,22 +86,9 @@ export default {
   computed: {},
   created() {},
   mounted() {
-    this.getDeviceInfo();
     this.getDeviceHistoryInfo();
   },
   methods: {
-    getDeviceInfo() {
-      const ip = this.$route.query.ip;
-      services.getNodeList({ node: ip }).then(res => {
-        const result = res.data.data;
-        this.deviceState = result.usage[ip];
-        const deviceInfo = result.nodes[ip];
-        this.infos = [
-          `服务器名称：${deviceInfo.hostname}`,
-          `服务器IP：${deviceInfo.ip}`
-        ];
-      });
-    },
     getDeviceHistoryInfo() {
       const params = {
         node: this.$route.query.ip,

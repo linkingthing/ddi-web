@@ -2,7 +2,7 @@
   <div class="zoneQuery">
     <table-page title="区域查询" :data="list" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate(id)">新建</i-button>
+        <i-button type="success" size="large" @click="handleOpenCreate(id)">新建</i-button>
       </template>
     </table-page>
     <area-app-config ref="areaRef" @onCreateSuccess="getArea"></area-app-config>
@@ -48,7 +48,15 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center"
+          width: 120,
+          align: "center",
+          render: (h, { row }) => {
+            return h("btn-del", {
+              on: {
+                click: () => this.delect(row.id)
+              }
+            });
+          }
         }
       ],
       id: "",

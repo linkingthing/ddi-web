@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     initChart() {
-      console.log("init");
       const chartRef = this.$refs.chart;
       if (chartRef) {
         const myChart = echarts.init(chartRef);
