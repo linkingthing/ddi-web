@@ -57,6 +57,8 @@ import MergeSplit from "./merge-split"
 
 import { operateTypes } from "./define";
 
+import services from "./../../../../services/index.js"
+
 export default {
   components:{
     TablePagination,
@@ -157,13 +159,20 @@ export default {
     }
   },
 
-  mounted(){
-    // this.tableData = [];
+  mounted(){    
+    this.handleQuery();
   },
 
   methods:{
-    handleQuery(){
-
+    async handleQuery(){
+      try {
+        let res = await services.getChildNetList()
+        console.log(res);
+        
+      } catch (err) {
+        console.error(err);
+        
+      }
     },
 
     handleAdd(){

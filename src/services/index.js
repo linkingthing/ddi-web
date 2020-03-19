@@ -215,5 +215,16 @@ export default {
     },
     getDeviceHistoryInfo(params) {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/hists`, { params })
-    }
+    },
+
+    /**
+     * 子网管理 start
+     */
+
+    /**
+     * 获取子网管理列表
+     */
+     getChildNetList(){
+         return axios.post("/apis/linkingthing/dhcp/v1/subnetv4s");
+     }
 }

@@ -3,7 +3,7 @@ import Router from 'vue-router'
 const Cache = require("../util/store").default("localStorage");
 
 import Login from '../views/login'
-import Layout from '../views/Layout'
+import Layout from '../views/layout'
 import node from './node';
 import dns from './dns';
 import address from './address';
