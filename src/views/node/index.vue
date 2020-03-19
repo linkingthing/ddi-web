@@ -130,6 +130,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       bottom: -60px;
       height: 80px;
       width: 2px;
@@ -153,6 +154,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       top: -80px;
       height: 80px;
       width: 0;
@@ -162,6 +164,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       top: -80px;
       width: 340px;
       border-top: 2px dotted #006fe4;

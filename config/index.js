@@ -32,24 +32,24 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/dns': {
-        target: 'http://10.0.0.32:8081/apis',
+      '/apis': {
+        target: 'http://10.0.0.14:8081/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
         //重写路径
         pathRewrite: {
-          '^/dns': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
+          '^/apis': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
       },
-      '/node': {
-        target: 'http://10.0.0.15:1210/apis',
+      '/test': {
+        target: 'http://10.0.0.55:1210/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
         //重写路径
         pathRewrite: {
-          '^/node': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
+          '^/test': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
       }
     },
@@ -59,5 +59,12 @@ module.exports = {
     // In our experience, they generally work as expected,
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
-  }
+  },
+  PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,node,address'"
 }
+
+console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2) : ['dns', 'node', 'address'], "相关模块")
+console.log("正在生成...")
+console.log("正在生成......")
+console.log("正在生成.........")
+

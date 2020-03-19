@@ -59,6 +59,7 @@ import Pie from "./Pie";
 import services from "@/services";
 import moment from "moment";
 moment.locale("zh-cn");
+import { getDeviceHistoryInfo } from "./tools";
 
 export default {
   name: "DNSDashboard",
@@ -133,26 +134,12 @@ export default {
     getQpsList() {
       const params = {
         node: this.$route.query.ip,
-        type: "qps",
-        start: parseInt(
-          (new Date().getTime() - 7 * 24 * 60 * 60 * 1000) / 1000
-        ),
-        end: parseInt(new Date().getTime() / 1000),
-        step: 150
+        type: "qps"
       };
-      services
-        .getDeviceHistoryInfo(params)
-        .then(res => {
-          const { values } = res.data.data;
-          const qpsData = values.map(([timestamp, count]) => {
-            return {
-              timestamp,
-              time: moment(timestamp * 1000).format("YYYY-MM-DD hh:mm:ss"),
-              count
-            };
-          });
-          this.qpsLabels = qpsData.map(item => item.time);
-          this.qpsValues = qpsData.map(item => item.count);
+      getDeviceHistoryInfo(params)
+        .then(([labels, values]) => {
+          this.qpsLabels = labels;
+          this.qpsValues = values;
         })
         .catch(err => err);
     },
@@ -285,8 +272,8 @@ export default {
     getMemoHitRateData() {
       const params = {
         node: this.$route.query.ip,
-        start: parseInt(new Date().getTime() / 1000 - 5 * 24 * 60 * 60),
-        end: parseInt(new Date().getTime() / 1000)
+        start: moment().unix() - 5 * 24 * 60 * 60,
+        end: moment().unix()
       };
       services
         .getMemoHitRate(params)
@@ -301,7 +288,7 @@ export default {
   },
   watch: {},
   beforeDestroy() {
-    clearInterval(this.timer)
+    clearInterval(this.timer);
   }
 };
 </script>

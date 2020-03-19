@@ -20,7 +20,7 @@ export default {
     options() {
       const labels = this.values.map(item => item.name);
       return {
-        color: ["#4089FF", "#FECD5D", "#FD8F64", "#D5E4A6"],
+        color: ["#19be6b", "#4089FF", "#FECD5D", "#FD8F64"],
 
         tooltip: {
           trigger: "item",
@@ -38,7 +38,7 @@ export default {
             type: "pie",
             center: [130, "center"],
 
-            radius: ["60%", "90%"],
+            radius: ["50%", "70%"],
             avoidLabelOverlap: false,
             label: {
               normal: {
