@@ -6,13 +6,13 @@
         <Row>
           <i-col span="18">
             <form-item label="递归并发数（个）" prop="recursiveClients" style="font-size:20px;">
-              <i-input v-model="formItem.recursiveClients" style=" width:300px;"></i-input>
+              <InputNumber v-model="formItem.recursiveClients" style=" width:300px;"></InputNumber>
               <i-button type="primary" @click="primary">保存</i-button>
             </form-item>
           </i-col>
           <i-col span="18">
             <form-item label="单一域递归并发数（个）" prop="fetchesPerZone" style="font-size:20px;">
-              <i-input v-model="formItem.fetchesPerZone" style="width:300px;"></i-input>
+              <InputNumber v-model="formItem.fetchesPerZone" style="width:300px;"></InputNumber>
               <i-button type="primary" @click="primary">保存</i-button>
             </form-item>
           </i-col>
@@ -66,11 +66,11 @@ export default {
           recursiveClients: Number(this.formItem.recursiveClients),
           fetchesPerZone: +this.formItem.fetchesPerZone
         })
-        .then(res => {
+        .then(() => {
           this.$Message.success("保存成功");
           this.getView();
         })
-        .catch(err => {
+        .catch(() => {
           this.$Message.success("保存失败");
         });
     }

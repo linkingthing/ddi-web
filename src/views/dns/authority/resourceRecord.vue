@@ -2,7 +2,7 @@
   <div class>
     <table-page title="资源记录" :data="resList" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate(viewId,zoneId)">新建</i-button>
+        <i-button type="success" @click="handleOpenCreate(viewId,zoneId)">新建</i-button>
       </template>
     </table-page>
     <createResource ref="configRef" @onCreateSuccess="getResources"></createResource>
@@ -64,7 +64,7 @@ export default {
                   class: "k-btn",
                   on: {
                     click: () => {
-                      this.delect(item.id);
+                      this.delect(row.id);
                     }
                   }
                 },
@@ -111,11 +111,11 @@ export default {
         onOk: () => {
           services
             .deleteResourceById(this.viewId, this.zoneId, data)
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getResources();
             })
-            .catch(err => {
+            .catch(() => {
               this.$Message.success("删除失败");
             });
         }

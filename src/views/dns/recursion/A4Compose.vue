@@ -69,7 +69,7 @@ export default {
       id1: ""
     };
   },
-  created(id, dns64s) {
+  created() {
     this.id = this.$route.query.id;
     this.dns64s = this.$route.query.dns64s;
   },
@@ -107,11 +107,11 @@ export default {
         onOk: () => {
           services
             .deleteDNS64sByViewIdAndDnsId(this.id, data)
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getView();
             })
-            .catch(err => {
+            .catch(() => {
               this.$Message.success("删除失败");
             });
         }

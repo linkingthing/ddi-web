@@ -38,13 +38,12 @@
 import Card from "./Card";
 import HostInfo from "./HostInfo";
 import Line from "./Line";
-import Pie from "./Pie";
 import { getDeviceHistoryInfo } from "./tools.js";
 import services from "../../services";
 
 export default {
   name: "DHCPDashboard",
-  components: { Card, HostInfo, "line-bar": Line, Pie },
+  components: { Card, HostInfo, "line-bar": Line },
   props: {},
   data() {
     return {
@@ -96,7 +95,7 @@ export default {
   },
   mounted() {
     this.init();
-    this.getDHCPAssignData()
+    this.getDHCPAssignData();
   },
   methods: {
     init() {
@@ -136,8 +135,8 @@ export default {
       services
         .getDHCPAssign()
         .then(res => {
-          console.log(res.data)
-          this.assignList = res.data
+          console.log(res.data);
+          this.assignList = res.data;
         })
         .catch(err => err);
     }

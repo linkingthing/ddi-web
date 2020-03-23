@@ -1,69 +1,51 @@
 <template>
-  <modal
-    v-model="eviceModal"
-    class-name=" vertical-center-modal"
-    :mask-closable="false"
-    width="500"
-    :closable="false"
-  >
-    <div slot="header">修改访问控制表</div>
-    <div>
-      <vue-scroll style="height: 500px;" ref="vs">
-        <i-form
-          :model="params"
-          label-position="right"
-          :label-width="80"
-          :rules="ruleValidate"
-          ref="formValidate"
-        >
-          <div class="pop-content">
-            <Row>
-              <i-col span="18">
-                <form-item label="名称" prop="name">
-                  <i-input v-model="params.name" placeholder="请填访问控制名称"></i-input>
-                </form-item>
-                <form-item label="IP列表" prop="IP">
-                  <div v-for="item in params.list" :key="item.name">
-                    <Tag
-                      type="border"
-                      closable
-                      :color="item.check ? 'error' : 'primary'"
-                      @on-close="handleDeleteTag(item.name)"
-                    >{{item.name}}</Tag>
-                  </div>
-                </form-item>
-                <form-item label="acl">
-                  <Checkbox v-model="aclcheck">禁止</Checkbox>
-                  <Select filterable style="width: 150px" v-model="acl">
-                    <Option
-                      v-for="item in accessList"
-                      :key="item.id"
-                      :value="item.name"
-                    >{{item.name}}</Option>
-                  </Select>
-                  <Button type="primary" @click="handleAddAcl">添加</Button>
-                </form-item>
-                <form-item label="IP">
-                  <Checkbox v-model="ipcheck">禁止</Checkbox>
-                  <Input v-model="ip" placeholder="输入ip后点击添加" style="width: 150px" />
-                  <Button type="primary" @click="handleAddIP">添加</Button>
-                </form-item>
-              </i-col>
-            </Row>
-          </div>
-        </i-form>
-      </vue-scroll>
-    </div>
-    <div slot="footer">
-      <i-button class="me-button k-btn" @click="eviceModal = false">取消</i-button>
-      <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
-    </div>
-  </modal>
+  <common-modal :visible.sync="eviceModal" title="修改访问控制表" @confirm="handleSubmit">
+    <i-form
+      :model="params"
+      label-position="right"
+      :label-width="80"
+      :rules="ruleValidate"
+      ref="formValidate"
+    >
+      <div class="pop-content">
+        <Row>
+          <i-col span="20">
+            <form-item label="名称" prop="name">
+              <i-input v-model="params.name" placeholder="请填访问控制名称"></i-input>
+            </form-item>
+            <form-item label="IP列表" prop="IP">
+              <div v-for="item in params.list" :key="item.name">
+                <Tag
+                  type="border"
+                  closable
+                  :color="item.check ? 'error' : 'primary'"
+                  @on-close="handleDeleteTag(item.name)"
+                >{{item.name}}</Tag>
+              </div>
+            </form-item>
+            <form-item label="acl">
+              <Checkbox v-model="aclcheck">禁止</Checkbox>
+              <Select filterable style="width: 150px" v-model="acl">
+                <Option v-for="item in accessList" :key="item.id" :value="item.name">{{item.name}}</Option>
+              </Select>
+              <Button type="primary" @click="handleAddAcl">添加</Button>
+            </form-item>
+            <form-item label="IP">
+              <Checkbox v-model="ipcheck">禁止</Checkbox>
+              <Input v-model="ip" placeholder="输入ip后点击添加" style="width: 150px" />
+              <Button type="primary" @click="handleAddIP">添加</Button>
+            </form-item>
+          </i-col>
+        </Row>
+      </div>
+    </i-form>
+  </common-modal>
 </template>
 
 <script>
-import axios from "axios";
 import services from "@/services";
+import { nameValidate } from "@/util/common";
+
 export default {
   name: "EviceStatisticsConfig",
   props: ["accessList", "id"],
@@ -82,7 +64,7 @@ export default {
       aclcheck: false,
       ipcheck: false,
       ruleValidate: {
-        name: [{ required: true, message: "请填访问控制名称" }]
+        name: [{ required: true, message: "请填访问控制名称" }, nameValidate]
       }
     };
   },

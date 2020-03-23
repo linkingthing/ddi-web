@@ -1,54 +1,44 @@
 <template>
-  <modal
-    v-model="restrictModal"
-    class-name="pop vertical-center-modal"
-    :mask-closable="false"
-    width="500"
-    :closable="false"
-  >
-    <div slot="header">新建A4合成地址列表</div>
-    <div>
-      <vue-scroll style="height: 500px;" ref="vs">
-        <i-form
-          :model="params"
-          label-position="right"
-          :label-width="500"
-          :rules="ruleValidate"
-          ref="formValidate"
-        >
-          <div class="pop-content">
-            <div class="pop-box">
-              <div class="pop-body" style="padding-bottom:0">
-                <form-item label="前缀" :label-width="110" prop="prefix">
-                  <i-input v-model="params.prefix" placeholder="请填写前缀"></i-input>
-                </form-item>
-                <form-item label="客户IP地址" prop="clientacl" :label-width="110">
-                  <i-select v-model="params.clientacl">
-                    <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                  </i-select>
-                </form-item>
+  <common-modal :visible.sync="restrictModal" title="新建A4合成地址列表" @confirm="handleSubmit">
+    <i-form
+      :model="params"
+      label-position="right"
+      :label-width="500"
+      :rules="ruleValidate"
+      ref="formValidate"
+    >
+      <div class="pop-content">
+        <div class="pop-box">
+          <div class="pop-body" style="padding-bottom:0">
+            <form-item label="前缀" :label-width="110" prop="prefix" style="margin-bottom: 48px">
+              <i-input v-model="params.prefix" placeholder="请填写前缀"></i-input>
+            </form-item>
+            <form-item
+              label="客户IP地址"
+              prop="clientacl"
+              :label-width="110"
+              style="margin-bottom: 48px"
+            >
+              <i-select v-model="params.clientacl">
+                <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+              </i-select>
+            </form-item>
 
-                <form-item label="目标IPv4地址" prop="aaddress" :label-width="110">
-                  <i-select v-model="params.aaddress">
-                    <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                  </i-select>
-                </form-item>
-              </div>
-            </div>
+            <form-item label="目标IPv4地址" prop="aaddress" :label-width="110">
+              <i-select v-model="params.aaddress">
+                <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+              </i-select>
+            </form-item>
           </div>
-        </i-form>
-      </vue-scroll>
-    </div>
-    <div slot="footer">
-      <i-button class="me-button k-btn" @click="restrictModal = false">取消</i-button>
-      <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
-    </div>
-  </modal>
+        </div>
+      </div>
+    </i-form>
+  </common-modal>
 </template>
 
 <script>
 import services from "@/services";
-
+import { prefixValidate } from "@/util/common";
 export default {
   name: "createA4",
   data() {
@@ -66,14 +56,33 @@ export default {
       // 表单验证规则
       ruleValidate: {
         prefix: [
-          { required: true, message: "请填正确的地址前缀", trigger: "change" }
+          { required: true, message: "请填正确的地址前缀" },
+          prefixValidate,
+          {
+            validator: function(rule, value, callback) {
+              const endNumReg = /[\d]{2}$/;
+              const [number] = value.match(endNumReg);
+              const max = Math.floor(number / 16); // 最多组数
+              const groupStr = value.substring(0, value.length - 5);
+              const unitArr = groupStr.split(":");
+
+              if (unitArr.length > max) {
+                callback(`填写错误，ip单元数不能大于${max}`);
+              }
+
+              unitArr.every((unit, index) => {
+                if (!/^[0-9a-fA-F]{1,4}$/.test(unit)) {
+                  callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
+                }
+                return /^[0-9a-fA-F]{1,4}$/.test(unit);
+              });
+
+              callback();
+            }
+          }
         ],
-        clientacl: [
-          { required: true, message: "请选择客户IP地址", trigger: "change" }
-        ],
-        aaddress: [
-          { required: true, message: "请选择目标IPv4地址", trigger: "change" }
-        ]
+        clientacl: [{ required: true, message: "请选择客户IP地址" }],
+        aaddress: [{ required: true, message: "请选择目标IPv4地址" }]
       }
     };
   },
@@ -84,14 +93,6 @@ export default {
     openConfig(viewId) {
       this.viewId = viewId;
       this.restrictModal = true;
-      setTimeout(() => {
-        this.$refs["vs"].scrollTo(
-          {
-            y: "0"
-          },
-          0
-        );
-      }, 0);
     },
     getChoose() {
       services

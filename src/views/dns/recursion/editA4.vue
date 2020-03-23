@@ -1,49 +1,34 @@
 <template>
-  <modal
-    v-model="powerModal"
-    class-name="pop vertical-center-modal"
-    :mask-closable="false"
-    width="500"
-    :closable="false"
-  >
-    <div slot="header">修改A4合成地址列表</div>
-    <div>
-      <vue-scroll style="height: 500px;" ref="vs">
-        <i-form
-          :model="params"
-          label-position="right"
-          :label-width="500"
-          :rules="ruleValidate"
-          ref="formValidate"
-        >
-          <div class="pop-content">
-            <div class="pop-box">
-              <div class="pop-body" style="padding-bottom:0">
-                <form-item label="前缀" :label-width="110" prop="prefix">
-                  <i-input v-model="params.prefix" placeholder="请填写前缀"></i-input>
-                </form-item>
-                <form-item label="客户IP地址" prop="clientacl" :label-width="110">
-                  <i-select v-model="params.clientacl">
-                    <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                  </i-select>
-                </form-item>
+  <common-modal :visible.sync="powerModal" title="修改A4合成地址列表" @confirm="handleSubmit">
+    <i-form
+      :model="params"
+      label-position="right"
+      :label-width="500"
+      :rules="ruleValidate"
+      ref="formValidate"
+    >
+      <div class="pop-content">
+        <div class="pop-box">
+          <div class="pop-body" style="padding-bottom:0">
+            <form-item label="前缀" :label-width="110" prop="prefix">
+              <i-input v-model="params.prefix" placeholder="请填写前缀"></i-input>
+            </form-item>
+            <form-item label="客户IP地址" prop="clientacl" :label-width="110">
+              <i-select v-model="params.clientacl">
+                <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+              </i-select>
+            </form-item>
 
-                <form-item label="目标IPv4地址" prop="aaddress" :label-width="110">
-                  <i-select v-model="params.aaddress">
-                    <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                  </i-select>
-                </form-item>
-              </div>
-            </div>
+            <form-item label="目标IPv4地址" prop="aaddress" :label-width="110">
+              <i-select v-model="params.aaddress">
+                <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+              </i-select>
+            </form-item>
           </div>
-        </i-form>
-      </vue-scroll>
-    </div>
-    <div slot="footer">
-      <i-button class="me-button k-btn" @click="powerModal = false">取消</i-button>
-      <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
-    </div>
-  </modal>
+        </div>
+      </div>
+    </i-form>
+  </common-modal>
 </template>
 
 <script>
@@ -87,14 +72,6 @@ export default {
       this.dnsId = dnsId;
       this.powerModal = true;
       this.getInitParams(viewId, dnsId);
-      setTimeout(() => {
-        this.$refs["vs"].scrollTo(
-          {
-            y: "0"
-          },
-          0
-        );
-      }, 0);
     },
     getInitParams(viewId, dnsId) {
       services.getOneDNS64ById(viewId, dnsId).then(res => {

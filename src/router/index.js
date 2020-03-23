@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-const Cache = require("../util/store").default("localStorage");
-
+import store from "../util/store"
 import Login from '../views/login'
 import Layout from '../views/layout'
 import node from './node';
 import dns from './dns';
 import address from './address';
 
+const Cache = store()
 
 const moduleList = [{
     label: 'node',
@@ -21,6 +21,7 @@ const moduleList = [{
 }]
 
 const packMaterial = moduleList
+    // eslint-disable-next-line no-undef
     .filter(item => PACK_SYSTEM.includes(item.label))
     .map(item => [...item.modules])
     .reduce((result, current) => result.concat(current), [])
