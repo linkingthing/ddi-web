@@ -13,23 +13,7 @@
             <form-item label="名称" :label-width="110" prop="name">
               <i-input v-model="params.name" placeholder="请填写资源名称"></i-input>
             </form-item>
-            <form-item label="类型" prop="type" :label-width="110">
-              <i-select v-model="params.type">
-                <i-option value="A">A</i-option>
-                <i-option value="AAAA">AAAA</i-option>
-                <i-option value="CNAME">CNAME</i-option>
-                <i-option value="MX">MX</i-option>
-                <i-option value="NS">NS</i-option>
-                <i-option value="NAPTR">NAPTR</i-option>
-                <i-option value="PTR">PTR</i-option>
-                <i-option value="SRV">SRV</i-option>
-                <i-option value="TXT">TXT</i-option>
-                <i-option value="URL">URL</i-option>
-              </i-select>
-            </form-item>
-            <form-item label="记录值" :label-width="110" prop="value">
-              <i-input v-model="params.value" placeholder="请填写记录值"></i-input>
-            </form-item>
+            <TypeValue :params="params" />
             <form-item label="TTL" prop="ttl" :label-width="110">
               <i-input type="text" v-model="params.ttl" placeholder="请输入延缓时间" number></i-input>
             </form-item>
@@ -42,9 +26,12 @@
 
 <script>
 import services from "@/services";
+import TypeValue from "@/components/TypeValue";
+import { nameValidate, positiveIntegerValidate } from "@/util/common";
 
 export default {
   name: "WebsiteUpConfig",
+  components: { TypeValue },
   data() {
     return {
       // 是否显示mode
@@ -62,10 +49,10 @@ export default {
 
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填写资源名称" }],
+        name: [{ required: true, message: "请填写资源名称" }, nameValidate],
         type: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
-        ttl: [{ required: true }]
+        ttl: [{ required: true }, positiveIntegerValidate]
       }
     };
   },

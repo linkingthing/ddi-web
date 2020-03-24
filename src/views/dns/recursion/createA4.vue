@@ -38,7 +38,7 @@
 
 <script>
 import services from "@/services";
-import { prefixValidate } from "@/util/common";
+import { prefixValidate, prefixValidateFunc } from "@/util/common";
 export default {
   name: "createA4",
   data() {
@@ -59,26 +59,7 @@ export default {
           { required: true, message: "请填正确的地址前缀" },
           prefixValidate,
           {
-            validator: function(rule, value, callback) {
-              const endNumReg = /[\d]{2}$/;
-              const [number] = value.match(endNumReg);
-              const max = Math.floor(number / 16); // 最多组数
-              const groupStr = value.substring(0, value.length - 5);
-              const unitArr = groupStr.split(":");
-
-              if (unitArr.length > max) {
-                callback(`填写错误，ip单元数不能大于${max}`);
-              }
-
-              unitArr.every((unit, index) => {
-                if (!/^[0-9a-fA-F]{1,4}$/.test(unit)) {
-                  callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
-                }
-                return /^[0-9a-fA-F]{1,4}$/.test(unit);
-              });
-
-              callback();
-            }
+            validator: prefixValidateFunc
           }
         ],
         clientacl: [{ required: true, message: "请选择客户IP地址" }],

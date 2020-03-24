@@ -33,6 +33,7 @@
 
 <script>
 import services from "@/services";
+import { prefixValidate, prefixValidateFunc } from "@/util/common";
 
 export default {
   name: "editA4",
@@ -52,7 +53,11 @@ export default {
       // 表单验证规则
       ruleValidate: {
         prefix: [
-          { required: true, message: "请填正确的地址前缀", trigger: "change" }
+          { required: true, message: "请填正确的地址前缀", trigger: "change" },
+          prefixValidate,
+          {
+            validator: prefixValidateFunc
+          }
         ],
         clientacl: [
           { required: true, message: "请选择客户IP地址", trigger: "change" }

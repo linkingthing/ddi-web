@@ -18,11 +18,12 @@
       label="记录值"
       :label-width="110"
       prop="value"
-      :rules="[
-                    requiredValidate,
-                    params.datatype === 'A' && isIPv4Validate,
-                    params.datatype === 'AAAA' && isIPv6Validate
-                  ]"
+      :rules="[requiredValidate, 
+            params.datatype === 'A' && isIPv4Validate,
+            params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
+            params.datatype === 'CNAME' && domainValidate,
+            params.datatype === 'URL' && urlValidate
+      ]"
     >
       <i-input v-model="params.value" placeholder="请填写记录值"></i-input>
     </form-item>
@@ -32,7 +33,9 @@
 <script>
 import {
   isIPv4Validate,
-  isIPv6Validate
+  urlValidate,
+  domainValidate,
+  IPv6SimpleValidateFunc
 } from "@/util/common";
 
 export default {
@@ -46,14 +49,11 @@ export default {
   data() {
     this.requiredValidate = { required: true, message: "请填写记录值" };
     this.isIPv4Validate = isIPv4Validate;
-    this.isIPv6Validate = isIPv6Validate;
+    this.IPv6SimpleValidateFunc = IPv6SimpleValidateFunc;
+    this.domainValidate = domainValidate;
+    this.urlValidate = urlValidate;
     return {};
-  },
-  computed: {},
-  created() {},
-  mounted() {},
-  methods: {},
-  watch: {}
+  }
 };
 </script>
 
