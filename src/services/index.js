@@ -240,7 +240,7 @@ export default {
      * 新增子网
      */
     addChildNet(params){
-        return axios.post(`${ipamBaseUrl}/linkingthing.com/example/v1/subnetv4s`, params)
+        return axios.post(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s`, params)
     },
 
     /**

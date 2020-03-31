@@ -3,6 +3,7 @@
     <TablePagination 
       title="网络管理"
       :data="tableData"
+      :pagination-enable="false"
       :columns="columns"> 
       <template slot="top-left">
         <Input v-model="keywords" placeholder="请输入子网地址" class="top-input" />
@@ -187,7 +188,7 @@ export default {
     },
 
     handleView(data){
-      this.$router.push("/address-manage/ip-manage");
+      this.$router.push(`/address-manage/ip-manage?id=${data.subnet_id}&addr=${data.subnet}`);
     },
 
     handleEdit(data){
@@ -203,10 +204,16 @@ export default {
     async handleDelete(data){
       try{
         await this.$$confirm({ content:"您确定要删除当前数据吗？" });
+        
+        await services.deleteChildNet(data.subnet_id);
 
-        alert("删除")
+        this.$$message("删除成功！", "success");
+
+        this.handleQuery();
       }
-      catch(e){}
+      catch(err){
+        this.$$message(err.message || "删除失败！", "fail")
+      }
     }
   }
 }
