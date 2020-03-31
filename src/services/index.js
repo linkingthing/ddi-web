@@ -4,7 +4,8 @@ import router from '@/router'
 import { LoadingBar, Message } from 'view-design';
 
 const dnsBaseUrl = '/dns';
-const nodeBaseUrl = '/node'
+const nodeBaseUrl = '/node';
+const ipamBaseUrl = "/ipam";
 
 axios.interceptors.request.use(
     config => {
@@ -226,14 +227,32 @@ export default {
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/memhit`, { params })
     },
 
-    /**
-     * 子网管理 start
-     */
+    /** 子网管理 start */
 
     /**
      * 获取子网管理列表
      */
     getChildNetList(){
-        return axios.post("/apis/linkingthing/dhcp/v1/subnetv4s");
+        return axios.get(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s`);
+    },
+
+    /**
+     * 新增子网
+     */
+    addChildNet(params){
+        return axios.post(`${ipamBaseUrl}/linkingthing.com/example/v1/subnetv4s`, params)
+    },
+
+    /**
+     * 编辑子网
+     */
+    editChildNet(params, id){
+        return axios.put(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s/${id}`, params);
+    },
+    
+    deleteChildNet(id){
+        return axios.delete(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s/${id}`)
     }
+
+    /** 子网管理 end */
 }

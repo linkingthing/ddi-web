@@ -36,6 +36,7 @@
     <Edit 
       :visible.sync="showEdit"
       :data="editData"
+      @confirmed="handleSaved"
     />
 
     <MergeSplit 
@@ -69,22 +70,7 @@ export default {
   data(){
     return {
       keywords:"",
-      tableData:[
-        {
-          addressName:"1111111dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        },
-        {
-          addressName:"2222222dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        }
-      ],
+      tableData:[],
       columns: [
         {
           type: 'selection',
@@ -93,7 +79,7 @@ export default {
         },
         {
           title: "子网名称",
-          key: "addressName",
+          key: "name",
           align: "center"
         },
         {
@@ -106,23 +92,23 @@ export default {
                   this.handleView(row)
                 }
               }
-            }, row.netAddress)
+            }, row.subnet)
           },
           align: "center"
         },
         {
           title: "地址数量",
-          key: "addressCount",
+          key: "total",
           align: "center"
         },
         {
           title: "创建时间",
-          key: "createDate",
+          key: "creationTimestamp",
           align: "center"
         },
         {
           title: "子网地址使用率",
-          key: "useRatio",
+          key: "usage",
           align: "center"
         },
         {
@@ -166,8 +152,15 @@ export default {
   methods:{
     async handleQuery(){
       try {
-        let res = await services.getChildNetList()
-        console.log(res);
+        let res = await services.getChildNetList();
+        
+        const { data } = res;
+
+        this.tableData = data.data.map(item => {
+          item.creationTimestamp = item.creationTimestamp ? item.creationTimestamp.replace("T", " ") : "";
+
+          return item;
+        });
         
       } catch (err) {
         console.error(err);
@@ -201,6 +194,10 @@ export default {
       this.showEdit = true;
 
       this.editData = data;
+    },
+
+    handleSaved(){
+      this.handleQuery();
     },
 
     async handleDelete(data){

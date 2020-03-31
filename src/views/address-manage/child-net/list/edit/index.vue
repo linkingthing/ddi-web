@@ -8,22 +8,23 @@
     <div class="child-net-info">
       <div class="info-row">
         <div class="info-row-label">子网地址</div>
-        <Input v-model="childNetAddress" placeholder="请输入子网地址" class="info-row-input" />
+        <Input v-model="subnet" placeholder="请输入子网地址" class="info-row-input" />
       </div>
       <div class="info-row">
         <div class="info-row-label">子网名称</div>
-        <Input v-model="childNetName" placeholder="请输入子网名称" class="info-row-input" />
+        <Input v-model="name" placeholder="请输入子网名称" class="info-row-input" />
       </div>
       <div class="info-row">
         <div class="info-row-label">网关地址</div>
-        <Input v-model="childGateAddress" placeholder="请输入网关地址" class="info-row-input" />
+        <Input v-model="gateway" placeholder="请输入网关地址" class="info-row-input" />
       </div>
     </div>
   </ModalCustom>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom"
+import ModalCustom from "@/components/ModalCustom";
+import service from '@/services'
 
 export default {
   components:{
@@ -45,9 +46,10 @@ export default {
   data(){
     return {
       dialogVisible:false,
-      childNetAddress:"",
-      childNetName:"",
-      childGateAddress:"",
+      id:"",
+      subnet:"",
+      name:"",
+      gateway:"",
       isEdit:false
     }
   },
@@ -70,9 +72,10 @@ export default {
 
       if(!val) return;
 
-      this.childNetAddress = val.childNetAddress;
-      this.childNetName = val.childNetName;
-      this.childGateAddress = val.childGateAddress;
+      this.id = val.subnet_id;
+      this.subnet = val.subnet;
+      this.name = val.name;
+      this.gateway = val.gateway;
     },
 
     dialogVisible(val){
@@ -81,12 +84,40 @@ export default {
   },
 
   methods:{
+    init(){
+      this.id = "";
+      this.subnet = "";
+      this.name = "";
+      this.gateway = "";
+    },
+
     handleCancel(){
 
     },
 
-    handleConfirm(){
-      
+    async handleConfirm(){
+      try {
+        const action = this.isEdit ? "editChildNet" : "addChildNet";
+
+        let res = await service[action](this.getParams(), this.id);
+        
+        console.log(res);
+        
+
+        this.init();
+
+        this.$emit("confirmed")
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    getParams(){
+      return {
+        subnet:this.subnet,
+        name:this.name,
+        gateway:this.gateway
+      }
     }
   }
 }

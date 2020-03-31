@@ -33,7 +33,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/dns': {
-        target: 'http://10.0.0.32:8081/apis',
+        target: 'http://10.0.0.101:8081/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
@@ -43,13 +43,23 @@ module.exports = {
         },
       },
       '/node': {
-        target: 'http://10.0.0.15:1210/apis',
+        target: 'http://10.0.0.101:8081/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
         //重写路径
         pathRewrite: {
           '^/node': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
+        },
+      },
+      '/ipam': {
+        target: 'http://10.0.0.101:8081/apis',
+        changeOrigin: true,
+        // ws: true,        //如果要代理 websockets，配置这个参数
+        // secure: false,  // 如果是https接口，需要配置这个参数
+        //重写路径
+        pathRewrite: {
+          '^/ipam': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
       }
     },
