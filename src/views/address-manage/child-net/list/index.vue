@@ -3,6 +3,7 @@
     <TablePagination 
       title="网络管理"
       :data="tableData"
+      :pagination-enable="false"
       :columns="columns"> 
       <template slot="top-left">
         <Input v-model="keywords" placeholder="请输入子网地址" class="top-input" />
@@ -36,6 +37,7 @@
     <Edit 
       :visible.sync="showEdit"
       :data="editData"
+      @confirmed="handleSaved"
     />
 
     <MergeSplit 
@@ -57,6 +59,8 @@ import MergeSplit from "./merge-split"
 
 import { operateTypes } from "./define";
 
+import services from "./../../../../services/index.js"
+
 export default {
   components:{
     TablePagination,
@@ -67,22 +71,7 @@ export default {
   data(){
     return {
       keywords:"",
-      tableData:[
-        {
-          addressName:"1111111dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        },
-        {
-          addressName:"2222222dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        }
-      ],
+      tableData:[],
       columns: [
         {
           type: 'selection',
@@ -91,7 +80,7 @@ export default {
         },
         {
           title: "子网名称",
-          key: "addressName",
+          key: "name",
           align: "center"
         },
         {
@@ -104,23 +93,23 @@ export default {
                   this.handleView(row)
                 }
               }
-            }, row.netAddress)
+            }, row.subnet)
           },
           align: "center"
         },
         {
           title: "地址数量",
-          key: "addressCount",
+          key: "total",
           align: "center"
         },
         {
           title: "创建时间",
-          key: "createDate",
+          key: "creationTimestamp",
           align: "center"
         },
         {
           title: "子网地址使用率",
-          key: "useRatio",
+          key: "usage",
           align: "center"
         },
         {
@@ -157,13 +146,27 @@ export default {
     }
   },
 
-  mounted(){
-    // this.tableData = [];
+  mounted(){    
+    this.handleQuery();
   },
 
   methods:{
-    handleQuery(){
+    async handleQuery(){
+      try {
+        let res = await services.getChildNetList();
+        
+        const { data } = res;
 
+        this.tableData = data.data.map(item => {
+          item.creationTimestamp = item.creationTimestamp ? item.creationTimestamp.replace("T", " ") : "";
+
+          return item;
+        });
+        
+      } catch (err) {
+        console.error(err);
+        
+      }
     },
 
     handleAdd(){
@@ -185,7 +188,7 @@ export default {
     },
 
     handleView(data){
-      this.$router.push("/address-manage/ip-manage");
+      this.$router.push(`/address-manage/ip-manage?id=${data.subnet_id}&addr=${data.subnet}`);
     },
 
     handleEdit(data){
@@ -194,13 +197,23 @@ export default {
       this.editData = data;
     },
 
+    handleSaved(){
+      this.handleQuery();
+    },
+
     async handleDelete(data){
       try{
         await this.$$confirm({ content:"您确定要删除当前数据吗？" });
+        
+        await services.deleteChildNet(data.subnet_id);
 
-        alert("删除")
+        this.$$message("删除成功！", "success");
+
+        this.handleQuery();
       }
-      catch(e){}
+      catch(err){
+        this.$$message(err.message || "删除失败！", "fail")
+      }
     }
   }
 }
