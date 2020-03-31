@@ -26,7 +26,7 @@
 
 <script>
 import services from "@/services";
-import { nameValidate, positiveIntegerValidate } from "@/util/common";
+import { domainValidate, positiveIntegerValidate } from "@/util/common";
 import TypeValue from "@/components/TypeValue";
 
 export default {
@@ -42,7 +42,7 @@ export default {
       upgradeConfig: {
         title: "",
         name: "",
-        type: "A",
+        type: "",
         value: "",
         ttl: ""
       },
@@ -50,7 +50,10 @@ export default {
       zoneId: "",
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填写资源名称" }, nameValidate],
+        name: [
+          { required: true, message: "请填写资源名称" },
+          domainValidate
+        ],
         type: [{ message: "请选择资源类型" }],
         value: [{ required: true, message: "请填写记录值" }],
         ttl: [{ required: true, message: "请填写ttl" }, positiveIntegerValidate]

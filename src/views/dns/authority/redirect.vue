@@ -32,7 +32,7 @@ export default {
         },
         {
           title: "记录类型",
-          key: "datatype",
+          key: "type",
           align: "center"
         },
         {

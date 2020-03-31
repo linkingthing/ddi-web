@@ -27,7 +27,7 @@
 <script>
 import services from "@/services";
 import TypeValue from "@/components/TypeValue";
-import { nameValidate, positiveIntegerValidate } from "@/util/common";
+import { domainValidate, positiveIntegerValidate } from "@/util/common";
 
 export default {
   name: "WebsiteUpConfig",
@@ -49,7 +49,15 @@ export default {
 
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填写资源名称" }, nameValidate],
+        name: [
+          { required: true, message: "请填写资源名称" },
+          {
+            type: "string",
+            max: 253,
+            message: "最多只能253个字符"
+          },
+          domainValidate
+        ],
         type: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
         ttl: [{ required: true }, positiveIntegerValidate]

@@ -45,7 +45,7 @@ export default {
       // 表单数据
       upgradeConfig: {
         name: "",
-        datatype: "A",
+        type: "A",
         value: "",
         ttl: 0,
         redirecttype: "rpz"
@@ -54,8 +54,16 @@ export default {
 
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填写正确的域名" }, nameValidate],
-        datatype: [{ required: true, message: "请选择资源类型" }],
+        name: [
+          { required: true, message: "请填写正确的域名" },
+          {
+            type: "string",
+            max: 253,
+            message: "最多只能253个字符"
+          },
+          nameValidate
+        ],
+        type: [{ required: true, message: "请选择资源类型" }],
         ttl: [
           { required: true, message: "请输入TTL" },
           positiveIntegerValidate
@@ -73,7 +81,7 @@ export default {
       services
         .createRedirect(this.viewId, {
           name: this.upgradeConfig.name,
-          datatype: this.upgradeConfig.datatype,
+          type: this.upgradeConfig.type,
           value: this.upgradeConfig.value,
           ttl: +this.upgradeConfig.ttl,
           redirecttype: this.upgradeConfig.redirecttype

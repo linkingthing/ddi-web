@@ -22,7 +22,7 @@
 
 <script>
 import services from "@/services";
-import { nameValidate } from "@/util/common";
+import { domainValidate } from "@/util/common";
 
 export default {
   name: "AreaAppConfig",
@@ -39,7 +39,10 @@ export default {
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填区域名称" }, nameValidate]
+        name: [
+          { required: true, message: "请填区域名称" },
+          domainValidate
+        ]
       }
     };
   },

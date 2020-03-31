@@ -1,7 +1,7 @@
 <template>
   <div class="typeValue">
-    <form-item label="类型" prop="datatype" :label-width="110">
-      <i-select v-model="params.datatype">
+    <form-item label="类型" prop="type" :label-width="110">
+      <i-select v-model="params.type">
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
@@ -19,10 +19,10 @@
       :label-width="110"
       prop="value"
       :rules="[requiredValidate, 
-            params.datatype === 'A' && isIPv4Validate,
-            params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
-            params.datatype === 'CNAME' && domainValidate,
-            params.datatype === 'URL' && urlValidate
+            params.type === 'A' && isIPv4Validate,
+            params.type === 'AAAA' && IPv6SimpleValidateFunc,
+            params.type === 'CNAME' && domainValidate,
+            params.type === 'URL' && urlValidate
       ]"
     >
       <i-input v-model="params.value" placeholder="请填写记录值"></i-input>

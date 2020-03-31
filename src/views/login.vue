@@ -3,7 +3,7 @@
     <div class="login">
       <div class="login-head">
         <img class="logo" src="../assets/images/logo.png" />
-        <h1>DDI配置管理平台</h1>
+        <h1>{{isDNS ? "DNS": "DDI"}} 配置管理平台</h1>
       </div>
       <div>
         <Form ref="formLogin" :model="params" :rules="rules" class="login-form">
@@ -59,10 +59,11 @@
 <script>
 import services from "@/services";
 import { mapMutations } from "vuex";
-
+console.log(PACK_SYSTEM.length);
 export default {
   name: "login",
   data() {
+    this.isDNS = PACK_SYSTEM === "dns,node";
     return {
       params: {
         username: "",
@@ -108,40 +109,42 @@ export default {
     ...mapMutations(["SET_TOKEN"]),
     getCaptcha() {
       const self = this;
-      fetch("/apis/linkingthing.com/example/v1/getcheckimage.jpeg").then(res => {
-        console.log(res.body);
+      fetch("/apis/linkingthing.com/example/v1/getcheckimage.jpeg").then(
+        res => {
+          console.log(res.body);
 
-        this.checkvaluetoken = res.headers.get("checkvaluetoken");
+          this.checkvaluetoken = res.headers.get("checkvaluetoken");
 
-        const reader = res.body.getReader();
-        console.log(reader);
-        const imageArr = [];
-        const stream = new ReadableStream({
-          start(controller) {
-            function push() {
-              // "done"是一个布尔型，"value"是一个Unit8Array
-              reader.read().then(({ done, value }) => {
-                if (done) {
-                  console.log("ok");
-                  const blob = new Blob(imageArr);
-                  const file = new FileReader();
-                  file.onload = function(e) {
-                    self.img = e.target.result;
-                  };
-                  file.readAsDataURL(blob);
-                  return;
-                }
-                imageArr.push(value);
-                push();
-              });
+          const reader = res.body.getReader();
+          console.log(reader);
+          const imageArr = [];
+          const stream = new ReadableStream({
+            start(controller) {
+              function push() {
+                // "done"是一个布尔型，"value"是一个Unit8Array
+                reader.read().then(({ done, value }) => {
+                  if (done) {
+                    console.log("ok");
+                    const blob = new Blob(imageArr);
+                    const file = new FileReader();
+                    file.onload = function(e) {
+                      self.img = e.target.result;
+                    };
+                    file.readAsDataURL(blob);
+                    return;
+                  }
+                  imageArr.push(value);
+                  push();
+                });
+              }
+              push();
+            },
+            pull() {
+              console.log("pull");
             }
-            push();
-          },
-          pull() {
-            console.log("pull");
-          }
-        });
-      });
+          });
+        }
+      );
     },
     login() {
       this.$refs["formLogin"].validate(valid => {

@@ -46,30 +46,22 @@ export default {
           align: "center",
           render: (h, { row }) => {
             return h("div", [
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => {
-                      this.goAnalysis(this.viewId, this.zoneId, row.id);
-                    }
+              h("btn-edit", {
+                class: "k-btn",
+                on: {
+                  click: () => {
+                    this.goAnalysis(this.viewId, this.zoneId, row.id);
                   }
-                },
-                "修改"
-              ),
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => {
-                      this.delect(row.id);
-                    }
+                }
+              }),
+              h("btn-del", {
+                class: "k-btn",
+                on: {
+                  click: () => {
+                    this.delect(row.id);
                   }
-                },
-                "删除"
-              )
+                }
+              })
             ]);
           }
         }

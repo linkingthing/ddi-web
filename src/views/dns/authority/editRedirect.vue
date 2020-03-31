@@ -46,7 +46,7 @@ export default {
       // 表单数据
       params: {
         name: "",
-        datatype: "",
+        type: "",
         value: "",
         ttl: 0,
         redirecttype: ""
@@ -58,9 +58,14 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填写正确的域名", trigger: "change" },
+          {
+            type: "string",
+            max: 253,
+            message: "最多只能253个字符"
+          },
           nameValidate
         ],
-        datatype: [
+        type: [
           { required: true, message: "请选择资源类型", trigger: "change" }
         ],
         value: [{ required: true, message: "请填写记录值", trigger: "change" }],

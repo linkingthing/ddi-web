@@ -65,6 +65,20 @@ export default {
         return axios.put(`${baseUrl}/views/${id}`, params)
     },
 
+    // 优先级
+    getPriority() {
+        return axios.get(`${baseUrl}/sortlists/1`)
+    },
+    createPriority(params) {
+        return axios.post(`${baseUrl}/sortlists`, params)
+    },
+    updatePriority(params) {
+        return axios.put(`${baseUrl}/sortlists/1`, params)
+    },
+    deletePriority() {
+        return axios.delete(`${baseUrl}/sortlists/1`)
+    },
+
     getZoneByViewId(id) {
         return axios.get(`${baseUrl}/views/${id}/zones`)
     },

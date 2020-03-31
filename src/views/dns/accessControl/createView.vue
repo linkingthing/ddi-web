@@ -96,7 +96,14 @@ export default {
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填访问控制名称" }, nameValidate],
+        name: [
+          { required: true, message: "请填访问控制名称" },
+          {
+            type: "string",
+            max: 253,
+            message: "最多只能253个字符"
+          },
+        ],
         priority: []
       }
     };

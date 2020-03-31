@@ -148,6 +148,16 @@ export default [
             title: '视图管理'
         }
     },
+    {
+        // 视图管理
+        name: 'priority',
+        path: '/dns/accessControl/priority',
+        component: () => import('@/views/dns/accessControl/priority'),
+        meta: {
+            range: 'dns',
+            title: '解析优先级'
+        }
+    },
 
     {
         // 黑白名单

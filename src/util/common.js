@@ -2,7 +2,7 @@ export const isIPv4Reg = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0
 
 export const fullIPv6Reg = /^(([\da-fA-F]{1,4}):){7}([\da-fA-F]{1,4}){1}$/
 
-export const nameReg = /^[a-zA-Z0-9_]{1,63}$/
+export const nameReg = /^([a-zA-Z0-9_]{1,63}\.)+[a-zA-Z0-9_]{1,63}$/
 
 export const prefixReg = /::\/(32|40|48|56|64|96)$/
 
@@ -12,8 +12,7 @@ export const positiveIntegerReg = /^[1-9]?[0-9]+$/
 
 export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/
 
-export const domainReg = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
-
+export const domainReg = /^(?=^.{2,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*/
 export const urlValidate = {
     pattern: urlReg,
     message: '请正确输入url',

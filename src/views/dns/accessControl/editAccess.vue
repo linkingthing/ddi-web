@@ -44,7 +44,6 @@
 
 <script>
 import services from "@/services";
-import { nameValidate } from "@/util/common";
 
 export default {
   name: "EviceStatisticsConfig",
@@ -64,7 +63,9 @@ export default {
       aclcheck: false,
       ipcheck: false,
       ruleValidate: {
-        name: [{ required: true, message: "请填访问控制名称" }, nameValidate]
+        name: [
+          { required: true, message: "请填访问控制名称" },
+        ]
       }
     };
   },

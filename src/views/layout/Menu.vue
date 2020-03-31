@@ -5,14 +5,14 @@
     </div>
     <div class="menu-list">
       <vue-scroll class="pr">
-        <Menu :theme="theme" :active-name="tab" :open-names="['1']" :accordion="true">
+        <Menu :theme="theme" :active-name="tab" :open-names="['authority', 'accessControl']" :accordion="true">
           <MenuGroup title="节点管理" v-if="PACK_SYSTEM.includes('node')">
             <MenuItem name="nodeManage" to="/node">
               <Icon type="ios-git-network" />节点管理
             </MenuItem>
           </MenuGroup>
           <MenuGroup title="域名解析" v-if="PACK_SYSTEM.includes('dns')">
-            <Submenu name="1">
+            <Submenu name="authority">
               <template slot="title">
                 <Icon type="ios-aperture-outline"></Icon>权威管理
               </template>
@@ -25,12 +25,13 @@
             <MenuItem name="zoneForward" to="/dns/forward/zoneForward">
               <Icon type="ios-arrow-round-forward" />转发管理
             </MenuItem>
-            <Submenu name="4">
+            <Submenu name="accessControl">
               <template slot="title">
                 <Icon type="ios-eye-outline" />访问控制
               </template>
               <MenuItem name="accessControlList" to="/dns/accessControl/accessControlList">访问控制列表</MenuItem>
               <MenuItem name="viewManage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
+              <MenuItem name="priority" to="/dns/accessControl/priority">解析优先级</MenuItem>
             </Submenu>
             <Submenu name="5">
               <template slot="title">
@@ -61,6 +62,7 @@
 export default {
   name: "menuNav",
   data() {
+    // eslint-disable-next-line no-undef
     this.PACK_SYSTEM = PACK_SYSTEM
     return {
       theme: "light",
@@ -69,7 +71,7 @@ export default {
   },
 
   watch: {
-    $route(to, from) {
+    $route() {
       if (this.$route.params.tab) {
         this.tab = this.$route.params.tab;
       } else {
