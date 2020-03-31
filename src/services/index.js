@@ -3,9 +3,7 @@ import store from '@/store'
 import router from '@/router'
 import { LoadingBar, Message } from 'view-design';
 
-const dnsBaseUrl = '/dns';
-const nodeBaseUrl = '/node';
-const ipamBaseUrl = "/ipam";
+const baseUrl = '/apis/linkingthing.com/example/v1';
 
 axios.interceptors.request.use(
     config => {
@@ -224,7 +222,11 @@ export default {
         return axios.get(`${baseUrl}/retcode`, { params })
     },
     getMemoHitRate(params) {
-        return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/memhit`, { params })
+        return axios.get(`${baseUrl}/memhit`, { params })
+    },
+
+    getDHCPAssign() {
+        return axios.get(`${baseUrl}/dhcpassign`)
     },
 
     /** 子网管理 start */
@@ -233,25 +235,25 @@ export default {
      * 获取子网管理列表
      */
     getChildNetList(){
-        return axios.get(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s`);
+        return axios.get(`${baseUrl}/restsubnetv4s`);
     },
 
     /**
      * 新增子网
      */
     addChildNet(params){
-        return axios.post(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s`, params)
+        return axios.post(`${baseUrl}/restsubnetv4s`, params)
     },
 
     /**
      * 编辑子网
      */
     editChildNet(params, id){
-        return axios.put(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s/${id}`, params);
+        return axios.put(`${baseUrl}/restsubnetv4s/${id}`, params);
     },
     
     deleteChildNet(id){
-        return axios.delete(`${ipamBaseUrl}/linkingthing.com/example/v1/restsubnetv4s/${id}`)
+        return axios.delete(`${baseUrl}/restsubnetv4s/${id}`)
     }
 
     /** 子网管理 end */

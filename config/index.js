@@ -32,8 +32,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/dns': {
-        target: 'http://10.0.0.101:8081/apis',
+      '/apis': {
+        target: 'http://10.0.0.14:8081/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
@@ -42,24 +42,14 @@ module.exports = {
           '^/apis': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
       },
-      '/node': {
-        target: 'http://10.0.0.101:8081/apis',
+      '/test': {
+        target: 'http://10.0.0.55:1210/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
         //重写路径
         pathRewrite: {
           '^/test': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
-        },
-      },
-      '/ipam': {
-        target: 'http://10.0.0.101:8081/apis',
-        changeOrigin: true,
-        // ws: true,        //如果要代理 websockets，配置这个参数
-        // secure: false,  // 如果是https接口，需要配置这个参数
-        //重写路径
-        pathRewrite: {
-          '^/ipam': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
         },
       }
     },
@@ -77,4 +67,3 @@ console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2)
 console.log("正在生成...")
 console.log("正在生成......")
 console.log("正在生成.........")
-
