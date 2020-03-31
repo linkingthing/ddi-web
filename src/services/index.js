@@ -3,13 +3,9 @@ import store from '@/store'
 import router from '@/router'
 import { LoadingBar, Message } from 'view-design';
 
-<<<<<<< HEAD
-const baseUrl = '/apis/linkingthing.com/example/v1';
-=======
 const dnsBaseUrl = '/dns';
 const nodeBaseUrl = '/node';
 const ipamBaseUrl = "/ipam";
->>>>>>> feat/ipam
 
 axios.interceptors.request.use(
     config => {
@@ -228,14 +224,6 @@ export default {
         return axios.get(`${baseUrl}/retcode`, { params })
     },
     getMemoHitRate(params) {
-<<<<<<< HEAD
-        return axios.get(`${baseUrl}/memhit`, { params })
-    },
-
-    getDHCPAssign() {
-        return axios.get(`${baseUrl}/dhcpassign`)
-    }
-=======
         return axios.get(`${dnsBaseUrl}/linkingthing.com/example/v1/memhit`, { params })
     },
 
@@ -267,5 +255,4 @@ export default {
     }
 
     /** 子网管理 end */
->>>>>>> feat/ipam
 }
