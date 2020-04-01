@@ -212,7 +212,7 @@ export default {
         this.handleQuery();
       }
       catch(err){
-        this.$$message(err.message || "删除失败！", "fail")
+        this.$$message(err.message || "删除失败！", "error")
       }
     }
   }

@@ -252,8 +252,82 @@ export default {
         return axios.put(`${baseUrl}/restsubnetv4s/${id}`, params);
     },
     
+    /**
+     * 删除指定子网
+     */
     deleteChildNet(id){
         return axios.delete(`${baseUrl}/restsubnetv4s/${id}`)
+    },
+
+    /**
+     * 获取规划IP地址列表
+     */
+    getPlanIpList(id){
+        return axios.get(`${baseUrl}/dividedaddresses/${id}`)
+    },
+
+    /**
+     * 地址扫描
+     */
+    addressScanning(params){
+        return axios.get(`${baseUrl}/scanaddresses/${params}`)
+    },
+
+    /**
+     * 删除IP地址
+     */
+    deleteIpAddress(id){        
+        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+    },
+
+    /**
+     * 转固定
+     */
+    changeToFix(id){
+        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+    },
+
+    /**
+     * 转保留
+     */
+    changeToKeep(id){
+        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+    },
+
+    /**
+     * 获取地址池列表
+     */
+    getAddressPoolList(subnetId){
+        return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools`);
+    },
+
+    /**
+     * 修改/新增ipv6地址池
+     */
+    saveIpv6AddressPool({subnetId, poolId, params}){
+        let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
+
+        url = poolId ? `${url}/${poolId}` : url;
+
+        return axios.post(url, params)
+    },
+
+    /**
+     * 修改/新增ipv4地址池
+     */
+    saveIpv4AddressPool({subnetId, poolId, params}){
+        let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
+
+        url = poolId ? `${url}/${poolId}` : url;
+
+        return axios.post(url, params)
+    },
+
+    /**
+     * 删除地址池
+     */
+    deleteAddressPool(subnetId, poolId){
+        return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`)
     }
 
     /** 子网管理 end */

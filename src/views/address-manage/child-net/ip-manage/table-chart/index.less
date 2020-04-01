@@ -3,6 +3,7 @@
   margin-top: 30px;
 
   .table-chart-content{
+    flex:1;
   }
 
   .table-chart-list{
@@ -18,8 +19,7 @@
   }
 
   .table-chart-legend{
-    display: inline-block;
-    vertical-align: top;
+    flex: none;
   }
 
   .legend-title{
@@ -52,38 +52,64 @@
     width: 20px;
     height: 20px;
     background-color: #fff;
+    border: 1px solid #fff;
+    cursor: pointer;
 
-    &.is-unused{
-      border: 1px solid #66615B;      
+    &:hover{
+      opacity: .8;
     }
 
-    &.is-pool{
+    /* 未使用地址 */
+    &.is-unused{
+      border-color: #66615B;
+    }
+
+    /* 动态地址 */
+    &.is-dynamic{
       background-color: #7B9E9F;
+      border-color: #7B9E9F;
     }
     
-    &.is-reflect{
+    /* 冲突地址 */
+    &.is-collision{
       background-color: #E95F33;
+      border-color: #E95F33;
     }
 
-    &.is-keeping{
+    /* 保留地址 */
+    &.is-reserved{
       background-color: #6BB3C7;
+      border-color: #6BB3C7;
     }
 
-    &.is-active{
+    /* 手动地址 */
+    &.is-manual{
       background-color: #7CC19B;
+      border-color: #7CC19B;
     }
 
-    &.is-fixed{
+    /* 固定地址 */
+    &.is-stable{
       background-color: #66615B;
+      border-color: #66615B;
     }
 
-    &.is-selected{
-      border: 1px solid #7CC19B;
-    }
-
-    &.is-zombie{
-      border: 1px solid #66615B;
+    /* 已分配地址 */
+    &.is-lease{
       background-color: #F3F2EE;
+      border-color: #F3F2EE;
+    }
+
+    /* 僵尸地址 */
+    &.is-dead{
+      background-color: 1px solid #A3A3A3;
+      border-color: #A3A3A3;
+    }
+
+    /* 被选中的 */
+    &.is-selected{
+      border-color: #0068B7;
+      box-shadow: 0 0 5px 1px #0068B7;
     }
   }
 }
