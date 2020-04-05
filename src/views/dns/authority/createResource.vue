@@ -26,7 +26,7 @@
 
 <script>
 import services from "@/services";
-import { domainValidate, positiveIntegerValidate } from "@/util/common";
+import { resourceDomainValidateFunc, positiveIntegerValidate } from "@/util/common";
 import TypeValue from "@/components/TypeValue";
 
 export default {
@@ -52,7 +52,9 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填写资源名称" },
-          domainValidate
+          {
+            validator: resourceDomainValidateFunc
+          }
         ],
         type: [{ message: "请选择资源类型" }],
         value: [{ required: true, message: "请填写记录值" }],

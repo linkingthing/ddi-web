@@ -19,6 +19,10 @@ const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/
 
 
 export default [
+    {
+        path: '/dns/tree',
+        component: () => import('@/views/address-plan/tree.vue')
+    },
 
     {
         // 配置组管理

@@ -4,8 +4,13 @@
       <img src="../../assets/images/logo.png" alt />
     </div>
     <div class="menu-list">
-      <vue-scroll class="pr">
-        <Menu :theme="theme" :active-name="tab" :open-names="['authority', 'accessControl']" :accordion="true">
+      <vue-scroll class="pr" :ops="ops">
+        <Menu
+          :theme="theme"
+          :active-name="tab"
+          :open-names="['authority', 'accessControl']"
+          :accordion="true"
+        >
           <MenuGroup title="节点管理" v-if="PACK_SYSTEM.includes('node')">
             <MenuItem name="nodeManage" to="/node">
               <Icon type="ios-git-network" />节点管理
@@ -58,12 +63,18 @@
 </template>
 
 <script>
-
 export default {
   name: "menuNav",
   data() {
     // eslint-disable-next-line no-undef
-    this.PACK_SYSTEM = PACK_SYSTEM
+    this.PACK_SYSTEM = PACK_SYSTEM;
+    this.ops = {
+      bar: {
+        hoverStyle: true,
+        onlyShowBarOnScroll: true, 
+        background: "#d5d5d5"
+      }
+    };
     return {
       theme: "light",
       tab: this.$route.params.tab || this.$route.name //路由tab

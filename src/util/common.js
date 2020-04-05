@@ -12,7 +12,8 @@ export const positiveIntegerReg = /^[1-9]?[0-9]+$/
 
 export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/
 
-export const domainReg = /^(?=^.{2,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*/
+export const domainReg = /^(?=^.{2,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*$/
+
 export const urlValidate = {
     pattern: urlReg,
     message: '请正确输入url',
@@ -153,3 +154,10 @@ export const prefixValidateFunc = (rule, value, callback) => {
     callback();
 }
 
+export const resourceDomainValidateFunc = (rule, value, callback) => {
+    if (value === '*' || value === '@' || domainReg.test(value)) {
+        callback()
+    }
+
+    callback('请正确输入域名')
+}

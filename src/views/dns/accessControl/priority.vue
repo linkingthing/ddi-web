@@ -16,7 +16,10 @@
           <draggable class="listContent" v-model="dragList">
             <transition-group>
               <div v-for="item in dragList" :key="item.id" class="listItem">
-                <p>{{item.name}}</p>
+                <p>
+                  {{item.name}}
+                  <Icon type="ios-close" style="float:right;margin-top: 8px" @click="handleRemove(item.id)" />
+                </p>
               </div>
             </transition-group>
           </draggable>
@@ -109,12 +112,12 @@ export default {
   methods: {
     getDataList() {
       services.getPriority().then(res => {
-        this.list = res.data.acls;
+        this.list = res.data.acls || [];
       });
     },
     handleOpenCreate() {
       this.visible = true;
-      this.dragList = [...this.list];
+      this.dragList = Array.isArray(this.list) ? [...this.list] : [];
     },
     handleSelectAccessControl(id, item) {
       this.currentAccess = item;
@@ -125,15 +128,30 @@ export default {
       }
       this.dragList.push(this.currentAccess);
     },
+    handleRemove(id) {
+      this.dragList = this.dragList.filter(item => item.id !== id);
+    },
     handleSubmit() {
       const params = {
         aclids: this.dragList.map(item => item.id)
       };
-      services.createPriority(params).then(() => {
-        this.getDataList();
-        this.visible = false;
-        this.dragList = [];
-      });
+      if (this.dragList.length === 0) {
+        this.$Message.info("请选择访问列表");
+        return;
+      }
+      if (this.list && Array.isArray(this.list) && this.list.length > 0) {
+        services.updatePriority(params).then(() => {
+          this.getDataList();
+          this.visible = false;
+          this.dragList = [];
+        });
+      } else {
+        services.createPriority(params).then(() => {
+          this.getDataList();
+          this.visible = false;
+          this.dragList = [];
+        });
+      }
     },
     handleDelete(id) {
       const aclids = this.list.map(item => item.id);
