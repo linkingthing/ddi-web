@@ -75,11 +75,15 @@
           </div>
         </div>
 
-        <Button type="primary" size="small" class="btn-complete">编辑完成，立即生成</Button>
+        <Button type="primary" size="small" class="btn-complete" @click="handleSubmit">编辑完成，立即生成</Button>
       </aside>
 
       <div class="graph">
-        <div>
+        <div class="memo-assign">
+          <h3>
+            内存容量分配图
+            <span>高亮区域表示所选节点的总容量</span>
+          </h3>
           <Caliper></Caliper>
         </div>
         <div class="tree">
@@ -93,8 +97,8 @@
           >
             <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
-                <button @click="handleAddChildNode(props)">增加子节点</button>
-                <button @click="remove(props)">删除</button>
+                <button @click="handleAddChildNode(props)">增加节点</button>
+                <button @click="remove(props)">删除节点</button>
               </div>
             </template>
           </tree>
@@ -108,6 +112,7 @@
 <script>
 import tree from "./CoreTree";
 import Caliper from "./modules/Caliper";
+import services from "../../services";
 
 let currentId = 0;
 
@@ -136,7 +141,16 @@ export default {
       currentNode: {}
     };
   },
+  mounted() {
+    this.getTreeData()
+  },
   methods: {
+    getTreeData() {
+      const params = {};
+      services.getSubtree(params).then(res => {
+        console.log(res);
+      });
+    },
     handleClick(element, data, target) {
       console.log(element, data, target);
       this.currentNode = data;
@@ -165,6 +179,30 @@ export default {
     handleClickText(element, data, target) {
       console.log(element, data, target);
       this.currentNode = element.data;
+    },
+    handleSubmit() {
+      const params = {
+        parentipv6: "240e:1122::",
+        parentprefixlength: 35,
+        bitsusedfor: "zone",
+        bitnum: 3,
+        depth: 1,
+        nodes: [
+          {
+            nodecode: 0,
+            NodeName: "test1"
+          },
+          {
+            nodecode: 1,
+            NodeName: "test2"
+          },
+          {
+            nodecode: 2,
+            NodeName: "test3"
+          }
+        ]
+      };
+      services.createSubtree(params);
     }
   }
 };
@@ -173,14 +211,33 @@ export default {
 <style lang="less" scoped>
 .tree {
   min-height: 800px;
-  background: #fff;
+  .btn-group-vertical {
+    button {
+      display: block;
+    }
+  }
 }
 .tree-content {
   overflow: hidden;
   background: #f5f5f5;
   .graph {
+    background: #fff;
+    padding: 40px;
     margin-right: 380px;
+
+    .memo-assign {
+      h3 {
+        font-size: 24px;
+        color: #333;
+        span {
+          font-size: 14px;
+          color: #808080;
+          padding-left: 30px;
+        }
+      }
+    }
   }
+
   .panel {
     float: right;
     width: 380px;

@@ -21,6 +21,7 @@ export default {
       type: Object,
       default: () => {
         return {
+          radius: 4,
           margin: {
             left: 100,
             top: 100,
@@ -46,6 +47,7 @@ export default {
       console.log(this.root);
     },
     init(dataSet = this.data) {
+      const self = this;
       let { width, height } = window.getComputedStyle(this.$refs.tree);
       width = parseInt(width);
       height = parseInt(height);
@@ -59,6 +61,7 @@ export default {
         .attr("height", height)
         .call(
           d3.zoom().on("zoom", function() {
+            self.movePop(d3.event.transform);
             svg.attr("transform", d3.event.transform);
           })
         )
@@ -67,61 +70,70 @@ export default {
       this.svg = svg;
       const g = svg.append("g");
       this.g = g;
-      g.transition()
-        .duration(0)
-        .attr(
-          "transform",
-          "translate(" + margin.left + "," + margin.right + ")"
-        );
-
+      g.attr(
+        "transform",
+        "translate(" + margin.left + "," + margin.right + ")"
+      );
+      // console.log(d3);
       const tree = d3
         .tree()
+        .separation(function(a, b) {
+          return a.parent == b.parent ? 1 : 2;
+        })
+
         .size([
           width - margin.left - margin.right,
-          height - margin.top - margin.bottom
+          (height - margin.top - margin.bottom) * 0.5
         ]);
       var root = d3.hierarchy(dataSet);
       this.root = root;
       this.tree = tree;
 
       const linkData = tree(root).links();
-      const node = this.node(g, root);
-
-      const link = this.drawLink(g, linkData);
-
-      this.horizontalTree(g, node, link, linkData);
+      this.drawNode(g, root);
+      this.drawLink(g, linkData);
     },
-    node(g, root) {
+    drawNode(g, root) {
       const self = this;
+      const { radius } = this.options;
       const node = g
         .selectAll(".node")
         .data(root.descendants())
         .enter()
         .append("g")
+        .attr("style", "cursor: pointer")
         .attr("class", function(d) {
           return "node" + (d.children ? " node--internal" : " node--leaf");
         });
 
-      node.append("circle").attr("r", 2.5);
+      node
+        .append("circle")
+        .attr("r", radius)
+        .attr("stroke", "#97ca5e")
+        .attr("fill", "#fff")
+        .on("mouseover", function() {
+          d3.select(this)
+            .attr("fill", "orange")
+            .attr("r", radius * 2);
+        })
+        .on("mouseout", function() {
+          d3.select(this)
+            .attr("fill", "#fff")
+            .attr("r", radius);
+        });
 
       node
         .append("text")
         .text(function(d) {
           return d.data.name;
         })
-
-        .attr("y", -10)
-        .attr("x", -10)
+        .attr("y", -4)
+        .attr("x", 20)
         .attr("text-anchor", "middle");
 
-      // node
-      //   .append("text")
-      //   .text(function() {
-      //     return "22";
-      //   })
-      //   .attr("y", -20)
-      //   .attr("x", -10)
-      //   .attr("text-anchor", "middle");
+      node.attr("transform", function(d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      });
 
       node.on("click", function(node, number, element) {
         self.onClick(d3.select(this), { node, number, element });
@@ -130,54 +142,29 @@ export default {
       return node;
     },
 
-    drawLink(g, treeRootLinks) {
+    drawLink(g, linkData) {
       const link = g
         .selectAll(".link")
-        .data(treeRootLinks)
+        .data(linkData)
         .enter()
         .append("path")
         .attr("class", "link")
         .attr("fill", "none")
-        .attr("stroke", "#ccc")
-        .attr("only-name-start", ({ source }) => {
-          return source.data.name;
-        })
-        .attr("only-name-end", ({ target }) => {
-          return target.data.name;
-        })
-        .attr(
-          "d",
-          d3
-            .linkVertical()
-            .x(function(d) {
-              return d.x;
-            })
-            .y(function(d) {
-              return d.y;
-            })
-        );
-      return link;
-    },
+        .attr("stroke", "#97ca5e");
 
-    horizontalTree(g, node, link, linkData) {
       link.data(linkData).attr(
         "d",
         d3
-          .linkVertical()
+          .linkHorizontal()
           .x(function(d) {
-            return d.x;
-          })
-          .y(function(d) {
             return d.y;
           })
+          .y(function(d) {
+            return d.x;
+          })
       );
-
-      node
-     
-        .attr("transform", function(d) {
-          return "translate(" + d.x + "," + d.y + ")";
-        });
     },
+
     appendNode(element, data) {
       element.append({
         name: "9527"
@@ -193,13 +180,28 @@ export default {
     },
     showPop({ x, y }) {
       const pop = this.$refs.pop;
+      const { margin } = this.options;
       pop.style.display = "block";
-      pop.style.left = y + "px";
-      pop.style.top = x + "px";
+      pop.style.left = y + margin.top - 8 + "px";
+      pop.style.top = x + margin.left / 2 + 8 + "px";
     },
     hidePop() {
       const pop = this.$refs.pop;
       pop.style.display = "none";
+    },
+    movePop({ k, x, y }) {
+      const pop = this.$refs.pop;
+      let left, top;
+      if (this.initPopPosition) {
+        left = this.initPopPosition.left;
+        top = this.initPopPosition.top;
+      } else {
+        left = parseFloat(window.getComputedStyle(pop).left);
+        top = parseFloat(getComputedStyle(pop).top);
+        this.initPopPosition = { left, top };
+      }
+      pop.style.left = left + x + "px";
+      pop.style.top = top + y + "px";
     },
     markActiveNode(selection) {
       d3.selectAll(".node").attr("style", "");
@@ -228,6 +230,7 @@ export default {
         this.idiotUpdate(value);
       }
     },
+
     current: {
       deep: true,
       handler(cur) {
@@ -242,9 +245,10 @@ export default {
 <style lang="less" scoped>
 .tree {
   position: relative;
+  cursor: move;
   .tree-pop {
     position: absolute;
-
+    display: none;
     border: 1px solid #ddd;
   }
 

@@ -218,8 +218,6 @@ export default {
         return axios.post(`${baseUrl}/ipblackholes`, aclid)
     },
 
-
-
     getNodeList(params) {
         return axios.get(`${baseUrl}/nodes`, { params })
     },
@@ -238,8 +236,17 @@ export default {
     getMemoHitRate(params) {
         return axios.get(`${baseUrl}/memhit`, { params })
     },
-
     getDHCPAssign() {
         return axios.get(`${baseUrl}/dhcpassign`)
+    },
+
+    checkIPv6Prefix(params) {
+        return axios.post(`${baseUrl}/checkipv6prefix`, params)
+    },
+    getSubtree(params) {
+        return axios.post(`${baseUrl}/getsubtree`, { params })
+    },
+    createSubtree(params) {
+        return axios.post(`${baseUrl}/createsubtree`, params)
     }
 }
