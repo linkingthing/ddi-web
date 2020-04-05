@@ -54,6 +54,7 @@
               <MenuItem name="child-net" to="/address-manage/child-net">子网管理</MenuItem>
               <MenuItem name="device-manage" to="/address-manage/device-manage">设备管理</MenuItem>
               <MenuItem name="option-config" to="/address-manage/option-config">OPTION配置</MenuItem>
+              <MenuItem name="tree-config" to="/address-manage/tree">地址分配</MenuItem>
             </Submenu>
           </MenuGroup>
         </Menu>
@@ -71,7 +72,7 @@ export default {
     this.ops = {
       bar: {
         hoverStyle: true,
-        onlyShowBarOnScroll: true, 
+        onlyShowBarOnScroll: true,
         background: "#d5d5d5"
       }
     };

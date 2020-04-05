@@ -2,19 +2,20 @@
   <div class>
     <section class="tree-content">
       <aside class="panel">
-        <div class="panel-title">
+        <!-- <div class="panel-title">
           <h2>编辑节点</h2>
           <nav class="menuGroup">
             <a class="active">一级按钮</a>
             <a class>一级按钮</a>
             <a class>一级按钮</a>
           </nav>
-        </div>
+        </div>-->
         <div class="base-info">
           <h3>基本信息</h3>
-          <Input placeholder="编码" class="base-input" />
-          <Input placeholder="名称" class="base-input" />
-          <Input placeholder="IPv6" class="base-input" />
+          <Input placeholder="编码" class="base-input" v-model.number="currentNode.nodecode" />
+          <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
+          <Input placeholder="IPv6" class="base-input" v-model="currentNode.subnet" />
+          <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
         </div>
 
         <div class="child-node-edit">
@@ -28,41 +29,31 @@
           <div class="count">
             <ul>
               <li>
-                <Strong>32</Strong>
+                <Strong>{{Math.pow(2, currentNode.subtreebitnum) || 0}}</Strong>
                 <span>总容量，双击修改</span>
               </li>
               <li>
-                <Strong>14</Strong>
+                <Strong>{{Array.isArray(currentNode.children)? currentNode.children.length : 0}}</Strong>
                 <span>已用容量</span>
               </li>
             </ul>
+            <div style="padding: 10px 0">
+              <span style="display: inline-block;margin-right: 10px">分配位数量:</span>
+              <Input
+              style="width:60px;"
+                placeholder="容量"
+                class="base-input"
+                v-model.number="currentNode.subtreebitnum"
+              />
+            </div>
           </div>
 
           <div class="child-node-group">
-            <Input placeholder="请输入子节点分类" class="category" />
             <ul class="childList">
-              <li>
+              <li v-for="(item) in currentNode.children" :key="item.id">
                 <div class="child-node">
-                  子节点名称
-                  <span></span>
-                </div>
-              </li>
-              <li>
-                <div class="child-node">
-                  子节点名称
-                  <span></span>
-                </div>
-              </li>
-              <li>
-                <div class="child-node">
-                  子节点名称
-                  <span></span>
-                </div>
-              </li>
-              <li>
-                <div class="child-node">
-                  子节点名称
-                  <span></span>
+                  {{item.name}}
+                  <span class="close" @click="handleDeleteNode(item, currentNode)">x</span>
                 </div>
               </li>
               <li>
@@ -84,7 +75,7 @@
             内存容量分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
-          <Caliper></Caliper>
+          <Caliper :value="caliperValue" @onChange="handleChangeCaliper"></Caliper>
         </div>
         <div class="tree">
           <tree
@@ -95,12 +86,12 @@
             @onClickNode="handleClickNode"
             @clickedText="handleClickText"
           >
-            <template slot="pop" slot-scope="{props}">
+            <!-- <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
                 <button @click="handleAddChildNode(props)">增加节点</button>
                 <button @click="remove(props)">删除节点</button>
               </div>
-            </template>
+            </template>-->
           </tree>
         </div>
       </div>
@@ -124,48 +115,78 @@ export default {
   data() {
     return {
       tree: {
-        name: "father",
-        children: [
-          {
-            name: "son1",
-            ss: "2222",
-            ip: "10.0.0.137",
-            children: [{ name: "grandson" }, { name: "grandson2" }]
-          },
-          {
-            name: "son2",
-            children: [{ name: "grandson3" }, { name: "grandson4" }]
-          }
-        ]
+        name: "root"
       },
-      currentNode: {}
+      currentNode: {},
+      currentParent: {}
     };
   },
+  computed: {
+    caliperValue() {
+      let start = 0,
+        end = 0;
+
+      if (this.currentNode.subnet && this.currentNode.subnet.length > 4) {
+        end = this.currentNode.subnet.slice(-2);
+
+        end = Number(end) || 0;
+      }
+      const parent = this.currentParent;
+      if (parent && parent.data) {
+        start = end - parent.data.subtreebitnum;
+      }
+      console.log("currentNode", this.currentNode);
+
+      console.log("parent", parent);
+      console.log(start, end);
+      return [start, end];
+    }
+  },
   mounted() {
-    this.getTreeData()
+    this.getTreeData();
   },
   methods: {
     getTreeData() {
       const params = {};
       services.getSubtree(params).then(res => {
-        console.log(res);
+        this.tree = this.transformTreeData(res.data);
+        console.log(1, this.tree);
       });
     },
-    handleClick(element, data, target) {
-      console.log(element, data, target);
-      this.currentNode = data;
+    transformTreeData(data) {
+      const str = JSON.stringify(data);
+      return JSON.parse(str.replace(/nodes/g, "children"));
+    },
+    reverseTransformTreeData(data) {
+      Array.isArray(data.nodes) &&
+        data.nodes.forEach(node => {
+          delete node.id;
+          if (Array.isArray(node.nodes)) {
+            this.reverseTransformTreeData(node.nodes);
+          }
+        });
+    },
 
-      element.target.classList.add("check");
+    handleChangeCaliper([min, max]) {
+      console.log(min, max);
+      this.currentNode.subtreebitnum = max - min;
+    },
+    handleDeleteNode(node, { children }) {
+      // TODO: 这里要要深入学习一下js引用类型的原理
+      this.currentNode.children = children.filter(
+        child => node.id !== child.id
+      );
     },
     handleAddChildNode({ node }) {
-      console.log(node);
       const newNode = {
-        identifier: currentId++,
-        children: [],
-        name: "122"
+        id: `${currentId++}`,
+        nodes: [],
+        name: `新增节点${currentId}`
       };
       if (Array.isArray(this.currentNode.children)) {
         this.currentNode.children.push(newNode);
+      } else {
+        this.currentNode.children = [newNode];
       }
     },
     remove({ node }) {
@@ -173,36 +194,22 @@ export default {
         return child.name !== node.data.name;
       });
     },
-    handleClickNode(element, data, target) {
+    handleClickNode(element, data) {
+      console.log(data);
+      this.currentParent = data.parent;
       this.currentNode = data.data;
     },
     handleClickText(element, data, target) {
       console.log(element, data, target);
-      this.currentNode = element.data;
+      // this.currentNode = element.data;
     },
     handleSubmit() {
-      const params = {
-        parentipv6: "240e:1122::",
-        parentprefixlength: 35,
-        bitsusedfor: "zone",
-        bitnum: 3,
-        depth: 1,
-        nodes: [
-          {
-            nodecode: 0,
-            NodeName: "test1"
-          },
-          {
-            nodecode: 1,
-            NodeName: "test2"
-          },
-          {
-            nodecode: 2,
-            NodeName: "test3"
-          }
-        ]
-      };
-      services.createSubtree(params);
+      // services.createSubtree(params);
+      const params = JSON.parse(
+        JSON.stringify(this.tree).replace(/children/g, "nodes")
+      );
+      this.reverseTransformTreeData(params);
+      services.updateSubtree(params);
     }
   }
 };
@@ -229,6 +236,7 @@ export default {
       h3 {
         font-size: 24px;
         color: #333;
+        margin-bottom: 30px;
         span {
           font-size: 14px;
           color: #808080;
@@ -334,6 +342,7 @@ export default {
   }
 
   .child-node {
+    position: relative;
     display: inline-block;
     width: 140px;
     height: 40px;
@@ -344,6 +353,19 @@ export default {
     padding: 0 12px;
     border-radius: 4px;
     color: #333;
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background: crimson;
+      color: #fff;
+      width: 20px;
+      height: 16px;
+      text-align: center;
+      line-height: 1;
+      border-radius: 0 6px 0 6px;
+      cursor: pointer;
+    }
   }
 }
 

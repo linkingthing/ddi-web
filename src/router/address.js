@@ -29,5 +29,9 @@ export default [
     name: 'address-manage/addess-pool-manage',
     path: '/address-manage/addess-pool-manage',
     component: () => import(/* webpackChuckName: "addess-pool-manage" */ "./../views/address-manage/address-pool-config")
-  }
+  },
+  {
+    path: '/address-manage/tree',
+    component: () => import('@/views/address-plan/tree.vue')
+},
 ]

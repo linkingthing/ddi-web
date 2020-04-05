@@ -244,9 +244,12 @@ export default {
         return axios.post(`${baseUrl}/checkipv6prefix`, params)
     },
     getSubtree(params) {
-        return axios.post(`${baseUrl}/getsubtree`, { params })
+        return axios.get(`${baseUrl}/getsubtree`, { params })
     },
     createSubtree(params) {
         return axios.post(`${baseUrl}/createsubtree`, params)
+    },
+    updateSubtree(params) {
+        return axios.post(`${baseUrl}/updatesubtree`, params)
     }
 }

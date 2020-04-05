@@ -1,6 +1,6 @@
 <template>
   <div class="tree" ref="tree" id="tree">
-    <div class="tree-pop" ref="pop">
+    <div class="tree-pop" ref="pop" :class="{active: activePop}">
       <slot name="pop" :props="current"></slot>
     </div>
     <div class="tree-node-active"></div>
@@ -9,7 +9,7 @@
 
 <script>
 import * as d3 from "d3";
-
+import _ from "lodash";
 export default {
   components: {},
   props: {
@@ -34,13 +34,24 @@ export default {
   },
   data() {
     return {
+      activePop: false,
       svg: "",
       current: {}
     };
   },
 
   mounted() {
+    const self = this;
     this.init();
+    this.$refs.tree.addEventListener(
+      "click",
+      function(e) {
+        if (e.target.tagName === "svg") {
+          self.hidePop();
+        }
+      },
+      false
+    );
   },
   methods: {
     handle() {
@@ -78,13 +89,15 @@ export default {
       const tree = d3
         .tree()
         .separation(function(a, b) {
-          return a.parent == b.parent ? 1 : 2;
+          // retu (a.parent == b.parent ? 1 : 2) / a.depth
+          return a.parent == b.parent ? 1 : 1;
         })
 
         .size([
-          width - margin.left - margin.right,
-          (height - margin.top - margin.bottom) * 0.5
+          (width - margin.left - margin.right) * 1,
+          (height - margin.top - margin.bottom) * 1
         ]);
+
       var root = d3.hierarchy(dataSet);
       this.root = root;
       this.tree = tree;
@@ -105,6 +118,12 @@ export default {
         .attr("class", function(d) {
           return "node" + (d.children ? " node--internal" : " node--leaf");
         });
+      // node
+      //   .append("rect")
+      //   .attr("width", 30)
+      //   .attr("height", 30)
+      //   .attr("stroke", 30)
+      // .attr("fill", '#f80');
 
       node
         .append("circle")
@@ -122,14 +141,26 @@ export default {
             .attr("r", radius);
         });
 
-      node
+      const text = node
         .append("text")
+        .attr("style", "cursor: pointer")
+        .append("tspan")
         .text(function(d) {
           return d.data.name;
         })
+
         .attr("y", -4)
         .attr("x", 20)
-        .attr("text-anchor", "middle");
+        .attr("text-anchor", "left");
+
+      text
+        .append("tspan")
+        .text(function(d) {
+          return d.data.subnet;
+        })
+        .attr("y", 14)
+        .attr("x", 20)
+        .attr("text-anchor", "left");
 
       node.attr("transform", function(d) {
         return "translate(" + d.y + "," + d.x + ")";
@@ -170,24 +201,23 @@ export default {
         name: "9527"
       });
     },
-    idiotUpdate(newData) {
+    idiotUpdate: _.debounce(function(newData) {
       const node = d3.selectAll("#tree svg");
       node.remove();
       this.init(newData);
-    },
+    }, 600),
     update(newData) {
       //TODO: newData exit enter 思路
     },
     showPop({ x, y }) {
       const pop = this.$refs.pop;
       const { margin } = this.options;
-      pop.style.display = "block";
+      this.activePop = true;
       pop.style.left = y + margin.top - 8 + "px";
       pop.style.top = x + margin.left / 2 + 8 + "px";
     },
     hidePop() {
-      const pop = this.$refs.pop;
-      pop.style.display = "none";
+      this.activePop = false;
     },
     movePop({ k, x, y }) {
       const pop = this.$refs.pop;
@@ -215,10 +245,6 @@ export default {
       };
       this.showPop(node);
       this.markActiveNode(selection);
-
-      // data.data.children = null; // ok
-      // this.removeNode(selection, node);
-      // this.appendNode(element);
       this.$emit("onClickNode", selection, node);
     }
   },
@@ -228,14 +254,6 @@ export default {
       handler(value) {
         this.hidePop();
         this.idiotUpdate(value);
-      }
-    },
-
-    current: {
-      deep: true,
-      handler(cur) {
-        // console.log(cur, "current");
-        // console.log(this.data);
       }
     }
   }
@@ -250,6 +268,9 @@ export default {
     position: absolute;
     display: none;
     border: 1px solid #ddd;
+  }
+  .active {
+    display: block;
   }
 
   .tree-node-active {

@@ -1,25 +1,94 @@
 <template>
-  <div class="Calipers">
-    <Slider v-model="value5" :step="10" range></Slider>
+  <div class="calipers">
+    <Slider v-model="innerValue" :step="1" :max="64" range :marks="marks" @on-change="handleChange"></Slider>
   </div>
 </template>
 
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    value: {
+      type: Array,
+      default: () => [0, 0]
+    }
+  },
   data() {
     return {
-      value5: 50
+      innerValue: [0, 0]
     };
   },
-  computed: {},
+  computed: {
+    marks() {
+      const [start, end] = this.value;
+      const map = {
+        0: "0",
+        64: "64"
+      };
+      map[start] = {
+        style: {
+          color: "#57a3f3"
+        },
+        label: this.$createElement("strong", `${start}`)
+      };
+      map[end] = {
+        style: {
+          color: "#57a3f3"
+        },
+        label: this.$createElement("strong", `${end}`)
+      };
+      console.log("map", map);
+      return map;
+    }
+  },
   created() {},
   mounted() {},
-  methods: {},
-  watch: {}
+  methods: {
+    handleChange(v) {
+      let [, max] = v;
+      const [initMin] = this.value;
+      if (max < initMin) {
+        max = initMin + 1;
+      }
+      this.innerValue = [initMin, max];
+      this.$emit("onChange", [initMin, max]);
+    }
+  },
+  watch: {
+    value(v) {
+      this.innerValue = v;
+    }
+  }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
+.calipers {
+  height: 60px;
+
+  .ivu-slider-wrap {
+    margin: 0;
+    height: 20px;
+    background: linear-gradient(
+      to right,
+      #ddd,
+      #ddd 1px,
+      transparent 1px,
+      transparent
+    );
+    background-size: 1.5625% 100%;
+    border-bottom: 1px solid #ddd;
+  }
+  .ivu-slider-marks-item {
+    margin-top: 25px;
+  }
+  .ivu-slider-bar {
+    height: 100%;
+  }
+  .ivu-slider-button {
+    height: 20px;
+    width: 20px;
+    margin-top: 5px;
+  }
+}
 </style>
