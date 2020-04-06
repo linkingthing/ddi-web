@@ -4,7 +4,6 @@
       <img src="../../assets/images/logo.png" alt />
     </div>
     <div class="menu-list">
-      <vue-scroll class="pr" :ops="ops">
         <Menu
           :theme="theme"
           :active-name="tab"
@@ -58,7 +57,6 @@
             </Submenu>
           </MenuGroup>
         </Menu>
-      </vue-scroll>
     </div>
   </div>
 </template>

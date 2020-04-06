@@ -12,16 +12,26 @@
         </div>-->
         <div class="base-info">
           <h3>基本信息</h3>
-          <Input placeholder="编码" class="base-input" v-model.number="currentNode.nodecode" />
-          <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
-          <Input placeholder="IPv6" class="base-input" v-model="currentNode.subnet" />
-          <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
+          <Form :labelWidth="40">
+            <FormItem label="编码">
+              <Input placeholder="编码" class="base-input" v-model.number="currentNode.nodecode" />
+            </FormItem>
+            <FormItem label="名称">
+              <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
+            </FormItem>
+            <FormItem label="IPv6">
+              <Input placeholder="IPv6" class="base-input" v-model="currentNode.subnet" />
+            </FormItem>
+            <FormItem label="描述">
+              <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
+            </FormItem>
+          </Form>
         </div>
 
         <div class="child-node-edit">
           <div class="child-node-edit-head">
             <h3>
-              子节点编进
+              子节点编辑
               <Button type="primary" size="small" class="btn-import-category">导入分类</Button>
             </h3>
           </div>
@@ -56,9 +66,10 @@
                   <span class="close" @click="handleDeleteNode(item, currentNode)">x</span>
                 </div>
               </li>
-              <li v-if="Array.isArray(currentNode.children)&&currentNode.children.length ===0">
-                <div class="child-node" @click="handleDeleteAllTree">
-                  -
+              <!-- v-if="Array.isArray(currentNode.children)&&currentNode.children.length ===0" -->
+              <li v-if="currentNode">
+                <div class="child-node btn-del" @click="handleDeleteAllTree">
+                  删除选中节点
                   <span></span>
                 </div>
               </li>
@@ -214,23 +225,35 @@ export default {
       this.currentNode = data.data;
     },
     handleSubmit() {
-      // TODO: 区分创建和更新
       const params = JSON.parse(
         JSON.stringify(this.tree).replace(/children/g, "nodes")
       );
       this.reverseTransformTreeData(params);
 
       if (this.tree.id) {
-        services.updateSubtree(params);
+        services.updateSubtree(params).then(res => {
+          this.$Message.success("更新成功!");
+          this.getTreeData();
+        });
       } else {
-        services.createSubtree(params);
+        services.createSubtree(params).then(res => {
+          this.$Message.success("创建成功!");
+          this.getTreeData();
+        });
       }
     },
     handleDeleteAllTree() {
-      const params = {
-        id: this.tree.id
-      };
-      services.deleteSubtree(params);
+      if (this.currentNode.id) {
+        const params = {
+          id: this.currentNode.id
+        };
+        services.deleteSubtree(params).then(res => {
+          this.$Message.success("删除成功!");
+          this.getTreeData();
+        });
+      } else {
+        this.$Message.info("请先选择节点");
+      }
     }
   }
 };
@@ -314,7 +337,6 @@ export default {
     margin-bottom: 24px;
   }
   .base-input {
-    margin-bottom: 20px;
   }
 }
 
@@ -387,6 +409,10 @@ export default {
       border-radius: 0 6px 0 6px;
       cursor: pointer;
     }
+  }
+  .btn-del {
+    background: crimson;
+    color: #fff;
   }
 }
 
