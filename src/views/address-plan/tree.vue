@@ -173,7 +173,9 @@ export default {
             };
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          this.$Message.error('数据获取失败')
+        });
     },
     transformTreeData(data) {
       const str = JSON.stringify(data);
