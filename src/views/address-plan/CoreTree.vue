@@ -10,6 +10,13 @@
 <script>
 import * as d3 from "d3";
 import _ from "lodash";
+
+const currentNodeRecord = {
+  x: 0,
+  y: 0,
+  id: 0
+};
+
 export default {
   components: {},
   props: {
@@ -81,15 +88,24 @@ export default {
       this.svg = svg;
       const g = svg.append("g");
       this.g = g;
-      g.attr(
-        "transform",
-        "translate(" + margin.left + "," + margin.right + ")"
-      );
+      g.attr("transform", function() {
+        if (currentNodeRecord.x) {
+          return (
+            "translate(" +
+            (+width / 3 - currentNodeRecord.x) +
+            "," +
+            (+height / 3 - currentNodeRecord.y) +
+            ")"
+          );
+        } else {
+          return "translate(" + margin.left + "," + margin.top + ")";
+        }
+      });
+
       // console.log(d3);
       const tree = d3
         .tree()
         .separation(function(a, b) {
-          // retu (a.parent == b.parent ? 1 : 2) / a.depth
           return a.parent == b.parent ? 1 : 1;
         })
 
@@ -117,7 +133,13 @@ export default {
         .attr("style", "cursor: pointer")
         .attr("class", function(d) {
           return "node" + (d.children ? " node--internal" : " node--leaf");
+        })
+        .attr("style", function(d) {
+          if (currentNodeRecord.id === d.data.id) {
+            return "outline: solid 3px blue";
+          }
         });
+
       // node
       //   .append("rect")
       //   .attr("width", 30)
@@ -195,19 +217,13 @@ export default {
           })
       );
     },
-
-    appendNode(element, data) {
-      element.append({
-        name: "9527"
-      });
-    },
     idiotUpdate: _.debounce(function(newData) {
       const node = d3.selectAll("#tree svg");
       node.remove();
       this.init(newData);
     }, 600),
     update(newData) {
-      //TODO: newData exit enter 思路
+      // TODO: newData exit enter 思路
     },
     showPop({ x, y }) {
       const pop = this.$refs.pop;
@@ -237,12 +253,18 @@ export default {
       d3.selectAll(".node").attr("style", "");
       selection.attr("style", "outline: solid 3px blue");
     },
+    setSvgPosition(node) {
+      currentNodeRecord.x = node.y;
+      currentNodeRecord.y = node.x;
+      currentNodeRecord.id = node.data.id;
+    },
     // 组件api
     onClick(selection, { node }) {
       this.current = {
         selection,
         node
       };
+      this.setSvgPosition(node);
       this.showPop(node);
       this.markActiveNode(selection);
       this.$emit("onClickNode", selection, node);

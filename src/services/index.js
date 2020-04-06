@@ -251,5 +251,8 @@ export default {
     },
     updateSubtree(params) {
         return axios.post(`${baseUrl}/updatesubtree`, params)
+    },
+    deleteSubtree(params) {
+        return axios.post(`${baseUrl}/deletesubtree`, params)
     }
 }

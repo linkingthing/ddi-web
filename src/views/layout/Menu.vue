@@ -54,7 +54,7 @@
               <MenuItem name="child-net" to="/address-manage/child-net">子网管理</MenuItem>
               <MenuItem name="device-manage" to="/address-manage/device-manage">设备管理</MenuItem>
               <MenuItem name="option-config" to="/address-manage/option-config">OPTION配置</MenuItem>
-              <MenuItem name="tree-config" to="/address-manage/tree">地址分配</MenuItem>
+              <MenuItem name="tree-config" to="/address-manage/tree">地址规划</MenuItem>
             </Submenu>
           </MenuGroup>
         </Menu>

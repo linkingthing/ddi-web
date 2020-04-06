@@ -37,7 +37,6 @@ export default {
         },
         label: this.$createElement("strong", `${end}`)
       };
-      console.log("map", map);
       return map;
     }
   },

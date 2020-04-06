@@ -40,7 +40,7 @@
             <div style="padding: 10px 0">
               <span style="display: inline-block;margin-right: 10px">分配位数量:</span>
               <Input
-              style="width:60px;"
+                style="width:60px;"
                 placeholder="容量"
                 class="base-input"
                 v-model.number="currentNode.subtreebitnum"
@@ -54,6 +54,12 @@
                 <div class="child-node">
                   {{item.name}}
                   <span class="close" @click="handleDeleteNode(item, currentNode)">x</span>
+                </div>
+              </li>
+              <li v-if="Array.isArray(currentNode.children)&&currentNode.children.length ===0">
+                <div class="child-node" @click="handleDeleteAllTree">
+                  -
+                  <span></span>
                 </div>
               </li>
               <li>
@@ -84,7 +90,6 @@
             layoutType="horizontal"
             :duration="20"
             @onClickNode="handleClickNode"
-            @clickedText="handleClickText"
           >
             <!-- <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
@@ -133,11 +138,9 @@ export default {
       }
       const parent = this.currentParent;
       if (parent && parent.data) {
-        start = end - parent.data.subtreebitnum;
+        // TODO:  从0创建的时候 subtreebitnum 是多少
+        start = end - parent.data.subtreebitnum || 0;
       }
-      console.log("currentNode", this.currentNode);
-
-      console.log("parent", parent);
       console.log(start, end);
       return [start, end];
     }
@@ -148,10 +151,18 @@ export default {
   methods: {
     getTreeData() {
       const params = {};
-      services.getSubtree(params).then(res => {
-        this.tree = this.transformTreeData(res.data);
-        console.log(1, this.tree);
-      });
+      services
+        .getSubtree(params)
+        .then(res => {
+          this.tree = this.transformTreeData(res.data);
+          if (typeof this.tree === "string") {
+            this.tree = {
+              name: "root",
+              children: []
+            };
+          }
+        })
+        .catch(() => {});
     },
     transformTreeData(data) {
       const str = JSON.stringify(data);
@@ -177,12 +188,15 @@ export default {
         child => node.id !== child.id
       );
     },
-    handleAddChildNode({ node }) {
+    handleAddChildNode() {
+      console.log(33, this.currentNode);
+
       const newNode = {
         id: `${currentId++}`,
         nodes: [],
         name: `新增节点${currentId}`
       };
+
       if (Array.isArray(this.currentNode.children)) {
         this.currentNode.children.push(newNode);
       } else {
@@ -199,17 +213,24 @@ export default {
       this.currentParent = data.parent;
       this.currentNode = data.data;
     },
-    handleClickText(element, data, target) {
-      console.log(element, data, target);
-      // this.currentNode = element.data;
-    },
     handleSubmit() {
-      // services.createSubtree(params);
+      // TODO: 区分创建和更新
       const params = JSON.parse(
         JSON.stringify(this.tree).replace(/children/g, "nodes")
       );
       this.reverseTransformTreeData(params);
-      services.updateSubtree(params);
+
+      if (this.tree.id) {
+        services.updateSubtree(params);
+      } else {
+        services.createSubtree(params);
+      }
+    },
+    handleDeleteAllTree() {
+      const params = {
+        id: this.tree.id
+      };
+      services.deleteSubtree(params);
     }
   }
 };
