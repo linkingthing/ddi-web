@@ -2,28 +2,29 @@
   <div class>
     <section class="tree-content">
       <aside class="panel">
-        <!-- <div class="panel-title">
-          <h2>编辑节点</h2>
-          <nav class="menuGroup">
-            <a class="active">一级按钮</a>
-            <a class>一级按钮</a>
-            <a class>一级按钮</a>
-          </nav>
-        </div>-->
         <div class="base-info">
           <h3>基本信息</h3>
-          <Form :labelWidth="40">
-            <FormItem label="编码">
-              <Input placeholder="编码" class="base-input" v-model.number="currentNode.nodecode" />
+          <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
+            <FormItem label="起始编码">
+              <Input placeholder="起始编码" class="base-input" v-model.number="currentNode.nodecode" />
             </FormItem>
             <FormItem label="名称">
               <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
             </FormItem>
-            <FormItem label="IPv6">
-              <Input placeholder="IPv6" class="base-input" v-model="currentNode.subnet" />
+            <FormItem label="subnet" prop="subnet">
+              <Input placeholder="IPv6+后缀" class="base-input" v-model="currentNode.subnet" />
             </FormItem>
             <FormItem label="描述">
               <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
+            </FormItem>
+            <FormItem label="操作">
+              <Button
+                type="primary"
+                size="small"
+                :disabled="abledDelete"
+                class="btn-del"
+                @click="handleDeleteAllTree"
+              >删除节点</Button>
             </FormItem>
           </Form>
         </div>
@@ -39,7 +40,7 @@
           <div class="count">
             <ul>
               <li>
-                <Strong>{{Math.pow(2, currentNode.subtreebitnum) || 0}}</Strong>
+                <Strong>{{currentNode.subtreebitnum? (Math.pow(2, currentNode.subtreebitnum) || 0):0}}</Strong>
                 <span>总容量，双击修改</span>
               </li>
               <li>
@@ -66,14 +67,7 @@
                   <span class="close" @click="handleDeleteNode(item, currentNode)">x</span>
                 </div>
               </li>
-              <!-- v-if="Array.isArray(currentNode.children)&&currentNode.children.length ===0" -->
-              <li v-if="currentNode">
-                <div class="child-node btn-del" @click="handleDeleteAllTree">
-                  删除选中节点
-                  <span></span>
-                </div>
-              </li>
-              <li>
+              <li v-if="showCreateChildNode">
                 <div class="child-node" @click="handleAddChildNode">
                   +
                   <span></span>
@@ -83,16 +77,19 @@
           </div>
         </div>
 
-        <Button type="primary" size="small" class="btn-complete" @click="handleSubmit">编辑完成，立即生成</Button>
+        <div class="btn-box">
+          <Button type="primary" size="small" class="btn-complete" @click="handleSubmit">保存提交</Button>
+        </div>
       </aside>
 
       <div class="graph">
         <div class="memo-assign">
           <h3>
-            内存容量分配图
+            地址分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
           <Caliper :value="caliperValue" @onChange="handleChangeCaliper"></Caliper>
+          <!-- <Allocation /> -->
         </div>
         <div class="tree">
           <tree
@@ -119,25 +116,45 @@
 <script>
 import tree from "./CoreTree";
 import Caliper from "./modules/Caliper";
+import Allocation from "./modules/Allocation";
 import services from "../../services";
+import { subnetValidateFunc } from "@/util/common";
 
 let currentId = 0;
 
 export default {
   components: {
     tree,
-    Caliper
+    Caliper,
+    Allocation
   },
   data() {
     return {
       tree: {
-        name: "root"
+        name: "root",
+        depth: 0
       },
       currentNode: {},
       currentParent: {}
     };
   },
   computed: {
+    rules() {
+      return {
+        subnet: [
+          {
+            required: true,
+            message: "subnet 必填"
+          },
+          {
+            validator: subnetValidateFunc
+          }
+        ]
+      };
+    },
+    abledDelete() {
+      return !(this.currentNode.id && this.currentNode.id.length > 5);
+    },
     caliperValue() {
       let start = 0,
         end = 0;
@@ -148,12 +165,19 @@ export default {
         end = Number(end) || 0;
       }
       const parent = this.currentParent;
-      if (parent && parent.data) {
-        // TODO:  从0创建的时候 subtreebitnum 是多少
-        start = end - parent.data.subtreebitnum || 0;
+      if (parent && parent.data && parent.data.subnet) {
+        // TODO:  slice可能是一位
+        start = parent.data.subnet.slice(-2);
       }
       console.log(start, end);
       return [start, end];
+    },
+    hasTree() {
+      return !!this.tree.id;
+    },
+    showCreateChildNode() {
+      const hasCurrentNode = !!this.currentNode.id;
+      return this.hasTree && hasCurrentNode;
     }
   },
   mounted() {
@@ -165,16 +189,18 @@ export default {
       services
         .getSubtree(params)
         .then(res => {
-          this.tree = this.transformTreeData(res.data);
-          if (typeof this.tree === "string") {
+          if (res.data) {
+            this.tree = this.transformTreeData(res.data);
+          } else {
             this.tree = {
               name: "root",
+              depth: 0,
               children: []
             };
           }
         })
         .catch(() => {
-          this.$Message.error('数据获取失败')
+          this.$Message.error("数据获取失败");
         });
     },
     transformTreeData(data) {
@@ -193,7 +219,10 @@ export default {
 
     handleChangeCaliper([min, max]) {
       console.log(min, max);
-      this.currentNode.subtreebitnum = max - min;
+      console.log(this.currentParent);
+      if (this.currentParent) {
+        this.currentParent.data.subtreebitnum = max - min;
+      }
     },
     handleDeleteNode(node, { children }) {
       // TODO: 这里要要深入学习一下js引用类型的原理
@@ -203,17 +232,30 @@ export default {
     },
     handleAddChildNode() {
       console.log(33, this.currentNode);
+      // 判断，当根节点没有subnet的时候，不能添加子节点
+      if (!this.tree.id) {
+        this.$Message.info("请先创建保存根节点后，再创建子节点");
+        return;
+      }
+      if (this.currentNode.id) {
+        console.log(this.currentNode);
+        const nodecodeIndex = Array.isArray(this.currentNode.children)
+          ? this.currentNode.children.length
+          : 0;
+        const newNode = {
+          id: `${currentId++}`,
+          children: [],
+          name: `子网${currentId}`,
+          nodecode: nodecodeIndex
+        };
 
-      const newNode = {
-        id: `${currentId++}`,
-        nodes: [],
-        name: `新增节点${currentId}`
-      };
-
-      if (Array.isArray(this.currentNode.children)) {
-        this.currentNode.children.push(newNode);
+        if (Array.isArray(this.currentNode.children)) {
+          this.currentNode.children.push(newNode);
+        } else {
+          this.currentNode.children = [newNode];
+        }
       } else {
-        this.currentNode.children = [newNode];
+        this.$Message.info("请先选择节点");
       }
     },
     remove({ node }) {
@@ -232,26 +274,45 @@ export default {
       );
       this.reverseTransformTreeData(params);
 
-      if (this.tree.id) {
+      if (this.hasTree) {
         services.updateSubtree(params).then(res => {
           this.$Message.success("更新成功!");
           this.getTreeData();
+          this.currentNode = {};
         });
       } else {
-        services.createSubtree(params).then(res => {
-          this.$Message.success("创建成功!");
-          this.getTreeData();
+        console.log(this.currentNode);
+        if (!this.currentNode.name) {
+          this.$Message.info("请选中根节点!");
+          return;
+        }
+        // 创建树的本质控制只创建一个根节点
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            services.createSubtree(params).then(res => {
+              this.$Message.success("创建成功!");
+              this.getTreeData();
+              this.currentNode = {};
+            });
+          }
         });
       }
     },
     handleDeleteAllTree() {
       if (this.currentNode.id) {
-        const params = {
-          id: this.currentNode.id
-        };
-        services.deleteSubtree(params).then(res => {
-          this.$Message.success("删除成功!");
-          this.getTreeData();
+        this.$Modal.confirm({
+          title: "删除确认",
+          onOk: () => {
+            const params = {
+              id: this.currentNode.id
+            };
+            services.deleteSubtree(params).then(res => {
+              this.$Message.success("删除成功!");
+              this.currentNode = {};
+              this.getTreeData();
+            });
+          },
+          okCancel: () => {}
         });
       } else {
         this.$Message.info("请先选择节点");
@@ -260,7 +321,13 @@ export default {
   }
 };
 </script>
-
+<style lang="less">
+.base-info {
+  .ivu-form-item {
+    margin-bottom: 12px;
+  }
+}
+</style>
 <style lang="less" scoped>
 .tree {
   min-height: 800px;
@@ -412,17 +479,24 @@ export default {
       cursor: pointer;
     }
   }
-  .btn-del {
-    background: crimson;
-    color: #fff;
+}
+
+.btn-del {
+  height: 32px;
+  line-height: 32px;
+}
+
+.btn-box {
+  overflow: hidden;
+  button {
+    display: block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
   }
 }
 
 .btn-complete {
-  display: block;
-  width: 100%;
-  height: 40px;
-  line-height: 40px;
 }
 </style>
 <style lang="">

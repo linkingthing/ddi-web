@@ -161,3 +161,26 @@ export const resourceDomainValidateFunc = (rule, value, callback) => {
 
     callback('请正确输入域名')
 }
+
+export const subnetValidateFunc = (rule, value, callback) => {
+    if (value) {
+        const [ip, prefix] = value.split('/')
+
+
+        console.log('prefix', Number(prefix))
+        if (Number.isNaN( Number(prefix))){
+            callback('prefix 应该是1-64整数')
+            return
+        }
+        if (Number(prefix) > 0 && Number(prefix) < 64) {
+            callback()
+            return
+        } else {
+            callback('prefix 应该是1-64整数')
+
+        }
+        IPv6SimpleValidateFunc(null, ip, callback)
+
+    }
+    callback('请正确输入subnet')
+}

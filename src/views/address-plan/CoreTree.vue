@@ -130,7 +130,7 @@ export default {
         .data(root.descendants())
         .enter()
         .append("g")
-        .attr("style", "cursor: pointer")
+
         .attr("class", function(d) {
           return "node" + (d.children ? " node--internal" : " node--leaf");
         })
@@ -140,12 +140,28 @@ export default {
           }
         });
 
-      // node
-      //   .append("rect")
-      //   .attr("width", 30)
-      //   .attr("height", 30)
-      //   .attr("stroke", 30)
-      // .attr("fill", '#f80');
+      node
+        .append("rect")
+        .attr("width", "200")
+        .attr("height", "48")
+        .attr("x", "-4")
+        .attr("y", "-24")
+        .attr(
+          "style",
+          `cursor: pointer;
+          fill:#f5f5f5;
+          stroke-width:0;
+          stroke:rgb(0,0,0)`
+        );
+
+      node
+        .append("image")
+        .attr("width", "20")
+        .attr("height", "20")
+        .attr("xlink:href", "/static/info.png")
+        .attr("x", "5")
+        .attr("y", "-10")
+        .attr("style", `cursor: pointer;`);
 
       node
         .append("circle")
@@ -165,15 +181,18 @@ export default {
 
       const text = node
         .append("text")
-        .attr("style", "cursor: pointer")
+        .attr("class", "text")
+        .attr("style", "cursor: pointer");
+
+      text
         .append("tspan")
         .text(function(d) {
           return d.data.name;
         })
-
         .attr("y", -4)
-        .attr("x", 20)
-        .attr("text-anchor", "left");
+        .attr("x", 35)
+        .attr("text-anchor", "left")
+        .attr("fill", "#777");
 
       text
         .append("tspan")
@@ -181,8 +200,9 @@ export default {
           return d.data.subnet;
         })
         .attr("y", 14)
-        .attr("x", 20)
-        .attr("text-anchor", "left");
+        .attr("x", 35)
+        .attr("text-anchor", "left")
+        .attr("fill", "#777");
 
       node.attr("transform", function(d) {
         return "translate(" + d.y + "," + d.x + ")";
@@ -210,6 +230,7 @@ export default {
         d3
           .linkHorizontal()
           .x(function(d) {
+            // console.log(d)
             return d.y;
           })
           .y(function(d) {

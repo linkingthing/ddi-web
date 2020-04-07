@@ -1,5 +1,6 @@
 <template>
   <div class="calipers">
+    <div class="top-show" :style="`position: absolute;top:-20px; left: ${left};` ">010</div>
     <Slider v-model="innerValue" :step="1" :max="64" range :marks="marks" @on-change="handleChange"></Slider>
   </div>
 </template>
@@ -19,6 +20,10 @@ export default {
     };
   },
   computed: {
+    left() {
+      const [, max] = this.innerValue;
+      return (max / 64) * 100 + "%";
+    },
     marks() {
       const [start, end] = this.value;
       const map = {
@@ -63,8 +68,10 @@ export default {
 
 <style lang="less" >
 .calipers {
+  position: relative;
   height: 60px;
-
+  .top-show {
+  }
   .ivu-slider-wrap {
     margin: 0;
     height: 20px;
