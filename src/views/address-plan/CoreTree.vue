@@ -136,7 +136,7 @@ export default {
         })
         .attr("style", function(d) {
           if (currentNodeRecord.id === d.data.id) {
-            return "outline: solid 3px blue";
+            return "outline: solid 3px #458CE9";
           }
         });
 
@@ -272,7 +272,7 @@ export default {
     },
     markActiveNode(selection) {
       d3.selectAll(".node").attr("style", "");
-      selection.attr("style", "outline: solid 3px blue");
+      selection.attr("style", "outline: solid 3px #458CE9");
     },
     setSvgPosition(node) {
       currentNodeRecord.x = node.y;

@@ -3,7 +3,16 @@
     <section class="tree-content">
       <aside class="panel">
         <div class="base-info">
-          <h3>基本信息</h3>
+          <h3>
+            基本信息
+            <Button
+              type="error"
+              size="small"
+              :disabled="abledDelete"
+              class="btn-del"
+              @click="handleDeleteAllTree"
+            >删除节点</Button>
+          </h3>
           <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
             <FormItem label="起始编码">
               <Input placeholder="起始编码" class="base-input" v-model.number="currentNode.nodecode" />
@@ -16,15 +25,6 @@
             </FormItem>
             <FormItem label="描述">
               <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
-            </FormItem>
-            <FormItem label="操作">
-              <Button
-                type="primary"
-                size="small"
-                :disabled="abledDelete"
-                class="btn-del"
-                @click="handleDeleteAllTree"
-              >删除节点</Button>
             </FormItem>
           </Form>
         </div>
@@ -88,7 +88,7 @@
             地址分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
-          <Caliper :value="caliperValue" @onChange="handleChangeCaliper"></Caliper>
+          <Caliper :value="caliperValue" @onChange="handleChangeCaliper" :netcode="currentNode.nodecode"></Caliper>
           <!-- <Allocation /> -->
         </div>
         <div class="tree">
@@ -404,6 +404,9 @@ export default {
   h3 {
     font-size: 20px;
     margin-bottom: 24px;
+    .btn-del {
+      float: right;
+    }
   }
   .base-input {
   }
