@@ -4,6 +4,7 @@
       <slot name="pop" :props="current"></slot>
     </div>
     <div class="tree-node-active"></div>
+    <div class="toolTip" ref="toolTip">{{toolTipInfo}}</div>
   </div>
 </template>
 
@@ -43,7 +44,8 @@ export default {
     return {
       activePop: false,
       svg: "",
-      current: {}
+      current: {},
+      toolTipInfo: ""
     };
   },
 
@@ -64,12 +66,18 @@ export default {
     handle() {
       console.log(this.root);
     },
-    init(dataSet = this.data) {
-      const self = this;
+    getWidthHeight() {
       let { width, height } = window.getComputedStyle(this.$refs.tree);
       width = parseInt(width);
       height = parseInt(height);
-
+      return {
+        width,
+        height
+      };
+    },
+    init(dataSet = this.data) {
+      const self = this;
+      const { width, height } = this.getWidthHeight();
       const { margin } = this.options;
 
       var svg = d3
@@ -158,10 +166,20 @@ export default {
         .append("image")
         .attr("width", "20")
         .attr("height", "20")
-        .attr("xlink:href", "/static/info.png")
+        .attr("xlink:href", function(d) {
+          if (d.data.usedfor) {
+            return "/static/info.png";
+          }
+        })
         .attr("x", "5")
         .attr("y", "-10")
-        .attr("style", `cursor: pointer;`);
+        .attr("style", `cursor: pointer;`)
+        .on("mouseover", function(d) {
+          self.showToolTip(d);
+        })
+        .on("mouseout", function() {
+          self.hideToolTip();
+        });
 
       node
         .append("circle")
@@ -274,6 +292,21 @@ export default {
       d3.selectAll(".node").attr("style", "");
       selection.attr("style", "outline: solid 3px #458CE9");
     },
+    showToolTip({ x, y, data }) {
+      // const { width, height } = this.getWidthHeight();
+      // const { margin } = this.options;
+      const toolTip = this.$refs.toolTip;
+      if (!!data.usedfor) {
+        toolTip.style.display = "block";
+        toolTip.style.right = 0 + "px";
+        toolTip.style.top = 0 + "px";
+        this.toolTipInfo = data.usedfor;
+      }
+    },
+    hideToolTip() {
+      const toolTip = this.$refs.toolTip;
+      toolTip.style.display = "none";
+    },
     setSvgPosition(node) {
       currentNodeRecord.x = node.y;
       currentNodeRecord.y = node.x;
@@ -321,6 +354,18 @@ export default {
     width: 20px;
     height: 20px;
     border: 1px solid #ddd;
+  }
+  .toolTip {
+    display: none;
+    position: absolute;
+    font-size: 18px;
+    line-height: 24px;
+    max-width: 20em;
+    color: #fff;
+    background: #000;
+    opacity: 0.6;
+    padding: 10px 20px;
+    border-radius: 4px;
   }
 }
 </style>
