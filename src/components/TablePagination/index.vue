@@ -16,6 +16,7 @@
       v-if="showTable"
       :data="data"
       :columns="columns"
+      v-on="$listeners"
     /> 
 
     <slot />

@@ -25,13 +25,16 @@ axios.interceptors.response.use(
         LoadingBar.finish();
         return res
     }, err => {
-        console.log(err)
+        console.error(err);
+
         if (err.response.data.code === 401) {
             Message.error(err.response.data.message)
             router.push('/login')
         }
+
         LoadingBar.error();
 
+        return Promise.reject(err)
     },
 )
 
@@ -283,29 +286,29 @@ export default {
     /**
      * 地址扫描
      */
-    addressScanning(params){
-        return axios.get(`${baseUrl}/scanaddresses/${params}`)
+    addressScanning(id){
+        return axios.get(`${baseUrl}/scanaddresses/${id}`)
     },
 
     /**
      * 删除IP地址
      */
     deleteIpAddress(id){        
-        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+        return axios.delete(`${baseUrl}/scanaddresses/${id}`)
     },
 
     /**
      * 转固定
      */
-    changeToFix(id){
-        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+    changeToFix(id, parmas){
+        return axios.post(`${baseUrl}/dividedaddresses/${id}?action=change`, parmas)
     },
 
     /**
      * 转保留
      */
-    changeToKeep(id){
-        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+    changeToKeep(id, parmas){
+        return axios.post(`${baseUrl}/scanaddresses/${id}`, parmas)
     },
 
     /**
@@ -318,30 +321,30 @@ export default {
     /**
      * 修改/新增ipv6地址池
      */
-    saveIpv6AddressPool({subnetId, poolId, params}){
+    saveIpv6AddressPool({subnetId, poolId, params, type = "post"}){
         let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
 
         url = poolId ? `${url}/${poolId}` : url;
 
-        return axios.post(url, params)
+        return axios[type](url, params)
     },
 
     /**
      * 修改/新增ipv4地址池
      */
-    saveIpv4AddressPool({subnetId, poolId, params}){
+    saveIpv4AddressPool({subnetId, poolId, params, type = "post"}){
         let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
 
         url = poolId ? `${url}/${poolId}` : url;
 
-        return axios.post(url, params)
+        return axios[type](url, params)
     },
 
     /**
      * 删除地址池
      */
     deleteAddressPool(subnetId, poolId){
-        return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`)
+        return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`)
     },
 
     /** 子网管理 end */

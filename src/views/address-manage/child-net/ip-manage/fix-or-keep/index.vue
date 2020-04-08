@@ -33,6 +33,11 @@ export default {
       default:""
     },
 
+    subnetvId:{
+      type:String,
+      default:""
+    },
+
     data:{
       type:Array,
       default: []
@@ -59,7 +64,7 @@ export default {
       const key = this.type === "固定" ? "changeToFix" : "changeToKeep";
 
       try {
-        let {status, data} = await service[key](this.data[0].id);
+        let {status, data} = await service[key](this.data[0].id, this.getParams());
 
         if(status === 200){
           console.log(data);
@@ -71,6 +76,18 @@ export default {
         }
       } catch (err) {
         console.error(err);
+      }
+    },
+
+    getParams(){
+      return {
+        oper: this.type === "固定" ? "tostable" : "toresv",
+        data:{
+          macaddress: "mac-addersses7",
+          ipaddress: "1.1.2.7",
+          subnetv4Id: this.subnetvId,
+          hwAddress: "00:01:02:03:04:17"
+        }
       }
     }
   }

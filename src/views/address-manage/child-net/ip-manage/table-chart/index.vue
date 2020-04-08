@@ -1,28 +1,32 @@
 <template>
   <div class="ip-manage-table-chart">
     <div class="table-chart-content">
-      <div class="table-chart-list">
-        <div 
-          v-for="(item, idx) in list"
-          :key="idx"
-          class="item-square"
-          :class="{
-            'is-unused':item.AddressType === statusList.unused,
-            'is-dynamic':item.AddressType === statusList.dynamic,
-            'is-collision':item.AddressType === statusList.collision,
-            'is-reserved':item.AddressType === statusList.reserved,
-            'is-manual':item.AddressType === statusList.manual,
-            'is-stable':item.AddressType === statusList.stable,
-            'is-lease':item.AddressType === statusList.lease,
-            'is-dead':item.AddressType === statusList.dead,
-            'is-selected':item.selected
-          }"
-          @click="handleSelect(item)"
-        />
-      </div>
-      <div class="ip-range">当前IP段{{`${startIp}~${endIp}`}}</div>
+      <template v-if="list.length">
+        <div class="table-chart-list">
+          <div 
+            v-for="(item, idx) in list"
+            :key="idx"
+            class="item-square"
+            :class="{
+              'is-unused':item.AddressType === statusList.unused,
+              'is-dynamic':item.AddressType === statusList.dynamic,
+              'is-collision':item.AddressType === statusList.collision,
+              'is-reserved':item.AddressType === statusList.reserved,
+              'is-manual':item.AddressType === statusList.manual,
+              'is-stable':item.AddressType === statusList.stable,
+              'is-lease':item.AddressType === statusList.lease,
+              'is-dead':item.AddressType === statusList.dead,
+              'is-selected':item.selected
+            }"
+            :title="item.ip"
+            @click="handleSelect(item)"
+          />
+        </div>
+        <div class="ip-range">当前IP段{{`${startIp}~${endIp}`}}</div>
 
-      <div class="item-title">IP地址</div>
+        <div class="item-title">IP地址</div>
+      </template>
+      <div v-else class="no-data">暂无数据</div>
     </div>
 
     <div class="table-chart-legend">

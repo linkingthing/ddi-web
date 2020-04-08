@@ -5,6 +5,7 @@
         :closable="closable"
         :mask-closable="maskClosable"
         :class-name="`modal-custom ${customClass}`"
+        :width="width"
     >
         <div class="modal-header" slot="header">
             {{ title }}
@@ -86,6 +87,11 @@ export default {
     showFooter:{
       type: Boolean,
       default: true
+    },
+
+    width:{
+      type: [String, Number],
+      default: 520
     },
 
     /**是否在点击确认按钮后立即关闭弹窗 */

@@ -60,6 +60,7 @@
       :visible.sync="showFixOrKeep"
       :data="selectedData"
       :type="typeofFixOrKeep"
+      :subnet-id="subnetId"
       @confirmed="handleFixedOrKept"
     />
 
@@ -92,7 +93,7 @@ export default {
 
   data(){
     return {
-      id:"",
+      subnetId:"",
       ipAddress:"",
       tableData:[],
       columns,
@@ -107,7 +108,7 @@ export default {
   mounted(){
     const {id, addr} = this.$route.query
 
-    this.id = id;
+    this.subnetId = id;
     this.ipAddress = addr;
 
     this.handleQuery();
@@ -122,7 +123,9 @@ export default {
       this.selectedData = [];
 
       try {
-        let { status, data, message } = await service.getPlanIpList(this.id);
+        let res = await service.getPlanIpList(this.subnetId);
+
+        const {status, message, data = { data:[] }} = res || {};
         
         if(status === 200){
           this.tableData = Object.entries(data.data)
@@ -130,11 +133,9 @@ export default {
             .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
         }
         else{
-          Promise.reject({ message })
+          Promise.reject({ message: message || "请求失败" })
         }
-      } catch (err) {
-        console.error(err);
-        
+      } catch (err) {        
         this.$$error(err.message || "请求失败！")
       }
     },
@@ -163,7 +164,7 @@ export default {
     },
 
     handleConfig(){
-      this.$router.push(`/address-manage/address-pool?id=${this.id}`)
+      this.$router.push(`/address-manage/address-pool?id=${this.subnetId}`)
     },
 
     async handleDelete(item){

@@ -4,7 +4,9 @@
       title="网络管理"
       :data="tableData"
       :pagination-enable="false"
-      :columns="columns"> 
+      :columns="columns"  
+      @on-selection-change="handleSelecChange"
+    > 
       <template slot="top-left">
         <Input v-model="keywords" placeholder="请输入子网地址" class="top-input" />
         <Button type="primary" icon="ios-search" @click="handleQuery" class="top-button">查询</Button>
@@ -167,6 +169,10 @@ export default {
         console.error(err);
         
       }
+    },
+
+    handleSelecChange(res){
+      this.selectedData = [...res];
     },
 
     handleAdd(){

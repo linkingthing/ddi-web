@@ -79,7 +79,7 @@ export default {
         },
         {
           title: "操作",
-          align: "right",      
+          align: "center",      
           render: (h, { row }) => {
             return h('div', [
               h('label', {
@@ -145,7 +145,7 @@ export default {
       try{
         await this.$$confirm({ content:"您确定要删除当前数据吗？" });
 
-        let res = await service.deleteAddressPool(this.subnetId, data.id);
+        let res = await service.deleteAddressPool(this.subnetId, data.embedded.id);
 
         if(res.status === 200){
           this.$$success("删除成功！");

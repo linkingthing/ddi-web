@@ -2,9 +2,10 @@
   <ModalCustom 
     :visible.sync="dialogVisible"
     :title="getTitle"
+    :width="560"
     @confirm="handleConfirm"
   >
-    <div class="child-net-info">
+    <div class="address-pool-info">
       <div class="info-row">
         <div class="info-row-label">类型</div>
         <Select v-model="type">
@@ -135,16 +136,18 @@ export default {
       return {
         subnetId:this.subnetId,
         poolId: this.poolId,
-        beginAddress:this.startAddress,
-        endAddress:this.endAddress,
-        validLifetime:this.defaultRentTime,
-        maxValidLifetime: this.maxRentTime
+        params:{
+          beginAddress:this.startAddress,
+          endAddress:this.endAddress,
+          validLifetime:this.defaultRentTime,
+          maxValidLifetime: this.maxRentTime
+        }
       }
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="less">
+@import "./index.less";
 </style>
