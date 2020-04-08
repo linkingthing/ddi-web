@@ -176,12 +176,29 @@ export default {
     },
 
     handleSplit(){
+      if(this.selectedData.length > 1){
+        this.$$warning("只能对一个子网进行拆分！");
+
+        return;
+      }
+      else if(!this.selectedData.length){
+        this.$$warning("请选择一个子网进行拆分！");
+
+        return;
+      }
+
       this.mergeSplitType = operateTypes.split;
       this.showMergSplit = true;
       this.mergeSplitData = this.selectedData;
     },
 
     handleMerge(){
+      if(this.selectedData.length <= 1){
+        this.$$warning("请选择多个子网进行合并！");
+
+        return;
+      }
+
       this.mergeSplitType = operateTypes.merge;
       this.showMergSplit = true;
       this.mergeSplitData = this.selectedData;
@@ -207,12 +224,12 @@ export default {
         
         await services.deleteChildNet(data.subnet_id);
 
-        this.$$message("删除成功！", "success");
+        this.$$success("删除成功！");
 
         this.handleQuery();
       }
       catch(err){
-        this.$$message(err.message || "删除失败！", "error")
+        this.$$error(err.message || "删除失败！")
       }
     }
   }

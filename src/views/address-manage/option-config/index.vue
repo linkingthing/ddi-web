@@ -1,8 +1,9 @@
 <template>
   <div class="option-config">   
     <TablePagination 
-      title="OPTION配置"
+      title="OPTION列表"
       :data="tableData"
+      :pagination-enable="false"
       :columns="columns"> 
       <template slot="top-right">
         <Button 
@@ -14,6 +15,12 @@
         </Button>
       </template>
     </TablePagination>
+
+    <Edit 
+      :visible.sync="showEdit"
+      :data="editData"
+      @confirmed="handleSaved"
+    />
   </div>
 </template>
 
@@ -22,51 +29,34 @@
 </style>
 
 <script>
-import TablePagination from "./../../../components/TablePagination";
+import TablePagination from "@/components/TablePagination";
+import Edit from "./edit";
+
+import services from "@/services/index.js"
 
 export default {
   components:{
-    TablePagination
+    TablePagination,
+    Edit
   },
 
   data(){
     return {
-      keywords:"",
-      tableData:[
-        {
-          addressName:"1111111dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        },
-        {
-          addressName:"2222222dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        }
-      ],
+      tableData:[],
       columns: [
         {
+          title: "序号",
+          key: "index",
+          align: "center"
+        },
+        {
           title: "名称",
-          key: "addressName",
+          key:"optionName",
           align: "center"
         },
         {
           title: "类型",
-          key:"addressType",
-          align: "center"
-        },
-        {
-          title: "数量",
-          key: "addressCount",
-          align: "center"
-        },
-        {
-          title: "备注",
-          key: "createDate",
+          key: "optionType",
           align: "center"
         },
         {
@@ -94,25 +84,67 @@ export default {
           }
         }
       ],
-      selectedData:[]
+      showEdit:false,
+      editData:null
     }
   },
 
-  mounted(){
-    // this.tableData = [];
+  mounted(){    
+    this.handleQuery();
   },
 
   methods:{
-    handleAdd(){
+    async handleQuery(){
+      try {
+        let res = await services.getOptionList();
+        
+        const { data } = res;
 
+        this.tableData = data.data.map((item,idx) => {
+          item.index = idx + 1;
+
+          return item;
+        });
+        
+      } catch (err) {
+        console.error(err);
+        
+      }
+    },
+
+    handleAdd(){
+      this.showEdit = true;
+
+      this.editData = null;
+    },
+
+    handleView(data){
+      // this.$router.push(`/address-manage/ip-manage?id=${data.subnet_id}&addr=${data.subnet}`);
     },
 
     handleEdit(data){
+      this.showEdit = true;
 
+      this.editData = data;
     },
 
-    handleDelete(data){
+    handleSaved(){
+      this.handleQuery();
+    },
 
+    async handleDelete(data){
+      try{
+        await this.$$confirm({ content:"您确定要删除当前数据吗？" });
+        
+        await services.deleteOption(data.optionId);
+
+        this.$$success("删除成功！");
+
+        this.handleQuery();
+      }
+      catch(err){
+        this.$$error(err.message || "删除失败！")
+      }
     }
   }
 }

@@ -148,7 +148,7 @@ export default {
         let res = await service.deleteAddressPool(this.subnetId, data.id);
 
         if(res.status === 200){
-          this.$$message("删除成功！", "success");
+          this.$$success("删除成功！");
 
           this.handleQuery();
         }

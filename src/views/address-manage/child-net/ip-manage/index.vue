@@ -122,7 +122,7 @@ export default {
       this.selectedData = [];
 
       try {
-        let { status, data, message } = await service.getPlanIpList(1);
+        let { status, data, message } = await service.getPlanIpList(this.id);
         
         if(status === 200){
           this.tableData = Object.entries(data.data)
@@ -135,7 +135,7 @@ export default {
       } catch (err) {
         console.error(err);
         
-        this.$$message(err.message || "请求失败！", "error")
+        this.$$error(err.message || "请求失败！")
       }
     },
 
@@ -145,12 +145,12 @@ export default {
 
     handleSearch(){
       if(this.selectedData.length > 1){
-        this.$$message("只能对一个地址进行检测！", "error");
+        this.$$warning("只能对一个地址进行检测！");
 
         return;
       }
       else if(!this.selectedData.length){
-        this.$$message("请选择一个地址进行检测！", "error");
+        this.$$warning("请选择一个地址进行检测！");
 
         return;
       }
@@ -172,18 +172,18 @@ export default {
       } catch (err) {
         console.error(err);
         
-        this.$$message(err.message || "删除失败");
+        this.$$error(err.message || "删除失败");
       }
     },
 
     handleFixAndKeep(type){      
       if(this.selectedData.length > 1){
-        this.$$message("只能对一个地址进行操作！", "error");
+        this.$$warning("只能对一个地址进行操作！");
 
         return;
       }
       else if(!this.selectedData.length){
-        this.$$message("请选择一个地址进行操作！", "error");
+        this.$$warning("请选择一个地址进行操作！");
 
         return;
       }

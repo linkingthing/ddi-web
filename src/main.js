@@ -52,8 +52,20 @@ import router from './router'
 import mixin from './mixin'
 Vue.mixin(mixin);
 
-Vue.prototype.$$message = function (msg, type = "info") {
-  this.$Message[type](msg);
+Vue.prototype.$$success = function (msg) {
+  this.$Message.success(msg);
+}
+
+Vue.prototype.$$info = function (msg) {
+  this.$Message.info(msg);
+}
+
+Vue.prototype.$$waining = function (msg) {
+  this.$Message.waining(msg);
+}
+
+Vue.prototype.$$error = function (msg) {
+  this.$Message.error(msg);
 }
 
 Vue.prototype.$$confirm = function ({ title = "消息", content }) {

@@ -2,7 +2,6 @@
   <ModalCustom 
     :visible.sync="dialogVisible"
     :title="getTitle"
-    @cancel="handleCancel"
     @confirm="handleConfirm"
   >
     <div class="child-net-info">
@@ -20,6 +19,7 @@
 
 <script>
 import ModalCustom from "@/components/ModalCustom";
+import service from "@/services";
 
 import { operateTypes } from "./../define"
 
@@ -79,12 +79,16 @@ export default {
   },
 
   methods:{
-    handleCancel(){
+    async handleConfirm(){
+      const action = this.type === operateTypes.merge ? "mergeChildNet" : "splitChildNet";
 
-    },
-
-    handleConfirm(){
-      
+      try {
+        let res = await service[action](this.getParams(), this.data[0].id);
+      } catch (err) {
+        console.error(err);
+        
+        this.$$error(err.message || "操作失败！")
+      }
     }
   }
 }

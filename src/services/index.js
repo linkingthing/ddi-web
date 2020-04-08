@@ -260,6 +260,20 @@ export default {
     },
 
     /**
+     * 拆分子网
+     */
+    splitChildNet(params, subnetId){
+        return axios.post(`${baseUrl}/restsubnetv4s/${subnetId}?action=mergesplit`, params)
+    },
+
+    /**
+     * 合并子网
+     */
+    mergeChildNet(params){
+        return axios.post(`${baseUrl}/restsubnetv4s?action=mergesplit`, params)
+    },
+
+    /**
      * 获取规划IP地址列表
      */
     getPlanIpList(id){
@@ -328,7 +342,39 @@ export default {
      */
     deleteAddressPool(subnetId, poolId){
         return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`)
-    }
+    },
 
     /** 子网管理 end */
+
+    /** OPTOIN配置 start */
+
+    /**
+     * 获取OPTION配置列表
+     */
+    getOptionList(){
+        return axios.get(`${baseUrl}/restoptionnames`)
+    },
+
+    /**
+     * 删option
+     */
+    deleteOption(id){
+        return axios.delete(`${baseUrl}/restoptionnames/${id}`)
+    },
+
+    /**
+     * 添加option
+     */
+    addOption(params){
+        return axios.post(`${baseUrl}/restoptionnames`, params)
+    },
+
+    /**
+     * 编辑option
+     */
+    editOption(params, id){
+        return axios.put(`${baseUrl}/restoptionnames/${id}`, params)
+    }
+
+    /** OPTOIN配置 end */
 }
