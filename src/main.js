@@ -60,8 +60,8 @@ Vue.prototype.$$info = function (msg) {
   this.$Message.info(msg);
 }
 
-Vue.prototype.$$waining = function (msg) {
-  this.$Message.waining(msg);
+Vue.prototype.$$warning = function (msg) {
+  this.$Message.warning(msg);
 }
 
 Vue.prototype.$$error = function (msg) {
