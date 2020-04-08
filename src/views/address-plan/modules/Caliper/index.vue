@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import _ from "lodash";
+
 export default {
   components: {},
   props: {
@@ -60,12 +62,20 @@ export default {
     }
   },
   mounted() {
-    const calipers = this.$refs.calipers;
-    const width = getComputedStyle(calipers).width;
-    const letterWidth = parseFloat(width) / 64;
-    this.letterSpace = letterWidth - 9.3 + "px";
+    this.listenResize();
+    window.addEventListener("resize", this.listenResize);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.listenResize);
   },
   methods: {
+    listenResize: _.debounce(function() {
+      console.log(2222);
+      const calipers = this.$refs.calipers;
+      const width = getComputedStyle(calipers).width;
+      const letterWidth = parseFloat(width) / 64;
+      this.letterSpace = letterWidth - 9.3 + "px";
+    }, 600),
     handleChange(v) {
       let [, max] = v;
       const [initMin] = this.value;

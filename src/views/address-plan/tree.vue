@@ -14,9 +14,22 @@
             >删除节点</Button>
           </h3>
           <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
-            <FormItem label="起始编码">
-              <Input placeholder="起始编码" class="base-input" v-model.number="currentNode.nodecode" />
-            </FormItem>
+            <Row :gutter="20">
+              <Col :span="12">
+                <FormItem label="起始编码">
+                  <Input
+                    placeholder="起始编码"
+                    class="base-input"
+                    v-model.number="currentNode.nodecode"
+                  />
+                </FormItem>
+              </Col>
+              <Col :span="12">
+                <FormItem label="结束编码">
+                  <Input placeholder="结束编码" class="base-input" v-model.number="endNodeCode" />
+                </FormItem>
+              </Col>
+            </Row>
             <FormItem label="名称">
               <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
             </FormItem>
@@ -179,6 +192,28 @@ export default {
     showCreateChildNode() {
       const hasCurrentNode = !!this.currentNode.id;
       return this.hasTree && hasCurrentNode;
+    },
+    endNodeCode() {
+      // 算法： 结束编码是下一个兄弟节点的nodecode
+      const currentNode = this.currentNode;
+      const [min, max] = this.caliperValue;
+      let index,
+        result = 0;
+      if (
+        this.currentParent.data &&
+        this.currentParent.data.children &&
+        Array.isArray(this.currentParent.data.children)
+      ) {
+        const siblings = this.currentParent.data.children;
+
+        index = siblings.findIndex(item => item.id === currentNode.id);
+        const nextNode = siblings[index + 1] || {
+          nodecode: Math.pow(2, max - min)
+        };
+        result = nextNode.nodecode; // 根节点和最后一个节点没有下一个时候，结束值怎么取呢？默认0处理
+      }
+      console.log(index);
+      return result - 1;
     }
   },
   mounted() {

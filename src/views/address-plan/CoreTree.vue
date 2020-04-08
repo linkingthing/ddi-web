@@ -61,8 +61,15 @@ export default {
       },
       false
     );
+    window.addEventListener("resize", this.listenResize);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.listenResize);
   },
   methods: {
+    listenResize() {
+      this.idiotUpdate(this.data);
+    },
     handle() {
       console.log(this.root);
     },
@@ -168,7 +175,7 @@ export default {
         .attr("height", "20")
         .attr("xlink:href", function(d) {
           if (d.data.usedfor) {
-            return require('@/assets/images/info.png');
+            return require("@/assets/images/info.png");
           }
         })
         .attr("x", "5")

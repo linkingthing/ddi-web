@@ -145,6 +145,10 @@ export default {
   .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active {
     color: #f8b16b;
     background: #455484 !important;
+    &:hover {
+      background: none !important;
+      color: #f8b16b;
+    }
   }
 }
 .menu-list img {
