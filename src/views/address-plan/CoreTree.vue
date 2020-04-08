@@ -168,7 +168,7 @@ export default {
         .attr("height", "20")
         .attr("xlink:href", function(d) {
           if (d.data.usedfor) {
-            return "/static/info.png";
+            return require('@/assets/images/info.png');
           }
         })
         .attr("x", "5")

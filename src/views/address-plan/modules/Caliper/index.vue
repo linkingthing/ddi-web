@@ -1,6 +1,9 @@
 <template>
   <div class="calipers" ref="calipers">
-    <div class="top-show" :style="`right: ${right}; letter-spacing:${letterSpace}` ">{{netcodeBit}}</div>
+    <div
+      class="top-show"
+      :style="`right: ${right}; letter-spacing:${letterSpace};text-indent:${letterSpace} ` "
+    >{{netcodeBit}}</div>
     <Slider v-model="innerValue" :step="1" :max="64" range :marks="marks" @on-change="handleChange"></Slider>
   </div>
 </template>
@@ -60,7 +63,7 @@ export default {
   mounted() {
     const calipers = this.$refs.calipers;
     const width = getComputedStyle(calipers).width;
-    const letterWidth = parseFloat(width)/64;
+    const letterWidth = parseFloat(width) / 64;
     this.letterSpace = letterWidth - 9.3 + "px";
   },
   methods: {
