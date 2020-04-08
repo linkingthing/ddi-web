@@ -16,7 +16,7 @@ export default {
       type: Array,
       default: () => [0, 0]
     },
-    netcode: {
+    bitFill: {
       type: Number,
       default: 0
     }
@@ -31,8 +31,7 @@ export default {
     netcodeBit() {
       const [min, max] = this.innerValue;
       const len = max - min;
-      const bit = this.netcode.toString(2);
-      console.log(typeof bit);
+      const bit = this.bitFill.toString(2);
       return (Array(len).join("0") + bit).slice(-len);
     },
     right() {

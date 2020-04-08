@@ -88,7 +88,7 @@
             地址分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
-          <Caliper :value="caliperValue" @onChange="handleChangeCaliper" :netcode="currentNode.nodecode"></Caliper>
+          <Caliper :value="caliperValue" @onChange="handleChangeCaliper" :bitFill="bitFill"></Caliper>
           <!-- <Allocation /> -->
         </div>
         <div class="tree">
@@ -135,7 +135,8 @@ export default {
         depth: 0
       },
       currentNode: {},
-      currentParent: {}
+      currentParent: {},
+      bitFill: 0 // 10进制，用于填充位
     };
   },
   computed: {
@@ -217,6 +218,12 @@ export default {
         });
     },
 
+    getBinaryByIPv6(params) {
+      const [, len] = params.prefix.split("/");
+      services.checkIPv6Prefix(params).then(res => {
+        this.bitFill = parseInt(res.data.binary.substring(0, len), 2);
+      });
+    },
     handleChangeCaliper([min, max]) {
       console.log(min, max);
       console.log(this.currentParent);
@@ -265,8 +272,14 @@ export default {
     },
     handleClickNode(element, data) {
       console.log(data);
+      if (data.depth === 0) {
+        this.getBinaryByIPv6({
+          prefix: data.data.subnet
+        });
+      }
       this.currentParent = data.parent;
       this.currentNode = data.data;
+      this.bitFill = data.data.nodecode;
     },
     handleSubmit() {
       const params = JSON.parse(
