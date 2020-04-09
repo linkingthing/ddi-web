@@ -35,7 +35,9 @@ export default {
             top: 100,
             right: 50,
             bottom: 50
-          }
+          },
+          commonNodeBackgroundColor: "#f5f5f5",
+          healthNodeBackgroundColor: "#008000"
         };
       }
     }
@@ -51,7 +53,7 @@ export default {
 
   mounted() {
     const self = this;
-    this.init();
+    // this.init(); 外面数据获取后促发data监听自然就可以初始化，注释掉这句可以少执行一次init
     this.$refs.tree.addEventListener(
       "click",
       function(e) {
@@ -70,9 +72,6 @@ export default {
     listenResize() {
       this.idiotUpdate(this.data);
     },
-    handle() {
-      console.log(this.root);
-    },
     getWidthHeight() {
       let { width, height } = window.getComputedStyle(this.$refs.tree);
       width = parseInt(width);
@@ -83,6 +82,7 @@ export default {
       };
     },
     init(dataSet = this.data) {
+      console.log("init");
       const self = this;
       const { width, height } = this.getWidthHeight();
       const { margin } = this.options;
@@ -134,12 +134,17 @@ export default {
       this.tree = tree;
 
       const linkData = tree(root).links();
+
       this.drawNode(g, root);
       this.drawLink(g, linkData);
     },
     drawNode(g, root) {
       const self = this;
-      const { radius } = this.options;
+      const {
+        radius,
+        commonNodeBackgroundColor,
+        healthNodeBackgroundColor
+      } = this.options;
       const node = g
         .selectAll(".node")
         .data(root.descendants())
@@ -164,10 +169,28 @@ export default {
         .attr(
           "style",
           `cursor: pointer;
-          fill:#f5f5f5;
+          fill:${commonNodeBackgroundColor};
           stroke-width:0;
           stroke:rgb(0,0,0)`
-        );
+        )
+        .attr("style", function(d) {
+          let style = `
+            cursor: pointer;
+            stroke-width:0;
+          `;
+          if (d.data.type === "surplusNode") {
+            style += `
+              stroke: #fff;
+              fill:${healthNodeBackgroundColor};
+            `;
+          } else {
+            style += `
+              fill:${commonNodeBackgroundColor};
+              stroke:rgb(0,0,0)
+            `;
+          }
+          return style;
+        });
 
       node
         .append("image")
@@ -209,6 +232,13 @@ export default {
         .attr("class", "text")
         .attr("style", "cursor: pointer");
 
+      function excuteTextColor(d) {
+        if (d.data.type === "surplusNode") {
+          return "#2f2";
+        } else {
+          return "#777";
+        }
+      }
       text
         .append("tspan")
         .text(function(d) {
@@ -217,23 +247,28 @@ export default {
         .attr("y", -4)
         .attr("x", 35)
         .attr("text-anchor", "left")
-        .attr("fill", "#777");
+        .attr("fill", excuteTextColor);
 
       text
         .append("tspan")
         .text(function(d) {
-          return d.data.subnet;
+          if (d.data.beginsubnet) {
+            return d.data.beginsubnet + "-" + d.data.endsubnet;
+          }
         })
         .attr("y", 14)
         .attr("x", 35)
         .attr("text-anchor", "left")
-        .attr("fill", "#777");
+        .attr("fill", excuteTextColor);
 
       node.attr("transform", function(d) {
         return "translate(" + d.y + "," + d.x + ")";
       });
 
       node.on("click", function(node, number, element) {
+        if (node.data.type === "surplusNode") {
+          return;
+        }
         self.onClick(d3.select(this), { node, number, element });
       });
 
@@ -255,7 +290,6 @@ export default {
         d3
           .linkHorizontal()
           .x(function(d) {
-            // console.log(d)
             return d.y;
           })
           .y(function(d) {
@@ -328,7 +362,7 @@ export default {
       this.setSvgPosition(node);
       this.showPop(node);
       this.markActiveNode(selection);
-      this.$emit("onClickNode", selection, node);
+      this.$emit("onClickNode", node, selection);
     }
   },
   watch: {

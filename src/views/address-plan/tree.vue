@@ -20,21 +20,28 @@
                   <Input
                     placeholder="起始编码"
                     class="base-input"
-                    v-model.number="currentNode.nodecode"
+                    v-model.number="currentNode.beginnodecode"
                   />
                 </FormItem>
               </Col>
               <Col :span="12">
                 <FormItem label="结束编码">
-                  <Input placeholder="结束编码" class="base-input" v-model.number="endNodeCode" />
+                  <Input
+                    placeholder="结束编码"
+                    class="base-input"
+                    v-model.number="currentNode.endnodecode"
+                  />
                 </FormItem>
               </Col>
             </Row>
             <FormItem label="名称">
               <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
             </FormItem>
-            <FormItem label="subnet" prop="subnet">
-              <Input placeholder="IPv6+后缀" class="base-input" v-model="currentNode.subnet" />
+            <FormItem label="起始子网" prop="beginsubnet">
+              <Input placeholder="起始子网" class="base-input" v-model="currentNode.beginsubnet" />
+            </FormItem>
+            <FormItem label="结束子网" prop="beginsubnet">
+              <Input placeholder="结束子网" class="base-input" v-model="currentNode.endsubnet" />
             </FormItem>
             <FormItem label="描述">
               <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
@@ -64,11 +71,13 @@
             <div style="padding: 10px 0">
               <span style="display: inline-block;margin-right: 10px">分配位数量:</span>
               <Input
+                :disabled="autoAssign"
                 style="width:60px;"
                 placeholder="容量"
                 class="base-input"
                 v-model.number="currentNode.subtreebitnum"
               />
+              <Checkbox v-model="autoAssign">自动分配</Checkbox>
             </div>
           </div>
 
@@ -132,6 +141,7 @@ import Caliper from "./modules/Caliper";
 import Allocation from "./modules/Allocation";
 import services from "../../services";
 import { subnetValidateFunc } from "@/util/common";
+import { excuteNextIPv6 } from "./tool";
 
 let currentId = 0;
 
@@ -143,6 +153,7 @@ export default {
   },
   data() {
     return {
+      autoAssign: false,
       tree: {
         name: "root",
         depth: 0
@@ -155,7 +166,7 @@ export default {
   computed: {
     rules() {
       return {
-        subnet: [
+        beginsubnet: [
           {
             required: true,
             message: "subnet 必填"
@@ -173,17 +184,23 @@ export default {
       let start = 0,
         end = 0;
 
-      if (this.currentNode.subnet && this.currentNode.subnet.length > 4) {
-        end = this.currentNode.subnet.slice(-2);
+      if (this.currentNode.type === "addNode") {
+        return [0, 0];
+      }
 
-        end = Number(end) || 0;
+      if (
+        this.currentNode.beginsubnet &&
+        this.currentNode.beginsubnet.length > 4
+      ) {
+        const [, prefixLen] = this.currentNode.beginsubnet.split("/");
+
+        end = Number(prefixLen) || 0;
       }
       const parent = this.currentParent;
-      if (parent && parent.data && parent.data.subnet) {
-        // TODO:  slice可能是一位
-        start = parent.data.subnet.slice(-2);
+      if (parent && parent.data && parent.data.beginsubnet) {
+        const [, prefixLen] = parent.data.beginsubnet.split("/");
+        start = prefixLen;
       }
-      console.log(start, end);
       return [start, end];
     },
     hasTree() {
@@ -200,6 +217,7 @@ export default {
       let index,
         result = 0;
       if (
+        this.currentParent &&
         this.currentParent.data &&
         this.currentParent.data.children &&
         Array.isArray(this.currentParent.data.children)
@@ -227,6 +245,7 @@ export default {
         .then(res => {
           if (res.data) {
             this.tree = this.transformTreeData(res.data);
+            this.treeDataAddOther(this.tree);
           } else {
             this.tree = {
               name: "root",
@@ -242,6 +261,31 @@ export default {
     transformTreeData(data) {
       const str = JSON.stringify(data);
       return JSON.parse(str.replace(/nodes/g, "children"));
+    },
+    treeDataAddOther(tree) {
+      const { subtreebitnum, children } = tree;
+      if (Array.isArray(children)) {
+        const { beginsubnet } = children[children.length - 1];
+        const [ip, prefixLen] = beginsubnet.split("/");
+
+        children.forEach(child => {
+          child.type = "originalNode";
+          this.treeDataAddOther(child);
+        });
+        children.push({
+          id: "1000",
+          name: "剩余资源",
+          type: "surplusNode",
+          siblingsTotalBitNumber: subtreebitnum,
+          subnet: excuteNextIPv6(ip, prefixLen, subtreebitnum, 1)
+        });
+      }
+    },
+    clearExtraNode(tree) {
+      if (Array.isArray(tree.nodes)) {
+        tree.nodes = tree.nodes.filter(item => item.type !== "other");
+        this.clearExtraNode(tree.nodes);
+      }
     },
     reverseTransformTreeData(data) {
       Array.isArray(data.nodes) &&
@@ -260,8 +304,6 @@ export default {
       });
     },
     handleChangeCaliper([min, max]) {
-      console.log(min, max);
-      console.log(this.currentParent);
       if (this.currentParent) {
         this.currentParent.data.subtreebitnum = max - min;
       }
@@ -288,11 +330,17 @@ export default {
           id: `${currentId++}`,
           children: [],
           name: `子网${currentId}`,
-          nodecode: nodecodeIndex
+          nodecode: nodecodeIndex,
+          type: "addNode"
         };
 
         if (Array.isArray(this.currentNode.children)) {
-          this.currentNode.children.push(newNode);
+          // 在倒数第二个上插入，倒数第一个时剩余量
+          this.currentNode.children.splice(
+            this.currentNode.children.length - 1,
+            0,
+            newNode
+          );
         } else {
           this.currentNode.children = [newNode];
         }
@@ -305,23 +353,30 @@ export default {
         return child.name !== node.data.name;
       });
     },
-    handleClickNode(element, data) {
+    handleClickNode(data) {
       console.log(data);
       if (data.depth === 0) {
-        this.getBinaryByIPv6({
-          prefix: data.data.subnet
-        });
+        if (data.data.beginsubnet) {
+          this.getBinaryByIPv6({
+            prefix: data.data.beginsubnet
+          });
+        }
+      } else {
+        if (data.data.type === "originalNode") {
+          this.bitFill = data.data.nodecode;
+        }
       }
       this.currentParent = data.parent;
       this.currentNode = data.data;
-      this.bitFill = data.data.nodecode;
     },
     handleSubmit() {
       const params = JSON.parse(
         JSON.stringify(this.tree).replace(/children/g, "nodes")
       );
       this.reverseTransformTreeData(params);
+      this.clearExtraNode(params);
 
+      console.log(params);
       if (this.hasTree) {
         services.updateSubtree(params).then(res => {
           this.$Message.success("更新成功!");
@@ -364,6 +419,13 @@ export default {
         });
       } else {
         this.$Message.info("请先选择节点");
+      }
+    }
+  },
+  watch: {
+    autoAssign(value) {
+      if (value) {
+        this.currentNode.subtreebitnum = 0;
       }
     }
   }

@@ -162,7 +162,7 @@ export default [
     {
         // 黑白名单
         name: 'blacklistAndwhitelist',
-        path: '/dns/blacklistAndwhitelist',
+        path: '/dns/safe/blacklistAndwhitelist',
         component: blacklistAndwhitelist,
         meta: {
             range: 'dns',
@@ -173,7 +173,7 @@ export default [
     {
         // 开发控制
         name: 'developmentcontrol',
-        path: '/dns/developmentcontrol',
+        path: '/dns/safe/developmentcontrol',
         component: developmentcontrol,
         meta: {
             range: 'dns',

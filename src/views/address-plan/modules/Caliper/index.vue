@@ -70,7 +70,6 @@ export default {
   },
   methods: {
     listenResize: _.debounce(function() {
-      console.log(2222);
       const calipers = this.$refs.calipers;
       const width = getComputedStyle(calipers).width;
       const letterWidth = parseFloat(width) / 64;

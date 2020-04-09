@@ -8,7 +8,7 @@
         <Menu
           :theme="theme"
           :active-name="tab"
-          :open-names="['authority', 'accessControl']"
+          :open-names="$route.name.split('/')"
           :accordion="true"
         >
           <MenuGroup title="节点管理" v-if="PACK_SYSTEM.includes('node')">
@@ -23,10 +23,10 @@
                 <img :src="require('@/assets/images/authority.png')" alt />
                 权威管理
               </template>
-              <MenuItem name="configGroupMg" to="/dns/authority/config">权威管理</MenuItem>
+              <MenuItem name="configGroup" to="/dns/authority/config">权威管理</MenuItem>
               <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
             </Submenu>
-            <MenuItem name="A4Compose" to="/dns/recursion/A4ComposeView">
+            <MenuItem name="A4ComposeView" to="/dns/recursion/A4ComposeView">
               <img :src="require('@/assets/images/recursion.png')" alt />
               递归管理
             </MenuItem>
@@ -43,25 +43,28 @@
               <MenuItem name="viewManage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
               <MenuItem name="priority" to="/dns/accessControl/priority">解析优先级</MenuItem>
             </Submenu>
-            <Submenu name="5">
+            <Submenu name="safe">
               <template slot="title">
                 <img :src="require('@/assets/images/safe.png')" alt />
                 安全管理
               </template>
-              <MenuItem name="blacklistAndwhitelist" to="/dns/blacklistAndwhitelist">安全管理</MenuItem>
-              <MenuItem name="developmentcontrol" to="/dns/developmentcontrol">并发控制</MenuItem>
+              <MenuItem name="blacklistAndwhitelist" to="/dns/safe/blacklistAndwhitelist">安全管理</MenuItem>
+              <MenuItem name="developmentcontrol" to="/dns/safe/developmentcontrol">并发控制</MenuItem>
             </Submenu>
           </MenuGroup>
           <MenuGroup title="地址管理" v-if="PACK_SYSTEM.includes('address')">
-            <Submenu name="6">
+            <Submenu name="address-manage">
               <template slot="title">
                 <img :src="require('@/assets/images/address.png')" alt />
                 地址管理
               </template>
-              <MenuItem name="child-net" to="/address-manage/child-net">子网管理</MenuItem>
-              <MenuItem name="device-manage" to="/address-manage/device-manage">设备管理</MenuItem>
-              <MenuItem name="option-config" to="/address-manage/option-config">OPTION配置</MenuItem>
-              <MenuItem name="tree-config" to="/address-manage/tree">地址规划</MenuItem>
+              <MenuItem name="/address-manage/child-net" to="/address-manage/child-net">子网管理</MenuItem>
+              <MenuItem name="/address-manage/device-manage" to="/address-manage/device-manage">设备管理</MenuItem>
+              <MenuItem
+                name="/address-manage/option-config"
+                to="/address-manage/option-config"
+              >OPTION配置</MenuItem>
+              <MenuItem name="/address-manage/tree" to="/address-manage/tree">地址规划</MenuItem>
             </Submenu>
           </MenuGroup>
         </Menu>
@@ -87,6 +90,10 @@ export default {
       theme: "dark",
       tab: this.$route.params.tab || this.$route.name //路由tab
     };
+  },
+
+  created() {
+    console.log(this.$route);
   },
 
   watch: {
