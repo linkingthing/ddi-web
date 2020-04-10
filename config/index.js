@@ -33,7 +33,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/apis': {
-        target: 'http://10.0.0.19:8081/apis',
+        // target: 'http://10.0.0.19:8081/apis',
+        target: 'http://10.0.0.101:8081/apis',
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
@@ -67,4 +68,3 @@ console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2)
 console.log("正在生成...")
 console.log("正在生成......")
 console.log("正在生成.........")
-

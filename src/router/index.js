@@ -48,17 +48,17 @@ const router = new Router({
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    if (to.path === '/login') {
-        next();
-    } else {
-        let token = Cache.get('token');
-        if (token === null || token === '') {
-            next('/login');
-        } else {
-            next();
-        }
-    }
-});
+// router.beforeEach((to, from, next) => {
+//     if (to.path === '/login') {
+//         next();
+//     } else {
+//         let token = Cache.get('token');
+//         if (token === null || token === '') {
+//             next('/login');
+//         } else {
+//             next();
+//         }
+//     }
+// });
 
 export default router;

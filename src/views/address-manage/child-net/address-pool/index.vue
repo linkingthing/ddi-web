@@ -18,6 +18,7 @@
     <Edit 
       :visible.sync="showEdit"
       :data="editData"
+      :subnet-id="subnetId"
     />
   </div>
 </template>
@@ -27,8 +28,9 @@
 </style>
 
 <script>
-import TablePagination from "./../../../../components/TablePagination";
+import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
+import service from "@/services"
 
 export default {
   components:{
@@ -39,22 +41,7 @@ export default {
   data(){
     return {
       keywords:"",
-      tableData:[
-        {
-          ipAddress:"1111111dfaes2345rea",
-          addressTotalCount:"192.168.1.1",
-          type:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        },
-        {
-          ipAddress:"2222222dfaes2345rea",
-          addressTotalCount:"192.168.1.1",
-          type:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        }
-      ],
+      tableData:[],
       columns: [
         {
           title: "IP地址",
@@ -92,7 +79,7 @@ export default {
         },
         {
           title: "操作",
-          align: "right",      
+          align: "center",      
           render: (h, { row }) => {
             return h('div', [
               h('label', {
@@ -116,32 +103,41 @@ export default {
         }
       ],
       showEdit:false,
-      editData:null
+      editData:null,
+      subnetId:null
     }
   },
 
   mounted(){
-    // this.tableData = [];
+    this.subnetId = this.$route.query.id;
+
+    this.handleQuery();
   },
 
   methods:{
-    handleQuery(){
+    async handleQuery(){
+      try{
+        let { status, data } = await service.getAddressPoolList(this.subnetId);
 
+        if(status === 200){
+          this.tableData = data.data
+        }
+        else{
+          Promise.reject({ message: res.message || "查询失败！" })
+        }
+      }
+      catch(err){
+        console.error(err);
+      }
     },
 
     handleAdd(){
       this.showEdit = true;
-
       this.editData = null;
-    },
-
-    handleView(data){
-
     },
 
     handleEdit(data){
       this.showEdit = true;
-
       this.editData = data;
     },
 
@@ -149,9 +145,20 @@ export default {
       try{
         await this.$$confirm({ content:"您确定要删除当前数据吗？" });
 
-        alert("删除")
+        let res = await service.deleteAddressPool(this.subnetId, data.embedded.id);
+
+        if(res.status === 200){
+          this.$$success("删除成功！");
+
+          this.handleQuery();
+        }
+        else{
+          Promise.reject({ message: res.message || "删除失败！" })
+        }
       }
-      catch(e){}
+      catch(err){
+        console.error(err);
+      }
     }
   }
 }

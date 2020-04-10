@@ -16,15 +16,18 @@
       v-if="showTable"
       :data="data"
       :columns="columns"
+      v-on="$listeners"
     /> 
 
     <slot />
 
     <article v-if="paginationEnable" class="table-pagination-footer">
       <Page 
-        :total="100" 
+        :current="currentPage" 
+        :total="totalPage"
+        prev-text="上一页" 
+        next-text="下一页"
         @on-change="handlePageChange"
-        @on-page-size-change="handlePageSizeChange"
       />
     </article>
   </div>
@@ -82,8 +85,8 @@ export default {
         .toString(36)
         .slice(2),
 
-      size:20,
-      page:1,
+      totalPage:0,
+      currentPage:0,
 
       slotNames:[]
     };

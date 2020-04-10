@@ -25,14 +25,14 @@
         </Button>
         <Button 
           type="primary" 
-          @click="handleFix" 
+          @click="handleFixAndKeep('固定')" 
           class="top-button button-fix"
         >
           转固定
         </Button>
         <Button 
           type="primary" 
-          @click="handleKeep" 
+          @click="handleFixAndKeep('保留')" 
           class="top-button button-keep"
         >
           转保留
@@ -40,21 +40,34 @@
       </div>
     </div>
 
-    <Table 
-      v-show="tab === 'table'"
-      :data="tableData"
-      :columns="columns" 
-    /> 
+    <div>
+      <Table 
+        v-show="tab === 'table'"
+        :data="tableData"
+        :columns="columns" 
+        :max-height="540"
+        @on-selection-change="handleTableSelect"
+      /> 
+    </div>
 
     <TableChart 
       v-show="tab === 'chart'"
       :data="tableData"
-      :ip="currentIp"
+      @on-selection-change="handleTableSelect"
+    />
+
+    <FixOrKeep 
+      :visible.sync="showFixOrKeep"
+      :data="selectedData"
+      :type="typeofFixOrKeep"
+      :subnet-id="subnetId"
+      @confirmed="handleFixedOrKept"
     />
 
     <Search 
-      :visible.sync="showEdit"
-      :data="editData"
+      :visible.sync="showSearch"
+      :data="selectedData"
+      @confirmed="handleSearched"
     />
   </div>
 </template>
@@ -64,137 +77,124 @@
 </style>
 
 <script>
-import TablePagination from "./../../../../components/TablePagination";
-import TableChart from "./table-chart"
+import TableChart from "./table-chart";
+import FixOrKeep from "./fix-or-keep";
 import Search from "./search";
+import service from "@/services";
+
+import { columns } from "./define"
 
 export default {
   components:{
-    TablePagination,
     TableChart,
+    FixOrKeep,
     Search,
   },
 
   data(){
     return {
-      keywords:"",
-      tableData:[
-        {
-          addressName:"1111111dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        },
-        {
-          addressName:"2222222dfaes2345rea",
-          netAddress:"192.168.1.1",
-          addressCount:12,
-          createDate:"543gfesd",
-          useRatio:"30%"
-        }
-      ],
-      columns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "子网名称",
-          key: "addressName",
-          align: "center"
-        },
-        {
-          title: "子网地址",
-          render: (h, { row }) => {
-            return h('label', {
-              class: 'net-address',
-              on: {
-                click: () => {
-                  this.handleView(row)
-                }
-              }
-            }, row.netAddress)
-          },
-          align: "center"
-        },
-        {
-          title: "地址数量",
-          key: "addressCount",
-          align: "center"
-        },
-        {
-          title: "创建时间",
-          key: "createDate",
-          align: "center"
-        },
-        {
-          title: "子网地址使用率",
-          key: "useRatio",
-          align: "center"
-        },
-        {
-          title: "操作",
-          align: "center",      
-          render: (h, { row }) => {
-            return h('div', [
-              h('label', {
-                class: 'operate-label operate-edit',
-                on: {
-                  click: () => {
-                    this.handleEdit(row)
-                  }
-                }
-              }, '编辑'),
-              h('label', {
-                class: 'operate-label operate-delete',
-                on: {
-                  click: () => {
-                    this.handleDelete(row)
-                  }
-                }
-              }, '删除')
-            ]);
-          }
-        }
-      ],
+      subnetId:"",
+      ipAddress:"",
+      tableData:[],
+      columns,
       tab:"chart",
-      currentIp:"",
       selectedData:[],
-      showEdit:false,
-      editData:null,
-      showMergSplit:false,
-      mergeSplitData:null,
-      mergeSplitType:null
+      showSearch:false,
+      showFixOrKeep:false,
+      typeofFixOrKeep:""
     }
   },
 
   mounted(){
-    // this.tableData = [];
+    const {id, addr} = this.$route.query
 
-    this.currentIp = "10.0.3.54";
+    this.subnetId = id;
+    this.ipAddress = addr;
+
+    this.handleQuery();
   },
 
   methods:{
-    handleQuery(){
+    getIpLastNum(ip){
+      return parseInt(ip.substr(ip.lastIndexOf(".") + 1));
+    },
 
+    async handleQuery(){
+      this.selectedData = [];
+
+      try {
+        let res = await service.getPlanIpList(this.subnetId);
+
+        const {status, message, data = { data:[] }} = res || {};
+        
+        if(status === 200){
+          this.tableData = Object.entries(data.data)
+            .map(([ip, values]) => ({ ip, ...values }))
+            .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
+        }
+        else{
+          Promise.reject({ message: message || "请求失败" })
+        }
+      } catch (err) {        
+        this.$$error(err.message || "请求失败！")
+      }
+    },
+
+    handleTableSelect(datas){
+      this.selectedData = datas;            
     },
 
     handleSearch(){
-      
+      if(this.selectedData.length > 1){
+        this.$$warning("只能对一个地址进行检测！");
+
+        return;
+      }
+      else if(!this.selectedData.length){
+        this.$$warning("请选择一个地址进行检测！");
+
+        return;
+      }
+
+      this.showSearch = true;
+    },
+
+    handleSearched(){
+      this.handleQuery();
     },
 
     handleConfig(){
-      this.$router.push("/address-manage/address-pool")
+      this.$router.push(`/address-manage/address-pool?id=${this.subnetId}`)
     },
 
-    handleFix(){
-      
+    async handleDelete(item){
+      try {
+        await service.deleteIpAddress(item.id);
+      } catch (err) {
+        console.error(err);
+        
+        this.$$error(err.message || "删除失败");
+      }
     },
 
-    handleKeep(data){
+    handleFixAndKeep(type){      
+      if(this.selectedData.length > 1){
+        this.$$warning("只能对一个地址进行操作！");
 
+        return;
+      }
+      else if(!this.selectedData.length){
+        this.$$warning("请选择一个地址进行操作！");
+
+        return;
+      }
+
+      this.typeofFixOrKeep = type;
+      this.showFixOrKeep = true;
+    },
+
+    handleFixedOrKept(){
+      this.handleQuery();
     }
   }
 }
