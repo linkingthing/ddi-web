@@ -24,5 +24,15 @@ export default [
     name: 'address-manage/device-manage',
     path: '/address-manage/device-manage',
     component: () => import(/* webpackChuckName: "device-manage" */ "./../views/address-manage/device-manage")
-  }
+  },
+  {
+    name: 'address-manage/addess-pool-manage',
+    path: '/address-manage/addess-pool-manage',
+    component: () => import(/* webpackChuckName: "addess-pool-manage" */ "./../views/address-manage/address-pool-config")
+  },
+  {
+    name: 'address-manage/tree',
+    path: '/address-manage/tree',
+    component: () => import('@/views/address-plan/tree.vue')
+  },
 ]

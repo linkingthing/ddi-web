@@ -59,6 +59,10 @@ export default {
 
   li {
     margin-bottom: 16px;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    white-space: nowrap;
+    width: 200px;
   }
 }
 </style>

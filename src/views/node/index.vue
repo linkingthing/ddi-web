@@ -2,23 +2,25 @@
   <div class="nodeManage">
     <Tabs @on-click="handleTab">
       <TabPane label="拓扑图" name="topology">
-        <div class="parent tab-item">
-          <div
-            class="host"
-            @click="handleGoDeviceInfo(item)"
-            v-for="item in serverList.filter(item => item.role === 'controller') "
-            :key="item.ip"
-          >
-            <host-node :host="item" />
+        <div style="zoom: 0.6">
+          <div class="parent tab-item">
+            <div
+              class="host"
+              @click="handleGoDeviceInfo(item)"
+              v-for="item in serverList.filter(item => item.role === 'controller') "
+              :key="item.ip"
+            >
+              <host-node :host="item" />
+            </div>
           </div>
-        </div>
-        <div class="children">
-          <host-node
-            :host="item"
-            @click="handleGoDeviceInfo(item)"
-            :key="item.ip"
-            v-for="item in serverList.filter(item => item.role !== 'controller') "
-          />
+          <div class="children">
+            <host-node
+              :host="item"
+              @click="handleGoDeviceInfo(item)"
+              :key="item.ip"
+              v-for="item in serverList.filter(item => item.role !== 'controller') "
+            />
+          </div>
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">

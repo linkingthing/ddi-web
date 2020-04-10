@@ -16,7 +16,7 @@ function createParams(node, type) {
 export async function getDeviceHistoryInfo({ node, type }) {
     const params = createParams(node, type)
     const res = await services.getDeviceHistoryInfo(params)
-    const { values } = res.data;
+    const { values } = res.data.data;
     const data = values.map(([timestamp, count]) => {
         return {
             timestamp,

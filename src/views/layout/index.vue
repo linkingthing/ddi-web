@@ -46,7 +46,7 @@ export default {
 }
 
 .content-wrapper {
-  padding: 120px 40px 20px 40px;
+  padding: 100px 40px 20px 40px;
   height: 100%;
 }
 .content-padding {

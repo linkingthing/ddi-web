@@ -93,11 +93,10 @@ export default {
 <style lang="less" scoped>
 .header {
   position: fixed;
-  left: 0;
   top: 0;
   z-index: 10;
-  width: 100%;
-  padding-left: 240px;
+  left: 240px;
+  right: 0;
   display: flow-root;
   height: 100px;
   box-sizing: border-box;
@@ -106,12 +105,11 @@ export default {
     position: relative;
     background: #f4f3ef;
     width: 100%;
-    height: 100px;
+    height: 86px;
 
-    padding: 25px 30px;
+    padding: 20px 30px;
     box-sizing: border-box;
     z-index: 10;
-    border-bottom: 1px solid #ddd;
   }
 
   .user {

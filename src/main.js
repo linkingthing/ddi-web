@@ -46,6 +46,10 @@ Vue.component('btn-del', BaseBtnDel)
 import TablePagination from '@/components/TablePagination';
 Vue.component('table-page', TablePagination);
 
+import CommonModal from "@/components/CommonModal";
+Vue.component('common-modal', CommonModal);
+
+
 import store from './store'
 import router from './router'
 

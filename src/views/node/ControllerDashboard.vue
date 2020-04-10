@@ -56,7 +56,7 @@ export default {
     const node = this.$route.query.ip;
     this.batchExecute(node);
     this.timer = setInterval(() => {
-      this.batchExecute();
+      this.batchExecute(node);
     }, 3000);
   },
   methods: {

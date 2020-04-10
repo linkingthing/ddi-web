@@ -19,7 +19,7 @@ const developmentcontrol = r => require.ensure([], () => r(require('@/views/dns/
 
 
 export default [
-
+   
     {
         // 配置组管理
         name: 'configGroup',
@@ -148,11 +148,21 @@ export default [
             title: '视图管理'
         }
     },
+    {
+        // 视图管理
+        name: 'priority',
+        path: '/dns/accessControl/priority',
+        component: () => import('@/views/dns/accessControl/priority'),
+        meta: {
+            range: 'dns',
+            title: '解析优先级'
+        }
+    },
 
     {
         // 黑白名单
         name: 'blacklistAndwhitelist',
-        path: '/dns/blacklistAndwhitelist',
+        path: '/dns/safe/blacklistAndwhitelist',
         component: blacklistAndwhitelist,
         meta: {
             range: 'dns',
@@ -163,7 +173,7 @@ export default [
     {
         // 开发控制
         name: 'developmentcontrol',
-        path: '/dns/developmentcontrol',
+        path: '/dns/safe/developmentcontrol',
         component: developmentcontrol,
         meta: {
             range: 'dns',

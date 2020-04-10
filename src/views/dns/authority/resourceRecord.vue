@@ -2,7 +2,7 @@
   <div class>
     <table-page title="资源记录" :data="resList" :columns="columns" :paginationEnable="false">
       <template slot="top-right">
-        <i-button type="primary" icon="md-add" @click="handleOpenCreate(viewId,zoneId)">新建</i-button>
+        <i-button type="success" @click="handleOpenCreate(viewId,zoneId)">新建</i-button>
       </template>
     </table-page>
     <createResource ref="configRef" @onCreateSuccess="getResources"></createResource>
@@ -46,30 +46,22 @@ export default {
           align: "center",
           render: (h, { row }) => {
             return h("div", [
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => {
-                      this.goAnalysis(this.viewId, this.zoneId, row.id);
-                    }
+              h("btn-edit", {
+                class: "k-btn",
+                on: {
+                  click: () => {
+                    this.goAnalysis(this.viewId, this.zoneId, row.id);
                   }
-                },
-                "修改"
-              ),
-              h(
-                "i-button",
-                {
-                  class: "k-btn",
-                  on: {
-                    click: () => {
-                      this.delect(item.id);
-                    }
+                }
+              }),
+              h("btn-del", {
+                class: "k-btn",
+                on: {
+                  click: () => {
+                    this.delect(row.id);
                   }
-                },
-                "删除"
-              )
+                }
+              })
             ]);
           }
         }
@@ -111,11 +103,11 @@ export default {
         onOk: () => {
           services
             .deleteResourceById(this.viewId, this.zoneId, data)
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getResources();
             })
-            .catch(err => {
+            .catch(() => {
               this.$Message.success("删除失败");
             });
         }

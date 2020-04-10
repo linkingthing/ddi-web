@@ -32,7 +32,7 @@ export default {
         },
         {
           title: "记录类型",
-          key: "datatype",
+          key: "type",
           align: "center"
         },
         {
@@ -55,28 +55,26 @@ export default {
           title: "操作",
           key: "action",
           align: "center",
-          width: 120,
+          width: 160,
           render: (h, { row }) => {
             return h("div", [
               h(
-                "i-button",
+                "btn-edit",
                 {
                   class: "k-btn",
                   on: {
                     click: () => this.handleOpenEdit(this.id, row.id, row)
                   }
                 },
-                "编辑"
               ),
               h(
-                "i-button",
+                "btn-del",
                 {
                   class: "k-btn",
                   on: {
                     click: () => this.delect(row.id)
                   }
                 },
-                "删除"
               )
             ]);
           }
@@ -128,11 +126,11 @@ export default {
         onOk: () => {
           services
             .deleteRedirection(this.id, data)
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getView();
             })
-            .catch(err => {
+            .catch(() => {
               this.$Message.success("删除失败");
             });
         }
