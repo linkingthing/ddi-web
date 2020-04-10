@@ -1,43 +1,7 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">区域转发</span>
-    </div>
-    <div class="tab-select pding select2">
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">服务器地址列表</th>
-                <th width="250">转发方式</th>
-                <th width="250">操作</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td v-if="this.ips==null">
-                  <p>-</p>
-                </td>
-                <td v-else>
-                  <Tags :list="this.ips"/>  
-                </td>
-                <td>{{this.id1 == 0 ?'-':type}}</td>
-                <td>
-                  <i-button
-                    class="k-btn"
-                    @click="goConfig(viewId, zoneId)"
-                  >{{this.id1 == 0 ?'新增':'修改'}}</i-button>
-                  <i-button class="k-btn" @click="delect">删除</i-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <editForward ref="alarmRef" @onSuccess="getView"></editForward>
-    </div>
+  <div class="forwardList">
+    <table-page title="区域转发列表" :data="list" :columns="columns" :paginationEnable="false" />
+    <editForward ref="alarmRef" @onSuccess="getView"></editForward>
   </div>
 </template>
 
@@ -49,15 +13,57 @@ export default {
   name: "forwardList",
   data() {
     return {
+      columns: [
+        {
+          title: "服务器地址列表",
+          key: "ips",
+          align: "center",
+          render: (h, { row }) => {
+            return h("Tags", {
+              props: {
+                list: row.ips
+              }
+            });
+          }
+        },
+        {
+          title: "转发方式",
+          key: "type",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          width: 160,
+          render: (h, { row }) => {
+            return h("div", [
+              h(
+                "btn-edit",
+                {
+                  on: {
+                    click: () => this.goConfig(this.viewId, this.zoneId)
+                  }
+                },
+              ),
+              h(
+                "btn-del",
+                {
+                  on: {
+                    click: () => this.delect()
+                  }
+                },
+              )
+            ]);
+          }
+        }
+      ],
       list: [],
       id: "",
       modal1: false,
       priority: "",
       acls: [],
       resList: [],
-      ips: [],
-      type: "",
-      id1: "",
       viewId: "",
       zoneId: "",
       current: {}
@@ -83,9 +89,17 @@ export default {
           oper: "GET"
         })
         .then(res => {
-          this.type = res.data.type;
-          this.id1 = res.data.id;
-          this.ips = res.data.ips;
+          if (res.data.id === "0") {
+            this.list = [
+              {
+                type: "-",
+                ips: ["-"]
+              }
+            ];
+          } else {
+            this.list = [res.data];
+          }
+
           this.current = res.data;
         })
         .catch(err => {

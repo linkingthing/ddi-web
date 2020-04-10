@@ -1,8 +1,8 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-show="showBread">
     <Breadcrumb>
       <BreadcrumbItem
-        :key="item.path"
+        :key="item.id"
         :to="index === breadcrumbList.length-1 ? '': item.path"
         v-for="(item, index) in breadcrumbList"
       >
@@ -14,12 +14,14 @@
 </template>
 
 <script>
+let autoId = 0;
 export default {
   components: {},
   props: {},
   data() {
     return {
-      breadcrumbList: [],
+      showBread: true,
+      breadcrumbList: []
     };
   },
 
@@ -63,13 +65,28 @@ export default {
           forward: "转发管理",
           accessControl: "访问控制"
         };
+        this.showBread = menuConfig[menu];
+
         this.breadcrumbList = [
           {
             title: menuConfig[menu]
           }
         ];
       }
+
+      // TODO:临时方案：用于控制某些特定页面才显示面包屑
+      const { path } = this.$route;
+      const [, , menu] = path.split("/");
+      const menuConfig = {
+        authority: "权威管理",
+        recursion: "递归管理",
+        forward: "转发管理",
+        accessControl: "访问控制"
+      };
+      this.showBread = menuConfig[menu];
+
       this.breadcrumbList.push({
+        id: autoId++,
         path: currentFullPath,
         title: currentTitle
       });

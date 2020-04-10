@@ -1,38 +1,11 @@
 <template>
-  <div class="index-main clusterMg t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="content-header">
-      <div class="bread">
-        <span class="tit">地址黑名单配置</span>
-      </div>
-      <div class="button-box fr">
-        <i-button
-          type="success"
-          class="me-button add-btn"
-          icon="md-add"
-          @click="handleOpenCreate"
-        >新建</i-button>
-      </div>
-    </div>
-    <div class="table-box">
-      <div class="table-s">
-        <table class="table-default" ref="ele">
-          <thead>
-            <tr>
-              <th width="220">访问控制列表</th>
-              <th width="240">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in this.list" :key="item.id">
-              <td>{{item.name}}</td>
-              <td>
-                <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <div class="blancList">
+    <table-page title="地址黑名单配置" :data="list" :columns="columns" :paginationEnable="false">
+      <template slot="top-right">
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
+      </template>
+    </table-page>
+
     <blacklist-config ref="blacklistRef" @onCreateSuccess="getView"></blacklist-config>
   </div>
 </template>
@@ -45,6 +18,34 @@ export default {
   name: "blacklistAndwhitelist",
   data() {
     return {
+      columns: [
+        {
+          title: "访问控制列表",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "创建时间",
+          key: "creationTimestamp",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          render: (h, { row }) => {
+            return h(
+              "i-button",
+              {
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              },
+              "删除"
+            );
+          }
+        }
+      ],
       list: [],
       acls: [],
       name: ""

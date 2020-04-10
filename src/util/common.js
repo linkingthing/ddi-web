@@ -1,60 +1,58 @@
-const Cache = require('./store').default('sessionStorage')
-// 判断是否指定类型
-export const isDataType = (data, type = 'Object') => {
-    return Object.prototype.toString.call(data) === `[object ${type}]`
-}
-// 判断是否空
-export const isEmpty = (str) => {
-    return !!str && str !== 'undefined' && str !== 'null'
-}
-// 判断是否是中文
-export const isChinese = (temp) => {
-    var re = /^[\u4e00-\u9fa5]/;
-    if (re.test(temp)) return true;
-    return false;
+export const isIPv4Reg = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/
+
+export const fullIPv6Reg = /^(([\da-fA-F]{1,4}):){7}([\da-fA-F]{1,4}){1}$/
+
+export const nameReg = /^([a-zA-Z0-9_]{1,63}\.)+[a-zA-Z0-9_]{1,63}$/
+
+export const prefixReg = /::\/(32|40|48|56|64|96)$/
+
+export const ipUnitReg = /[0-9a-fA-F]{4}/g
+
+export const positiveIntegerReg = /^[1-9]?[0-9]+$/
+
+export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/
+
+export const domainReg = /^(?=^.{2,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*$/
+
+export const urlValidate = {
+    pattern: urlReg,
+    message: '请正确输入url',
 }
 
-//判断是否是url，包括域名和ip
-export const isURL = (str_url) => {
-    var strRegex = '^((https|http|ftp|rtsp|mms)?://)'
-        + '?(([0-9a-z_!~*().&=+$%-]+: )?[0-9a-z_!~*().&=+$%-]+@)?' //ftp的user@
-        + '(([0-9]{1,3}.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
-        + '|' // 允许IP和DOMAIN（域名）
-        + '([0-9a-z_!~*()-]+.)*' // 域名- www.
-        + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].' // 二级域名
-        + '[a-z]{2,6})' // first level domain- .com or .museum
-        + '(:[0-9]{1,4})?' // 端口- :80
-        + '((/?)|' // a slash isn't required if there is no file name
-        + '(/[0-9a-z_!~*().;?:@&=+$,%#-]+)+/?)$';
-    var re = new RegExp(strRegex);
-    if (re.test(str_url)) {
-        return (true);
-    } else {
-        return (false);
-    }
+export const domainValidate = {
+    pattern: domainReg,
+    message: '请正确输入域名'
 }
 
-// 是否是ipv4地址
-export const isIPv4 = (ip) => {
-    var exp = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
-    var flag = ip.match(exp);
-    if (flag != undefined && flag != "") {
-        return true;
-    } else {
-        return false;
-    }
+export const nameValidate = {
+    pattern: nameReg,
+    message: "名称由不超过64个a-zA-Z0-9_组成"
 }
 
-// 是否是ipv6地址
-export const isIPv6 = (ipvalue) => {
-    var matchStr = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+export const isIPv4Validate = {
+    pattern: isIPv4Reg,
+    message: "请正确输入IPv4地址"
+}
 
-    var ret = ipvalue.match(matchStr);
-    if (ret) {
-        return true;
-    } else {
-        return false;
-    }
+export const isIPv6Validate = {
+    pattern: fullIPv6Reg,
+    message: "请正确输入IPv6地址"
+}
+
+
+function IPv6UnitTest(unitArr, callback) {
+    unitArr.every((unit, index) => {
+
+        // 高位0检验
+        if (/^0+\d$/.test(unit)) {
+            callback('填写错误，IPv6单元禁止高位0')
+        }
+
+        if (!(/^[0-9a-fA-F]{1,4}$/.test(unit))) {
+            callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
+        }
+        return /^[0-9a-fA-F]{1,4}$/.test(unit);
+    });
 }
 
 // 是否是数字
@@ -67,6 +65,14 @@ export const isNumber = (val) => {
         return false;
     }
 }
+
+/**
+ * 是否是正整数
+ */
+export const isPosNumber = val => {
+    return /^[1-9]([0-9]+)?$/g.test(val);
+}
+
 // 获取url参数
 export const getQueryString = (name) => {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -76,174 +82,140 @@ export const getQueryString = (name) => {
             var str = r[2];
             return decodeURIComponent(str);
         }
-        return null;
-    } catch (e) {
-        return null
-    }
-}
 
-/**
- * 时间格式化
- * @param  {[Number]} date 时间戳
- * @param  {[DateString]} fmt  时间格式
- * dateFormat('yyyy-MM-dd hh:mm:ss.S') => 2016-03-12 20:13:32.232
- * @return {[date]} 时间
- */
-export const dateFormat = (date, fmt = 'yyyy-MM-dd hh:mm:ss') => {
-    if (!date) return '';
-
-    const date1 = new Date(date)
-    const o = {
-        'M+': date1.getMonth() + 1, // 月
-        'd+': date1.getDate(), // 日
-        'h+': date1.getHours(), // 小时
-        'm+': date1.getMinutes(), // 分
-        's+': date1.getSeconds(), // 秒
-        'q+': Math.floor((date1.getMonth() + 3) / 3), // 季度S
-        'S': date1.getMilliseconds() // 毫秒
-    }
-    if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, (date1.getFullYear() + '').substr(4 - RegExp.$1.length))
-    }
-
-    for (let k in o) {
-        if (new RegExp('(' + k + ')').test(fmt)) {
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)))
+        if (!(/^[0-9a-fA-F]{1,4}$/.test(unit))) {
+            callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
         }
-    }
-    return fmt
-}
-
-// 获取当前月份的前几个月份
-export const nowMountTo = (num = 1) => {
-    var dataArr = [];
-    var data = new Date();
-    var year = data.getFullYear();
-    data.setMonth(data.getMonth() + 1, 1)//获取到当前月份,设置月份
-
-    for (var i = 0; i < num; i++) {
-        data.setMonth(data.getMonth() - 1);//每次循环一次 月份值减1
-        var m = data.getMonth() + 1;
-        m = m < 10 ? "0" + m : m;
-        dataArr.push(data.getFullYear() + "-" + (m))
-    }
-
-    return dataArr;
-}
-// 获取当前日期的前几天
-export const nowDayTo = (num = 1) => {
-    var dayArr = [];
-    function GetDateStr(num) {
-        var dd = new Date();
-        dd.setDate(dd.getDate() + num); //获取num天后的日期
-        var y = dd.getFullYear();
-        var m = dd.getMonth() + 1; //获取当前月份的日期
-        m = m < 10 ? '0' + m : m;
-        var d = dd.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        return y + "-" + m + "-" + d;
-    }
-
-    for (var i = 0; i < num; i++) {
-        var day = GetDateStr(-i);
-        dayArr.push(day)
-    }
-
-    return dayArr;
-}
-// 获取当前时间是前一个小时、两个小时...
-export const nowTimeTo = (num = 1) => {
-    let timeList = [];
-    let nowTime = new Date().getTime();
-    for (var i = 0; i < num; i++) {
-        let fTime = new Date(nowTime - i * 60 * 60 * 1000);
-        let hours = fTime.getHours() < 10 ? '0' + fTime.getHours() : fTime.getHours();
-        let minutes = fTime.getMinutes() < 10 ? '0' + fTime.getMinutes() : fTime.getMinutes();
-        let seconds = fTime.getSeconds() < 10 ? '0' + fTime.getSeconds() : fTime.getSeconds();
-
-        timeList.push(hours + ':' + minutes + ':' + seconds);
-    }
-    return timeList;
+        return /^[0-9a-fA-F]{1,4}$/.test(unit);
+    });
 }
 
 /**
- * 剩余时间
- * @param  {[Number]} date 时间戳
- * @return {[Number]} 天数
- */
-export const surplusData = (date) => {
-    if (!date) return '';
-
-    const surplusSecond = new Date(date) - new Date()
-    let dates = parseInt(surplusSecond / 1000 / 60 / 60 / 24, 10);
-    return dates
-}
-
-// 数组去重 es6
-export const unique = (arr) => {
-    var x = new Set(arr);
-    return [...x];
-}
-
-/**
-* 合并数据，并过滤重复数据, 向上刷新更多
-* @param {Array} newdata 新数据
-* @param {array} oldData  旧数据
-* @param {String} id 判断是否相同的id
+ * ipv6规则
+ * 1. 组多8组，以冒号分割
+ * 2. 每个单元由4位16进制组成
+ * 3. 单元中全为0时可以 (::)简写
+ * 4. 简写只能出现一次，且在最右边（！！！还是要双重判断）
+ * 
+ * 
+ * 逻辑分析：
+ * 1. ipv6要么全写要么简写
+ * 2. 简写只能一个 (::)
+ * 3. 单元数不能超过8
+ * 4. 简写的右边不能有可简写的单元
 */
-export const topMerge = (newdata, oldData, id) => {
-    for (let i = newdata.length - 1; i >= 0; i--) {
-        if (!oldData.filter(item => item[id] === newdata[i][id]).length) {
-            oldData.unshift(newdata[i])
-        }
+
+// a:b:c:d:e:f:a:b
+// aaaa:bbbb:cccc:dddd:eeee:ffff:aaaa:bbbb
+// aaaa::
+// aaaa::bbbb
+// aaaa:b:cccc::dddd:eeee
+// 1aef:e234:3fdf::1
+export const IPv6SimpleValidateFunc = (rule, value, callback) => {
+    console.log(value)
+    if (fullIPv6Reg.test(value)) {
+        callback()
     }
-    return [...oldData]
+
+    const simpleSplit = value.split('::');
+    if (simpleSplit.length > 2) {
+        callback("ipv6中只能有一次简写")
+    }
+
+    if (simpleSplit.length !== 2) {
+        callback("请正确输入IPv6地址")
+    }
+
+    console.log(simpleSplit)
+
+    let totalGroup = []
+    simpleSplit.forEach((current, index) => {
+        console.log(1, current)
+        totalGroup = totalGroup.concat(current.split(":"))
+
+        if (index === 1 && current.length > 0) {
+            // 这里面不能有可简写的存在
+            current.split(":").every(item => {
+                if (item === '0') {
+                    callback('简写方式不正确，请优先对右边单元简写')
+                } else {
+                    return true
+                }
+            })
+        } else {
+            // 处理 aaaa:: (::)双冒号结尾的情况
+            totalGroup.pop()
+        }
+    })
+
+    console.log(totalGroup)
+    if (totalGroup.length > 7) {
+        callback('IPv6简写地址单元数不能超过7')
+    }
+
+    IPv6UnitTest(totalGroup, callback)
+
+    callback()
 }
 
-/**
-*  合并数据，并过滤重复数据,向下加载更多，
-* @param {Array} newdata 新数据
-* @param {array} oldData  旧数据
-* @param {String} id 判断是否相同的id
-*/
-export const downMerge = (newdata, oldData, id) => {
-    for (let i = 0; i < newdata.length; i++) {
-        if (!oldData.filter(item => item[id] === newdata[i][id]).length) {
-            oldData.push(newdata[i])
-        }
-    }
-    return [...oldData]
+
+export const requiredValidate = { required: true, message: "该项必填" }
+
+
+export const positiveIntegerValidate = {
+    pattern: positiveIntegerReg,
+    message: "请输入正整数"
 }
 
-export const getCache = (key, params = {}) => {
-    if (!isDataType(key, 'String') || !isDataType(params, 'Object')) {
-        return {
-            cacheKey: null,
-            cacheData: null
-        }
-    }
-    const data = Object.assign({}, params)
-
-    // 过滤掉判断和分页的字段
-    delete data.isRefresh
-    delete data.page
-    delete data.pageSize
-    delete data.loadmore
-
-    let cacheKey = 'CACHE:' + key
-    const keys = Object.keys(data)
-    if (keys.length === 1) {
-        cacheKey = cacheKey + '_' + data[keys[0]]
-    } else if (keys.length > 1) {
-        keys.sort().forEach(key => cacheKey = `${cacheKey}_${data[key]}`)
-    }
-
-    const cacheData = Cache.get(cacheKey)
-
-    return {
-        cacheKey,
-        cacheData
-    }
+export const prefixValidate = {
+    pattern: prefixReg,
+    message: "格式以十六进制表示,以'::/N'结尾,N可以为32,40,48,56,64,96中的一个"
 }
 
 
+export const prefixValidateFunc = (rule, value, callback) => {
+    const endNumReg = /[\d]{2}$/;
+    const [number] = value.match(endNumReg);
+    const max = Math.floor(number / 16); // 最多组数
+    const groupStr = value.substring(0, value.length - 5);
+    const unitArr = groupStr.split(":");
+
+    if (unitArr.length > max) {
+        callback(`填写错误，ip单元数不能大于${max}`);
+    }
+
+    IPv6UnitTest(unitArr, callback)
+
+    callback();
+}
+
+export const resourceDomainValidateFunc = (rule, value, callback) => {
+    if (value === '*' || value === '@' || domainReg.test(value)) {
+        callback()
+    }
+
+    callback('请正确输入域名')
+}
+
+export const subnetValidateFunc = (rule, value, callback) => {
+    if (value) {
+        const [ip, prefix] = value.split('/')
+
+
+        console.log('prefix', Number(prefix))
+        if (Number.isNaN( Number(prefix))){
+            callback('prefix 应该是1-64整数')
+            return
+        }
+        if (Number(prefix) > 0 && Number(prefix) < 64) {
+            callback()
+            return
+        } else {
+            callback('prefix 应该是1-64整数')
+
+        }
+        IPv6SimpleValidateFunc(null, ip, callback)
+
+    }
+    callback('请正确输入subnet')
+}

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import modules from './modules'
-import { isDataType, isEmpty } from '../util/common'
 
 Vue.use(Vuex)
 
@@ -14,14 +13,14 @@ export default new Vuex.Store({
     store => {
       store.subscribe(({ type, payload }) => {
         if (payload.key) {
-          if (isDataType(payload.data, 'Array')) {
-            if (payload.data.length) {
-              Cache.set(payload.key, payload.data)
-            }
-          } else
-          if (isEmpty(payload.data)) {
-            Cache.set(payload.key, payload.data)
-          }
+          // if (isDataType(payload.data, 'Array')) {
+          //   if (payload.data.length) {
+          //     Cache.set(payload.key, payload.data)
+          //   }
+          // } else
+          // if (isEmpty(payload.data)) {
+          //   Cache.set(payload.key, payload.data)
+          // }
         }
       })
     }

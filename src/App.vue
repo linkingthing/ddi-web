@@ -22,7 +22,5 @@ export default {
 <style lang="less">
 @import "./assets/less/global";
 @import "./assets/less/index";
-@import "./assets/less/space6";
-@import "./assets/less/menu";
 @import "./assets/less/dns";
 </style>

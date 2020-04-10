@@ -679,63 +679,6 @@ footer {
         }
     }
 
-    table {
-        width        : 100%;
-        border-radius: 6px;
-
-        a {
-            font-size      : @f14;
-            color          : @aColor;
-            text-decoration: underline;
-        }
-
-        .k-btn {
-            border      : 1px solid @aColor;
-            color       : @aColor;
-            margin-right: 6px;
-
-            &>span {
-                font-size: @f14;
-            }
-
-            &.success {
-                border-color: #19be6b;
-                color       : white;
-            }
-
-            &.error {
-                border-color: #ed4014;
-                color       : white;
-            }
-        }
-    }
-
-    table th,
-    table td {
-        border-bottom: 1px solid #DDDDDD;
-        text-align   : center;
-    }
-
-    table th {
-        height   : 40px;
-        font-size: @f14;
-        color    : #252422;
-    }
-
-    tr:nth-child(2n-1) td {
-        background-color: #f3f2ee;
-    }
-
-    table td {
-        height   : 50px;
-        font-size: @f14;
-    }
-
-    thead {
-        // background-color: @theadBgColor;
-        // background-color: rgba(102,97,91,.1);
-    }
-
     .ivu-modal-body {
         max-height: 650px;
         overflow  : auto;
@@ -793,62 +736,6 @@ footer {
     }
 }
 
-
-// 页面里面切换
-.tab-select {
-    padding   : 0 30px;
-    margin-top: 30px;
-
-    &.pding {
-        .ivu-tabs-tab {
-            padding: 5px 40px 5px !important;
-        }
-    }
-
-    &.select2 {
-        .ivu-tabs-tab {
-            &:nth-child(3) {
-                border-right           : 1px solid #dcdee2 !important;
-                border-top-right-radius: 4px !important;
-            }
-        }
-
-        .ivu-tabs-bar {
-            margin-bottom: 4px;
-        }
-    }
-
-    .ivu-tabs-tab {
-        margin-right : 0 !important;
-        border-radius: 0 !important;
-        border       : 1px solid @lineColor !important;
-        background   : @white !important;
-        border-bottom: 0 !important;
-        font-size    : @f14;
-
-        &:nth-child(2) {
-            border-right          : 0 !important;
-            border-top-left-radius: 4px !important;
-        }
-
-        &:nth-child(3) {
-            border-right: 0 !important;
-        }
-
-        &:nth-child(4) {
-            border-top-right-radius: 4px !important;
-        }
-
-        &.ivu-tabs-tab-active {
-            background-color: @mainColor  !important;
-            color           : @white !important;
-        }
-    }
-
-    .table-box {
-        padding: 6px 0 30px 0;
-    }
-}
 
 .pattern2 {
     .ivu-tabs-bar {
@@ -912,7 +799,7 @@ footer {
     }
 
     .ivu-form-item {
-        margin-bottom: 20px;
+        margin-bottom: 40px;
 
         &.ivu-form-item-error .ivu-select-selection {
             border: 1px solid @errColor;
@@ -1037,23 +924,6 @@ footer {
         font-size: @f14;
     }
 
-    // .ivu-modal-body{
-    //     max-height: 650px;
-    //     overflow  : auto;
-    //     &         ::-webkit-scrollbar {/*滚动条整体样式*/
-    //         width : 9px;     /*高宽分别对应横竖滚动条的尺寸*/
-    //         height: 9px;
-    //     }
-    //     &                ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-    //         border-radius: 9px;
-    //         background   : @mainColor;
-    //     }
-    //     &                ::-webkit-scrollbar-track {/*滚动条里面轨道*/
-    //         border-radius: 9px;
-    //         background   : #EEEEEE;
-    //     }
-    // }
-
     .high-config {
         font-size    : @f14;
         color        : @mainColor;
@@ -1084,9 +954,7 @@ footer {
 }
 
 // iview table
-.ivu-table th {
-    background-color: @theadBgColor;
-}
+
 
 .ivu-table {
     color: #515a6e;
@@ -1115,20 +983,7 @@ footer {
     }
 }
 
-// .ivu-table-overflowX{
-//     &         ::-webkit-scrollbar {/*滚动条整体样式*/
-//         width : 9px;     /*高宽分别对应横竖滚动条的尺寸*/
-//         height: 9px;
-//     }
-//     &                ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-//         border-radius: 9px;
-//         background   : @mainColor;
-//     }
-//     &                ::-webkit-scrollbar-track {/*滚动条里面轨道*/
-//         border-radius: 9px;
-//         background   : #EEEEEE;
-//     }
-// }
+
 
 // iview upload
 .ivu-upload {
@@ -1228,14 +1083,14 @@ footer {
     }
 }
 
-.me-button.ivu-btn-success {
-    background-color: #7AC09A;
-}
+// .me-button.ivu-btn-success {
+//     background-color: #7AC09A;
+// }
 
-.me-button.ivu-btn-primary {
-    background-color: #6BB3C7;
-}
+// .me-button.ivu-btn-primary {
+//     background-color: #6BB3C7;
+// }
 
-.me-button.ivu-btn-error {
-    background-color: #E95F33;
-}
+// .me-button.ivu-btn-error {
+//     background-color: #E95F33;
+// }

@@ -1,0 +1,79 @@
+.child-net-ip-manage{
+  @import "./../../../../assets/less/reset-ivu-table.less";
+
+  padding: 27px 23px 25px 33px;
+
+  .ivu-table-wrapper{
+    margin-top: 20px;
+  }
+
+  .ip-manage-title{
+    font-size: 22px;
+    color: #252422;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .ip-manage-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }  
+
+  .ivu-tabs-bar{
+    border-bottom: none;
+  }
+
+  .ivu-tabs-ink-bar{
+    background-color: #6BB3C7;
+    height: 4px;
+  }
+
+  .ivu-tabs-nav{
+    .ivu-tabs-tab{
+      font-size: 18px;
+      color:rgba(107,179,199, .5);
+
+      &-active{
+        color:rgba(107,179,199, 1);
+      }
+    }
+
+  }
+
+  .top-button{
+    height: 44px;
+    background-color: #6BB3C7;
+    border: none;
+    margin-right: 35px;
+    font-size: 16px;
+    padding: 0 20px;
+
+    &:last-child{
+      margin-right: 0;
+    }
+
+    &>.ivu-icon{
+        line-height: 1;
+        font-size: 25px;
+    }
+
+    &>span{
+        font-size: 16px;
+        color: #fff;
+        letter-spacing: 3px;
+    }
+
+    &.button-search{
+      background-color: #7CC19B;
+    }
+
+    &.button-fix{
+      background-color: #F2BA50;
+    }
+
+    &.button-keep{
+      background-color: #66615B;
+    }
+  }
+}

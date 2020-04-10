@@ -1,30 +1,26 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">开发控制</span>
-    </div>
-    <div class="tab-select pding select2">
-      <div class="pop-body">
-        <i-form :label-width="260" :model="formItem">
-          <Row>
-            <i-col span="18">
-              <form-item  label="递归并发数（个）" prop="recursiveClients" style="font-size:20px;">
-                <i-input v-model="formItem.recursiveClients" style=" width:300px;"></i-input>
-                <i-button type="primary" @click="primary">保存</i-button>
-              </form-item>
-            </i-col>
-            <i-col span="18">
-              <form-item label="单一域递归并发数（个）" prop="fetchesPerZone" style="font-size:20px;">
-                <i-input v-model="formItem.fetchesPerZone" style="width:300px;"></i-input>
-                <i-button type="primary" @click="primary">保存</i-button>
-              </form-item>
-            </i-col>
-            <i-col span="18">
-              <Form-item style="font-size:20px;margin-left:30%;margin-top:5%;"></Form-item>
-            </i-col>
-          </Row>
-        </i-form>
-      </div>
+  <div>
+    <div class="title">开发控制</div>
+    <div class="divline">
+      <i-form :label-width="260" :model="formItem">
+        <Row>
+          <i-col span="18">
+            <form-item label="递归并发数（个）" prop="recursiveClients" style="font-size:20px;">
+              <InputNumber v-model="formItem.recursiveClients" style=" width:300px;"></InputNumber>
+              <i-button type="primary" @click="primary">保存</i-button>
+            </form-item>
+          </i-col>
+          <i-col span="18">
+            <form-item label="单一域递归并发数（个）" prop="fetchesPerZone" style="font-size:20px;">
+              <InputNumber v-model="formItem.fetchesPerZone" style="width:300px;"></InputNumber>
+              <i-button type="primary" @click="primary">保存</i-button>
+            </form-item>
+          </i-col>
+          <i-col span="18">
+            <Form-item style="font-size:20px;margin-left:30%;margin-top:5%;"></Form-item>
+          </i-col>
+        </Row>
+      </i-form>
     </div>
   </div>
 </template>
@@ -70,11 +66,11 @@ export default {
           recursiveClients: Number(this.formItem.recursiveClients),
           fetchesPerZone: +this.formItem.fetchesPerZone
         })
-        .then(res => {
+        .then(() => {
           this.$Message.success("保存成功");
           this.getView();
         })
-        .catch(err => {
+        .catch(() => {
           this.$Message.success("保存失败");
         });
     }
@@ -83,4 +79,14 @@ export default {
 </script>
 
 <style scoped>
+.divline {
+  padding-top: 50px;
+}
+.title {
+  padding: 27px 33px 0;
+  line-height: 1;
+  font-size: 24px;
+  color: #252422;
+  font-weight: 400;
+}
 </style>

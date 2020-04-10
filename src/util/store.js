@@ -30,7 +30,7 @@ export default function(type = 'localStorage') {
         ac.clear()
       } catch (err) { console.log(err) }
     },
-    has(key) {
+    has() {
       // return Store(type).get(key) !== undefined
     }
   }

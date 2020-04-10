@@ -2,46 +2,30 @@
   <div class="nodeManage">
     <Tabs @on-click="handleTab">
       <TabPane label="拓扑图" name="topology">
-        <div class="parent tab-item">
-          <div
-            class="host"
-            @click="handleGoDeviceInfo(item)"
-            v-for="item in serverList.filter(item => item.role === 'controller') "
-            :key="item.ip"
-          >
-            <host-node :host="item" />
+        <div style="zoom: 0.6">
+          <div class="parent tab-item">
+            <div
+              class="host"
+              @click="handleGoDeviceInfo(item)"
+              v-for="item in serverList.filter(item => item.role === 'controller') "
+              :key="item.ip"
+            >
+              <host-node :host="item" />
+            </div>
           </div>
-        </div>
-        <div class="children">
-          <host-node
-            @click="handleGoDeviceInfo(item)"
-            :host="item"
-            :key="item.ip"
-            v-for="item in serverList.filter(item => item.role !== 'controller') "
-          />
+          <div class="children">
+            <host-node
+              :host="item"
+              @click="handleGoDeviceInfo(item)"
+              :key="item.ip"
+              v-for="item in serverList.filter(item => item.role !== 'controller') "
+            />
+          </div>
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
-        <div class="table-box tab-item">
-          <table class="table-default">
-            <thead>
-              <th>服务器类型</th>
-              <th>服务器名称</th>
-              <th>服务器IP</th>
-              <th>服务器状态</th>
-            </thead>
-            <tbody>
-              <tr v-for="item in serverList" :key="item.ip">
-                <td>{{item.role}}</td>
-                <td>{{item.hostname}}</td>
-                <td>{{item.ip}}</td>
-                <td>
-                  <Badge :status="item.state ? 'success' : 'error'" />
-                  {{item.state ? "(在线)": "(利线)" }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="tab-item">
+          <Table :data="serverList" :columns="serviceColumns" />
         </div>
       </TabPane>
     </Tabs>
@@ -58,35 +42,79 @@ export default {
   props: {},
   data() {
     return {
-      topology: [],
+      serviceColumns: [
+        {
+          title: "服务器类型",
+          key: "role",
+          align: "center"
+        },
+        {
+          title: "服务器名称",
+          key: "hostname",
+          align: "center"
+        },
+        {
+          title: "服务器IP",
+          key: "ip",
+          align: "center"
+        },
+        {
+          title: "服务器状态",
+          key: "state",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", [
+              h("Badge", {
+                props: {
+                  status: row.state ? "success" : "error"
+                }
+              }),
+              row.state ? "(在线)" : "(利线)"
+            ]);
+          }
+        }
+      ],
       serverList: []
     };
   },
 
   mounted() {
-    // this.getTopology();
     this.getList();
   },
 
   methods: {
-    // getTopology() {
-    //   services.getNodeList({}).then(res => {
-    //     this.topology = res.data.data;
-    //   });
-    // },
     getList() {
-      services.getServerList().then(res => {
-        this.serverList = res.data.data;
-      });
+      services
+        .getServerList()
+        .then(res => {
+          this.serverList = res.data.data;
+        })
+        .catch(err => err);
     },
     handleTab(tab) {
       console.log(tab);
     },
-    handleGoDeviceInfo({ ip }) {
-      this.$router.push({
-        name: "DeviceInformation",
-        query: { ip }
-      });
+    handleGoDeviceInfo({ ip, role }) {
+      if (role === "controller") {
+        this.$router.push({
+          name: "ControllerDashboard",
+          query: { ip }
+        });
+      }
+      console.log(role);
+      if (role === "dns") {
+        this.$router.push({
+          name: "DNSDashboard",
+          query: { ip }
+        });
+      }
+
+      if (role === "dhcp") {
+        this.$router.push({
+          name: "DHCPDashboard",
+          query: { ip }
+        });
+      }
     }
   }
 };
@@ -104,6 +132,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       bottom: -60px;
       height: 80px;
       width: 2px;
@@ -127,6 +156,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       top: -80px;
       height: 80px;
       width: 0;
@@ -136,6 +166,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       top: -80px;
       width: 340px;
       border-top: 2px dotted #006fe4;

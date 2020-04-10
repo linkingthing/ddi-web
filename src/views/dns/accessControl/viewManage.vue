@@ -1,48 +1,13 @@
 <template>
-  <div class="index-main columns t-box">
-    <div class="content-header">
-      <div class="button-box fr">
-        <i-button
-          type="success"
-          class="me-button add-btn"
-          icon="md-add"
-          @click="handleOpenCreate"
-        >新建</i-button>
-      </div>
-    </div>
+  <div class="viewManage">
+    <table-page title="视图管理" :data="list" :columns="columns" :paginationEnable="false">
+      <template slot="top-right">
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
+      </template>
+    </table-page>
 
-    <div>
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th>名称</th>
-                <th width="250">访问控制列表</th>
-                <th width="250">优先级</th>
-                <th width="250">操作</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr v-for="item in this.list" :key="item.id">
-                <td>{{item.name}}</td>
-                <td>
-                  <Tags :list="item.acls" :field="name" />
-                </td>
-                <td>{{item.priority}}</td>
-                <td>
-                  <btn-edit @click="goConfig1(item.id, item)" />
-                  <btn-del @click="delect(item.id)" v-if="item.name !== 'default'" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <createView ref="deviceRef" @onCreateSuccess="getView" :maxPriority="list.length"></createView>
-      <editView ref="analysis2Ref" @onEditSuccess="getView" :maxPriority="list.length"></editView>
-    </div>
+    <createView ref="deviceRef" @onCreateSuccess="getView" :maxPriority="list.length"></createView>
+    <editView ref="analysis2Ref" @onEditSuccess="getView" :maxPriority="list.length"></editView>
   </div>
 </template>
 
@@ -58,26 +23,47 @@ export default {
       columns: [
         {
           title: "名称",
-          key: "name"
+          key: "name",
+          align: "center"
         },
         {
           title: "访问控制列表",
           key: "acls",
-          render: (h, params) => {
+          align: "center",
+
+          render: (h, { row }) => {
             return h("Tags", {
               props: {
-                list: params.row.acls
+                list: row.acls
               }
             });
           }
         },
         {
           title: "优先级",
-          key: "priority"
+          key: "priority",
+          align: "center"
         },
         {
           title: "操作",
-          key: "action"
+          key: "action",
+          align: "center",
+          width: 160,
+          render: (h, { row }) => {
+            return h("div", [
+              h("btn-edit", {
+                on: {
+                  click: () => this.goConfig1(row.id, row)
+                }
+              }),
+              row.name !== "default" &&
+                h("btn-del", {
+                  on: {
+                    click: () => this.delect(row.id)
+                  }
+                })
+            ]);
+          }
         }
       ],
       list: [],

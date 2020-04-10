@@ -1,93 +1,76 @@
 <template>
-  <modal
-    v-model="analysis2Modal"
-    class-name="pop vertical-center-modal"
-    :mask-closable="false"
-    width="500"
-    :closable="false"
-  >
-    <div slot="header">修改视图</div>
-    <div>
-      <vue-scroll style="height: 500px;" ref="vs">
-        <i-form
-          :model="dataConfig"
-          label-position="right"
-          :label-width="100"
-          :rules="ruleValidate"
-          ref="formValidate"
-        >
-          <div class="pop-content">
-            <div class="pop-box">
-              <div class="pop-body">
-                <Row>
-                  <i-col span="18">
-                    <form-item label="名称" prop="name">
-                      <i-input v-model="dataConfig.name" placeholder="请填访问控制名称" :disabled="true"></i-input>
-                    </form-item>
-                  </i-col>
-                </Row>
-              </div>
-            </div>
-
-            <div class="pop-box" style="margin-top:-50px;">
-              <div class="pop-body">
-                <div style="width: 300px">
-                  <FormItem
-                    v-for="(item, index) in dataConfig.exception"
-                    :key="index"
-                    :label="'控制列表' + item.index"
-                    :prop="'exception.' + index + '.id'"
-                    :rules="{required: true, message: '控制列表 ' + item.index +'不能为空'}"
-                  >
-                    <Row>
-                      <!-- IP列表 -->
-                      <Col span="18">
-                        <i-select v-model="item.id" v-show="true">
-                          <i-option
-                            v-for="item in list"
-                            :key="item.id"
-                            :value="item.id"
-                          >{{item.name}}</i-option>
-                        </i-select>
-                      </Col>
-                      <!-- 删除 -->
-                      <Col span="4" offset="1">
-                        <Button @click="handleRemove(index)">
-                          <Icon type="md-trash" />
-                        </Button>
-                      </Col>
-                    </Row>
-                  </FormItem>
-                </div>
-
-                <Row style="margin-top:-10px;">
-                  <i-col span="24">
-                    <a href="javascript:" class="add-config" @click="handleAdd">+添加控制列表</a>
-                  </i-col>
-                </Row>
-                <Row>
-                  <i-col span="24">
-                    <form-item label="优先级" prop="name">
-                      <Input-number
-                        :disabled="dataConfig.name === 'default'"
-                        :max="maxPriority+1"
-                        :min="1"
-                        v-model="dataConfig.priority"
-                      ></Input-number>
-                    </form-item>
-                  </i-col>
-                </Row>
-              </div>
-            </div>
+  <common-modal :visible.sync="analysis2Modal" title="修改视图" @confirm="handleSubmit">
+    <i-form
+      :model="dataConfig"
+      label-position="right"
+      :label-width="100"
+      :rules="ruleValidate"
+      ref="formValidate"
+    >
+      <div class="pop-content">
+        <div class="pop-box">
+          <div class="pop-body">
+            <Row>
+              <i-col span="18">
+                <form-item label="名称" prop="name">
+                  <i-input v-model="dataConfig.name" placeholder="请填访问控制名称" :disabled="true"></i-input>
+                </form-item>
+              </i-col>
+            </Row>
           </div>
-        </i-form>
-      </vue-scroll>
-    </div>
-    <div slot="footer">
-      <i-button class="me-button k-btn" @click="analysis2Modal = false">取消</i-button>
-      <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
-    </div>
-  </modal>
+        </div>
+
+        <div class="pop-box">
+          <div class="pop-body">
+            <div style="width: 300px">
+              <FormItem
+                v-for="(item, index) in dataConfig.exception"
+                :key="index"
+                :label="'控制列表' + item.index"
+                :prop="'exception.' + index + '.id'"
+                :rules="{required: true, message: '控制列表 ' + item.index +'不能为空'}"
+              >
+                <Row>
+                  <!-- IP列表 -->
+                  <Col span="18">
+                    <i-select v-model="item.id" v-show="true" style="width: 230px">
+                      <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+                    </i-select>
+                  </Col>
+                  <!-- 删除 -->
+                  <Col span="4" offset="1">
+                    <Button @click="handleRemove(index)">
+                      <Icon type="md-trash" />
+                    </Button>
+                  </Col>
+                </Row>
+              </FormItem>
+            </div>
+
+            <Row style="margin-top:-10px;">
+              <i-col span="24">
+                <a href="javascript:" class="add-config" @click="handleAdd">+添加控制列表</a>
+              </i-col>
+            </Row>
+            <Row>
+              <i-col span="24">
+                <form-item label="优先级" prop="name">
+                  <Input-number
+                    :disabled="dataConfig.name === 'default'"
+                    :max="maxPriority+1"
+                    :min="1"
+                    v-model="dataConfig.priority"
+                  ></Input-number>
+                </form-item>
+              </i-col>
+            </Row>
+          </div>
+        </div>
+      </div>
+    </i-form>
+
+
+  </common-modal>
 </template>
 
 <script>

@@ -1,45 +1,11 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">区域查询</span>
-      <div class="button-box fr">
-        <i-button
-          type="primary"
-          class="me-button add-btn"
-          icon="md-add"
-          @click="handleOpenCreate(id)"
-        >新建</i-button>
-      </div>
-    </div>
-    <div class="tab-select pding select2">
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">区名称</th>
-                <th width="250">资源记录数量</th>
-                <th width="250">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in this.arealist" :key="item.id">
-                <td>
-                  <router-link
-                    :to="{name:'resourceRecord',query:{viewId, zoneId: item.id,name: item.name}}"
-                  >{{item.name}}</router-link>
-                </td>
-                <td>{{item.rrsize}}</td>
-                <td>
-                  <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <area-app-config ref="areaRef" @onCreateSuccess="getArea"></area-app-config>
-    </div>
+  <div class="zoneQuery">
+    <table-page title="区域查询" :data="list" :columns="columns" :paginationEnable="false">
+      <template slot="top-right">
+        <i-button type="success" size="large" @click="handleOpenCreate(id)">新建</i-button>
+      </template>
+    </table-page>
+    <area-app-config ref="areaRef" @onCreateSuccess="getArea"></area-app-config>
   </div>
 </template>
 
@@ -50,20 +16,53 @@ export default {
   name: "zoneQuery",
   data() {
     return {
+      columns: [
+        {
+          title: "区名称",
+          key: "name",
+          align: "center",
+          render: (h, { row }) => {
+            return h(
+              "router-link",
+              {
+                props: {
+                  to: {
+                    name: "resourceRecord",
+                    query: {
+                      viewId: this.viewId,
+                      zoneId: row.id,
+                      name: row.name
+                    }
+                  }
+                }
+              },
+              row.name
+            );
+          }
+        },
+        {
+          title: "资源记录数量",
+          key: "rrsize",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          width: 120,
+          align: "center",
+          render: (h, { row }) => {
+            return h("btn-del", {
+              on: {
+                click: () => this.delect(row.id)
+              }
+            });
+          }
+        }
+      ],
       id: "",
       viewId: "",
-      id1: "",
       name: "",
-      remove: "",
-      modal1: false,
-      arealist: [],
-      file: "",
-      self: "",
-      number: "",
-      list: [],
-      isused: "",
-      data1: "",
-      obj: ""
+      list: []
     };
   },
   created() {
@@ -78,15 +77,7 @@ export default {
       services
         .getZoneByViewId(this.id)
         .then(res => {
-          this.data1 = res.data;
-          this.arealist = res.data.data;
-          this.self = res.data.links.self;
-          for (var key in this.arealist) {
-            this.id1 = this.arealist[key].id;
-            this.name = this.arealist[key].name;
-            this.isused = this.arealist[key].isused;
-            this.rrsize = this.arealist[key].rrsize;
-          }
+          this.list = res.data.data;
         })
         .catch(err => {
           console.log(err);

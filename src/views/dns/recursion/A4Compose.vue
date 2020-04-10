@@ -1,46 +1,13 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">A4地址合成查询表</span>
-      <div class="button-box fr">
-        <i-button
-          type="primary"
-          class="me-button add-btn"
-          icon="md-add"
-          @click="handleOpenCreate"
-        >新建</i-button>
-      </div>
-    </div>
-    <div class="tab-select pding select2">
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">前缀</th>
-                <th width="250">客户IP地址</th>
-                <th width="250">目标IPv4地址</th>
-                <th width="250">操作</th>
-              </tr>
-            </thead>
+  <div class="A4Compose">
+    <table-page title="A4地址合成查询表" :data="list" :columns="columns" :paginationEnable="false">
+      <template slot="top-right">
+        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
+      </template>
+    </table-page>
 
-            <tbody>
-              <tr v-for="item in this.list" :key="item.id">
-                <td>{{item.prefix}}</td>
-                <td>{{item.clientaclname}}</td>
-                <td>{{item.addressname}}</td>
-                <td>
-                  <i-button class="k-btn" @click="handleOpenEdit(id,item.id)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <createA4 ref="resRef" @onCreateSuccess="getView"></createA4>
-      <editA4 ref="powerRef" @onEditSuccess="getView"></editA4>
-    </div>
+    <createA4 ref="resRef" @onCreateSuccess="getView"></createA4>
+    <editA4 ref="powerRef" @onEditSuccess="getView"></editA4>
   </div>
 </template>
 
@@ -53,6 +20,44 @@ export default {
   name: "A4Compose",
   data() {
     return {
+      columns: [
+        {
+          title: "前缀",
+          key: "prefix",
+          align: "center"
+        },
+        {
+          title: "客户IP地址",
+          key: "clientaclname",
+          align: "center"
+        },
+        {
+          title: "目标IPv4地址",
+          key: "addressname",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          width: 160,
+          render: (h, { row }) => {
+            return h("div", [
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEdit(this.id, row.id)
+                }
+              }),
+              h("btn-del", {
+                class: "k-btn",
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
+            ]);
+          }
+        }
+      ],
       list: [],
       id: "",
       name: "",
@@ -64,7 +69,7 @@ export default {
       id1: ""
     };
   },
-  created(id, dns64s) {
+  created() {
     this.id = this.$route.query.id;
     this.dns64s = this.$route.query.dns64s;
   },
@@ -102,11 +107,11 @@ export default {
         onOk: () => {
           services
             .deleteDNS64sByViewIdAndDnsId(this.id, data)
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getView();
             })
-            .catch(err => {
+            .catch(() => {
               this.$Message.success("删除失败");
             });
         }
