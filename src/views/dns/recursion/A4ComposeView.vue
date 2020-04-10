@@ -1,6 +1,6 @@
 <template>
   <div class="A4ComposeView">
-    <table-page title="A4地址合成" :data="list" :columns="columns" :paginationEnable="false" />
+    <table-page title="4A地址合成视图" :data="list" :columns="columns" :paginationEnable="false" />
     <createDefaultA4 ref="networkRef"></createDefaultA4>
     <editDefaultA4 ref="subnetRef"></editDefaultA4>
   </div>

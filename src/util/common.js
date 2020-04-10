@@ -163,11 +163,10 @@ export const resourceDomainValidateFunc = (rule, value, callback) => {
 }
 
 export const subnetValidateFunc = (rule, value, callback) => {
+    console.log(rule)
     if (value) {
         const [ip, prefix] = value.split('/')
 
-
-        console.log('prefix', Number(prefix))
         if (Number.isNaN( Number(prefix))){
             callback('prefix 应该是1-64整数')
             return

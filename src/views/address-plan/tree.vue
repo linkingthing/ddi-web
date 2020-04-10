@@ -16,8 +16,9 @@
           <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
             <Row :gutter="20">
               <Col :span="12">
-                <FormItem label="起始编码">
+                <FormItem label="起始编码" prop="beginnodecode">
                   <Input
+                    disabled
                     placeholder="起始编码"
                     class="base-input"
                     v-model.number="currentNode.beginnodecode"
@@ -25,7 +26,7 @@
                 </FormItem>
               </Col>
               <Col :span="12">
-                <FormItem label="结束编码">
+                <FormItem label="结束编码" prop="endnodecode">
                   <Input
                     placeholder="结束编码"
                     class="base-input"
@@ -37,10 +38,10 @@
             <FormItem label="名称">
               <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
             </FormItem>
-            <FormItem label="起始子网" prop="beginsubnet">
+            <FormItem label="起始子网" :prop="beginsubnetprop">
               <Input placeholder="起始子网" class="base-input" v-model="currentNode.beginsubnet" />
             </FormItem>
-            <FormItem label="结束子网" prop="beginsubnet">
+            <FormItem label="结束子网" :prop="endsubnetprop">
               <Input placeholder="结束子网" class="base-input" v-model="currentNode.endsubnet" />
             </FormItem>
             <FormItem label="描述">
@@ -165,17 +166,65 @@ export default {
   },
   computed: {
     rules() {
+      console.log("rule", this);
+      const self = this;
       return {
+        endnodecode: [
+          {
+            required: true,
+            message: "请填写结束编码"
+          },
+          {
+            validator: function(rules, value, callback) {
+              //  end === begin
+              //  end === 2n-1 + begin (n > 0, n of int)
+              const begin = self.currentNode.startnodecode || 0;
+              if (value === begin) {
+                callback();
+              }
+              const n = (value - begin + 1) / 2;
+              const remainder = (value - begin + 1) % 2;
+
+              if (n > 0 && remainder === 0) {
+                callback();
+              }
+              callback("等于开始编码（begin）或者（2n-1+begin）");
+            }
+          }
+        ],
         beginsubnet: [
           {
             required: true,
-            message: "subnet 必填"
+            message: "请填写subnet"
+          },
+          {
+            validator: subnetValidateFunc
+          }
+        ],
+        endsubnet: [
+          {
+            required: true,
+            message: "请填写subnet"
           },
           {
             validator: subnetValidateFunc
           }
         ]
       };
+    },
+    beginsubnetprop() {
+      if (this.isRootNode) {
+        return "beginsubnet";
+      } else {
+        return "beginsubnet2";
+      }
+    },
+    endsubnetprop() {
+      if (this.isRootNode) {
+        return "endsubnet";
+      } else {
+        return "endsubnet2";
+      }
     },
     abledDelete() {
       return !(this.currentNode.id && this.currentNode.id.length > 5);
@@ -200,7 +249,7 @@ export default {
       // if (parent && parent.data && parent.data.beginsubnet) {
       //   const [, prefixLen] = parent.data.beginsubnet.split("/");
       //   start = prefixLen;
-      // }
+      // } 以前只有一个subnet，只有beginsubnet
       if (
         parent &&
         parent.data &&
@@ -216,6 +265,9 @@ export default {
     },
     hasTree() {
       return !!this.tree.id;
+    },
+    isRootNode() {
+      return this.currentNode.depth === 0;
     },
     showCreateChildNode() {
       const hasCurrentNode = !!this.currentNode.id;
@@ -300,8 +352,8 @@ export default {
     },
     clearExtraNode(tree) {
       if (Array.isArray(tree.nodes)) {
-        this.clearExtraNode(tree.nodes);
         tree.nodes = tree.nodes.filter(item => item.type !== "surplusNode");
+        tree.nodes.forEach(child => this.clearExtraNode(child));
       }
     },
     reverseTransformTreeData(data) {
@@ -317,7 +369,10 @@ export default {
     getBinaryByIPv6(params) {
       const [, len] = params.prefix.split("/");
       services.checkIPv6Prefix(params).then(res => {
-        this.bitFill = [parseInt(res.data.binary.substring(0, len), 2), parseInt(res.data.binary.substring(0, len), 2)];
+        this.bitFill = [
+          parseInt(res.data.binary.substring(0, len), 2),
+          parseInt(res.data.binary.substring(0, len), 2)
+        ];
       });
     },
     handleChangeCaliper([min, max]) {
@@ -395,10 +450,14 @@ export default {
 
       console.log(params);
       if (this.hasTree) {
-        services.updateSubtree(params).then(res => {
-          this.$Message.success("更新成功!");
-          this.getTreeData();
-          this.currentNode = {};
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            services.updateSubtree(params).then(res => {
+              this.$Message.success("更新成功!");
+              this.getTreeData();
+              this.currentNode = {};
+            });
+          }
         });
       } else {
         console.log(this.currentNode);

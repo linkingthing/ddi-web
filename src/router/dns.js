@@ -82,7 +82,7 @@ export default [
         component: A4ComposeView,
         meta: {
             range: 'dns',
-            title: 'A4地址合成视图'
+            title: '4A地址合成视图'
         }
     },
     {

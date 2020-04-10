@@ -26,7 +26,7 @@
               <MenuItem name="configGroup" to="/dns/authority/config">配置管理</MenuItem>
               <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
             </Submenu>
-            <MenuItem name="A4ComposeView" to="/dns/recursion/A4ComposeView">
+            <MenuItem name="4A地址合成视图" to="/dns/recursion/A4ComposeView">
               <img :src="require('@/assets/images/recursion.png')" alt />
               递归管理
             </MenuItem>
