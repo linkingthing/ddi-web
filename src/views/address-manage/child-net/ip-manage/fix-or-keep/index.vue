@@ -6,7 +6,7 @@
     @confirm="handleConfirm"
   >
     <p class="fix-or-keep-info">
-        确定要将{{data[0] ? data[0].ipAddress : ""}}
+        确定要将{{data[0] ? data[0].ip : ""}}
         <br>
         转为固定地址吗
     </p>

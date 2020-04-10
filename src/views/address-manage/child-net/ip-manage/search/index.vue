@@ -1,32 +1,39 @@
 <template>
   <ModalCustom 
     :visible.sync="dialogVisible"
+    :width="560"
     title="网络探测"
     custom-class="net-search"
     @confirm="handleConfirm"
   >
     <div class="child-net-info">
       <div class="info-row">
-        <div class="info-row-label">网络地址</div>
-        <div>{{data[0] ? data[0].ipAddress : ""}}</div>
+        <div class="info-row-label">网络地址：</div>
+        <div>{{data[0] ? data[0].ip : ""}}</div>
       </div>
       <div class="info-row">
-        <div class="info-row-label">探测协议</div>
+        <div class="info-row-label">探测协议：</div>
         <Select v-model="protocal" multiple @on-change="handleSelect">
-          <Option v-for="item in protocals" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option 
+            v-for="item in protocals" 
+            :value="item.value" 
+            :key="item.value"
+          >
+            {{ item.label }}
+          </Option>
         </Select>
       </div>
-      <div class="info-row">
+      <!-- <div class="info-row row-selected">
         <Tag 
-          v-for="(item, idx) in protocal" 
-          :key="idx" 
-          :name="item.label" 
+          v-for="(item, idx) in selectedProtocals" 
+          :key="item" 
+          :name="item" 
           closable 
           @on-close="handleDeleteItem(idx)"
         >
-          标签
+          {{item}}
         </Tag>
-      </div>
+      </div> -->
     </div>
   </ModalCustom>
 </template>
@@ -34,6 +41,7 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
+import { protocals } from "./../define"
 
 export default {
   components:{
@@ -55,8 +63,9 @@ export default {
   data(){
     return {
       dialogVisible:false,
-      protocals:[],
-      protocal:[]
+      protocals:protocals(),
+      protocal:[],
+      selectedProtocals:[]
     }
   },
 
@@ -64,6 +73,7 @@ export default {
     visible(val){
       if(!val) {
         this.protocal = [];
+        this.selectedProtocals = [];
 
         return;
       }
@@ -77,12 +87,13 @@ export default {
   },
 
   methods:{
-    handleSelect(){
-
+    handleSelect(val){
+      this.selectedProtocals = [...val]
     },
 
-    handleDeleteItem(){
-      
+    handleDeleteItem(idx){
+      this.protocal.splice(idx, 1);
+      this.selectedProtocals.splice(idx, 1);
     },
 
     async handleConfirm(){
@@ -105,6 +116,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 @import "./index.less";
 </style>

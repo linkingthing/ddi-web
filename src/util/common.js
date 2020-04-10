@@ -55,6 +55,52 @@ function IPv6UnitTest(unitArr, callback) {
     });
 }
 
+/**
+ * 获取ip地址的类型
+ * 判断地址是否有冒号，如果有冒号，就认为是ipv6，反之则是ipv4
+ */
+export const getAddressType = val => {
+  return val.toString().indexOf(":") > 0 ? "ipv6" : "ipv4";
+}
+
+/**
+ * 掩码是否合法
+ * @param {String, Number} address IP地址或者掩码
+ * @param {String, Number} ipType IP地址的类型  ipv4|ipv6
+ */
+export const gatewayIsValid = (address, ipType) => {
+    let val = address;
+    let index = val.indexOf("/");
+
+    if(ipType){
+        ipType = ipType.toLocaleString();
+    }
+    // 如果未指定ip类型，且address没有/符号，则说明，传过来的值不包含掩码，此时无法判断
+    else if(index <= 0) {
+        return false;
+    }
+    // 若未指定ip类型，且传过来的值是ip地址包含掩码，则获取其ip类型
+    else{
+        ipType = getAddressType(val);
+    }
+
+    // 如果传过来的值包含掩码，则获取其掩码
+    if(index > 0){
+        val = val.slice(index + 1);
+    }
+
+    val = parseFloat(val);
+
+    if(!isPosNumber(val)) return false;
+    
+    if(ipType === "ipv6"){
+        return val > 1 && val < 128;
+    }
+    else{
+        return val > 1 && val < 32;
+    }
+}
+
 // 是否是数字
 export const isNumber = (val) => {
     var regPos = /^\d+(\.\d+)?$/; //非负浮点数

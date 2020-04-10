@@ -25,7 +25,7 @@ import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
 import { operateTypes } from "./../define";
-import { isPosNumber } from "@/util/common"
+import { isPosNumber, getAddressType, gatewayIsValid } from "@/util/common"
 
 export default {
   components:{
@@ -128,9 +128,20 @@ export default {
 
     validate(){
       const mask = parseInt(this.subnetMask);
-      
-      if(!isPosNumber(mask) || mask > 32){
-        return Promise.reject({ message:"请输入正确的掩码！" })
+      const data = this.data;
+
+      // 如果是合并
+      if(this.type === operateTypes.merge){
+        // 如果ip的类型有多种
+        if(Array.from(new Set(data.map(item => getAddressType(item.subnet)))).length > 1){
+          return Promise.reject({ message:"不同类型的IP地址不能合并！" })
+        }
+      }
+      // 拆分
+      else{
+        if(!gatewayIsValid(mask, getAddressType(data.subnet))){
+          return Promise.reject({ message:"请输入正确的掩码！" })
+        }
       }
 
       if(mask <= this.currentMask){
