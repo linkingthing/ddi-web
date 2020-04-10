@@ -23,7 +23,7 @@
                 <img :src="require('@/assets/images/authority.png')" alt />
                 权威管理
               </template>
-              <MenuItem name="configGroup" to="/dns/authority/config">权威管理</MenuItem>
+              <MenuItem name="configGroup" to="/dns/authority/config">配置管理</MenuItem>
               <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
             </Submenu>
             <MenuItem name="A4ComposeView" to="/dns/recursion/A4ComposeView">

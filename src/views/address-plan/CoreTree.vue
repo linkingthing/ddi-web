@@ -73,7 +73,7 @@ export default {
       this.idiotUpdate(this.data);
     },
     getWidthHeight() {
-      let { width, height } = window.getComputedStyle(this.$refs.tree);
+      let { width, height } = getComputedStyle(this.$refs.tree);
       width = parseInt(width);
       height = parseInt(height);
       return {
@@ -322,7 +322,7 @@ export default {
         left = this.initPopPosition.left;
         top = this.initPopPosition.top;
       } else {
-        left = parseFloat(window.getComputedStyle(pop).left);
+        left = parseFloat(getComputedStyle(pop).left);
         top = parseFloat(getComputedStyle(pop).top);
         this.initPopPosition = { left, top };
       }

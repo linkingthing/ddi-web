@@ -61,7 +61,7 @@
             <ul>
               <li>
                 <Strong>{{currentNode.subtreebitnum? (Math.pow(2, currentNode.subtreebitnum) || 0):0}}</Strong>
-                <span>总容量，双击修改</span>
+                <span>总容量</span>
               </li>
               <li>
                 <Strong>{{Array.isArray(currentNode.children)? currentNode.children.length : 0}}</Strong>
@@ -160,7 +160,7 @@ export default {
       },
       currentNode: {},
       currentParent: {},
-      bitFill: 0 // 10进制，用于填充位
+      bitFill: [0, 0] // 10进制，用于填充位
     };
   },
   computed: {
@@ -197,10 +197,21 @@ export default {
         end = Number(prefixLen) || 0;
       }
       const parent = this.currentParent;
-      if (parent && parent.data && parent.data.beginsubnet) {
-        const [, prefixLen] = parent.data.beginsubnet.split("/");
-        start = prefixLen;
+      // if (parent && parent.data && parent.data.beginsubnet) {
+      //   const [, prefixLen] = parent.data.beginsubnet.split("/");
+      //   start = prefixLen;
+      // }
+      if (
+        parent &&
+        parent.data &&
+        parent.data.subtreebitnum &&
+        this.currentNode.beginsubnet
+      ) {
+        const [, prefixLen] = this.currentNode.beginsubnet.split("/");
+
+        start = prefixLen - parent.data.subtreebitnum;
       }
+
       return [start, end];
     },
     hasTree() {
@@ -277,14 +288,20 @@ export default {
           name: "剩余资源",
           type: "surplusNode",
           siblingsTotalBitNumber: subtreebitnum,
-          subnet: excuteNextIPv6(ip, prefixLen, subtreebitnum, 1)
+          beginsubnet: excuteNextIPv6(ip, prefixLen, subtreebitnum, 1),
+          endsubnet: excuteNextIPv6(
+            ip,
+            prefixLen,
+            subtreebitnum,
+            Math.pow(2, subtreebitnum) - 1
+          )
         });
       }
     },
     clearExtraNode(tree) {
       if (Array.isArray(tree.nodes)) {
-        tree.nodes = tree.nodes.filter(item => item.type !== "other");
         this.clearExtraNode(tree.nodes);
+        tree.nodes = tree.nodes.filter(item => item.type !== "surplusNode");
       }
     },
     reverseTransformTreeData(data) {
@@ -300,7 +317,7 @@ export default {
     getBinaryByIPv6(params) {
       const [, len] = params.prefix.split("/");
       services.checkIPv6Prefix(params).then(res => {
-        this.bitFill = parseInt(res.data.binary.substring(0, len), 2);
+        this.bitFill = [parseInt(res.data.binary.substring(0, len), 2), parseInt(res.data.binary.substring(0, len), 2)];
       });
     },
     handleChangeCaliper([min, max]) {
@@ -363,7 +380,7 @@ export default {
         }
       } else {
         if (data.data.type === "originalNode") {
-          this.bitFill = data.data.nodecode;
+          this.bitFill = [data.data.beginnodecode, data.data.endnodecode];
         }
       }
       this.currentParent = data.parent;

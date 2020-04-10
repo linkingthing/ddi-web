@@ -2,8 +2,12 @@
   <div class="calipers" ref="calipers">
     <div
       class="top-show"
-      :style="`right: ${right}; letter-spacing:${letterSpace};text-indent:${letterSpace} ` "
-    >{{netcodeBit}}</div>
+      :style="`right: ${right}; letter-spacing:${letterSpace};margin-right:-${letterSpace}` "
+    >
+      <dl class="bit-animate" ref="bitAnimate">
+        <dd v-for="item in netcodeBit" :key="item">{{item}}</dd>
+      </dl>
+    </div>
     <Slider v-model="innerValue" :step="1" :max="64" range :marks="marks" @on-change="handleChange"></Slider>
   </div>
 </template>
@@ -19,8 +23,8 @@ export default {
       default: () => [0, 0]
     },
     bitFill: {
-      type: Number,
-      default: 0
+      type: Array,
+      default: () => [0, 0]
     }
   },
   data() {
@@ -33,8 +37,15 @@ export default {
     netcodeBit() {
       const [min, max] = this.innerValue;
       const len = max - min;
-      const bit = this.bitFill.toString(2);
-      return (Array(len).join("0") + bit).slice(-len);
+      let [start, end] = this.bitFill;
+      let result = [];
+      for (start; start <= end; start++) {
+        const bit = start.toString(2);
+        result.push((Array(len).join("0") + bit).slice(-len));
+      }
+      this.startRoll();
+
+      return result;
     },
     right() {
       const [, max] = this.innerValue;
@@ -70,6 +81,7 @@ export default {
   },
   methods: {
     listenResize: _.debounce(function() {
+      console.log("listenResize");
       const calipers = this.$refs.calipers;
       const width = getComputedStyle(calipers).width;
       const letterWidth = parseFloat(width) / 64;
@@ -83,6 +95,29 @@ export default {
       }
       this.innerValue = [initMin, max];
       this.$emit("onChange", [initMin, max]);
+    },
+    startRoll() {
+      this.$nextTick(() => {
+        const len = this.netcodeBit.length;
+        const el = this.$refs.bitAnimate;
+        clearTimeout(this.timer);
+        el.setAttribute(
+          "style",
+          `
+            transform:translate3d(0, -${len * 24}px, 0);
+            transition: all ${len}s;
+          `
+        );
+        this.timer = setTimeout(() => {
+          el.setAttribute(
+            "style",
+            `
+              transform:translate3d(0, 0, 0);
+              transition: all 0s;
+            `
+          );
+        }, len * 800);
+      });
     }
   },
   watch: {
@@ -99,6 +134,8 @@ export default {
   height: 60px;
   .top-show {
     position: absolute;
+    overflow: hidden;
+    height: 20px;
     top: -2px;
     letter-spacing: 2px;
     color: #555;
