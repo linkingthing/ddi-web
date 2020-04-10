@@ -82,12 +82,10 @@ export const getQueryString = (name) => {
             var str = r[2];
             return decodeURIComponent(str);
         }
-
-        if (!(/^[0-9a-fA-F]{1,4}$/.test(unit))) {
-            callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
-        }
-        return /^[0-9a-fA-F]{1,4}$/.test(unit);
-    });
+        return null;
+    } catch (e) {
+        return null
+    }
 }
 
 /**

@@ -28,7 +28,7 @@ export default [
   {
     name: 'address-manage/addess-pool-manage',
     path: '/address-manage/addess-pool-manage',
-    component: () => import(/* webpackChuckName: "addess-pool-manage" */ "./../views/address-manage/address-pool-config")
+    component: () => import(/* webpackChuckName: "addess-pool-manage" */ "./../views/address-manage/child-net/address-pool")
   },
   {
     name: 'address-manage/tree',
