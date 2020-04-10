@@ -55,6 +55,41 @@ function IPv6UnitTest(unitArr, callback) {
     });
 }
 
+// 是否是数字
+export const isNumber = (val) => {
+    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if (regPos.test(val) || regNeg.test(val)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * 是否是正整数
+ */
+export const isPosNumber = val => {
+    return /^[1-9]([0-9]+)?$/g.test(val);
+}
+
+// 获取url参数
+export const getQueryString = (name) => {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    try {
+        var r = window.location.href.split('?')[1].match(reg);
+        if (r != null) {
+            var str = r[2];
+            return decodeURIComponent(str);
+        }
+
+        if (!(/^[0-9a-fA-F]{1,4}$/.test(unit))) {
+            callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
+        }
+        return /^[0-9a-fA-F]{1,4}$/.test(unit);
+    });
+}
+
 /**
  * ipv6规则
  * 1. 组多8组，以冒号分割

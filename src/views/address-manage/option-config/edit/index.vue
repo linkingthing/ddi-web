@@ -5,18 +5,14 @@
     @cancel="handleCancel"
     @confirm="handleConfirm"
   >
-    <div class="child-net-info">
+    <div class="option-config-info">
       <div class="info-row">
-        <div class="info-row-label">子网地址</div>
-        <Input v-model="subnet" placeholder="请输入子网地址" class="info-row-input" />
+        <div class="info-row-label">名称</div>
+        <Input v-model="optionName" placeholder="请输入OPTION名称" class="info-row-input" />
       </div>
       <div class="info-row">
-        <div class="info-row-label">子网名称</div>
-        <Input v-model="name" placeholder="请输入子网名称" class="info-row-input" />
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">网关地址</div>
-        <Input v-model="gateway" placeholder="请输入网关地址" class="info-row-input" />
+        <div class="info-row-label">类型</div>
+        <Input v-model="optionType" placeholder="请输入类型" class="info-row-input" />
       </div>
     </div>
   </ModalCustom>
@@ -46,17 +42,16 @@ export default {
   data(){
     return {
       dialogVisible:false,
-      id:"",
-      subnet:"",
-      name:"",
-      gateway:"",
+      optionId:"",
+      optionName:"",
+      optionType:"",
       isEdit:false
     }
   },
 
   computed:{
     getTitle(){
-      return (this.isEdit ? "编辑" : "添加") + "子网";
+      return (this.isEdit ? "编辑" : "添加") + "OPTION";
     }
   },
 
@@ -72,10 +67,9 @@ export default {
 
       if(!val) return;
 
-      this.id = val.subnet_id;
-      this.subnet = val.subnet;
-      this.name = val.name;
-      this.gateway = val.gateway;
+      this.optionId = val.optionId;
+      this.optionName = val.optionName;
+      this.optionType = val.optionType;
     },
 
     dialogVisible(val){
@@ -85,21 +79,20 @@ export default {
 
   methods:{
     init(){
-      this.id = "";
-      this.subnet = "";
-      this.name = "";
-      this.gateway = "";
+      this.optionId = "";
+      this.optionName = "";
+      this.optionType = "";
     },
 
     handleCancel(){
-
+      this.init();
     },
 
     async handleConfirm(){
       try {
-        const action = this.isEdit ? "editChildNet" : "addChildNet";
+        const action = this.isEdit ? "editOption" : "addOption";
 
-        let res = await service[action](this.getParams(), this.id);
+        let res = await service[action](this.getParams(), this.optionId);
         
         console.log(res);
         
@@ -114,9 +107,10 @@ export default {
 
     getParams(){
       return {
-        subnet:this.subnet,
-        name:this.name,
-        gateway:this.gateway
+        optionId:this.optionId,
+        optionName:this.optionName,
+        optionType:this.optionType,
+        optionVer:this.data ? this.data.optionVer : ""
       }
     }
   }

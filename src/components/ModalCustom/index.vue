@@ -5,6 +5,7 @@
         :closable="closable"
         :mask-closable="maskClosable"
         :class-name="`modal-custom ${customClass}`"
+        :width="width"
     >
         <div class="modal-header" slot="header">
             {{ title }}
@@ -88,6 +89,11 @@ export default {
       default: true
     },
 
+    width:{
+      type: [String, Number],
+      default: 520
+    },
+
     /**是否在点击确认按钮后立即关闭弹窗 */
     immediateCloseAfterConfirm:{
       type: Boolean,
@@ -143,7 +149,7 @@ export default {
       } catch (err) {
         console.error(err);
 
-        err.message && this.$$message(err.message);
+        err.message && this.$$error(err.message);
         // 结合后端请求异常返回的{ message: "xxx" }格式,前端其他报错（如表单验证等）也需reject({ message: "xxx" }),统一结构
       }
     }

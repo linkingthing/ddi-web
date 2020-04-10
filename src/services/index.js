@@ -25,13 +25,16 @@ axios.interceptors.response.use(
         LoadingBar.finish();
         return res
     }, err => {
-        console.log(err)
+        console.error(err);
+
         if (err.response.data.code === 401) {
             Message.error(err.response.data.message)
             router.push('/login')
         }
+
         LoadingBar.error();
 
+        return Promise.reject(err)
     },
 )
 
@@ -254,5 +257,153 @@ export default {
     },
     deleteSubtree(params) {
         return axios.post(`${baseUrl}/deletesubtree`, params)
+    },
+    /** 子网管理 start */
+
+    /**
+     * 获取子网管理列表
+     */
+    getChildNetList(){
+        return axios.get(`${baseUrl}/restsubnetv4s`);
+    },
+
+    /**
+     * 新增子网
+     */
+    addChildNet(params){
+        return axios.post(`${baseUrl}/restsubnetv4s`, params)
+    },
+
+    /**
+     * 编辑子网
+     */
+    editChildNet(params, id){
+        return axios.put(`${baseUrl}/restsubnetv4s/${id}`, params);
+    },
+    
+    /**
+     * 删除指定子网
+     */
+    deleteChildNet(id){
+        return axios.delete(`${baseUrl}/restsubnetv4s/${id}`)
+    },
+
+    /**
+     * 拆分子网
+     */
+    splitChildNet(params, subnetId){
+        return axios.post(`${baseUrl}/restsubnetv4s/${subnetId}?action=mergesplit`, params)
+    },
+
+    /**
+     * 合并子网
+     */
+    mergeChildNet(params){
+        return axios.post(`${baseUrl}/restsubnetv4s?action=mergesplit`, params)
+    },
+
+    /**
+     * 获取规划IP地址列表
+     */
+    getPlanIpList(id){
+        return axios.get(`${baseUrl}/dividedaddresses/${id}`)
+    },
+
+    /**
+     * 地址扫描
+     */
+    addressScanning(id){
+        return axios.get(`${baseUrl}/scanaddresses/${id}`)
+    },
+
+    /**
+     * 删除IP地址
+     */
+    deleteIpAddress(id){        
+        return axios.delete(`${baseUrl}/scanaddresses/${id}`)
+    },
+
+    /**
+     * 转固定
+     */
+    changeToFix(id, parmas){
+        return axios.post(`${baseUrl}/dividedaddresses/${id}?action=change`, parmas)
+    },
+
+    /**
+     * 转保留
+     */
+    changeToKeep(id, parmas){
+        return axios.post(`${baseUrl}/scanaddresses/${id}`, parmas)
+    },
+
+    /**
+     * 获取地址池列表
+     */
+    getAddressPoolList(subnetId){
+        return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools`);
+    },
+
+    /**
+     * 修改/新增ipv6地址池
+     */
+    saveIpv6AddressPool({subnetId, poolId, params, type = "post"}){
+        let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
+
+        url = poolId ? `${url}/${poolId}` : url;
+
+        return axios[type](url, params)
+    },
+
+    /**
+     * 修改/新增ipv4地址池
+     */
+    saveIpv4AddressPool({subnetId, poolId, params, type = "post"}){
+        let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
+
+        url = poolId ? `${url}/${poolId}` : url;
+
+        return axios[type](url, params)
+    },
+
+    /**
+     * 删除地址池
+     */
+    deleteAddressPool(subnetId, poolId){
+        return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`)
+    },
+
+    /** 子网管理 end */
+
+    /** OPTOIN配置 start */
+
+    /**
+     * 获取OPTION配置列表
+     */
+    getOptionList(){
+        return axios.get(`${baseUrl}/restoptionnames`)
+    },
+
+    /**
+     * 删option
+     */
+    deleteOption(id){
+        return axios.delete(`${baseUrl}/restoptionnames/${id}`)
+    },
+
+    /**
+     * 添加option
+     */
+    addOption(params){
+        return axios.post(`${baseUrl}/restoptionnames`, params)
+    },
+
+    /**
+     * 编辑option
+     */
+    editOption(params, id){
+        return axios.put(`${baseUrl}/restoptionnames/${id}`, params)
     }
+
+    /** OPTOIN配置 end */
 }
