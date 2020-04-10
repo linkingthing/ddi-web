@@ -14,20 +14,20 @@
       </div>
       <div class="info-row">
         <div class="info-row-label">开始地址</div>
-        <Input v-model="startAddress" placeholder="请输入开始名称" class="info-row-input" />
+        <Input maxlength="50" v-model="beginAddress" placeholder="请输入开始名称" class="info-row-input" />
       </div>
       <div class="info-row">
         <div class="info-row-label">结束地址</div>
-        <Input v-model="endAddress" placeholder="请输入结束地址" class="info-row-input" />
+        <Input maxlength="50" v-model="endAddress" placeholder="请输入结束地址" class="info-row-input" />
       </div>
       <div class="info-row">
         <div class="info-row-label">默认租赁时间</div>
-        <Input v-model="defaultRentTime" class="info-row-input" />
+        <Input maxlength="16" v-model="validLifetime" class="info-row-input" />
         <label>秒</label>
       </div>
       <div class="info-row">
         <div class="info-row-label">最大租赁时间</div>
-        <Input v-model="maxRentTime" class="info-row-input" />
+        <Input maxlength="16" v-model="maxValidLifetime" class="info-row-input" />
         <label>秒</label>
       </div>
     </div>
@@ -37,6 +37,8 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
+
+import { isIPv6, isIPv4, getAddressType } from "@/util/common"
 
 const types = [
   {
@@ -76,10 +78,10 @@ export default {
       dialogVisible:false,
       types,
       type:"",
-      startAddress:"",
+      beginAddress:"",
       endAddress:"",
-      defaultRentTime:"",
-      maxRentTime:"",
+      validLifetime:"",
+      maxValidLifetime:"",
       isEdit:false
     }
   },
@@ -113,22 +115,30 @@ export default {
   },
 
   methods:{
-    setValue(val = {}){
-        this.poolId = val.id || null;
-        this.type = val.type || "ipv4";
-        this.startAddress = val.startAddress || "";
-        this.endAddress = val.endAddress || "";
-        this.defaultRentTime = val.defaultRentTime || "";
-        this.maxRentTime = val.maxRentTime || "";
+    setValue(val){
+      if(!val) val = {};
+
+      this.poolId = val.id || null;
+      this.type = val.type || "ipv4";
+      this.beginAddress = val.beginAddress || "";
+      this.endAddress = val.endAddress || "";
+      this.validLifetime = val.validLifetime || "";
+      this.maxValidLifetime = val.maxValidLifetime || "";
     },
 
     async handleConfirm(){
       const key = this.type === "ipv4" ? "saveIpv4AddressPool" : "saveIpv4AddressPool";
 
       try {
+        await this.validate();
+
         let res = await service[key](this.getParams());
       } catch (err) {
-        
+        this.$$error(err.message);
+
+        console.error(err);
+
+        return Promise.reject();
       }
     },
 
@@ -137,12 +147,105 @@ export default {
         subnetId:this.subnetId,
         poolId: this.poolId,
         params:{
-          beginAddress:this.startAddress,
+          beginAddress:this.beginAddress,
           endAddress:this.endAddress,
-          validLifetime:this.defaultRentTime,
-          maxValidLifetime: this.maxRentTime
+          validLifetime:this.validLifetime,
+          maxValidLifetime: this.maxValidLifetime
         }
       }
+    },
+
+    /**
+     * 比较IP的先后顺序
+     */
+    compareIpAddress(beginAddress, endAddress){
+      const type = getAddressType(beginAddress);
+
+      let isBefore = false;
+
+      if(type === "ipv4"){
+        let beginArr = beginAddress.split("."),
+          endArr = endAddress.split(".");
+        
+        const res = beginArr.map((item,idx) => [parseInt(item), parseIn(endArr[idx])]);
+
+        for(let i = 0; i < res.length; i++){
+          let item = res[i];
+
+          if(item[0] > item[1]){
+            isBefore = true;
+
+            break;
+          }
+        }
+
+        return isBefore;
+      }
+      else{
+
+      }
+    },
+
+    validate(){
+      let { beginAddress, endAddress, validLifetime, maxValidLifetime } = this;
+
+      beginAddress = beginAddress.trim();
+      endAddress = endAddress.trim();
+      validLifetime = validLifetime.trim();
+      maxValidLifetime = maxValidLifetime.trim();
+
+      const beginType = getAddressType(beginAddress);
+      const endType = getAddressType(endAddress);
+
+      if(!beginAddress){
+        return Promise.reject({ message:"请填写开始地址！" })
+      }
+
+      if(!endAddress){
+        return Promise.reject({ message:"请填写结束地址！" })
+      }
+
+      if(!validLifetime){
+        return Promise.reject({ message:"请填写默认租赁时间！" })
+      }
+
+      if(!maxValidLifetime){
+        return Promise.reject({ message:"请填写最大租赁时间！" })
+      }
+
+      if(beginType !== endType){
+        return Promise.reject({ message:"开始地址与结束地址类型须一致！" })
+      }
+
+      if(this.type === "ipv4"){
+        if(!isIPv4(beginAddress)){
+          return Promise.reject({ message:"请填写正确的开始地址！" })
+        }
+        
+        if(!isIPv4(endAddress)){
+          return Promise.reject({ message:"请填写正确的结束地址！" })
+        }
+      }
+
+      if(this.type === "ipv6"){
+        if(!isIPv6(beginAddress)){
+          return Promise.reject({ message:"请填写正确的开始地址！" })
+        }
+        
+        if(!isIPv6(endAddress)){
+          return Promise.reject({ message:"请填写正确的结束地址！" })
+        }
+      }
+
+      if(validLifetime.length > 12){
+        return Promise.reject({ message:"请填写正确的默认租赁时间！" })
+      }
+
+      if(maxValidLifetime.length > 12){
+        return Promise.reject({ message:"请填写正确的最大租赁时间！" })
+      }
+
+      return Promise.resolve();
     }
   }
 }

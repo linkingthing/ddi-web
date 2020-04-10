@@ -106,7 +106,7 @@ export default {
   },
 
   mounted(){
-    const {id, addr} = this.$route.query
+    let { id, addr } = this.$route.query;
 
     this.subnetId = id;
     this.ipAddress = addr;
@@ -177,7 +177,7 @@ export default {
       }
     },
 
-    handleFixAndKeep(type){      
+    handleFixAndKeep(type){
       if(this.selectedData.length > 1){
         this.$$warning("只能对一个地址进行操作！");
 

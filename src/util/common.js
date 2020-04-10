@@ -57,6 +57,52 @@ export const isIPv6 = (ipvalue) => {
     }
 }
 
+/**
+ * 获取ip地址的类型
+ * 判断地址是否有冒号，如果有冒号，就认为是ipv6，反之则是ipv4
+ */
+export const getAddressType = val => {
+  return val.toString().indexOf(":") > 0 ? "ipv6" : "ipv4";
+}
+
+/**
+ * 掩码是否合法
+ * @param {String, Number} address IP地址或者掩码
+ * @param {String, Number} ipType IP地址的类型  ipv4|ipv6
+ */
+export const gatewayIsValid = (address, ipType) => {
+    let val = address;
+    let index = val.indexOf("/");
+
+    if(ipType){
+        ipType = ipType.toLocaleString();
+    }
+    // 如果未指定ip类型，且address没有/符号，则说明，传过来的值不包含掩码，此时无法判断
+    else if(index <= 0) {
+        return false;
+    }
+    // 若未指定ip类型，且传过来的值是ip地址包含掩码，则获取其ip类型
+    else{
+        ipType = getAddressType(val);
+    }
+
+    // 如果传过来的值包含掩码，则获取其掩码
+    if(index > 0){
+        val = val.slice(index + 1);
+    }
+
+    val = parseFloat(val);
+
+    if(!isPosNumber(val)) return false;
+    
+    if(ipType === "ipv6"){
+        return val > 1 && val < 128;
+    }
+    else{
+        return val > 1 && val < 32;
+    }
+}
+
 // 是否是数字
 export const isNumber = (val) => {
     var regPos = /^\d+(\.\d+)?$/; //非负浮点数
@@ -88,6 +134,41 @@ export const getQueryString = (name) => {
     } catch (e) {
         return null
     }
+}
+
+/**
+ * 将ipv6的省略的部分填充为0 ------- 未完成
+ * @param {String} addr 合法的ipv6字符串
+ */
+export const fillIPv6 = addr => {
+    let index = addr.indexOf("::")
+
+    if(index < 0) return addr;
+
+    // 是否有ipv4混合
+    let isMix = addr.indexOf(".") > 0;
+    
+    // 已填写的ipv6的单元数
+    addr = addr.replace("::", ":");
+
+    let result = addr.split(":");
+    // 需要填充的单元个数
+    let count = 0;
+    const len = result.length;
+
+    // 因为把::替换成了:  然后又用:  进行分割，所以数组的大小最少为2
+    if(len === 2){
+        count = isMix || !result[1] ? 7 : 8;
+    }
+    else{
+        count = 9 - len;
+    }
+    
+    for(index; index < count; index++){
+        result.splice(index, 0, "0");
+    }
+
+    return result.join(":");
 }
 
 /**
