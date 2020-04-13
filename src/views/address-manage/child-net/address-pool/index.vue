@@ -30,18 +30,18 @@
 <script>
 import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
-import service from "@/services"
+import service from "@/services";
 
 export default {
-  components:{
+  components: {
     TablePagination,
     Edit
   },
 
-  data(){
+  data() {
     return {
-      keywords:"",
-      tableData:[],
+      keywords: "",
+      tableData: [],
       columns: [
         {
           title: "IP地址",
@@ -50,16 +50,7 @@ export default {
         },
         {
           title: "地址总量",
-          render: (h, { row }) => {
-            return h('label', {
-              class: 'address-total-count',
-              on: {
-                click: () => {
-                  this.handleView(row)
-                }
-              }
-            }, row.total)
-          },
+          key: "total",
           align: "center"
         },
         {
@@ -69,7 +60,7 @@ export default {
         },
         {
           title: "创建时间",
-          key: "creationTimestamp",
+          key: "creationTime",
           align: "center"
         },
         {
@@ -81,85 +72,89 @@ export default {
           title: "操作",
           align: "center",      
           render: (h, { row }) => {
-            return h('div', [
-              h('label', {
-                class: 'operate-label operate-edit',
+            return h("div", [
+              h("label", {
+                class: "operate-label operate-edit",
                 on: {
                   click: () => {
-                    this.handleEdit(row)
+                    this.handleEdit(row);
                   }
                 }
-              }, '编辑'),
-              h('label', {
-                class: 'operate-label operate-delete',
+              }, "编辑"),
+              h("label", {
+                class: "operate-label operate-delete",
                 on: {
                   click: () => {
-                    this.handleDelete(row)
+                    this.handleDelete(row);
                   }
                 }
-              }, '删除')
+              }, "删除")
             ]);
           }
         }
       ],
-      showEdit:false,
-      editData:null,
-      subnetId:null
-    }
+      showEdit: false,
+      editData: null,
+      subnetId: null
+    };
   },
 
-  mounted(){
+  mounted() {
     this.subnetId = this.$route.query.id;
 
     this.handleQuery();
   },
 
-  methods:{
-    async handleQuery(){
-      try{
+  methods: {
+    async handleQuery() {
+      try {
         let { status, data } = await service.getAddressPoolList(this.subnetId);
 
-        if(status === 200){
-          this.tableData = data.data
+        if (status === 200) {
+          this.tableData = data.data.map(item => {
+            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace("T", " ") : "";
+
+            return item;
+          });
         }
-        else{
-          Promise.reject({ message: data.message || "查询失败！" })
+        else {
+          Promise.reject({ message: data.message || "查询失败！" });
         }
       }
-      catch(err){
+      catch (err) {
         console.error(err);
       }
     },
 
-    handleAdd(){
+    handleAdd() {
       this.showEdit = true;
       this.editData = null;
     },
 
-    handleEdit(data){
+    handleEdit(data) {
       this.showEdit = true;
       this.editData = data;
     },
 
-    async handleDelete(data){
-      try{
-        await this.$$confirm({ content:"您确定要删除当前数据吗？" });
+    async handleDelete(data) {
+      try {
+        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         let res = await service.deleteAddressPool(this.subnetId, data.embedded.id);
 
-        if(res.status === 200){
+        if (res.status === 200) {
           this.$$success("删除成功！");
 
           this.handleQuery();
         }
-        else{
-          Promise.reject({ message: res.message || "删除失败！" })
+        else {
+          Promise.reject({ message: res.message || "删除失败！" });
         }
       }
-      catch(err){
+      catch (err) {
         console.error(err);
       }
     }
   }
-}
+};
 </script>
