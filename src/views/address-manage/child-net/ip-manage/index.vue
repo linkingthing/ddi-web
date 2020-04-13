@@ -67,6 +67,7 @@
     <Search 
       :visible.sync="showSearch"
       :data="selectedData"
+      :subnet-id="subnetId"
       @confirmed="handleSearched"
     />
   </div>
@@ -145,16 +146,16 @@ export default {
     },
 
     handleSearch(){
-      if(this.selectedData.length > 1){
-        this.$$warning("只能对一个地址进行检测！");
+      // if(this.selectedData.length > 1){
+      //   this.$$warning("只能对一个地址进行检测！");
 
-        return;
-      }
-      else if(!this.selectedData.length){
-        this.$$warning("请选择一个地址进行检测！");
+      //   return;
+      // }
+      // else if(!this.selectedData.length){
+      //   this.$$warning("请选择一个地址进行检测！");
 
-        return;
-      }
+      //   return;
+      // }
 
       this.showSearch = true;
     },

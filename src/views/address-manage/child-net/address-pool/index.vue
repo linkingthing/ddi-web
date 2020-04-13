@@ -45,7 +45,7 @@ export default {
       columns: [
         {
           title: "IP地址",
-          key: "ipAddress",
+          key: "poolName",
           align: "center"
         },
         {
@@ -58,23 +58,23 @@ export default {
                   this.handleView(row)
                 }
               }
-            }, row.addressTotalCount)
+            }, row.total)
           },
           align: "center"
         },
         {
           title: "类型",
-          key: "type",
+          key: "addressType",
           align: "center"
         },
         {
           title: "创建时间",
-          key: "createDate",
+          key: "creationTimestamp",
           align: "center"
         },
         {
           title: "DHCP使用率",
-          key: "useRatio",
+          key: "usage",
           align: "center"
         },
         {
@@ -123,7 +123,7 @@ export default {
           this.tableData = data.data
         }
         else{
-          Promise.reject({ message: res.message || "查询失败！" })
+          Promise.reject({ message: data.message || "查询失败！" })
         }
       }
       catch(err){

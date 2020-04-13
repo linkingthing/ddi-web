@@ -33,14 +33,14 @@ export default {
       default:""
     },
 
-    subnetvId:{
+    subnetId:{
       type:String,
       default:""
     },
 
     data:{
       type:Array,
-      default: []
+      default: () => []
     }
   },
 
@@ -61,13 +61,11 @@ export default {
 
   methods:{
     async handleConfirm(){
-      const key = this.type === "固定" ? "changeToFix" : "changeToKeep";
-
       try {
-        let {status, data} = await service[key](this.data[0].id, this.getParams());
+        let { status, data } = await service.changeToFixOrKeep(this.subnetId, this.getParams());
 
         if(status === 200){
-          console.log(data);
+          this.$$success("操作成功！")
           
           this.$emit("confirmed")
         }
@@ -76,18 +74,36 @@ export default {
         }
       } catch (err) {
         console.error(err);
+
+        this.$$error(err.message || "操作失败！")
       }
     },
 
     getParams(){
+      const { 
+        ip,
+        hostname,
+        macaddress        
+       } = this.data[0];
+       
+      let data = { 
+        subnetv4Id: this.subnetId,        
+        ipaddress: ip
+      };
+
+      if(this.type === "固定"){
+        data.hostname = hostname;
+        data.hwAddress = macaddress;
+        // data.clientId = "";
+      }
+      else{
+        // data.duid = "";
+        // data.circuitId = "";
+      }
+      
       return {
         oper: this.type === "固定" ? "tostable" : "toresv",
-        data:{
-          macaddress: "mac-addersses7",
-          ipaddress: "1.1.2.7",
-          subnetv4Id: this.subnetvId,
-          hwAddress: "00:01:02:03:04:17"
-        }
+        data
       }
     }
   }

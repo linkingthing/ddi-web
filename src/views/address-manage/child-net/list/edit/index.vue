@@ -25,7 +25,7 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from '@/services';
-import { isIPv4, isIPv6, getAddressType, gatewayIsValid } from "@/util/common"
+import { isIPv4Reg, fullIPv6Reg, getAddressType, gatewayIsValid } from "@/util/common"
 
 export default {
   components:{
@@ -145,12 +145,12 @@ export default {
       }
       else{        
         if(addrType === "ipv4"){
-          if(!isIPv4(subnet)){
+          if(!isIPv4Reg.test(subnet)){
             return Promise.reject({ message:"请输入正确的子网地址！" });
           }
         }
         else if(addrType === "ipv6"){
-          if(!isIPv6(subnet)){
+          if(!fullIPv6Reg.test(subnet)){
             return Promise.reject({ message:"请输入正确的子网地址！" });
           }
         }
@@ -177,12 +177,12 @@ export default {
       }
       else{        
         if(gateType === "ipv4"){
-          if(!isIPv4(gateway)){
+          if(!isIPv4Reg.test(gateway)){
             return Promise.reject({ message:"请输入正确的网关地址！" });
           }
         }
         else if(gateType === "ipv6"){
-          if(!isIPv6(gateway)){
+          if(!fullIPv6Reg.test(gateway)){
             return Promise.reject({ message:"请输入正确的网关地址！" });
           }
         }

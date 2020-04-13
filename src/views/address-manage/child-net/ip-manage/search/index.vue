@@ -6,6 +6,10 @@
     custom-class="net-search"
     @confirm="handleConfirm"
   >
+    <Spin size="large" fix v-if="loading">
+      <Icon type="ios-loading" size=18 class="spin-icon-load"></Icon>
+      <div>正在检测，这个过程可能需要几分钟，请耐心等待</div>
+    </Spin>
     <div class="child-net-info">
       <div class="info-row">
         <div class="info-row-label">网络地址：</div>
@@ -54,9 +58,14 @@ export default {
       default: false
     },
 
+    subnetId:{
+      type:String,
+      default: ""
+    },
+
     data:{
       type:Array,
-      default: []
+      default: () => []
     }
   },
 
@@ -65,7 +74,8 @@ export default {
       dialogVisible:false,
       protocals:protocals(),
       protocal:[],
-      selectedProtocals:[]
+      selectedProtocals:[],
+      loading:false
     }
   },
 
@@ -98,10 +108,14 @@ export default {
 
     async handleConfirm(){
       try {
-        let {status, data} = await service.addressScanning(this.data[0].id);
+        this.loading = true;
+
+        let { status, data } = await service.addressScanning(this.subnetId);
 
         if(status === 200){
           console.log(data);
+
+          this.$$message("操作成功！")
           
           this.$emit("confirmed")
         }
@@ -110,6 +124,11 @@ export default {
         }
       } catch (err) {
         console.error(err);
+
+        this.$$error(err.message || "操作失败！")
+      }
+      finally{
+        this.loading = false;
       }
     }
   }

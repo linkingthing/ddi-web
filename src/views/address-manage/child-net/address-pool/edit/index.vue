@@ -38,7 +38,7 @@
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
-import { isIPv6, isIPv4, getAddressType } from "@/util/common"
+import { fullIPv6Reg, isIPv4Reg, getAddressType } from "@/util/common"
 
 const types = [
   {
@@ -167,7 +167,7 @@ export default {
         let beginArr = beginAddress.split("."),
           endArr = endAddress.split(".");
         
-        const res = beginArr.map((item,idx) => [parseInt(item), parseIn(endArr[idx])]);
+        const res = beginArr.map((item,idx) => [parseInt(item), parseInt(endArr[idx])]);
 
         for(let i = 0; i < res.length; i++){
           let item = res[i];
@@ -182,7 +182,7 @@ export default {
         return isBefore;
       }
       else{
-
+        
       }
     },
 
@@ -218,21 +218,21 @@ export default {
       }
 
       if(this.type === "ipv4"){
-        if(!isIPv4(beginAddress)){
+        if(!isIPv4Reg.test(beginAddress)){
           return Promise.reject({ message:"请填写正确的开始地址！" })
         }
         
-        if(!isIPv4(endAddress)){
+        if(!isIPv4Reg.test(endAddress)){
           return Promise.reject({ message:"请填写正确的结束地址！" })
         }
       }
 
       if(this.type === "ipv6"){
-        if(!isIPv6(beginAddress)){
+        if(!fullIPv6Reg.test(beginAddress)){
           return Promise.reject({ message:"请填写正确的开始地址！" })
         }
         
-        if(!isIPv6(endAddress)){
+        if(!fullIPv6Reg.test(endAddress)){
           return Promise.reject({ message:"请填写正确的结束地址！" })
         }
       }

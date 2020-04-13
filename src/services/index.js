@@ -324,17 +324,10 @@ export default {
     },
 
     /**
-     * 转固定
+     * 转固定或保留
      */
-    changeToFix(id, parmas){
+    changeToFixOrKeep(id, parmas){
         return axios.post(`${baseUrl}/dividedaddresses/${id}?action=change`, parmas)
-    },
-
-    /**
-     * 转保留
-     */
-    changeToKeep(id, parmas){
-        return axios.post(`${baseUrl}/scanaddresses/${id}`, parmas)
     },
 
     /**
