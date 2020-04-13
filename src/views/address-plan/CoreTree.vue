@@ -37,7 +37,7 @@ export default {
             bottom: 50
           },
           commonNodeBackgroundColor: "#f5f5f5",
-          healthNodeBackgroundColor: "#008000"
+          healthNodeBackgroundColor: "#d7e8ff"
         };
       }
     }
@@ -82,7 +82,6 @@ export default {
       };
     },
     init(dataSet = this.data) {
-      console.log("init");
       const self = this;
       const { width, height } = this.getWidthHeight();
       const { margin } = this.options;
@@ -163,9 +162,9 @@ export default {
       node
         .append("rect")
         .attr("width", "200")
-        .attr("height", "48")
+        .attr("height", "72")
         .attr("x", "-4")
-        .attr("y", "-24")
+        .attr("y", "-34")
         .attr(
           "style",
           `cursor: pointer;
@@ -234,9 +233,9 @@ export default {
 
       function excuteTextColor(d) {
         if (d.data.type === "surplusNode") {
-          return "#2f2";
+          return "#333";
         } else {
-          return "#777";
+          return "#333";
         }
       }
       text
@@ -244,7 +243,7 @@ export default {
         .text(function(d) {
           return d.data.name;
         })
-        .attr("y", -4)
+        .attr("y", -14)
         .attr("x", 35)
         .attr("text-anchor", "left")
         .attr("fill", excuteTextColor);
@@ -253,13 +252,26 @@ export default {
         .append("tspan")
         .text(function(d) {
           if (d.data.beginsubnet) {
-            return d.data.beginsubnet + "-" + d.data.endsubnet;
+            return d.data.beginsubnet 
           }
         })
-        .attr("y", 14)
+        .attr("y", 8)
         .attr("x", 35)
         .attr("text-anchor", "left")
         .attr("fill", excuteTextColor);
+
+         text
+        .append("tspan")
+        .text(function(d) {
+          if (d.data.endsubnet) {
+            return  d.data.endsubnet;
+          }
+        })
+        .attr("y", 30)
+        .attr("x", 35)
+        .attr("text-anchor", "left")
+        .attr("fill", excuteTextColor);
+
 
       node.attr("transform", function(d) {
         return "translate(" + d.y + "," + d.x + ")";

@@ -27,11 +27,17 @@
               </Col>
               <Col :span="12">
                 <FormItem label="结束编码" prop="endnodecode">
-                  <Input
+                  <Select
                     placeholder="结束编码"
                     class="base-input"
                     v-model.number="currentNode.endnodecode"
-                  />
+                  >
+                    <Option
+                      v-for="(item, index) in endNodeCodeOptions"
+                      :value="item.value"
+                      :key="index"
+                    >{{item.binary}}</Option>
+                  </Select>
                 </FormItem>
               </Col>
             </Row>
@@ -176,19 +182,58 @@ export default {
           },
           {
             validator: function(rules, value, callback) {
-              //  end === begin
-              //  end === 2n-1 + begin (n > 0, n of int)
-              const begin = self.currentNode.startnodecode || 0;
+              // //  end === begin
+              // //  end === 2n-1 + begin (n > 0, n of int)
+              // const begin = self.currentNode.beginnodecode || 0;
+              // console.log(value, begin);
+              // if (value < begin) {
+              //   callback("结束编码不能小于起始编码");
+              // }
+              // if (value === begin) {
+              //   callback();
+              // }
+              // const n = (value - begin + 1) / 2;
+              // const remainder = (value - begin + 1) % 2;
+
+              // if (n > 0 && remainder === 0) {
+              //   callback();
+              // }
+
+              // callback("等于开始编码（begin）或者（2n-1+begin）");
+              const begin = self.currentNode.beginnodecode || 0;
+              if (!self.currentParent) {
+                if (value === begin) {
+                  callback();
+                }
+              }
+              const bitWidth = self.currentParent.data.subtreebitnum;
+              console.log(value, begin, Math.pow(2, bitWidth) - 1);
               if (value === begin) {
                 callback();
               }
-              const n = (value - begin + 1) / 2;
-              const remainder = (value - begin + 1) % 2;
+              if (value < begin) {
+                callback("结束编码不能小于起始编码");
+              }
+              if (value > Math.pow(2, bitWidth) - 1) {
+                callback(`最大值不能超过${Math.pow(2, bitWidth) - 1}`);
+              }
 
-              if (n > 0 && remainder === 0) {
+              if (begin === 0) {
+                // y = 2**n - 1
+
+                const n = Math.log2(value + 1);
+                if (parseInt(n) === parseFloat(n)) {
+                  callback();
+                }
+              }
+              const n = Math.log2(value / begin + 1) - 1;
+              const isInteger = parseInt(n) === parseFloat(n);
+
+              console.log("n", n, isInteger);
+              if (n > 0 && isInteger) {
                 callback();
               }
-              callback("等于开始编码（begin）或者（2n-1+begin）");
+              callback("nodecode错误");
             }
           }
         ],
@@ -274,7 +319,7 @@ export default {
       return this.hasTree && hasCurrentNode;
     },
     endNodeCode() {
-      // 算法： 结束编码是下一个兄弟节点的nodecode
+      // 算法： 结束编码是下一个兄弟节点的nodecode, // 20200410 作废，初始数据从后端获取，
       const currentNode = this.currentNode;
       const [min, max] = this.caliperValue;
       let index,
@@ -295,6 +340,45 @@ export default {
       }
       console.log(index);
       return result - 1;
+    },
+    beignNodeCodeOptions() {
+      let options = [];
+
+      return options;
+    },
+    endNodeCodeOptions() {
+      let options = [];
+
+      const begin = this.currentNode.beginnodecode || 0;
+      if (this.isRootNode) {
+        return [{ value: 0, binary: "0" }];
+      }
+      const bitWidth =
+        this.currentParent.data && this.currentParent.data.subtreebitnum;
+      const maxNodeCode = Math.pow(2, bitWidth) - 1;
+      options.push(begin);
+      let index = bitWidth;
+
+      while (index > 0) {
+        if (begin) {
+          let current = (Math.pow(2, index) - 1) * begin;
+          if (current > begin && maxNodeCode >= current) {
+            options.push(current);
+          }
+        } else {
+          let current = Math.pow(2, index) - 1;
+          options.push(current);
+        }
+        index--;
+      }
+      return options.sort().map(item => {
+        return {
+          value: item,
+          binary: (Array(bitWidth).join("0") + item.toString(2)).slice(
+            -bitWidth
+          )
+        };
+      });
     }
   },
   mounted() {
@@ -425,6 +509,14 @@ export default {
         return child.name !== node.data.name;
       });
     },
+    handleBeforeChangeNode(cb) {
+      // 节点点击之前校验 validateCurrentNode
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          cb();
+        }
+      });
+    },
     handleClickNode(data) {
       console.log(data);
       if (data.depth === 0) {
@@ -440,6 +532,9 @@ export default {
       }
       this.currentParent = data.parent;
       this.currentNode = data.data;
+      if (!this.currentNode.beginnodecode) {
+        this.currentNode.beginnodecode = 0;
+      }
     },
     handleSubmit() {
       const params = JSON.parse(
@@ -502,6 +597,20 @@ export default {
     autoAssign(value) {
       if (value) {
         this.currentNode.subtreebitnum = 0;
+      }
+    },
+    "currentNode.endnodecode"(value) {
+      if (this.currentParent) {
+        const siblings = this.currentParent.children;
+        const currentNode = this.currentNode;
+        const index = siblings.findIndex(
+          item => item.data.id === currentNode.id
+        );
+        const nextNode = this.currentParent.children[index + 1];
+        nextNode.data.beginnodecode = value + 1;
+        if (nextNode.data.endnodecode < value + 1) {
+          nextNode.data.endnodecode = value + 1;
+        }
       }
     }
   }
