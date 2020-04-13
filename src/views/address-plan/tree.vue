@@ -172,69 +172,11 @@ export default {
   },
   computed: {
     rules() {
-      console.log("rule", this);
-      const self = this;
       return {
         endnodecode: [
           {
             required: true,
             message: "请填写结束编码"
-          },
-          {
-            validator: function(rules, value, callback) {
-              // //  end === begin
-              // //  end === 2n-1 + begin (n > 0, n of int)
-              // const begin = self.currentNode.beginnodecode || 0;
-              // console.log(value, begin);
-              // if (value < begin) {
-              //   callback("结束编码不能小于起始编码");
-              // }
-              // if (value === begin) {
-              //   callback();
-              // }
-              // const n = (value - begin + 1) / 2;
-              // const remainder = (value - begin + 1) % 2;
-
-              // if (n > 0 && remainder === 0) {
-              //   callback();
-              // }
-
-              // callback("等于开始编码（begin）或者（2n-1+begin）");
-              const begin = self.currentNode.beginnodecode || 0;
-              if (!self.currentParent) {
-                if (value === begin) {
-                  callback();
-                }
-              }
-              const bitWidth = self.currentParent.data.subtreebitnum;
-              console.log(value, begin, Math.pow(2, bitWidth) - 1);
-              if (value === begin) {
-                callback();
-              }
-              if (value < begin) {
-                callback("结束编码不能小于起始编码");
-              }
-              if (value > Math.pow(2, bitWidth) - 1) {
-                callback(`最大值不能超过${Math.pow(2, bitWidth) - 1}`);
-              }
-
-              if (begin === 0) {
-                // y = 2**n - 1
-
-                const n = Math.log2(value + 1);
-                if (parseInt(n) === parseFloat(n)) {
-                  callback();
-                }
-              }
-              const n = Math.log2(value / begin + 1) - 1;
-              const isInteger = parseInt(n) === parseFloat(n);
-
-              console.log("n", n, isInteger);
-              if (n > 0 && isInteger) {
-                callback();
-              }
-              callback("nodecode错误");
-            }
           }
         ],
         beginsubnet: [
@@ -302,7 +244,6 @@ export default {
         this.currentNode.beginsubnet
       ) {
         const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-
         start = prefixLen - parent.data.subtreebitnum;
       }
 
@@ -318,65 +259,58 @@ export default {
       const hasCurrentNode = !!this.currentNode.id;
       return this.hasTree && hasCurrentNode;
     },
-    endNodeCode() {
-      // 算法： 结束编码是下一个兄弟节点的nodecode, // 20200410 作废，初始数据从后端获取，
-      const currentNode = this.currentNode;
-      const [min, max] = this.caliperValue;
-      let index,
-        result = 0;
-      if (
+    endNodeCodeOptions() {
+      // 公式法
+      // let options = [];
+      // const begin = this.currentNode.beginnodecode || 0;
+      // if (this.isRootNode) {
+      //   return [{ value: 0, binary: "0" }];
+      // }
+      // const bitWidth =
+      //   this.currentParent.data && this.currentParent.data.subtreebitnum;
+      // const maxNodeCode = Math.pow(2, bitWidth) - 1;
+      // options.push(begin);
+      // let index = bitWidth;
+
+      // while (index > 0) {
+      //   if (begin) {
+      //     let current = (Math.pow(2, index) - 1) * begin;
+      //     if (current > begin && maxNodeCode >= current) {
+      //       options.push(current);
+      //     }
+      //   } else {
+      //     let current = Math.pow(2, index) - 1;
+      //     options.push(current);
+      //   }
+      //   index--;
+      // }
+      // return options.sort().map(item => {
+      //   return {
+      //     value: item,
+      //     binary: (Array(bitWidth).join("0") + item.toString(2)).slice(
+      //       -bitWidth
+      //     )
+      //   };
+      // });
+      // 补位法计算
+      let begin = this.currentNode.beginnodecode || 0;
+      begin = begin.toString(2);
+      const bitWidth =
         this.currentParent &&
         this.currentParent.data &&
-        this.currentParent.data.children &&
-        Array.isArray(this.currentParent.data.children)
-      ) {
-        const siblings = this.currentParent.data.children;
-
-        index = siblings.findIndex(item => item.id === currentNode.id);
-        const nextNode = siblings[index + 1] || {
-          nodecode: Math.pow(2, max - min)
-        };
-        result = nextNode.nodecode; // 根节点和最后一个节点没有下一个时候，结束值怎么取呢？默认0处理
-      }
-      console.log(index);
-      return result - 1;
-    },
-    beignNodeCodeOptions() {
-      let options = [];
-
-      return options;
-    },
-    endNodeCodeOptions() {
-      let options = [];
-
-      const begin = this.currentNode.beginnodecode || 0;
-      if (this.isRootNode) {
-        return [{ value: 0, binary: "0" }];
-      }
-      const bitWidth =
-        this.currentParent.data && this.currentParent.data.subtreebitnum;
-      const maxNodeCode = Math.pow(2, bitWidth) - 1;
-      options.push(begin);
-      let index = bitWidth;
-
-      while (index > 0) {
-        if (begin) {
-          let current = (Math.pow(2, index) - 1) * begin;
-          if (current > begin && maxNodeCode >= current) {
-            options.push(current);
-          }
-        } else {
-          let current = Math.pow(2, index) - 1;
-          options.push(current);
+        this.currentParent.data.subtreebitnum;
+      const options = [];
+      for (let i = 0; i < bitWidth; i++) {
+        options.push(begin);
+        if (begin.length < bitWidth) {
+          begin = `1${begin}`;
         }
-        index--;
       }
-      return options.sort().map(item => {
+      console.log(options);
+      return options.map(item => {
         return {
-          value: item,
-          binary: (Array(bitWidth).join("0") + item.toString(2)).slice(
-            -bitWidth
-          )
+          value: parseInt(item, 2),
+          binary: item
         };
       });
     }
