@@ -61,10 +61,10 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
   },
-  PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,node,address'"
+  PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,node,ipam'"
 }
 
-console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2) : ['dns', 'node', 'address'], "相关模块")
+console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2) : ['dns', 'node', 'ipam'], "相关模块")
 console.log("正在生成...")
 console.log("正在生成......")
 console.log("正在生成.........")

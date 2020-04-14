@@ -1,11 +1,18 @@
 <template>
   <div class="zoneQuery">
-    <table-page title="区域查询" :data="list" :columns="columns" :paginationEnable="false">
+    <table-page
+      title="区域查询"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false">
       <template slot="top-right">
-        <i-button type="success" size="large" @click="handleOpenCreate(id)">新建</i-button>
+        <i-button
+          type="success"
+          size="large"
+          @click="handleOpenCreate(id)">新建</i-button>
       </template>
     </table-page>
-    <area-app-config ref="areaRef" @onCreateSuccess="getArea"></area-app-config>
+    <area-app-config ref="areaRef" @onCreateSuccess="getArea"/>
   </div>
 </template>
 
@@ -14,6 +21,9 @@ import services from "@/services";
 import AreaAppConfig from "./AreaAppConfig";
 export default {
   name: "zoneQuery",
+  components: {
+    AreaAppConfig
+  },
   data() {
     return {
       columns: [
@@ -27,7 +37,7 @@ export default {
               {
                 props: {
                   to: {
-                    name: "resourceRecord",
+                    name: "resource-record",
                     query: {
                       viewId: this.viewId,
                       zoneId: row.id,
@@ -83,7 +93,7 @@ export default {
           console.log(err);
         });
     },
-    //新建
+    // 新建
     handleOpenCreate(id2) {
       this.$refs.areaRef.openConfig(id2);
     },
@@ -106,9 +116,6 @@ export default {
         }
       });
     }
-  },
-  components: {
-    AreaAppConfig
   }
 };
 </script>

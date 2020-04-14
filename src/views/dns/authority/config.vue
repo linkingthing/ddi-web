@@ -1,6 +1,10 @@
 <template>
   <div class>
-    <table-page title="权威管理" :data="list" :columns="columns" :paginationEnable="false" />
+    <table-page
+      title="权威管理"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false" />
   </div>
 </template>
 
@@ -22,7 +26,7 @@ export default {
               {
                 props: {
                   to: {
-                    name: "authorityZoneQuery",
+                    name: "authority-zone-query",
                     query: { id: row.id, name: row.name }
                   }
                 }
@@ -83,7 +87,7 @@ export default {
             this.zonesize = this.list[key].links.zonesize;
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.log(err);
         });
     }

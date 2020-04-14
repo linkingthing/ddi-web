@@ -2,11 +2,15 @@
   <div class="login-content">
     <div class="login">
       <div class="login-head">
-        <img class="logo" src="../assets/images/logo.png" />
+        <img class="logo" src="../assets/images/logo.png" >
         <h1>{{isDNS ? "DNS": "DDI"}} 配置管理平台</h1>
       </div>
       <div>
-        <Form ref="formLogin" :model="params" :rules="rules" class="login-form">
+        <Form
+          ref="formLogin"
+          :model="params"
+          :rules="rules"
+          class="login-form">
           <FormItem prop="username">
             <Input
               size="large"
@@ -14,8 +18,12 @@
               v-model="params.username"
               @keyup.enter="login"
               placeholder="用户名称"
-            >
-              <img src="../assets/images/user.png" class="icon" alt slot="prepend" />
+            />
+            <img
+              src="../assets/images/user.png"
+              class="icon"
+              alt
+              slot="prepend" >
             </Input>
           </FormItem>
           <FormItem prop="password">
@@ -25,8 +33,12 @@
               v-model="params.password"
               @keyup.enter="login"
               placeholder="登录密码"
-            >
-              <img src="../assets/images/password.png" class="icon" alt slot="prepend" />
+            />
+            <img
+              src="../assets/images/password.png"
+              class="icon"
+              alt
+              slot="prepend" >
             </Input>
           </FormItem>
           <FormItem>
@@ -45,11 +57,14 @@
               style="margin-left:5px;cursor: pointer;"
               @click="getCaptcha"
             >
-              <img :src="img" class="fl code-captcha" />
+              <img :src="img" class="fl code-captcha" >
               <!-- <p class="code-tips fl">看不清换一张</p> -->
             </div>
           </FormItem>
-          <Button type="primary" long @click="login">登录</Button>
+          <Button
+            type="primary"
+            long
+            @click="login">登录</Button>
         </Form>
       </div>
     </div>
@@ -59,11 +74,13 @@
 <script>
 import services from "@/services";
 import { mapMutations } from "vuex";
-console.log(PACK_SYSTEM.length);
+
 export default {
   name: "login",
+  
   data() {
     this.isDNS = PACK_SYSTEM === "dns,node";
+
     return {
       params: {
         username: "",
@@ -127,7 +144,7 @@ export default {
                     console.log("ok");
                     const blob = new Blob(imageArr);
                     const file = new FileReader();
-                    file.onload = function(e) {
+                    file.onload = function (e) {
                       self.img = e.target.result;
                     };
                     file.readAsDataURL(blob);

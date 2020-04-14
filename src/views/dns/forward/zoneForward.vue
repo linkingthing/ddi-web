@@ -1,6 +1,10 @@
 <template>
   <div class="zoneForward">
-    <table-page title="转发视图" :data="list" :columns="columns" :paginationEnable="false" />
+    <table-page
+      title="转发视图"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false" />
   </div>
 </template>
 
@@ -21,7 +25,7 @@ export default {
               {
                 props: {
                   to: {
-                    name: "zoneQueryForward",
+                    name: "zone-query-forward",
                     query: { id: row.id, name: row.name }
                   }
                 }

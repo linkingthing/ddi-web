@@ -1,6 +1,10 @@
 <template>
   <div class="zoneQueryForward">
-    <table-page title="转发区域" :data="dsliteList" :columns="columns" :paginationEnable="false" />
+    <table-page
+      title="转发区域"
+      :data="dsliteList"
+      :columns="columns"
+      :pagination-enable="false" />
   </div>
 </template>
 
@@ -22,7 +26,7 @@ export default {
               {
                 props: {
                   to: {
-                    name: "forwardList",
+                    name: "forward-list",
                     query: {
                       viewId: this.viewId,
                       zoneId: row.id,
