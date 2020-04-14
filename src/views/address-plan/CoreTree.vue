@@ -25,6 +25,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    multiple: {
+      type: Boolean,
+      default: true
+    },
     options: {
       type: Object,
       default: () => {
@@ -47,6 +51,7 @@ export default {
       activePop: false,
       svg: "",
       current: {},
+      selectNodeList: [],
       toolTipInfo: ""
     };
   },
@@ -134,8 +139,8 @@ export default {
 
       const linkData = tree(root).links();
 
-      this.drawNode(g, root);
       this.drawLink(g, linkData);
+      this.drawNode(g, root);
     },
     drawNode(g, root) {
       const self = this;
@@ -210,21 +215,21 @@ export default {
           self.hideToolTip();
         });
 
-      node
-        .append("circle")
-        .attr("r", radius)
-        .attr("stroke", "#97ca5e")
-        .attr("fill", "#fff")
-        .on("mouseover", function() {
-          d3.select(this)
-            .attr("fill", "orange")
-            .attr("r", radius * 2);
-        })
-        .on("mouseout", function() {
-          d3.select(this)
-            .attr("fill", "#fff")
-            .attr("r", radius);
-        });
+      // node
+      //   .append("circle")
+      //   .attr("r", radius)
+      //   .attr("stroke", "#97ca5e")
+      //   .attr("fill", "#fff")
+      //   .on("mouseover", function() {
+      //     d3.select(this)
+      //       .attr("fill", "orange")
+      //       .attr("r", radius * 2);
+      //   })
+      //   .on("mouseout", function() {
+      //     d3.select(this)
+      //       .attr("fill", "#fff")
+      //       .attr("r", radius);
+      //   });
 
       const text = node
         .append("text")
@@ -252,7 +257,7 @@ export default {
         .append("tspan")
         .text(function(d) {
           if (d.data.beginsubnet) {
-            return d.data.beginsubnet 
+            return d.data.beginsubnet;
           }
         })
         .attr("y", 8)
@@ -260,18 +265,17 @@ export default {
         .attr("text-anchor", "left")
         .attr("fill", excuteTextColor);
 
-         text
+      text
         .append("tspan")
         .text(function(d) {
           if (d.data.endsubnet) {
-            return  d.data.endsubnet;
+            return d.data.endsubnet;
           }
         })
         .attr("y", 30)
         .attr("x", 35)
         .attr("text-anchor", "left")
         .attr("fill", excuteTextColor);
-
 
       node.attr("transform", function(d) {
         return "translate(" + d.y + "," + d.x + ")";
@@ -341,15 +345,18 @@ export default {
       pop.style.left = left + x + "px";
       pop.style.top = top + y + "px";
     },
-    markActiveNode(selection) {
+    markActiveNode(selections) {
       d3.selectAll(".node").attr("style", "");
-      selection.attr("style", "outline: solid 3px #458CE9");
+      selections.forEach(selection => {
+        selection.attr("style", "outline: solid 3px #458CE9");
+      });
     },
     showToolTip({ x, y, data }) {
       // const { width, height } = this.getWidthHeight();
       // const { margin } = this.options;
       const toolTip = this.$refs.toolTip;
-      if (!!data.usedfor) {
+      const showTops = Boolean(data.usedfor);
+      if (showTops) {
         toolTip.style.display = "block";
         toolTip.style.right = 0 + "px";
         toolTip.style.top = 0 + "px";
@@ -373,7 +380,25 @@ export default {
       };
       this.setSvgPosition(node);
       this.showPop(node);
-      this.markActiveNode(selection);
+      if (this.multiple) {
+        const goalNodeIndex = this.selectNodeList.findIndex(item => {
+          return item.id === node.data.id;
+        });
+        if (goalNodeIndex === -1) {
+          this.selectNodeList.push({
+            id: node.data.id,
+            node,
+            selection
+          });
+        } else {
+          this.selectNodeList.splice(goalNodeIndex, 1);
+        }
+
+        this.markActiveNode(this.selectNodeList.map(item => item.selection));
+        this.$emit('onMultiple', this.selectNodeList)
+      } else {
+        this.markActiveNode([selection]);
+      }
       this.$emit("onClickNode", node, selection);
     }
   },

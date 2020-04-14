@@ -10,8 +10,22 @@
               size="small"
               :disabled="abledDelete"
               class="btn-del"
-              @click="handleDeleteAllTree"
+              @click="handleDeleteNode"
             >删除节点</Button>
+            <Button
+              type="warning"
+              size="small"
+              :disabled="abledDelete"
+              class="btn-del"
+              @click="handleClickSplitSubnet"
+            >子网拆分</Button>
+             <Button
+              type="success"
+              size="small"
+              :disabled="abledDelete"
+              class="btn-del"
+              @click="handleClickMergeSubnet"
+            >子网合并</Button>
           </h3>
           <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
             <Row :gutter="20">
@@ -127,6 +141,7 @@
             layoutType="horizontal"
             :duration="20"
             @onClickNode="handleClickNode"
+            @onMultiple="handleMultipleNode"
           >
             <!-- <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
@@ -283,12 +298,12 @@ export default {
       const beginArr = (Array(bitWidth).join("0") + begin.toString(2))
         .slice(-bitWidth)
         .split("");
-      const options = [beginArr.join('')];
+      const options = [beginArr.join("")];
       for (let i = beginArr.length; i > 0; i--) {
-        if (beginArr[i-1] === "1") {
+        if (beginArr[i - 1] === "1") {
           break;
         } else {
-          beginArr[i-1] = '1';
+          beginArr[i - 1] = "1";
           options.push(beginArr.join(""));
         }
       }
@@ -458,6 +473,9 @@ export default {
         this.currentNode.beginnodecode = 0;
       }
     },
+    handleMultipleNode(nodes) {
+      console.log("handleMultipleNode", nodes);
+    },
     handleSubmit() {
       const params = JSON.parse(
         JSON.stringify(this.tree).replace(/children/g, "nodes")
@@ -494,7 +512,7 @@ export default {
         });
       }
     },
-    handleDeleteAllTree() {
+    handleDeleteNode() {
       if (this.currentNode.id) {
         this.$Modal.confirm({
           title: "删除确认",
@@ -513,7 +531,9 @@ export default {
       } else {
         this.$Message.info("请先选择节点");
       }
-    }
+    },
+    handleClickSplitSubnet() {},
+    handleClickMergeSubnet () {}
   },
   watch: {
     autoAssign(value) {
@@ -623,6 +643,9 @@ export default {
     margin-bottom: 24px;
     .btn-del {
       float: right;
+      & + .btn-del {
+        margin-right: 10px;
+      }
     }
   }
   .base-input {
