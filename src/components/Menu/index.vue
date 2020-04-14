@@ -9,12 +9,11 @@
           :theme="theme"
           :active-name="tab"
           :open-names="openNames"
-          :accordion="true"
         >
           <MenuItem
             class="node-manage"
             v-if="PACK_SYSTEM.includes('node')"
-            name="node-manage"
+            name="nodeManage"
             to="/node">
             <img :src="require('@/assets/images/node.png')" alt >
             节点管理
@@ -78,17 +77,18 @@ export default {
   name: "menuNav",
 
   data() {
-    // eslint-disable-next-line no-undef
-    this.PACK_SYSTEM = PACK_SYSTEM;
+    const route = this.$route;
     
     return {
+    // eslint-disable-next-line no-undef
+      PACK_SYSTEM,
       theme: "dark",
       openNames: [
-        "address-manage",
+        "ipam-manage",
         "dns-service",
         "access-control",
         "dhcp-service",
-        "safe"
+        "system-safe"
       ],
       ops: {
         vuescroll: {
@@ -97,7 +97,7 @@ export default {
           detectResize: true
         }
       },
-      tab: this.$route.params.tab || this.$route.name // 路由tab
+      tab: route.params.tab || route.name // 路由tab
     };
   },
 
