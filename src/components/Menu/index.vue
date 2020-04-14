@@ -91,9 +91,11 @@ export default {
         "safe"
       ],
       ops: {
-        onlyShowBarOnScroll: true,
-        hoverStyle: true,
-        background: "#d5d5d5"
+        vuescroll: {
+          mode: "native",
+          sizeStrategy: "percent",
+          detectResize: true
+        }
       },
       tab: this.$route.params.tab || this.$route.name // 路由tab
     };
