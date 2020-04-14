@@ -20,7 +20,7 @@
             节点管理
           </MenuItem>
           
-          <Submenu name="ipam-manage" v-if="PACK_SYSTEM.includes('address')">
+          <Submenu name="ipam-manage" v-if="PACK_SYSTEM.includes('ipam')">
             <template slot="title">
               <img :src="require('@/assets/images/access.png')" alt >
               IPAM管理
@@ -50,7 +50,7 @@
             <MenuItem name="analysis-priority" to="/access-control/analysis-priority">解析优先级</MenuItem>
           </Submenu>
           
-          <Submenu name="dhcp-service" v-if="PACK_SYSTEM.includes('address')">
+          <Submenu name="dhcp-service" v-if="PACK_SYSTEM.includes('ipam')">
             <template slot="title">
               <img :src="require('@/assets/images/access.png')" alt >
               DHCP服务
