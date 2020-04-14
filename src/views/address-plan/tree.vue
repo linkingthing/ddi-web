@@ -16,17 +16,17 @@
           <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
             <Row :gutter="20">
               <Col :span="12">
-                <FormItem label="起始编码" prop="beginnodecode">
+                <FormItem label="起始编码(二进制)" prop="beginnodecode">
                   <Input
                     disabled
                     placeholder="起始编码"
                     class="base-input"
-                    v-model.number="currentNode.beginnodecode"
+                    v-model="beginNodeCodeBinary"
                   />
                 </FormItem>
               </Col>
               <Col :span="12">
-                <FormItem label="结束编码" prop="endnodecode">
+                <FormItem label="结束编码(二进制)" prop="endnodecode">
                   <Select
                     placeholder="结束编码"
                     class="base-input"
@@ -259,58 +259,46 @@ export default {
       const hasCurrentNode = !!this.currentNode.id;
       return this.hasTree && hasCurrentNode;
     },
-    endNodeCodeOptions() {
-      // 公式法
-      // let options = [];
-      // const begin = this.currentNode.beginnodecode || 0;
-      // if (this.isRootNode) {
-      //   return [{ value: 0, binary: "0" }];
-      // }
-      // const bitWidth =
-      //   this.currentParent.data && this.currentParent.data.subtreebitnum;
-      // const maxNodeCode = Math.pow(2, bitWidth) - 1;
-      // options.push(begin);
-      // let index = bitWidth;
-
-      // while (index > 0) {
-      //   if (begin) {
-      //     let current = (Math.pow(2, index) - 1) * begin;
-      //     if (current > begin && maxNodeCode >= current) {
-      //       options.push(current);
-      //     }
-      //   } else {
-      //     let current = Math.pow(2, index) - 1;
-      //     options.push(current);
-      //   }
-      //   index--;
-      // }
-      // return options.sort().map(item => {
-      //   return {
-      //     value: item,
-      //     binary: (Array(bitWidth).join("0") + item.toString(2)).slice(
-      //       -bitWidth
-      //     )
-      //   };
-      // });
-      // 补位法计算
-      let begin = this.currentNode.beginnodecode || 0;
-      begin = begin.toString(2);
+    beginNodeCodeBinary() {
+      let nodecode = this.currentNode.beginnodecode;
+      if (!nodecode) {
+        nodecode = "0";
+      }
       const bitWidth =
         this.currentParent &&
         this.currentParent.data &&
         this.currentParent.data.subtreebitnum;
-      const options = [];
-      for (let i = 0; i < bitWidth; i++) {
-        options.push(begin);
-        if (begin.length < bitWidth) {
-          begin = `1${begin}`;
+      const binary = (Array(bitWidth).join("0") + nodecode.toString(2)).slice(
+        -bitWidth
+      );
+      return binary;
+    },
+    endNodeCodeOptions() {
+      // 补位法计算
+      let begin = this.currentNode.beginnodecode || 0;
+      const bitWidth =
+        this.currentParent &&
+        this.currentParent.data &&
+        this.currentParent.data.subtreebitnum;
+      const beginArr = (Array(bitWidth).join("0") + begin.toString(2))
+        .slice(-bitWidth)
+        .split("");
+      const options = [beginArr.join('')];
+      for (let i = beginArr.length; i > 0; i--) {
+        if (beginArr[i-1] === "1") {
+          break;
+        } else {
+          beginArr[i-1] = '1';
+          options.push(beginArr.join(""));
         }
       }
-      console.log(options);
+
       return options.map(item => {
         return {
           value: parseInt(item, 2),
-          binary: item
+          binary: (Array(bitWidth).join("0") + item.toString(2)).slice(
+            -bitWidth
+          )
         };
       });
     }
