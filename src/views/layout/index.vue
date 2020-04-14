@@ -1,17 +1,20 @@
 <template>
-  <main class="main-content">
+  <article class="main-content">
     <!-- 菜单 -->
-    <Menu/>
-    <section class="content">
-      <Header/>
+    <Menu />
+    
+    <section class="content-box">
+      <Header />
+
       <div class="content-wrapper">
         <div class="content-padding">
-          <bread/>
-          <router-view/>
+          <bread />
+
+          <router-view />
         </div>
       </div>
     </section>
-  </main>
+  </article>
 </template>
 
 <script>
@@ -20,6 +23,7 @@ import Header from "@/components/Header";
 
 export default {
   name: "Layout",
+  
   components: {
     Menu,
     Header
@@ -27,30 +31,6 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-.main-content {
-  position: absolute;
-  margin: 0;
-  bottom: 0px;
-  top: 0px;
-  background: #f4f3ef;
-}
-
-.content {
-  height: 100%;
-  overflow: auto;
-}
-
-.bread {
-  padding: 20px;
-}
-
-.content-wrapper {
-  padding: 100px 40px 20px 40px;
-  height: 100%;
-}
-.content-padding {
-  background: #fff;
-  min-height: 100%;
-}
+<style lang="less">
+@import "./index.less";
 </style>

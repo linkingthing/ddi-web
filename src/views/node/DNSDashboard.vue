@@ -2,29 +2,44 @@
   <div class="DNSDashboard dashboard">
     <h1 class="d-title">DNS服务器</h1>
 
-    <Row type="flex" justify="space-between" style="margin-bottom: 50px">
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px">
       <i-col span="11">
         <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="QPS">
-          <line-bar :labels="qpsLabels" :values="qpsValues"></line-bar>
+          <line-bar :labels="qpsLabels" :values="qpsValues"/>
         </Card>
       </i-col>
     </Row>
-    <Row type="flex" justify="space-between" style="margin-bottom: 50px">
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px">
       <i-col span="11">
         <Card title="TOP请求域名">
-          <Table :data="domains" :columns="topDomainColumns" style="padding-top: 30px" />
+          <Table
+            :data="domains"
+            :columns="topDomainColumns"
+            style="padding-top: 30px" />
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="TOP请求IP">
-          <Table :data="ips" :columns="topIPColumns" style="padding-top: 30px" />
+          <Table
+            :data="ips"
+            :columns="topIPColumns"
+            style="padding-top: 30px" />
         </Card>
       </i-col>
     </Row>
-    <Row type="flex" justify="space-between" style="margin-bottom: 50px">
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px">
       <i-col span="11">
         <Card title="解析状态">
           <Pie :values="status" />
@@ -115,12 +130,16 @@ export default {
     };
   },
   computed: {},
+  watch: {},
   created() {},
   mounted() {
     this.initDataRequest();
     this.timer = setInterval(() => {
       this.initDataRequest();
     }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
 
   methods: {
@@ -285,10 +304,6 @@ export default {
         })
         .catch(err => err);
     }
-  },
-  watch: {},
-  beforeDestroy() {
-    clearInterval(this.timer);
   }
 };
 </script>

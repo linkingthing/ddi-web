@@ -4,69 +4,69 @@
       <img src="../../assets/images/logo.png" alt >
     </div>
     <div class="menu-list">
-      <vue-scroll class="pr" :ops="ops">
+      <vue-scroll :ops="ops">
         <Menu
           :theme="theme"
           :active-name="tab"
-          :open-names="$route.name.split('/')"
+          :open-names="openNames"
           :accordion="true"
         >
-          <MenuGroup title="节点管理" v-if="PACK_SYSTEM.includes('node')">
-            <MenuItem name="nodeManage" to="/node">
-              <img :src="require('@/assets/images/node.png')" alt >
-              节点管理
-            </MenuItem>
-          </MenuGroup>
-          <MenuGroup title="域名解析" v-if="PACK_SYSTEM.includes('dns')">
-            <Submenu name="authority">
-              <template slot="title">
-                <img :src="require('@/assets/images/authority.png')" alt >
-                权威管理
-              </template>
-              <MenuItem name="configGroup" to="/dns/authority/config">配置管理</MenuItem>
-              <MenuItem name="redirectView" to="/dns/authority/redirectView">重定向</MenuItem>
-            </Submenu>
-            <MenuItem name="A4ComposeView" to="/dns/recursion/A4ComposeView">
-              <img :src="require('@/assets/images/recursion.png')" alt >
-              递归管理
-            </MenuItem>
-            <MenuItem name="zoneForward" to="/dns/forward/zoneForward">
-              <img :src="require('@/assets/images/forward.png')" alt >
-              转发管理
-            </MenuItem>
-            <Submenu name="accessControl">
-              <template slot="title">
-                <img :src="require('@/assets/images/access.png')" alt >
-                访问控制
-              </template>
-              <MenuItem name="accessControlList" to="/dns/accessControl/accessControlList">访问控制列表</MenuItem>
-              <MenuItem name="viewManage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
-              <MenuItem name="priority" to="/dns/accessControl/priority">解析优先级</MenuItem>
-            </Submenu>
-            <Submenu name="safe">
-              <template slot="title">
-                <img :src="require('@/assets/images/safe.png')" alt >
-                安全管理
-              </template>
-              <MenuItem name="blacklistAndwhitelist" to="/dns/safe/blacklistAndwhitelist">安全管理</MenuItem>
-              <MenuItem name="developmentcontrol" to="/dns/safe/developmentcontrol">并发控制</MenuItem>
-            </Submenu>
-          </MenuGroup>
-          <MenuGroup title="地址管理" v-if="PACK_SYSTEM.includes('address')">
-            <Submenu name="address-manage">
-              <template slot="title">
-                <img :src="require('@/assets/images/address.png')" alt >
-                地址管理
-              </template>
-              <MenuItem name="/address-manage/child-net" to="/address-manage/child-net">子网管理</MenuItem>
-              <MenuItem name="/address-manage/device-manage" to="/address-manage/device-manage">设备管理</MenuItem>
-              <MenuItem
-                name="/address-manage/option-config"
-                to="/address-manage/option-config"
-              >OPTION配置</MenuItem>
-              <MenuItem name="/address-manage/tree" to="/address-manage/tree">地址规划</MenuItem>
-            </Submenu>
-          </MenuGroup>
+          <MenuItem
+            class="node-manage"
+            v-if="PACK_SYSTEM.includes('node')"
+            name="node-manage"
+            to="/node">
+            <img :src="require('@/assets/images/node.png')" alt >
+            节点管理
+          </MenuItem>
+          
+          <Submenu name="address-manage" v-if="PACK_SYSTEM.includes('address')">
+            <template slot="title">
+              <img :src="require('@/assets/images/access.png')" alt >
+              IPAM管理
+            </template>
+            <MenuItem name="ip-address-manage" to="/address-manage/child-net">IP地址管理</MenuItem>
+            <MenuItem name="ip-address-devide" to="/address-manage/tree">IP地址划分</MenuItem>
+          </Submenu>
+          
+          <Submenu name="dns-service" v-if="PACK_SYSTEM.includes('dns')">
+            <template slot="title">
+              <img :src="require('@/assets/images/authority.png')" alt >
+              DNS服务
+            </template>
+            <MenuItem name="config-group" to="/dns/authority/config">权威管理</MenuItem>
+            <MenuItem name="redirect-view" to="/dns/authority/redirectView">重定向</MenuItem>
+            <MenuItem name="a4-compose-view" to="/dns/recursion/A4ComposeView">递归管理</MenuItem>
+            <MenuItem name="zone-forward" to="/dns/forward/zoneForward">转发管理</MenuItem>
+          </Submenu>
+          
+          <Submenu name="access-control" v-if="PACK_SYSTEM.includes('dns')">
+            <template slot="title">
+              <img :src="require('@/assets/images/access.png')" alt >
+              访问控制
+            </template>
+            <MenuItem name="access-control-list" to="/dns/accessControl/accessControlList">访问控制列表</MenuItem>
+            <MenuItem name="view-manage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
+            <MenuItem name="priority" to="/dns/accessControl/priority">解析优先级</MenuItem>
+          </Submenu>
+          
+          <Submenu name="dhcp-service" v-if="PACK_SYSTEM.includes('address')">
+            <template slot="title">
+              <img :src="require('@/assets/images/access.png')" alt >
+              DHCP服务
+            </template>
+            <MenuItem name="address-pool-manage" to="/address-manage/option-config">地址池管理</MenuItem>
+            <MenuItem name="option-config" to="/address-manage/option-config">OPTION配置</MenuItem>
+          </Submenu>
+          
+          <Submenu name="safe">
+            <template slot="title">
+              <img :src="require('@/assets/images/safe.png')" alt >
+              系统安全
+            </template>
+            <MenuItem name="blacklist-and-white-list" to="/dns/safe/blacklistAndwhitelist">安全管理</MenuItem>
+            <MenuItem name="development-control" to="/dns/safe/developmentcontrol">并发控制</MenuItem>
+          </Submenu>
         </Menu>
       </vue-scroll>
     </div>
@@ -76,18 +76,25 @@
 <script>
 export default {
   name: "menuNav",
+
   data() {
     // eslint-disable-next-line no-undef
     this.PACK_SYSTEM = PACK_SYSTEM;
-    this.ops = {
-      bar: {
-        hoverStyle: true,
-        onlyShowBarOnScroll: true,
-        background: "#d5d5d5"
-      }
-    };
+    
     return {
       theme: "dark",
+      openNames: [
+        "address-manage",
+        "dns-service",
+        "access-control",
+        "dhcp-service",
+        "safe"
+      ],
+      ops: {
+        onlyShowBarOnScroll: true,
+        hoverStyle: true,
+        background: "#d5d5d5"
+      },
       tab: this.$route.params.tab || this.$route.name // 路由tab
     };
   },

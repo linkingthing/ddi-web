@@ -2,13 +2,16 @@
   <div class="ControllerDashboard dashboard">
     <h1 class="d-title">Conroller服务器</h1>
 
-    <Row type="flex" justify="space-between" style="margin-bottom: 50px">
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px">
       <i-col span="11">
         <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="CPU利用率">
-          <line-bar :labels="cpuLabels" :values="cpuValues"></line-bar>
+          <line-bar :labels="cpuLabels" :values="cpuValues"/>
         </Card>
       </i-col>
     </Row>
@@ -16,12 +19,18 @@
     <Row type="flex" justify="space-between">
       <i-col span="11">
         <Card title="内存利用率">
-          <line-bar lineTheme="purple" :labels="memoLabels" :values="memoValues"></line-bar>
+          <line-bar
+            line-theme="purple"
+            :labels="memoLabels"
+            :values="memoValues"/>
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="磁盘利用率">
-          <line-bar lineTheme="brown" :labels="diskLabels" :values="diskValues"></line-bar>
+          <line-bar
+            line-theme="brown"
+            :labels="diskLabels"
+            :values="diskValues"/>
         </Card>
       </i-col>
     </Row>
@@ -51,6 +60,7 @@ export default {
     };
   },
   computed: {},
+  watch: {},
   created() {},
   mounted() {
     const node = this.$route.query.ip;
@@ -58,6 +68,9 @@ export default {
     this.timer = setInterval(() => {
       this.batchExecute(node);
     }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
   methods: {
     batchExecute(node) {
@@ -89,10 +102,6 @@ export default {
         });
       });
     }
-  },
-  watch: {},
-  beforeDestroy() {
-    clearInterval(this.timer);
   }
 };
 </script>

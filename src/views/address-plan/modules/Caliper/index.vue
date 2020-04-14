@@ -8,7 +8,13 @@
         <dd v-for="item in netcodeBit" :key="item">{{item}}</dd>
       </dl>
     </div>
-    <Slider v-model="innerValue" :step="1" :max="64" range :marks="marks" @on-change="handleChange"></Slider>
+    <Slider
+      v-model="innerValue"
+      :step="1"
+      :max="64"
+      range
+      :marks="marks"
+      @on-change="handleChange"/>
   </div>
 </template>
 
@@ -80,7 +86,7 @@ export default {
     window.removeEventListener("resize", this.listenResize);
   },
   methods: {
-    listenResize: _.debounce(function() {
+    listenResize: _.debounce(function () {
       console.log("listenResize");
       const calipers = this.$refs.calipers;
       const width = getComputedStyle(calipers).width;

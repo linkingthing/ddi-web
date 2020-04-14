@@ -1,52 +1,78 @@
 
 .menu {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    padding-bottom: 50px;
-    float: left;
-    background-color: #455484;
-    .logo {
-      height: 86px;
-      padding: 20px;
-      border-bottom: 1px solid #cfcfca;
-    }
-    .ivu-menu .ivu-menu {
-      padding-left: 14px;
-    }
-    .ivu-menu-dark.ivu-menu-vertical
-      .ivu-menu-item-active:not(.ivu-menu-submenu) {
-      background: #455484;
-    }
-    .ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened {
-      background: #455484;
-    }
-    .ivu-menu-dark.ivu-menu-vertical
-      .ivu-menu-item-active:not(.ivu-menu-submenu) {
-      color: #f8b16b;
-      // background: #f4f3ef;
-      &::after {
-        position: absolute;
-        left: -14px;
-        top: 8px;
-        display: block;
-        content: "";
-        width: 210px;
-        height: 30px;
-        border-radius: 0px 20px 20px 0px;
-        background: #f4f3ef;
-        z-index: -1;
+  width: 241px;
+  background-color: #455484;
+  height: 100%;
+  flex: none;
+  overflow: hidden;
+
+  .logo {
+    height: 86px;
+    padding: 20px;
+    border-bottom: 1px solid #cfcfca;
+  }
+
+  &-list{
+    height: calc(~"100%  -  86px");
+    overflow: hidden;
+  }
+  
+  .ivu-menu{
+    overflow-x: hidden;
+  }
+
+  .ivu-menu-dark.ivu-menu-vertical {
+    .ivu-menu-submenu{
+      .ivu-menu-item-active{
+        background:rgba(244,243,239,1) !important;
+        color: #F8B16B;
+        border-radius: 0 20px 20px 0;
+
+        &:hover{
+          background:rgba(244,243,239,1) !important;
+          color: #F8B16B;
+        }
       }
     }
-    .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active {
-      color: #f8b16b;
-      background: #455484 !important;
-      &:hover {
-        background: none !important;
-        color: #f8b16b;
+
+    .ivu-menu-opened{
+      background-color: transparent;
+    }
+
+    .ivu-menu-submenu-title{
+      padding-left: 37px;
+      font-size: 18px;
+      color: #D1D0CE;
+    }
+
+    .ivu-menu-item{
+      line-height: 1;
+      padding: 11px 0 11px 72px !important;
+      font-size: 18px;
+      color: #D1D0CE;
+      margin-right: 31px;
+    }
+
+    .node-manage{
+      margin-top: 20px;
+
+      &.ivu-menu-item-active{
+        background:rgba(244,243,239,1) !important;
+        color: #F8B16B;
+        border-radius: 0 30px 30px 0;
+
+        &:hover{
+          background:rgba(244,243,239,1) !important;
+          color: #F8B16B;
+        }
+      }
+  
+      &.ivu-menu-item{
+        padding-left: 37px !important;
       }
     }
   }
+
   .menu-list img {
     width: 18px;
     height: 18px;
@@ -54,3 +80,4 @@
     vertical-align: middle;
     margin-top: -5px;
   }
+}
