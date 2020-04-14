@@ -1,13 +1,13 @@
 <template>
   <main class="main-content">
     <!-- 菜单 -->
-    <Menu></Menu>
+    <Menu/>
     <section class="content">
-      <Header></Header>
+      <Header/>
       <div class="content-wrapper">
         <div class="content-padding">
-          <bread></bread>
-          <router-view></router-view>
+          <bread/>
+          <router-view/>
         </div>
       </div>
     </section>
@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import Menu from "./Menu";
-import Header from "./Header";
+import Menu from "@/components/Menu";
+import Header from "@/components/Header";
 
 export default {
   name: "Layout",

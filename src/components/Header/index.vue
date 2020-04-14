@@ -8,7 +8,10 @@
           </Badge>
           <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
             <a href="javascript:void(0)">
-              <img src="../../assets/images/avatar.png" alt class="avatar" />
+              <img
+                src="../../assets/images/avatar.png"
+                alt
+                class="avatar" >
               Admin
               <Icon type="md-arrow-dropdown" />
             </a>
@@ -25,14 +28,23 @@
       <Form :label-width="80" style="width: 400px;margin:0 auto">
         <FormItem label="账号">admin</FormItem>
         <FormItem label="密码">
-          <Input v-model="password" type="password" placeholder="请输入密码" />
+          <Input
+            v-model="password"
+            type="password"
+            placeholder="请输入密码" />
         </FormItem>
         <FormItem label="再次输入">
-          <Input v-model="rePassword" type="password" placeholder="请在此输入密码" />
+          <Input
+            v-model="rePassword"
+            type="password"
+            placeholder="请在此输入密码" />
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="primary" size="large" @click="handleSubmit">确认</Button>
+        <Button
+          type="primary"
+          size="large"
+          @click="handleSubmit">确认</Button>
       </div>
     </Modal>
   </div>
@@ -40,6 +52,7 @@
 
 <script>
 import { mapMutations } from "vuex";
+import services from "@/services";
 
 export default {
   name: "Header",
@@ -91,36 +104,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.header {
-  position: fixed;
-  top: 0;
-  z-index: 10;
-  left: 240px;
-  right: 0;
-  display: flow-root;
-  height: 100px;
-  box-sizing: border-box;
-
-  .header-inner {
-    position: relative;
-    background: #f4f3ef;
-    width: 100%;
-    height: 86px;
-
-    padding: 20px 30px;
-    box-sizing: border-box;
-    z-index: 10;
-  }
-
-  .user {
-    font-size: 16px;
-    float: right;
-    .avatar {
-      height: 36px;
-      height: 36px;
-      padding-right: 20px;
-      vertical-align: middle;
-    }
-  }
-}
+@import "./index.less";
 </style>
