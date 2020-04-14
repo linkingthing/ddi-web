@@ -10,57 +10,62 @@
               size="small"
               :disabled="abledDelete"
               class="btn-del"
-              @click="handleDeleteAllTree"
+              @click="handleDeleteNodeImmediately"
             >删除节点</Button>
+            <Button
+              type="warning"
+              size="small"
+              :disabled="abledDelete"
+              class="btn-del"
+              @click="handleClickSplitSubnet"
+            >子网拆分</Button>
+            <Button
+              type="success"
+              size="small"
+              :disabled="abledDelete"
+              class="btn-del"
+              @click="handleClickMergeSubnet"
+            >子网合并</Button>
           </h3>
-          <Form
-            ref="form"
-            :rules="rules"
-            :model="currentNode"
-            :hide-required-mark="true">
+          <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
             <Row :gutter="20">
-              <Col :span="12"/>
-              <FormItem label="起始编码">
-                <Input
-                  placeholder="起始编码"
-                  class="base-input"
-                  v-model.number="currentNode.beginnodecode"
-                />
-              </FormItem>
+              <Col :span="12">
+                <FormItem label="起始编码(二进制)" prop="beginnodecode">
+                  <Input
+                    disabled
+                    placeholder="起始编码"
+                    class="base-input"
+                    v-model="beginNodeCodeBinary"
+                  />
+                </FormItem>
               </Col>
-              <Col :span="12"/>
-              <FormItem label="结束编码">
-                <Input
-                  placeholder="结束编码"
-                  class="base-input"
-                  v-model.number="currentNode.endnodecode"
-                />
-              </FormItem>
+              <Col :span="12">
+                <FormItem label="结束编码(二进制)" prop="endnodecode">
+                  <Select
+                    placeholder="结束编码"
+                    class="base-input"
+                    v-model.number="currentNode.endnodecode"
+                  >
+                    <Option
+                      v-for="(item, index) in endNodeCodeOptions"
+                      :value="item.value"
+                      :key="index"
+                    >{{item.binary}}</Option>
+                  </Select>
+                </FormItem>
               </Col>
             </Row>
             <FormItem label="名称">
-              <Input
-                placeholder="名称"
-                class="base-input"
-                v-model="currentNode.name" />
+              <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
             </FormItem>
-            <FormItem label="起始子网" prop="beginsubnet">
-              <Input
-                placeholder="起始子网"
-                class="base-input"
-                v-model="currentNode.beginsubnet" />
+            <FormItem label="起始子网" :prop="beginsubnetprop">
+              <Input placeholder="起始子网" class="base-input" v-model="currentNode.beginsubnet" />
             </FormItem>
-            <FormItem label="结束子网" prop="beginsubnet">
-              <Input
-                placeholder="结束子网"
-                class="base-input"
-                v-model="currentNode.endsubnet" />
+            <FormItem label="结束子网" :prop="endsubnetprop">
+              <Input placeholder="结束子网" class="base-input" v-model="currentNode.endsubnet" />
             </FormItem>
             <FormItem label="描述">
-              <Input
-                placeholder="描述"
-                class="base-input"
-                v-model="currentNode.usedfor" />
+              <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
             </FormItem>
           </Form>
         </div>
@@ -69,10 +74,7 @@
           <div class="child-node-edit-head">
             <h3>
               子节点编辑
-              <Button
-                type="primary"
-                size="small"
-                class="btn-import-category">导入分类</Button>
+              <Button type="primary" size="small" class="btn-import-category">导入分类</Button>
             </h3>
           </div>
 
@@ -111,7 +113,7 @@
               <li v-if="showCreateChildNode">
                 <div class="child-node" @click="handleAddChildNode">
                   +
-                  <span/>
+                  <span />
                 </div>
               </li>
             </ul>
@@ -119,11 +121,7 @@
         </div>
 
         <div class="btn-box">
-          <Button
-            type="primary"
-            size="small"
-            class="btn-complete"
-            @click="handleSubmit">保存提交</Button>
+          <Button type="primary" size="small" class="btn-complete" @click="handleSubmit">保存提交</Button>
         </div>
       </aside>
 
@@ -133,10 +131,7 @@
             地址分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
-          <Caliper
-            :value="caliperValue"
-            @onChange="handleChangeCaliper"
-            :bit-fill="bitFill"/>
+          <Caliper :value="caliperValue" @onChange="handleChangeCaliper" :bit-fill="bitFill" />
           <!-- <Allocation /> -->
         </div>
         <div class="tree">
@@ -146,6 +141,7 @@
             layout-type="horizontal"
             :duration="20"
             @onClickNode="handleClickNode"
+            @onMultiple="handleMultipleNode"
           >
             <!-- <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
@@ -192,16 +188,45 @@ export default {
   computed: {
     rules() {
       return {
+        endnodecode: [
+          {
+            required: true,
+            message: "请填写结束编码"
+          }
+        ],
         beginsubnet: [
           {
             required: true,
-            message: "subnet 必填"
+            message: "请填写subnet"
+          },
+          {
+            validator: subnetValidateFunc
+          }
+        ],
+        endsubnet: [
+          {
+            required: true,
+            message: "请填写subnet"
           },
           {
             validator: subnetValidateFunc
           }
         ]
       };
+    },
+    beginsubnetprop() {
+      if (this.isRootNode) {
+        return "beginsubnet";
+      } else {
+        return "beginsubnet2";
+      }
+    },
+    endsubnetprop() {
+      if (this.isRootNode) {
+        return "endsubnet";
+      } else {
+        return "endsubnet2";
+      }
     },
     abledDelete() {
       return !(this.currentNode.id && this.currentNode.id.length > 5);
@@ -226,7 +251,7 @@ export default {
       // if (parent && parent.data && parent.data.beginsubnet) {
       //   const [, prefixLen] = parent.data.beginsubnet.split("/");
       //   start = prefixLen;
-      // }
+      // } 以前只有一个subnet，只有beginsubnet
       if (
         parent &&
         parent.data &&
@@ -234,7 +259,6 @@ export default {
         this.currentNode.beginsubnet
       ) {
         const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-
         start = prefixLen - parent.data.subtreebitnum;
       }
 
@@ -243,39 +267,55 @@ export default {
     hasTree() {
       return !!this.tree.id;
     },
+    isRootNode() {
+      return this.currentNode.depth === 0;
+    },
     showCreateChildNode() {
       const hasCurrentNode = !!this.currentNode.id;
       return this.hasTree && hasCurrentNode;
     },
-    endNodeCode() {
-      // 算法： 结束编码是下一个兄弟节点的nodecode
-      const currentNode = this.currentNode;
-      const [min, max] = this.caliperValue;
-      let index,
-        result = 0;
-      if (
+    beginNodeCodeBinary() {
+      let nodecode = this.currentNode.beginnodecode;
+      if (!nodecode) {
+        nodecode = "0";
+      }
+      const bitWidth =
         this.currentParent &&
         this.currentParent.data &&
-        this.currentParent.data.children &&
-        Array.isArray(this.currentParent.data.children)
-      ) {
-        const siblings = this.currentParent.data.children;
+        this.currentParent.data.subtreebitnum;
+      const binary = (Array(bitWidth).join("0") + nodecode.toString(2)).slice(
+        -bitWidth
+      );
+      return binary;
+    },
+    endNodeCodeOptions() {
+      // 补位法计算
+      let begin = this.currentNode.beginnodecode || 0;
+      const bitWidth =
+        this.currentParent &&
+        this.currentParent.data &&
+        this.currentParent.data.subtreebitnum;
+      const beginArr = (Array(bitWidth).join("0") + begin.toString(2))
+        .slice(-bitWidth)
+        .split("");
+      const options = [beginArr.join("")];
+      for (let i = beginArr.length; i > 0; i--) {
+        if (beginArr[i - 1] === "1") {
+          break;
+        } else {
+          beginArr[i - 1] = "1";
+          options.push(beginArr.join(""));
+        }
+      }
 
-        index = siblings.findIndex(item => item.id === currentNode.id);
-        const nextNode = siblings[index + 1] || {
-          nodecode: Math.pow(2, max - min)
+      return options.map(item => {
+        return {
+          value: parseInt(item, 2),
+          binary: (Array(bitWidth).join("0") + item.toString(2)).slice(
+            -bitWidth
+          )
         };
-        result = nextNode.nodecode; // 根节点和最后一个节点没有下一个时候，结束值怎么取呢？默认0处理
-      }
-      console.log(index);
-      return result - 1;
-    }
-  },
-  watch: {
-    autoAssign(value) {
-      if (value) {
-        this.currentNode.subtreebitnum = 0;
-      }
+      });
     }
   },
   mounted() {
@@ -333,8 +373,8 @@ export default {
     },
     clearExtraNode(tree) {
       if (Array.isArray(tree.nodes)) {
-        this.clearExtraNode(tree.nodes);
         tree.nodes = tree.nodes.filter(item => item.type !== "surplusNode");
+        tree.nodes.forEach(child => this.clearExtraNode(child));
       }
     },
     reverseTransformTreeData(data) {
@@ -350,7 +390,10 @@ export default {
     getBinaryByIPv6(params) {
       const [, len] = params.prefix.split("/");
       services.checkIPv6Prefix(params).then(res => {
-        this.bitFill = [parseInt(res.data.binary.substring(0, len), 2), parseInt(res.data.binary.substring(0, len), 2)];
+        this.bitFill = [
+          parseInt(res.data.binary.substring(0, len), 2),
+          parseInt(res.data.binary.substring(0, len), 2)
+        ];
       });
     },
     handleChangeCaliper([min, max]) {
@@ -403,6 +446,14 @@ export default {
         return child.name !== node.data.name;
       });
     },
+    handleBeforeChangeNode(cb) {
+      // 节点点击之前校验 validateCurrentNode
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          cb();
+        }
+      });
+    },
     handleClickNode(data) {
       console.log(data);
       if (data.depth === 0) {
@@ -418,6 +469,12 @@ export default {
       }
       this.currentParent = data.parent;
       this.currentNode = data.data;
+      if (!this.currentNode.beginnodecode) {
+        this.currentNode.beginnodecode = 0;
+      }
+    },
+    handleMultipleNode(nodes) {
+      console.log("handleMultipleNode", nodes);
     },
     handleSubmit() {
       const params = JSON.parse(
@@ -428,10 +485,14 @@ export default {
 
       console.log(params);
       if (this.hasTree) {
-        services.updateSubtree(params).then(res => {
-          this.$Message.success("更新成功!");
-          this.getTreeData();
-          this.currentNode = {};
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            services.updateSubtree(params).then(res => {
+              this.$Message.success("更新成功!");
+              this.getTreeData();
+              this.currentNode = {};
+            });
+          }
         });
       } else {
         console.log(this.currentNode);
@@ -451,7 +512,7 @@ export default {
         });
       }
     },
-    handleDeleteAllTree() {
+    handleDeleteNodeImmediately() {
       if (this.currentNode.id) {
         this.$Modal.confirm({
           title: "删除确认",
@@ -469,6 +530,29 @@ export default {
         });
       } else {
         this.$Message.info("请先选择节点");
+      }
+    },
+    handleClickSplitSubnet() {},
+    handleClickMergeSubnet() {}
+  },
+  watch: {
+    autoAssign(value) {
+      if (value) {
+        this.currentNode.subtreebitnum = 0;
+      }
+    },
+    "currentNode.endnodecode"(value) {
+      if (this.currentParent) {
+        const siblings = this.currentParent.children;
+        const currentNode = this.currentNode;
+        const index = siblings.findIndex(
+          item => item.data.id === currentNode.id
+        );
+        const nextNode = this.currentParent.children[index + 1];
+        nextNode.data.beginnodecode = value + 1;
+        if (nextNode.data.endnodecode < value + 1) {
+          nextNode.data.endnodecode = value + 1;
+        }
       }
     }
   }
@@ -559,6 +643,9 @@ export default {
     margin-bottom: 24px;
     .btn-del {
       float: right;
+      & + .btn-del {
+        margin-right: 10px;
+      }
     }
   }
   .base-input {

@@ -1,7 +1,7 @@
 <template>
   <div class="A4ComposeView">
     <table-page
-      title="A4地址合成"
+      title="4A地址合成视图"
       :data="list"
       :columns="columns"
       :pagination-enable="false" />

@@ -2,7 +2,7 @@
   <div class="calipers" ref="calipers">
     <div
       class="top-show"
-      :style="`right: ${right}; letter-spacing:${letterSpace};margin-right:-${letterSpace}` "
+      :style="`right: ${right}; letter-spacing:${letterSpace}px;margin-right:-${letterSpace/2}px` "
     >
       <dl class="bit-animate" ref="bitAnimate">
         <dd v-for="item in netcodeBit" :key="item">{{item}}</dd>
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      letterSpace: "1px",
+      letterSpace: "1",
       innerValue: [0, 0]
     };
   },
@@ -86,12 +86,11 @@ export default {
     window.removeEventListener("resize", this.listenResize);
   },
   methods: {
-    listenResize: _.debounce(function () {
-      console.log("listenResize");
+    listenResize: _.debounce(function() {
       const calipers = this.$refs.calipers;
       const width = getComputedStyle(calipers).width;
       const letterWidth = parseFloat(width) / 64;
-      this.letterSpace = letterWidth - 9.3 + "px";
+      this.letterSpace = letterWidth - 9.3;
     }, 600),
     handleChange(v) {
       let [, max] = v;
@@ -138,6 +137,7 @@ export default {
 .calipers {
   position: relative;
   height: 60px;
+  overflow: hidden;
   .top-show {
     position: absolute;
     overflow: hidden;

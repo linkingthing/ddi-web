@@ -66,7 +66,6 @@
 
 <script>
 import services from "@/services";
-import { nameValidate } from "@/util/common";
 
 export default {
   name: "createView",

@@ -240,7 +240,7 @@ export default {
         return axios.get(`${baseUrl}/memhit`, { params })
     },
     getDHCPAssign() {
-        return axios.get(`${baseUrl}/dhcpassign`)
+        return axios.get(`${baseUrl}/dashdhcpassign`)
     },
 
     checkIPv6Prefix(params) {
