@@ -1,5 +1,8 @@
 <template>
-  <common-modal :visible.sync="configModal" title="新建访问控制表" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="configModal"
+    title="新建访问控制表"
+    @confirm="handleSubmit">
     <i-form
       :model="params"
       label-position="right"
@@ -11,7 +14,7 @@
         <Row>
           <i-col span="20">
             <form-item label="名称" prop="name">
-              <i-input v-model="params.name" placeholder="请填访问控制名称"></i-input>
+              <i-input v-model="params.name" placeholder="请填访问控制名称"/>
             </form-item>
             <form-item label="IP列表" prop="IP">
               <div v-for="item in params.list" :key="item.name">
@@ -25,14 +28,23 @@
             </form-item>
             <form-item label="acl">
               <Checkbox v-model="aclcheck">禁止</Checkbox>
-              <Select filterable style="width: 140px" v-model="acl">
-                <Option v-for="item in accessList" :key="item.id" :value="item.name">{{item.name}}</Option>
+              <Select
+                filterable
+                style="width: 140px"
+                v-model="acl">
+                <Option
+                  v-for="item in accessList"
+                  :key="item.id"
+                  :value="item.name">{{item.name}}</Option>
               </Select>
               <Button type="primary" @click="handleAddAcl">添加</Button>
             </form-item>
             <form-item label="IP">
               <Checkbox v-model="ipcheck">禁止</Checkbox>
-              <Input v-model="ip" placeholder="输入ip后点击添加" style="width: 140px" />
+              <Input
+                v-model="ip"
+                placeholder="输入ip后点击添加"
+                style="width: 140px" />
               <Button type="primary" @click="handleAddIP">添加</Button>
             </form-item>
           </i-col>
@@ -50,8 +62,8 @@ export default {
   name: "ConfigGroupMgConfig",
   props: {
     accessList: {
-      type: String,
-      default: ""
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -74,8 +86,8 @@ export default {
           {
             type: "string",
             max: 253,
-            message: "最多只能253个字符",
-          },
+            message: "最多只能253个字符"
+          }
         ]
       }
     };
@@ -141,7 +153,7 @@ export default {
       });
     },
 
-    //关闭弹窗
+    // 关闭弹窗
     cancelModel() {
       this.configModal = false;
       this.$refs.formValidate.resetFields();

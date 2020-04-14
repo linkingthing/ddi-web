@@ -13,38 +13,54 @@
               @click="handleDeleteAllTree"
             >删除节点</Button>
           </h3>
-          <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
+          <Form
+            ref="form"
+            :rules="rules"
+            :model="currentNode"
+            :hide-required-mark="true">
             <Row :gutter="20">
-              <Col :span="12">
-                <FormItem label="起始编码">
-                  <Input
-                    placeholder="起始编码"
-                    class="base-input"
-                    v-model.number="currentNode.beginnodecode"
-                  />
-                </FormItem>
+              <Col :span="12"/>
+              <FormItem label="起始编码">
+                <Input
+                  placeholder="起始编码"
+                  class="base-input"
+                  v-model.number="currentNode.beginnodecode"
+                />
+              </FormItem>
               </Col>
-              <Col :span="12">
-                <FormItem label="结束编码">
-                  <Input
-                    placeholder="结束编码"
-                    class="base-input"
-                    v-model.number="currentNode.endnodecode"
-                  />
-                </FormItem>
+              <Col :span="12"/>
+              <FormItem label="结束编码">
+                <Input
+                  placeholder="结束编码"
+                  class="base-input"
+                  v-model.number="currentNode.endnodecode"
+                />
+              </FormItem>
               </Col>
             </Row>
             <FormItem label="名称">
-              <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
+              <Input
+                placeholder="名称"
+                class="base-input"
+                v-model="currentNode.name" />
             </FormItem>
             <FormItem label="起始子网" prop="beginsubnet">
-              <Input placeholder="起始子网" class="base-input" v-model="currentNode.beginsubnet" />
+              <Input
+                placeholder="起始子网"
+                class="base-input"
+                v-model="currentNode.beginsubnet" />
             </FormItem>
             <FormItem label="结束子网" prop="beginsubnet">
-              <Input placeholder="结束子网" class="base-input" v-model="currentNode.endsubnet" />
+              <Input
+                placeholder="结束子网"
+                class="base-input"
+                v-model="currentNode.endsubnet" />
             </FormItem>
             <FormItem label="描述">
-              <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
+              <Input
+                placeholder="描述"
+                class="base-input"
+                v-model="currentNode.usedfor" />
             </FormItem>
           </Form>
         </div>
@@ -53,7 +69,10 @@
           <div class="child-node-edit-head">
             <h3>
               子节点编辑
-              <Button type="primary" size="small" class="btn-import-category">导入分类</Button>
+              <Button
+                type="primary"
+                size="small"
+                class="btn-import-category">导入分类</Button>
             </h3>
           </div>
 
@@ -92,7 +111,7 @@
               <li v-if="showCreateChildNode">
                 <div class="child-node" @click="handleAddChildNode">
                   +
-                  <span></span>
+                  <span/>
                 </div>
               </li>
             </ul>
@@ -100,7 +119,11 @@
         </div>
 
         <div class="btn-box">
-          <Button type="primary" size="small" class="btn-complete" @click="handleSubmit">保存提交</Button>
+          <Button
+            type="primary"
+            size="small"
+            class="btn-complete"
+            @click="handleSubmit">保存提交</Button>
         </div>
       </aside>
 
@@ -110,14 +133,17 @@
             地址分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
-          <Caliper :value="caliperValue" @onChange="handleChangeCaliper" :bitFill="bitFill"></Caliper>
+          <Caliper
+            :value="caliperValue"
+            @onChange="handleChangeCaliper"
+            :bit-fill="bitFill"/>
           <!-- <Allocation /> -->
         </div>
         <div class="tree">
           <tree
             :data="tree"
             node-text="name"
-            layoutType="horizontal"
+            layout-type="horizontal"
             :duration="20"
             @onClickNode="handleClickNode"
           >
@@ -139,7 +165,7 @@
 import tree from "./CoreTree";
 import Caliper from "./modules/Caliper";
 import Allocation from "./modules/Allocation";
-import services from "../../services";
+import services from "@/services";
 import { subnetValidateFunc } from "@/util/common";
 import { excuteNextIPv6 } from "./tool";
 
@@ -243,6 +269,13 @@ export default {
       }
       console.log(index);
       return result - 1;
+    }
+  },
+  watch: {
+    autoAssign(value) {
+      if (value) {
+        this.currentNode.subtreebitnum = 0;
+      }
     }
   },
   mounted() {
@@ -436,13 +469,6 @@ export default {
         });
       } else {
         this.$Message.info("请先选择节点");
-      }
-    }
-  },
-  watch: {
-    autoAssign(value) {
-      if (value) {
-        this.currentNode.subtreebitnum = 0;
       }
     }
   }

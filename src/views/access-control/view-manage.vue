@@ -1,22 +1,40 @@
 <template>
-  <div class="acceccControlList">
-    <table-page title="访问控制列表" :data="list" :columns="columns" :paginationEnable="false">
+  <div class="viewManage">
+    <table-page
+      title="视图管理"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false">
       <template slot="top-right">
-        <i-button type="success" size="large" @click="goConfig(0)">新建</i-button>
+        <i-button
+          type="success"
+          size="large"
+          @click="handleOpenCreate">新建</i-button>
       </template>
     </table-page>
 
-    <createAccess ref="configRef" @onSuccess="createSuccess" :accessList="list"></createAccess>
-    <editAccess ref="eviceRef" @onSuccess="getManger" :accessList="list"></editAccess>
+    <createView
+      ref="deviceRef"
+      @onCreateSuccess="getView"
+      :max-priority="list.length"/>
+    <editView
+      ref="analysis2Ref"
+      @onEditSuccess="getView"
+      :max-priority="list.length"/>
   </div>
 </template>
 
 <script>
+import createView from "./createView";
+import editView from "./editView";
 import services from "@/services";
-import createAccess from "./createAccess";
-import editAccess from "./editAccess";
+
 export default {
-  name: "accessControlList",
+  name: "deviceMonitor",
+  components: {
+    createView,
+    editView
+  },
   data() {
     return {
       columns: [
@@ -26,21 +44,21 @@ export default {
           align: "center"
         },
         {
-          title: "IP",
-          key: "",
+          title: "访问控制列表",
+          key: "acls",
           align: "center",
+
           render: (h, { row }) => {
             return h("Tags", {
               props: {
-                list: row.IP,
-                field: row
+                list: row.acls
               }
             });
           }
         },
         {
-          title: "创建时间",
-          key: "creationTimestamp",
+          title: "优先级",
+          key: "priority",
           align: "center"
         },
         {
@@ -50,13 +68,12 @@ export default {
           width: 160,
           render: (h, { row }) => {
             return h("div", [
-              !["any", "none"].includes(row.name) &&
-                h("btn-edit", {
-                  on: {
-                    click: () => this.goConfig1(row.id, row)
-                  }
-                }),
-              !["any", "none"].includes(row.name) &&
+              h("btn-edit", {
+                on: {
+                  click: () => this.goConfig1(row.id, row)
+                }
+              }),
+              row.name !== "default" &&
                 h("btn-del", {
                   on: {
                     click: () => this.delect(row.id)
@@ -67,55 +84,42 @@ export default {
         }
       ],
       list: [],
-      IP: [],
       id: "",
       name: "",
       remove: "",
-      modal1: false
+      modal1: false,
+      priority: "",
+      acls: []
     };
   },
-  components: {
-    createAccess,
-    editAccess
-  },
   mounted() {
-    this.getManger();
+    this.getView();
   },
   methods: {
-    handleGo(path) {
-      this.$router.push({
-        path
-      });
+    handleOpenCreate() {
+      this.$refs.deviceRef.openConfig();
     },
-
-    getManger() {
+    goConfig1(a, b) {
+      this.$refs.analysis2Ref.openConfig(a, b);
+    },
+    getView() {
       let _self = this;
       services
-        .getAccessList()
-        .then(function(res) {
+        .getViewList()
+        .then(function (res) {
           _self.list = res.data.data;
           for (var key in _self.list) {
             _self.id = _self.list[key].id;
             _self.name = _self.list[key].name;
-            _self.IP = _self.list[key].IP;
+            _self.priority = _self.list[key].priority;
+            _self.acls = _self.list[key].acls;
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.log(err);
         });
     },
-    //修改
-    goConfig(type) {
-      if (type == 0) {
-        this.$refs.configRef.openConfig();
-      }
-    },
-    goConfig1(data) {
-      this.$refs.eviceRef.openConfig({ data });
-    },
-    createSuccess() {
-      this.getManger();
-    },
+
     // 删除
     delect(data) {
       this.$Modal.confirm({
@@ -123,10 +127,10 @@ export default {
         content: "确定删除？",
         onOk: () => {
           services
-            .deleteAccess(data)
+            .deleteViewById(data)
             .then(res => {
               this.$Message.success("删除成功");
-              this.getManger();
+              this.getView();
             })
             .catch(err => {
               this.$Message.success("删除失败");
@@ -134,8 +138,9 @@ export default {
         }
       });
     }
-  },
-  watch: {}
+  }
 };
 </script>
 
+<style scoped>
+</style>

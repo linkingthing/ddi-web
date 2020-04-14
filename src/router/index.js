@@ -5,7 +5,10 @@ import Login from "../views/login";
 import Layout from "../views/layout";
 import node from "./node";
 import dns from "./dns";
-import address from "./address";
+import ipam from "./ipam";
+import dhcp from "./dhcp";
+import systemSafe from "./system-safe";
+import accessControl from "./access-control";
 
 const Cache = store();
 
@@ -16,8 +19,17 @@ const moduleList = [{
   label: "dns",
   modules: dns
 }, {
-  label: "address",
-  modules: address
+  label: "ipam",
+  modules: ipam
+}, {
+  label: "dns",
+  modules: dhcp
+}, {
+  label: "dns",
+  modules: systemSafe
+}, {
+  label: "dns",
+  modules: accessControl
 }];
 
 const packMaterial = moduleList

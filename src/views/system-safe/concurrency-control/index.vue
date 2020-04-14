@@ -5,19 +5,25 @@
       <i-form :label-width="260" :model="formItem">
         <Row>
           <i-col span="18">
-            <form-item label="递归并发数（个）" prop="recursiveClients" style="font-size:20px;">
-              <InputNumber v-model="formItem.recursiveClients" style=" width:300px;"></InputNumber>
+            <form-item
+              label="递归并发数（个）"
+              prop="recursiveClients"
+              style="font-size:20px;">
+              <InputNumber v-model="formItem.recursiveClients" style=" width:300px;"/>
               <i-button type="primary" @click="primary">保存</i-button>
             </form-item>
           </i-col>
           <i-col span="18">
-            <form-item label="单一域递归并发数（个）" prop="fetchesPerZone" style="font-size:20px;">
-              <InputNumber v-model="formItem.fetchesPerZone" style="width:300px;"></InputNumber>
+            <form-item
+              label="单一域递归并发数（个）"
+              prop="fetchesPerZone"
+              style="font-size:20px;">
+              <InputNumber v-model="formItem.fetchesPerZone" style="width:300px;"/>
               <i-button type="primary" @click="primary">保存</i-button>
             </form-item>
           </i-col>
           <i-col span="18">
-            <Form-item style="font-size:20px;margin-left:30%;margin-top:5%;"></Form-item>
+            <Form-item style="font-size:20px;margin-left:30%;margin-top:5%;"/>
           </i-col>
         </Row>
       </i-form>
@@ -36,8 +42,8 @@ export default {
       recursiveClients: "",
       fetchesPerZone: "",
       formItem: {
-        recursiveClients: "",
-        fetchesPerZone: ""
+        recursiveClients: null,
+        fetchesPerZone: null
       }
     };
   },
@@ -51,8 +57,8 @@ export default {
         .then(res => {
           this.list = res.data.data;
           for (var key in this.list) {
-            this.formItem.recursiveClients = this.list[key].recursiveClients;
-            this.formItem.fetchesPerZone = this.list[key].fetchesPerZone;
+            this.formItem.recursiveClients = +this.list[key].recursiveClients;
+            this.formItem.fetchesPerZone = +this.list[key].fetchesPerZone;
           }
         })
         .catch(err => {

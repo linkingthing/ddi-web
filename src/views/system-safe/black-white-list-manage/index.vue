@@ -1,12 +1,19 @@
 <template>
   <div class="blancList">
-    <table-page title="地址黑名单配置" :data="list" :columns="columns" :paginationEnable="false">
+    <table-page
+      title="地址黑名单配置"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false">
       <template slot="top-right">
-        <i-button type="success" size="large" @click="handleOpenCreate">新建</i-button>
+        <i-button
+          type="success"
+          size="large"
+          @click="handleOpenCreate">新建</i-button>
       </template>
     </table-page>
 
-    <blacklist-config ref="blacklistRef" @onCreateSuccess="getView"></blacklist-config>
+    <blacklist-config ref="blacklistRef" @onCreateSuccess="getView"/>
   </div>
 </template>
 
@@ -16,6 +23,9 @@ import blacklistConfig from "@/components/BlacklistConfig";
 import services from "@/services";
 export default {
   name: "blacklistAndwhitelist",
+  components: {
+    blacklistConfig
+  },
   data() {
     return {
       columns: [
@@ -90,9 +100,6 @@ export default {
         }
       });
     }
-  },
-  components: {
-    blacklistConfig
   }
 };
 </script>

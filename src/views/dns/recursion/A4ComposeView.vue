@@ -1,8 +1,12 @@
 <template>
   <div class="A4ComposeView">
-    <table-page title="A4地址合成" :data="list" :columns="columns" :paginationEnable="false" />
-    <createDefaultA4 ref="networkRef"></createDefaultA4>
-    <editDefaultA4 ref="subnetRef"></editDefaultA4>
+    <table-page
+      title="A4地址合成"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false" />
+    <createDefaultA4 ref="networkRef"/>
+    <editDefaultA4 ref="subnetRef"/>
   </div>
 </template>
 
@@ -13,6 +17,10 @@ import editDefaultA4 from "./editDefaultA4";
 
 export default {
   name: "A4ComposeView",
+  components: {
+    createDefaultA4,
+    editDefaultA4
+  },
   data() {
     return {
       columns: [
@@ -26,7 +34,7 @@ export default {
               {
                 props: {
                   to: {
-                    name: "A4Compose",
+                    name: "a4-compose",
                     query: {
                       id: row.id,
                       dns64s: row.links.dns64s,
@@ -59,10 +67,6 @@ export default {
       acls: [],
       dns64s: ""
     };
-  },
-  components: {
-    createDefaultA4,
-    editDefaultA4
   },
   mounted() {
     this.getView();

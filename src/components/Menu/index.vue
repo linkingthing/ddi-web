@@ -20,13 +20,13 @@
             节点管理
           </MenuItem>
           
-          <Submenu name="address-manage" v-if="PACK_SYSTEM.includes('address')">
+          <Submenu name="ipam-manage" v-if="PACK_SYSTEM.includes('address')">
             <template slot="title">
               <img :src="require('@/assets/images/access.png')" alt >
               IPAM管理
             </template>
-            <MenuItem name="ip-address-manage" to="/address-manage/child-net">IP地址管理</MenuItem>
-            <MenuItem name="ip-address-devide" to="/address-manage/tree">IP地址划分</MenuItem>
+            <MenuItem name="subnet-manage" to="/ipam-manage/subnet-manage">IP地址管理</MenuItem>
+            <MenuItem name="ip-address-devide" to="/ipam-manage/address-devide">IP地址划分</MenuItem>
           </Submenu>
           
           <Submenu name="dns-service" v-if="PACK_SYSTEM.includes('dns')">
@@ -45,9 +45,9 @@
               <img :src="require('@/assets/images/access.png')" alt >
               访问控制
             </template>
-            <MenuItem name="access-control-list" to="/dns/accessControl/accessControlList">访问控制列表</MenuItem>
-            <MenuItem name="view-manage" to="/dns/accessControl/viewManage">视图管理</MenuItem>
-            <MenuItem name="priority" to="/dns/accessControl/priority">解析优先级</MenuItem>
+            <MenuItem name="access-control-list" to="/access-control/list">访问控制列表</MenuItem>
+            <MenuItem name="view-manage" to="/access-control/view-manage">视图管理</MenuItem>
+            <MenuItem name="analysis-priority" to="/access-control/analysis-priority">解析优先级</MenuItem>
           </Submenu>
           
           <Submenu name="dhcp-service" v-if="PACK_SYSTEM.includes('address')">
@@ -55,17 +55,17 @@
               <img :src="require('@/assets/images/access.png')" alt >
               DHCP服务
             </template>
-            <MenuItem name="address-pool-manage" to="/address-manage/option-config">地址池管理</MenuItem>
-            <MenuItem name="option-config" to="/address-manage/option-config">OPTION配置</MenuItem>
+            <MenuItem name="address-pool-manage" to="/dhcp-service/option-config">地址池管理</MenuItem>
+            <MenuItem name="option-config" to="/dhcp-service/option-config">OPTION配置</MenuItem>
           </Submenu>
           
-          <Submenu name="safe">
+          <Submenu name="system-safe">
             <template slot="title">
               <img :src="require('@/assets/images/safe.png')" alt >
               系统安全
             </template>
-            <MenuItem name="blacklist-and-white-list" to="/dns/safe/blacklistAndwhitelist">安全管理</MenuItem>
-            <MenuItem name="development-control" to="/dns/safe/developmentcontrol">并发控制</MenuItem>
+            <MenuItem name="black-white-list-manage" to="/system-safe/black-white-list-manage">安全管理</MenuItem>
+            <MenuItem name="concurrency-control" to="/system-safe/concurrency-control">并发控制</MenuItem>
           </Submenu>
         </Menu>
       </vue-scroll>
