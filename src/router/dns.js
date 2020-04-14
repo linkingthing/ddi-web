@@ -22,7 +22,7 @@ export default [
    
     {
         // 配置组管理
-        name: 'configGroup',
+        name: 'config-group',
         path: '/dns/authority/config',
         component: config,
         meta: {
@@ -33,7 +33,7 @@ export default [
     },
     {
         // 权威区域查询
-        name: 'authorityZoneQuery',
+        name: 'authority-zone-query',
         path: '/dns/authority/zoneQuery',
         component: authorityZoneQuery,
         meta: {
@@ -44,7 +44,7 @@ export default [
     },
     {
         // 资源记录
-        name: 'resourceRecord',
+        name: 'resource-record',
         path: '/dns/authority/resourceRecord',
         component: resourceRecord,
         meta: {
@@ -55,7 +55,7 @@ export default [
     },
     {
         // 重定向
-        name: 'redirectView',
+        name: 'redirect-view',
         path: '/dns/authority/redirectView',
         component: redirectView,
         meta: {
@@ -77,7 +77,7 @@ export default [
     },
 
     {
-        name: 'A4ComposeView',
+        name: 'a4-compose-view',
         path: '/dns/recursion/A4ComposeView',
         component: A4ComposeView,
         meta: {
@@ -86,7 +86,7 @@ export default [
         }
     },
     {
-        name: 'A4Compose',
+        name: 'a4-compose',
         path: '/dns/recursion/view/A4Compose',
         component: A4Compose,
         meta: {
@@ -98,7 +98,7 @@ export default [
 
     {
         // 区域转发
-        name: 'zoneForward',
+        name: 'zone-forward',
         path: '/dns/forward/zoneForward',
         component: zoneForward,
         meta: {
@@ -107,7 +107,7 @@ export default [
         }
     },
     {
-        name: 'zoneQueryForward',
+        name: 'zone-query-forward',
         path: '/dns/forword/zoneQueryForward',
         component: zoneQueryForward,
         meta: {
@@ -117,7 +117,7 @@ export default [
         }
     },
     {
-        name: 'forwardList',
+        name: 'forward-list',
         path: '/dns/forword/forwardList',
         component: forwardList,
         meta: {
@@ -130,7 +130,7 @@ export default [
     // 访问控制
     {
         // 访问控制列表
-        name: 'accessControlList',
+        name: 'access-control-list',
         path: '/dns/accessControl/accessControlList',
         component: accessControlList,
         meta: {
@@ -140,7 +140,7 @@ export default [
     },
     {
         // 视图管理
-        name: 'viewManage',
+        name: 'view-manage',
         path: '/dns/accessControl/viewManage',
         component: viewManage,
         meta: {
@@ -161,7 +161,7 @@ export default [
 
     {
         // 黑白名单
-        name: 'blacklistAndwhitelist',
+        name: 'blacklist-and-white-list',
         path: '/dns/safe/blacklistAndwhitelist',
         component: blacklistAndwhitelist,
         meta: {
@@ -172,7 +172,7 @@ export default [
 
     {
         // 开发控制
-        name: 'developmentcontrol',
+        name: 'development-control',
         path: '/dns/safe/developmentcontrol',
         component: developmentcontrol,
         meta: {
