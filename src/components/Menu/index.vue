@@ -15,13 +15,13 @@
             v-if="PACK_SYSTEM.includes('node')"
             name="nodeManage"
             to="/node">
-            <img :src="require('@/assets/images/node.png')" alt >
+            <i class="menu-icon icon-node" />
             节点管理
           </MenuItem>
           
           <Submenu name="ipam-manage" v-if="PACK_SYSTEM.includes('ipam')">
             <template slot="title">
-              <img :src="require('@/assets/images/access.png')" alt >
+              <i class="menu-icon icon-address"/>
               IPAM管理
             </template>
             <MenuItem name="subnet-manage" to="/ipam-manage/subnet-manage">IP地址管理</MenuItem>
@@ -30,7 +30,7 @@
           
           <Submenu name="dns-service" v-if="PACK_SYSTEM.includes('dns')">
             <template slot="title">
-              <img :src="require('@/assets/images/authority.png')" alt >
+              <i class="menu-icon icon-authority"/>
               DNS服务
             </template>
             <MenuItem name="config-group" to="/dns/authority/config">权威管理</MenuItem>
@@ -41,7 +41,7 @@
           
           <Submenu name="access-control" v-if="PACK_SYSTEM.includes('dns')">
             <template slot="title">
-              <img :src="require('@/assets/images/access.png')" alt >
+              <i class="menu-icon icon-access-control"/>
               访问控制
             </template>
             <MenuItem name="access-control-list" to="/access-control/list">访问控制列表</MenuItem>
@@ -51,7 +51,7 @@
           
           <Submenu name="dhcp-service" v-if="PACK_SYSTEM.includes('ipam')">
             <template slot="title">
-              <img :src="require('@/assets/images/access.png')" alt >
+              <i class="menu-icon icon-recursive"/>
               DHCP服务
             </template>
             <MenuItem name="address-pool-manage" to="/dhcp-service/option-config">地址池管理</MenuItem>
@@ -60,7 +60,7 @@
           
           <Submenu name="system-safe">
             <template slot="title">
-              <img :src="require('@/assets/images/safe.png')" alt >
+              <i class="menu-icon icon-safe"/>
               系统安全
             </template>
             <MenuItem name="black-white-list-manage" to="/system-safe/black-white-list-manage">安全管理</MenuItem>

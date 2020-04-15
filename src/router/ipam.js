@@ -11,9 +11,9 @@ export default [
     component: () => import(/* webpackChuckName: "ip-manage" */ "./../views/ipam-manage/subnet-manage/ip-manage")
   },
   {
-    name: 'address-pool-manage',
-    path: '/ipam-manage/addess-pool-manage',
-    component: () => import(/* webpackChuckName: "addess-pool-manage" */ "./../views/ipam-manage/subnet-manage/address-pool")
+    name: 'address-pool',
+    path: '/ipam-manage/addess-pool',
+    component: () => import(/* webpackChuckName: "addess-pool" */ "./../views/ipam-manage/subnet-manage/address-pool")
   },
   {
     name: 'ip-address-devide',

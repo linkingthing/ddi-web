@@ -207,6 +207,9 @@ export default {
   .ivu-btn {
     background: #2d9fff;
     border-color: #2d9fff;
+    height: 40px;
+    line-height: 40px;
+    
     span {
       font-size: 16px;
     }

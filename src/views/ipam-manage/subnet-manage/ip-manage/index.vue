@@ -3,9 +3,9 @@
     <div class="ip-manage-title">IP管理</div>
 
     <div class="ip-manage-top">
-      <Tabs v-model="tab">
-        <TabPane label="图形" name="chart"></TabPane>
-        <TabPane label="列表" name="table"></TabPane>
+      <Tabs v-if="!isIPv6" v-model="tab">
+        <TabPane label="图形" name="chart"/>
+        <TabPane label="列表" name="table"/>
       </Tabs>
 
       <div>
@@ -51,6 +51,7 @@
     </div>
 
     <TableChart 
+      v-if="!isIPv6"
       v-show="tab === 'chart'"
       :data="tableData"
       @on-selection-change="handleTableSelect"
@@ -81,94 +82,118 @@
 import TableChart from "./table-chart";
 import FixOrKeep from "./fix-or-keep";
 import Search from "./search";
+import ConfigAttribute from "./config-attribute";
+import Edit from "./edit";
 import service from "@/services";
 
-import { columns } from "./define"
+import { columns } from "./define";
+import { getAddressType, formatDate } from "@/util/common";
 
 export default {
-  components:{
+  components: {
     TableChart,
     FixOrKeep,
     Search,
+    ConfigAttribute,
+    Edit
   },
 
-  data(){
+  data() {
     return {
-      subnetId:"",
-      ipAddress:"",
-      tableData:[],
+      subnetId: "",
+      ipAddress: "",
+      tableData: [],
       columns,
-      tab:"chart",
-      selectedData:[],
-      showSearch:false,
-      showFixOrKeep:false,
-      typeofFixOrKeep:""
-    }
+      tab: "chart",
+      selectedData: [],
+      showSearch: false,
+      showFixOrKeep: false,
+      typeofFixOrKeep: "",
+      isIPv6: false,
+      currentData: null
+    };
   },
 
-  mounted(){
+  created() {
     let { id, addr } = this.$route.query;
 
     this.subnetId = id;
     this.ipAddress = addr;
 
-    this.handleQuery();
+    this.isIPv6 = getAddressType(addr) === this.$ipTypes.ipv6;
+
+    if (this.isIPv6) {
+      this.tab = "table";
+    }
   },
 
-  methods:{
-    getIpLastNum(ip){
+  mounted() {
+    this.handleQuery();    
+  },
+
+  methods: {
+    getIpLastNum(ip) {
       return parseInt(ip.substr(ip.lastIndexOf(".") + 1));
     },
 
-    async handleQuery(){
+    async handleQuery() {
       this.selectedData = [];
 
-      try {
+      try {        
         let res = await service.getPlanIpList(this.subnetId);
 
-        const {status, message, data = { data:[] }} = res || {};
+        const { status, message, data = { data: [] } } = res || {};
         
-        if(status === 200){
+        if (status === 200) {
           this.tableData = Object.entries(data.data)
-            .map(([ip, values]) => ({ ip, ...values }))
+            .map(([ip, values]) => { 
+              values.leasestarttime = formatDate(values.leasestarttime);  
+              values.leaseendtime = formatDate(values.leaseendtime);              
+
+              return { ip, ...values }; 
+            })
             .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
         }
-        else{
-          Promise.reject({ message: message || "请求失败" })
+        else {
+          Promise.reject({ message: message || "请求失败" });
         }
       } catch (err) {        
-        this.$$error(err.message || "请求失败！")
+        this.$$error(err.message || "请求失败！");
       }
     },
 
-    handleTableSelect(datas){
+    handleTableSelect(datas) {
       this.selectedData = datas;            
     },
 
-    handleSearch(){
-      // if(this.selectedData.length > 1){
-      //   this.$$warning("只能对一个地址进行检测！");
+    handleSearch() {
+      if (this.selectedData.length > 1) {
+        this.$$warning("只能对一个地址进行检测！");
 
-      //   return;
-      // }
-      // else if(!this.selectedData.length){
-      //   this.$$warning("请选择一个地址进行检测！");
+        return;
+      }
+      else if (!this.selectedData.length) {
+        this.$$warning("请选择一个地址进行检测！");
 
-      //   return;
-      // }
+        return;
+      }
 
       this.showSearch = true;
     },
 
-    handleSearched(){
+    handleSearched() {
       this.handleQuery();
     },
 
-    handleConfig(){
-      this.$router.push(`/address-manage/address-pool?id=${this.subnetId}`)
+    handleConfig() {
+      this.$router.push(`/ipam-manage/address-pool?id=${this.subnetId}`);
     },
 
-    async handleDelete(item){
+    handleConfigAttibute(res) {
+      
+    },
+
+    async handleDelete(item) {
       try {
         await service.deleteIpAddress(item.id);
       } catch (err) {
@@ -178,13 +203,13 @@ export default {
       }
     },
 
-    handleFixAndKeep(type){
-      if(this.selectedData.length > 1){
+    handleFixAndKeep(type) {
+      if (this.selectedData.length > 1) {
         this.$$warning("只能对一个地址进行操作！");
 
         return;
       }
-      else if(!this.selectedData.length){
+      else if (!this.selectedData.length) {
         this.$$warning("请选择一个地址进行操作！");
 
         return;
@@ -194,9 +219,9 @@ export default {
       this.showFixOrKeep = true;
     },
 
-    handleFixedOrKept(){
+    handleFixedOrKept() {
       this.handleQuery();
     }
   }
-}
+};
 </script>
