@@ -1,14 +1,20 @@
 // mixins模块
 export default {
-  data () {
+  data() {
     return {
-        tableHeight: 0, // ele表格高度
-        docHeight: 0 // 浏览器文档高度
-    }
+      tableHeight: 0, // ele表格高度
+      docHeight: 0 // 浏览器文档高度
+    };
   },
-  mounted () {
+  beforeCreate() {
+    this.$ipTypes = {
+      ipv4: "ipv4",
+      ipv6: "ipv6"
+    };
+  },
+  mounted() {
     // ele表格高度
-    if(this.$refs.ele){
+    if (this.$refs.ele) {
       this.tableHeight = this.$refs.ele.offsetHeight + 8;
     }
 
@@ -21,14 +27,14 @@ export default {
   },
   methods: {
     filtersVariable(index,variable) {
-        this.columns[index].filters = variable;
+      this.columns[index].filters = variable;
     }
   },
   watch: {
-    tableHeight(){
-      if(this.$refs.ele){
+    tableHeight() {
+      if (this.$refs.ele) {
         this.tableHeight = this.$refs.ele.offsetHeight + 8;
       }
     }
   }
-}
+};

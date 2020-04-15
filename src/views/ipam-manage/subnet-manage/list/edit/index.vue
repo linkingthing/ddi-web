@@ -1,22 +1,33 @@
 <template>
   <ModalCustom 
     :visible.sync="dialogVisible"
-    :title="getTitle"
-    @cancel="handleCancel"
+    title="编辑网络"
     @confirm="handleConfirm"
   >
-    <div class="child-net-info">
-      <div class="info-row">
-        <div class="info-row-label">子网地址</div>
-        <Input maxlength="50" v-model="subnet" placeholder="请输入子网地址" class="info-row-input" />
+    <div class="subnet-info-edit">
+      <div class="info-row-inline">
+        <div class="info-row-label">区域</div>
+        <Input
+          maxlength="255"
+          v-model="name"
+          placeholder="请输入区域"
+          class="info-row-input" />
       </div>
-      <div class="info-row">
-        <div class="info-row-label">子网名称</div>
-        <Input maxlength="255" v-model="name" placeholder="请输入子网名称" class="info-row-input" />
+      <div class="info-row-inline">
+        <div class="info-row-label">DNS</div>
+        <Checkbox v-model="enableDNS">启用</Checkbox>
       </div>
-      <div class="info-row">
-        <div class="info-row-label">网关地址</div>
-        <Input maxlength="50" v-model="gateway" placeholder="请输入网关地址" class="info-row-input" />
+      <div class="info-row-inline">
+        <div class="info-row-label">DHCP</div>
+        <Checkbox v-model="enableDHCP">启用</Checkbox>
+      </div>
+      <div class="info-row-inline">
+        <div class="info-row-label">备注</div>
+        <Input
+          maxlength="50"
+          v-model="remark"
+          type="textarea"
+          class="info-row-input" />
       </div>
     </div>
   </ModalCustom>
@@ -24,189 +35,113 @@
 
 <script>
 import ModalCustom from "@/components/ModalCustom";
-import service from '@/services';
-import { isIPv4Reg, fullIPv6Reg, getAddressType, gatewayIsValid } from "@/util/common"
+import service from "@/services";
 
 export default {
-  components:{
+  components: {
     ModalCustom
   },
 
-  props:{
-    visible:{
+  props: {
+    visible: {
       type: Boolean,
       default: false
     },
 
-    data:{
-      type:Object,
-      default: ()=> ({})
+    data: {
+      type: Object,
+      default: () => ({})
     }
   },
 
-  data(){
+  data() {
     return {
-      dialogVisible:false,
-      id:"",
-      subnet:"",
-      name:"",
-      gateway:"",
-      isEdit:false
-    }
+      dialogVisible: false,
+      name: "",
+      remark: "",
+      enableDNS: false,
+      enableDHCP: false
+    };
   },
 
-  computed:{
-    getTitle(){
-      return (this.isEdit ? "编辑" : "添加") + "子网";
-    }
-  },
-
-  watch:{
-    visible(val){
-      if(!val) return;
+  watch: {
+    visible(val) {
+      if (!val) return;
       
       this.dialogVisible = val;
     },
 
-    data(val){
-      this.isEdit = !!val;
+    dialogVisible(val) {
+      this.setValue();
 
-      if(!val) return;
-
-      this.id = val.subnet_id;
-      this.subnet = val.subnet;
-      this.name = val.name;
-      this.gateway = val.gateway;
+      this.$emit("update:visible", val);
     },
 
-    dialogVisible(val){
-      this.$emit("update:visible", val)
+    data(val) {
+      this.setValue(val);
     }
   },
 
-  methods:{
-    init(){
-      this.id = "";
-      this.subnet = "";
-      this.name = "";
-      this.gateway = "";
+  methods: {
+    setValue(val = {}) {
+      this.name = val.name || "";
+      this.remark = val.remark || "";
+      this.enableDNS = val.enableDNS || false;
+      this.enableDHCP = val.enableDHCP || false;
     },
 
-    handleCancel(){
-
-    },
-
-    async handleConfirm(){
+    async handleConfirm() {
       try {
         await this.validate();
 
-        const action = this.isEdit ? "editChildNet" : "addChildNet";
-
-        let { status, data, message } = await service[action](this.getParams(), this.id);
+        let { status, data } = await service.editChildNet(this.getParams());
 
         status = +status;
         
-        if(status === 200 || status === 201){
-          this.$$success("保存成功！")
+        if (status === 200 || status === 201) {
+          this.$$success("保存成功！");
         }
-        else{
-          Promise.reject({ message })
+        else {
+          Promise.reject({ message: data.message });
         }
 
-        this.init();
-
-        this.$emit("confirmed")
+        this.$emit("confirmed");
       } 
       catch (err) {
-        err = err || {};
         console.error(err);
 
-        this.$$error(err.message || "保存失败！")
+        this.$$error(err && err.message || "保存失败！");
       }
     },
 
-    validate(){
-      let { subnet, name, gateway } = this;
+    validate() {
+      let { remark, name, enableDNS, enableDHCP } = this;
 
-      subnet = subnet.trim();
+      remark = remark.trim();
       name = name.trim();
-      gateway = gateway.trim();
 
-      const addrType = getAddressType(subnet);
-      const gateType = getAddressType(gateway);
-
-      if(addrType !== gateType){
-        return Promise.reject({ message:"网关地址类型必须与子网地址类型一致！" })
+      if (!name) {
+        return Promise.reject({ message: "请输入区域！" });
       }
-
-      // 验证子网地址
-      if(!subnet){
-        return Promise.reject({ message:"请输入子网地址！" });
-      }
-      else{        
-        if(addrType === "ipv4"){
-          if(!isIPv4Reg.test(subnet)){
-            return Promise.reject({ message:"请输入正确的子网地址！" });
-          }
-        }
-        else if(addrType === "ipv6"){
-          if(!fullIPv6Reg.test(subnet)){
-            return Promise.reject({ message:"请输入正确的子网地址！" });
-          }
-        }
-      }
-
-      // 验证子网地址掩码
-      if(!gatewayIsValid(subnet)){
-          return Promise.reject({ message:"请输入正确的子网地址掩码！" });
-      }
-
-      // 验证子网名称
-      if(!name){
-        return Promise.reject({ message:"请输入子网名称！" })
-      }
-      else{
-        if(name.length > 255){
-          return Promise.reject({ message:"请输入正确的子网名称！" })
-        }
-      }
-
-      // 验证网关名称
-      if(!gateway){
-        return Promise.reject({ message:"请输入网关地址！" })
-      }
-      else{        
-        if(gateType === "ipv4"){
-          if(!isIPv4Reg.test(gateway)){
-            return Promise.reject({ message:"请输入正确的网关地址！" });
-          }
-        }
-        else if(gateType === "ipv6"){
-          if(!fullIPv6Reg.test(gateway)){
-            return Promise.reject({ message:"请输入正确的网关地址！" });
-          }
-        }
-      }
-
-      // 验证网关地址掩码
-      if(!gatewayIsValid(gateway)){
-          return Promise.reject({ message:"请输入正确的网关地址掩码！" });
+      else if (name.length > 255) {
+        return Promise.reject({ message: "区域长度不得大于255个字符！" });
       }
 
       return Promise.resolve();
     },
 
-    getParams(){
+    getParams() {
       return {
-        subnet:this.subnet,
-        name:this.name,
-        gateway:this.gateway
-      }
+        remark: this.remark.trim(),
+        name: this.name.trim(),
+        enableDNS: this.enableDNS,
+        enableDHCP: this.enableDHCP
+      };
     }
   }
-}
+};
 </script>
 
-<style>
-
+<style lang="less">
+@import "./index.less";
 </style>
