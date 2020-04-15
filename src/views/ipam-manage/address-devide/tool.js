@@ -54,3 +54,7 @@ export const excuteNextIPv6 = (ip, prefix, subtreebitnum, n = 1) => {
     return bigIntToIPv6(newIpBigInt)
 }
 
+
+export const binary = (nodecode, bitWidth) => (Array(bitWidth).join("0") + nodecode.toString(2)).slice(
+    -bitWidth
+);

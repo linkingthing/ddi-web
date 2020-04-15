@@ -1,10 +1,24 @@
 <template>
-  <div class="tree" ref="tree" id="tree">
-    <div class="tree-pop" ref="pop" :class="{active: activePop}">
-      <slot name="pop" :props="current"></slot>
+  <div
+    class="tree"
+    ref="tree"
+    id="tree"
+  >
+    <div
+      class="tree-pop"
+      ref="pop"
+      :class="{active: activePop}"
+    >
+      <slot
+        name="pop"
+        :props="current"
+      />
     </div>
-    <div class="tree-node-active"></div>
-    <div class="toolTip" ref="toolTip">{{toolTipInfo}}</div>
+    <div class="tree-node-active" />
+    <div
+      class="toolTip"
+      ref="toolTip"
+    >{{toolTipInfo}}</div>
   </div>
 </template>
 
@@ -27,7 +41,7 @@ export default {
     },
     multiple: {
       type: Boolean,
-      default: true
+      default: false
     },
     options: {
       type: Object,
@@ -61,7 +75,7 @@ export default {
     // this.init(); 外面数据获取后促发data监听自然就可以初始化，注释掉这句可以少执行一次init
     this.$refs.tree.addEventListener(
       "click",
-      function(e) {
+      function (e) {
         if (e.target.tagName === "svg") {
           self.hidePop();
         }
@@ -97,7 +111,7 @@ export default {
         .attr("width", width)
         .attr("height", height)
         .call(
-          d3.zoom().on("zoom", function() {
+          d3.zoom().on("zoom", function () {
             self.movePop(d3.event.transform);
             svg.attr("transform", d3.event.transform);
           })
@@ -107,7 +121,7 @@ export default {
       this.svg = svg;
       const g = svg.append("g");
       this.g = g;
-      g.attr("transform", function() {
+      g.attr("transform", function () {
         if (currentNodeRecord.x) {
           return (
             "translate(" +
@@ -124,7 +138,7 @@ export default {
       // console.log(d3);
       const tree = d3
         .tree()
-        .separation(function(a, b) {
+        .separation(function (a, b) {
           return a.parent == b.parent ? 1 : 1;
         })
 
@@ -155,10 +169,10 @@ export default {
         .enter()
         .append("g")
 
-        .attr("class", function(d) {
+        .attr("class", function (d) {
           return "node" + (d.children ? " node--internal" : " node--leaf");
         })
-        .attr("style", function(d) {
+        .attr("style", function (d) {
           if (currentNodeRecord.id === d.data.id) {
             return "outline: solid 3px #458CE9";
           }
@@ -177,7 +191,7 @@ export default {
           stroke-width:0;
           stroke:rgb(0,0,0)`
         )
-        .attr("style", function(d) {
+        .attr("style", function (d) {
           let style = `
             cursor: pointer;
             stroke-width:0;
@@ -200,7 +214,7 @@ export default {
         .append("image")
         .attr("width", "20")
         .attr("height", "20")
-        .attr("xlink:href", function(d) {
+        .attr("xlink:href", function (d) {
           if (d.data.usedfor) {
             return require("@/assets/images/info.png");
           }
@@ -208,10 +222,10 @@ export default {
         .attr("x", "5")
         .attr("y", "-10")
         .attr("style", `cursor: pointer;`)
-        .on("mouseover", function(d) {
+        .on("mouseover", function (d) {
           self.showToolTip(d);
         })
-        .on("mouseout", function() {
+        .on("mouseout", function () {
           self.hideToolTip();
         });
 
@@ -245,7 +259,7 @@ export default {
       }
       text
         .append("tspan")
-        .text(function(d) {
+        .text(function (d) {
           return d.data.name;
         })
         .attr("y", -14)
@@ -255,7 +269,7 @@ export default {
 
       text
         .append("tspan")
-        .text(function(d) {
+        .text(function (d) {
           if (d.data.beginsubnet) {
             return d.data.beginsubnet;
           }
@@ -267,7 +281,7 @@ export default {
 
       text
         .append("tspan")
-        .text(function(d) {
+        .text(function (d) {
           if (d.data.endsubnet) {
             return d.data.endsubnet;
           }
@@ -277,11 +291,11 @@ export default {
         .attr("text-anchor", "left")
         .attr("fill", excuteTextColor);
 
-      node.attr("transform", function(d) {
+      node.attr("transform", function (d) {
         return "translate(" + d.y + "," + d.x + ")";
       });
 
-      node.on("click", function(node, number, element) {
+      node.on("click", function (node, number, element) {
         if (node.data.type === "surplusNode") {
           return;
         }
@@ -305,15 +319,15 @@ export default {
         "d",
         d3
           .linkHorizontal()
-          .x(function(d) {
+          .x(function (d) {
             return d.y;
           })
-          .y(function(d) {
+          .y(function (d) {
             return d.x;
           })
       );
     },
-    idiotUpdate: _.debounce(function(newData) {
+    idiotUpdate: _.debounce(function (newData) {
       const node = d3.selectAll("#tree svg");
       node.remove();
       this.init(newData);
