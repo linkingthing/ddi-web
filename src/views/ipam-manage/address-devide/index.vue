@@ -2,6 +2,14 @@
   <div class>
     <section class="tree-content">
       <aside class="panel">
+        <!-- <Tabs
+          value="nodeEdit"
+          @on-click="handleTabOperate"
+        >
+          <TabPane
+            label="编辑"
+            name="nodeEdit"
+          > -->
         <div class="base-info">
           <h3>
             基本信息
@@ -12,60 +20,80 @@
               class="btn-del"
               @click="handleDeleteNodeImmediately"
             >删除节点</Button>
-            <Button
-              type="warning"
-              size="small"
-              :disabled="abledDelete"
-              class="btn-del"
-              @click="handleClickSplitSubnet"
-            >子网拆分</Button>
-            <Button
-              type="success"
-              size="small"
-              :disabled="abledDelete"
-              class="btn-del"
-              @click="handleClickMergeSubnet"
-            >子网合并</Button>
+
           </h3>
-          <Form ref="form" :rules="rules" :model="currentNode" :hide-required-mark="true">
+          <Form
+            ref="form"
+            :rules="rules"
+            :model="currentNode"
+            :hide-required-mark="true"
+          >
             <Row :gutter="20">
               <Col :span="12">
-                <FormItem label="起始编码(二进制)" prop="beginnodecode">
-                  <Input
-                    disabled
-                    placeholder="起始编码"
-                    class="base-input"
-                    v-model="beginNodeCodeBinary"
-                  />
-                </FormItem>
+              <FormItem
+                label="起始编码(二进制)"
+                prop="beginnodecode"
+              >
+                <Input
+                  disabled
+                  placeholder="起始编码"
+                  class="base-input"
+                  v-model="beginNodeCodeBinary"
+                />
+              </FormItem>
               </Col>
               <Col :span="12">
-                <FormItem label="结束编码(二进制)" prop="endnodecode">
-                  <Select
-                    placeholder="结束编码"
-                    class="base-input"
-                    v-model.number="currentNode.endnodecode"
-                  >
-                    <Option
-                      v-for="(item, index) in endNodeCodeOptions"
-                      :value="item.value"
-                      :key="index"
-                    >{{item.binary}}</Option>
-                  </Select>
-                </FormItem>
+              <FormItem
+                label="结束编码(二进制)"
+                prop="endnodecode"
+              >
+                <Select
+                  placeholder="结束编码"
+                  class="base-input"
+                  v-model.number="currentNode.endnodecode"
+                >
+                  <Option
+                    v-for="(item, index) in endNodeCodeOptions"
+                    :value="item.value"
+                    :key="index"
+                  >{{item.binary}}</Option>
+                </Select>
+              </FormItem>
               </Col>
             </Row>
             <FormItem label="名称">
-              <Input placeholder="名称" class="base-input" v-model="currentNode.name" />
+              <Input
+                placeholder="名称"
+                class="base-input"
+                v-model="currentNode.name"
+              />
             </FormItem>
-            <FormItem label="起始子网" :prop="beginsubnetprop">
-              <Input placeholder="起始子网" class="base-input" v-model="currentNode.beginsubnet" />
+            <FormItem
+              label="起始子网"
+              :prop="beginsubnetprop"
+            >
+              <Input
+                placeholder="起始子网"
+                class="base-input"
+                v-model="currentNode.beginsubnet"
+              />
             </FormItem>
-            <FormItem label="结束子网" :prop="endsubnetprop">
-              <Input placeholder="结束子网" class="base-input" v-model="currentNode.endsubnet" />
+            <FormItem
+              label="结束子网"
+              :prop="endsubnetprop"
+            >
+              <Input
+                placeholder="结束子网"
+                class="base-input"
+                v-model="currentNode.endsubnet"
+              />
             </FormItem>
             <FormItem label="描述">
-              <Input placeholder="描述" class="base-input" v-model="currentNode.usedfor" />
+              <Input
+                placeholder="描述"
+                class="base-input"
+                v-model="currentNode.usedfor"
+              />
             </FormItem>
           </Form>
         </div>
@@ -74,7 +102,11 @@
           <div class="child-node-edit-head">
             <h3>
               子节点编辑
-              <Button type="primary" size="small" class="btn-import-category">导入分类</Button>
+              <Button
+                type="primary"
+                size="small"
+                class="btn-import-category"
+              >导入分类</Button>
             </h3>
           </div>
 
@@ -104,14 +136,23 @@
 
           <div class="child-node-group">
             <ul class="childList">
-              <li v-for="(item) in currentNode.children" :key="item.id">
+              <li
+                v-for="(item) in currentNode.children"
+                :key="item.id"
+              >
                 <div class="child-node">
                   {{item.name}}
-                  <span class="close" @click="handleDeleteNode(item, currentNode)">x</span>
+                  <span
+                    class="close"
+                    @click="handleDeleteNode(item, currentNode)"
+                  >x</span>
                 </div>
               </li>
               <li v-if="showCreateChildNode">
-                <div class="child-node" @click="handleAddChildNode">
+                <div
+                  class="child-node"
+                  @click="handleAddChildNode"
+                >
                   +
                   <span />
                 </div>
@@ -121,8 +162,37 @@
         </div>
 
         <div class="btn-box">
-          <Button type="primary" size="small" class="btn-complete" @click="handleSubmit">保存提交</Button>
+          <Button
+            type="primary"
+            size="small"
+            class="btn-complete"
+            @click="handleSubmit"
+          >保存提交</Button>
         </div>
+
+        <!-- </TabPane>
+          <TabPane
+            label="拆分"
+            name="subnetSplit"
+          >
+            <PanelSplit
+              :currentNode="currentNode"
+              :currentParent="currentParent"
+            />
+          </TabPane>
+          <TabPane
+            label="合并"
+            name="subnetMerge"
+          >
+            <PanelMerge
+              :currentNodeList="currentNodeList"
+              :currentParent="currentParent"
+              @click="handleClickMergeSubnet"
+            />
+
+          </TabPane>
+        </Tabs> -->
+
       </aside>
 
       <div class="graph">
@@ -131,11 +201,16 @@
             地址分配图
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
-          <Caliper :value="caliperValue" @onChange="handleChangeCaliper" :bit-fill="bitFill" />
+          <Caliper
+            :value="caliperValue"
+            @onChange="handleChangeCaliper"
+            :bit-fill="bitFill"
+          />
           <!-- <Allocation /> -->
         </div>
         <div class="tree">
           <tree
+            :multiple="multiple"
             :data="tree"
             node-text="name"
             layout-type="horizontal"
@@ -161,6 +236,8 @@
 import tree from "./CoreTree";
 import Caliper from "./modules/Caliper";
 import Allocation from "./modules/Allocation";
+import PanelSplit from "./panel-split";
+import PanelMerge from "./panel-merge";
 import services from "@/services";
 import { subnetValidateFunc } from "@/util/common";
 import { excuteNextIPv6 } from "./tool";
@@ -171,10 +248,13 @@ export default {
   components: {
     tree,
     Caliper,
-    Allocation
+    PanelSplit,
+    PanelMerge,
+    Allocation,
   },
   data() {
     return {
+      operateType: "nodeEdit",
       autoAssign: false,
       tree: {
         name: "root",
@@ -182,6 +262,7 @@ export default {
       },
       currentNode: {},
       currentParent: {},
+      currentNodeList: [],
       bitFill: [0, 0] // 10进制，用于填充位
     };
   },
@@ -316,6 +397,9 @@ export default {
           )
         };
       });
+    },
+    multiple() {
+      return this.operateType === "subnetMerge";
     }
   },
   mounted() {
@@ -396,6 +480,9 @@ export default {
         ];
       });
     },
+    handleTabOperate(tab) {
+      this.operateType = tab;
+    },
     handleChangeCaliper([min, max]) {
       if (this.currentParent) {
         this.currentParent.data.subtreebitnum = max - min;
@@ -475,6 +562,7 @@ export default {
     },
     handleMultipleNode(nodes) {
       console.log("handleMultipleNode", nodes);
+      this.currentNodeList = nodes;
     },
     handleSubmit() {
       const params = JSON.parse(
@@ -526,14 +614,14 @@ export default {
               this.getTreeData();
             });
           },
-          okCancel: () => {}
+          okCancel: () => { }
         });
       } else {
         this.$Message.info("请先选择节点");
       }
     },
-    handleClickSplitSubnet() {},
-    handleClickMergeSubnet() {}
+    handleClickSplitSubnet() { },
+    handleClickMergeSubnet() { }
   },
   watch: {
     autoAssign(value) {
@@ -644,7 +732,7 @@ export default {
     .btn-del {
       float: right;
       & + .btn-del {
-        margin-right: 10px;
+        margin-right: 5px;
       }
     }
   }
