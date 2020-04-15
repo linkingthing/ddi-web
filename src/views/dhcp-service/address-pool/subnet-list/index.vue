@@ -60,7 +60,7 @@ export default {
     },
 
     showDetail(row) {
-      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${row.id}`);
+      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${row.id}&address=${row.ip}`);
     },
 
     async handleDelete(data) {

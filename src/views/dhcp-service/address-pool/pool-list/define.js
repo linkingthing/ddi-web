@@ -17,6 +17,7 @@ export const columns = scope => [
   {
     title: "创建时间",
     key: "creationTime",
+    width: "130",
     align: "center"
   },
   {

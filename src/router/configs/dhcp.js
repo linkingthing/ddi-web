@@ -29,7 +29,8 @@ export default {
       component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"),
       meta:{
         notInMenu:true,
-        title:":subnetId"
+        from:"subnet-pool-subnet",
+        title:":address"
       }
     },
     {

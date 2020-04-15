@@ -7,15 +7,6 @@
   >
     <div class="address-pool-info">
       <div class="info-row">
-        <div class="info-row-label">类型</div>
-        <Select v-model="type">
-          <Option
-            v-for="item in types"
-            :value="item.value"
-            :key="item.value">{{ item.label }}</Option>
-        </Select>
-      </div>
-      <div class="info-row">
         <div class="info-row-label">开始地址</div>
         <Input
           maxlength="50"
@@ -46,6 +37,22 @@
           v-model="maxValidLifetime"
           class="info-row-input" />
         <label>秒</label>
+      </div>
+      <div class="info-row">
+        <div class="info-row-label">域名服务器</div>
+        <Input
+          maxlength="255"
+          v-model="hostNameServer"
+          placeholder="请输入域名服务器"
+          class="info-row-input" />
+      </div>
+      <div class="info-row">
+        <div class="info-row-label">路由服务器</div>
+        <Input
+          maxlength="255"
+          v-model="routeServer"
+          placeholder="请输入路由服务器"
+          class="info-row-input" />
       </div>
     </div>
   </ModalCustom>
@@ -84,6 +91,11 @@ export default {
       default: null
     },
 
+    type: {
+      type: String,
+      default: "ipv4"
+    },
+
     data: {
       type: Object,
       default: () => ({})
@@ -94,11 +106,12 @@ export default {
     return {
       dialogVisible: false,
       types,
-      type: "",
       beginAddress: "",
       endAddress: "",
       validLifetime: "",
       maxValidLifetime: "",
+      hostNameServer: "",
+      routeServer: "",
       isEdit: false
     };
   },
@@ -136,11 +149,12 @@ export default {
       if (!val) val = {};
 
       this.poolId = val.id || null;
-      this.type = val.type || "ipv4";
       this.beginAddress = val.beginAddress || "";
       this.endAddress = val.endAddress || "";
       this.validLifetime = val.validLifetime || "";
       this.maxValidLifetime = val.maxValidLifetime || "";
+      this.hostNameServer = val.hostNameServer || "";
+      this.routeServer = val.routeServer || "";
     },
 
     async handleConfirm() {
@@ -197,9 +211,6 @@ export default {
         }
 
         return isBefore;
-      }
-      else { 
-        
       }
     },
 

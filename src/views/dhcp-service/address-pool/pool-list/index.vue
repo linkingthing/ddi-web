@@ -18,6 +18,7 @@
     <Edit 
       :visible.sync="showEdit"
       :data="editData"
+      :type="addressType"
       :subnet-id="subnetId"
     />
   </div>
@@ -33,6 +34,8 @@ import Edit from "./edit";
 import service from "@/services";
 import { columns } from "./define";
 
+import { getAddressType } from "@/util/common";
+
 export default {
   components: {
     TablePagination,
@@ -46,12 +49,18 @@ export default {
       columns: columns(this),
       showEdit: false,
       editData: null,
-      subnetId: null
+      subnetId: null,
+      addressType: ""
     };
   },
 
   mounted() {
-    this.subnetId = this.$route.query.subnetId;
+    const { address, subnetId } = this.$route.query;
+
+    this.subnetId = subnetId;
+    this.address = address;
+
+    this.addressType = getAddressType(address);
 
     this.handleQuery();
   },
@@ -63,7 +72,7 @@ export default {
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
-            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace("T", " ") : "";
+            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace("T", " ").replace("Z", "") : "";
 
             return item;
           });
