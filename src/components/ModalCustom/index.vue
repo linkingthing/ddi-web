@@ -1,41 +1,41 @@
 <template>
-    <Modal
-        :title="title"
-        v-model="dialogVisible"
-        :closable="closable"
-        :mask-closable="maskClosable"
-        :class-name="`modal-custom ${customClass}`"
-        :width="width"
+  <Modal
+    :title="title"
+    v-model="dialogVisible"
+    :closable="closable"
+    :mask-closable="maskClosable"
+    :class-name="`modal-custom ${customClass}`"
+    :width="width"
+  >
+    <div class="modal-header" slot="header">
+      {{ title }}
+      <i class="el-icon-close" @click="handleClose" />
+    </div>
+
+    <slot />
+
+    <template
+      v-if="showFooter"
+      slot="footer"
     >
-        <div class="modal-header" slot="header">
-            {{ title }}
-            <i class="el-icon-close" @click="handleClose" />
-        </div>
-
-        <slot />
-
-        <template
-            v-if="showFooter"
-            slot="footer"
-        >
-            <Button
-                v-if="buttons.cancel"
-                class="button-cancel"
-                type="primary"
-                @click="handleClose"
-            >
-                {{ buttons.cancel.text }}
-            </Button>
-            <Button
-                v-if="buttons.confirm"
-                class="button-confirm"
-                type="primary"
-                @click="handleConfirm"
-            >
-                {{ buttons.confirm.text }}
-            </Button>
-        </template>
-    </Modal>
+      <Button
+        v-if="buttons.cancel"
+        class="button-cancel"
+        type="primary"
+        @click="handleClose"
+      >
+        {{ buttons.cancel.text }}
+      </Button>
+      <Button
+        v-if="buttons.confirm"
+        class="button-confirm"
+        type="primary"
+        @click="handleConfirm"
+      >
+        {{ buttons.confirm.text }}
+      </Button>
+    </template>
+  </Modal>
 </template>
 
 <style lang="less">
@@ -44,58 +44,58 @@
 
 <script>
 export default {
-  name:"DialogCustom",
+  name: "DialogCustom",
 
-  props:{
-    buttons:{
+  props: {
+    buttons: {
       type: Object,
       default: () => ({
         cancel: {
           text: "取消"
         },
-        confirm:{
+        confirm: {
           text: "确定"
         }
       })
     },
 
-    visible:{
+    visible: {
       type: Boolean,
       default: false
     },
 
-    title:{
+    title: {
       type: String,
       default: ""
     },
 
-    customClass:{
+    customClass: {
       type: String,
       default: ""
     },
 
-    closable:{
+    closable: {
       type: Boolean,
       default: false
     },
 
-    maskClosable:{
+    maskClosable: {
       type: Boolean,
       default: false
     },
 
-    showFooter:{
+    showFooter: {
       type: Boolean,
       default: true
     },
 
-    width:{
+    width: {
       type: [String, Number],
       default: 520
     },
 
-    /**是否在点击确认按钮后立即关闭弹窗 */
-    immediateCloseAfterConfirm:{
+    /** 是否在点击确认按钮后立即关闭弹窗 */
+    immediateCloseAfterConfirm: {
       type: Boolean,
       default: false
     }
@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       loading: false,
-      isEdit:false
+      isEdit: false
     };
   },
 
@@ -119,7 +119,7 @@ export default {
     }
   },
 
-  methods:{
+  methods: {
     // 关于$listeners，若存在"confirm"和"cancel"需返回Promise
 
     handleConfirm() {

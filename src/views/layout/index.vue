@@ -8,7 +8,7 @@
 
       <div class="content-wrapper">
         <div class="content-padding">
-          <bread />
+          <Bread />
 
           <router-view />
         </div>
@@ -20,13 +20,15 @@
 <script>
 import Menu from "@/components/Menu";
 import Header from "@/components/Header";
+import Bread from "@/components/Bread";
 
 export default {
   name: "Layout",
   
   components: {
     Menu,
-    Header
+    Header,
+    Bread
   }
 };
 </script>

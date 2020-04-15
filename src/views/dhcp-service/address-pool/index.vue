@@ -100,7 +100,7 @@ export default {
   },
 
   mounted() {
-    this.subnetId = this.$route.query.id;
+    this.subnetId = this.$route.query.subnetId;
 
     this.handleQuery();
   },
