@@ -11,7 +11,7 @@ export const columns = scope => [
     align: "center",
     render: (h, { row }) => {
       return h("label", {
-        class: "ip-address",
+        class: "operate-edit",
         on: {
           click: () => {
             scope.handleEdit(row);
@@ -34,8 +34,8 @@ export const columns = scope => [
   },
   {
     title: "类型",
-    key: "AddressType",
-    minWidth: 100,
+    key: "typeText",
+    minWidth: 120,
     align: "center"
   },
   {

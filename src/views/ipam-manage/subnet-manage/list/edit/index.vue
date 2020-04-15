@@ -60,7 +60,7 @@ export default {
       name: "",
       remark: "",
       enableDNS: false,
-      enableDHCP: false
+      enableDHCP: true
     };
   },
 
@@ -87,7 +87,7 @@ export default {
       this.name = val.name || "";
       this.remark = val.remark || "";
       this.enableDNS = val.enableDNS || false;
-      this.enableDHCP = val.enableDHCP || false;
+      this.enableDHCP = val.enableDHCP === undefined ? true : val.enableDHCP;
     },
 
     async handleConfirm() {

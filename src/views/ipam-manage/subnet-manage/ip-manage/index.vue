@@ -99,6 +99,7 @@ import Edit from "./edit";
 import service from "@/services";
 
 import { columns } from "./define";
+import { legendList } from "./table-chart/define";
 import { getAddressType, formatDate } from "@/util/common";
 
 export default {
@@ -162,7 +163,11 @@ export default {
           this.tableData = Object.entries(data.data)
             .map(([ip, values]) => { 
               values.leasestarttime = formatDate(values.leasestarttime);  
-              values.leaseendtime = formatDate(values.leaseendtime);              
+              values.leaseendtime = formatDate(values.leaseendtime);
+
+              let type = legendList.find(item => item.value === values.AddressType);
+
+              values.typeText = type ? type.label : "";
 
               return { ip, ...values }; 
             })
@@ -200,7 +205,7 @@ export default {
     },
 
     handleToAddressPool() {
-      this.$router.push(`/dhcp-service/address-pool?subnetId=${this.subnetId}`);
+      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${this.subnetId}`);
     },
 
     handleEdit(res) {

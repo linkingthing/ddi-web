@@ -16,11 +16,20 @@ export default {
   },
   children:[
     {
-      name: 'address-pool',
-      path: '/dhcp-service/addess-pool',
-      component: () => import(/* webpackChuckName: "addess-pool" */ "@/views/dhcp-service/address-pool"),
+      name: 'subnet-pool-subnet',
+      path: '/dhcp-service/subnet-pool-list',
+      component: () => import(/* webpackChuckName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"),
       meta:{
         title:"地址池管理"
+      }
+    },
+    {
+      name: 'address-pool-list',
+      path: '/dhcp-service/address-pool-list',
+      component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"),
+      meta:{
+        notInMenu:true,
+        title:":subnetId"
       }
     },
     {

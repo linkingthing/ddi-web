@@ -28,7 +28,7 @@
             
             <Submenu
               :key="idx"
-              v-else-if="item.meta.range && PACK_SYSTEM.includes(item.meta.range)"
+              v-else-if="PACK_SYSTEM.includes(item.meta.range)"
               :name="item.name"
             >
               <template slot="title">

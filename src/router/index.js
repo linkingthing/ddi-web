@@ -4,7 +4,7 @@ import store from "../util/store";
 import Login from "../views/login";
 import DefaultLayout from "../views/default-layout";
 
-import configs from "./configs/index";
+import configs from "./configs";
 
 const packMaterial = configs
 // eslint-disable-next-line no-undef

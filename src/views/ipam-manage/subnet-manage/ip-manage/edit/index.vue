@@ -15,35 +15,19 @@
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">MAC地址：</div>
-        <Input
-          maxlength="255"
-          v-model="macaddress"
-          placeholder="请输入"
-          class="info-row-input" />
+        <div class="info-row-text">{{macaddress}}</div>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">厂家：</div>
-        <Input
-          maxlength="255"
-          v-model="macvender"
-          placeholder="请输入"
-          class="info-row-input" />
+        <div class="info-row-text">{{macvender}}</div>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">地址类型：</div>
-        <Input
-          maxlength="255"
-          v-model="AddressType"
-          placeholder="请输入"
-          class="info-row-input" />
+        <div class="info-row-text">{{typeText}}</div>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">操作系统：</div>
-        <Input
-          maxlength="255"
-          v-model="opersystem"
-          placeholder="请输入"
-          class="info-row-input" />
+        <div class="info-row-text">{{opersystem}}</div>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">端口号：</div>
@@ -55,11 +39,7 @@
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">指纹：</div>
-        <Input
-          maxlength="255"
-          v-model="fingerprint"
-          placeholder="请输入"
-          class="info-row-input" />
+        <div class="info-row-text">{{fingerprint}}</div>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">设备类型：</div>
@@ -116,7 +96,7 @@ export default {
       hostname: "",
       macaddress: "",
       macvender: "",
-      AddressType: "",
+      typeText: "",
       opersystem: "",
       interfaceid: "",
       fingerprint: "",
@@ -149,7 +129,7 @@ export default {
       this.hostname = val.hostname || "";
       this.macaddress = val.macaddress || "";
       this.macvender = val.macvender || "";
-      this.AddressType = val.AddressType || "";
+      this.typeText = val.typeText || "";
       this.opersystem = val.opersystem || "";
       this.interfaceid = val.interfaceid || "";
       this.fingerprint = val.fingerprint || "";

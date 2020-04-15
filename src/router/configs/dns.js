@@ -36,8 +36,7 @@ export default {
       component: config,
       meta: {
         // title: "配置管理",
-        title: "权威管理",
-        parent: null
+        title: "权威管理"
       }
     },
     {
@@ -48,7 +47,7 @@ export default {
       meta: {
         title: "区域查询",
         notInMenu: true,
-        parent: "config-group"
+        from: "config-group"
       }
     },
     {
@@ -59,7 +58,7 @@ export default {
       meta: {
         title: "资源记录",
         notInMenu: true,
-        parent: "authority-zone-query"
+        from: "authority-zone-query"
       }
     },
     {
@@ -80,7 +79,7 @@ export default {
       meta: {
         title: "重定向",
         notInMenu: true,
-        parent: "redirect-view"
+        from: "redirect-view"
       }
     },
 
@@ -99,7 +98,7 @@ export default {
       component: A4Compose,
       meta: {
         notInMenu: true,
-        parent: "a4-compose-view",
+        from: "a4-compose-view",
         title: "A4地址合成"
       }
     },
@@ -121,7 +120,7 @@ export default {
       meta: {
         title: "转发区域",
         notInMenu: true,
-        parent: "zone-forward"
+        from: "zone-forward"
       }
     },
     {
@@ -131,7 +130,7 @@ export default {
       meta: {
         title: "区域转发列表",
         notInMenu: true,
-        parent: "zone-query-forward"
+        from: "zone-query-forward"
       }
     }
   ]

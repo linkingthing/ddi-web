@@ -24,7 +24,29 @@
         </div>
         <div class="ip-range">当前IP段{{`${startIp}~${endIp}`}}</div>
 
-        <div class="item-title">IP地址</div>
+        <div class="item-title">IP地址：{{selectedItem.ip}}</div>
+
+        <div class="selected-content">
+          <div class="selected-content-title">地址静态信息</div>
+          <div class="selected-content-row">MAC地址：<span>{{ selectedItem.macaddress }}</span></div>
+          <div class="selected-content-row">MAC厂商：<span>{{ selectedItem.macvender }}</span></div>
+          <div class="selected-content-row">活跃时间：<span>{{ selectedItem.leaseendtime }}</span></div>
+          <div class="selected-content-row">类型：<span>{{ selectedItem.typeText }}</span></div>
+          <!-- <div class="selected-content-row">地址池：<span>{{ selectedItem. }}</span></div>
+          <div class="selected-content-row">租约状态：<span>{{ selectedItem. }}</span></div> -->
+          <div class="selected-content-row">网口接口号：<span>{{ selectedItem.interfaceid }}</span></div>
+        </div>
+
+        <div class="selected-content">
+          <div class="selected-content-title">地址动态信息</div>
+          <div class="selected-content-row">探测时间：<span>{{ selectedItem.leasestarttime }}</span></div>
+          <div class="selected-content-row">MAC地址：<span>{{ selectedItem.macaddress }}</span></div>
+          <div class="selected-content-row">MAC厂商：<span>{{ selectedItem.macvender }}</span></div>
+          <div class="selected-content-row">NetBIOS名称：<span>{{ selectedItem.netbiosname }}</span></div>
+          <div class="selected-content-row">操作系统：<span>{{ selectedItem.opersystem }}</span></div>
+          <div class="selected-content-row">扫描接口号：<span>{{ selectedItem.scaninterfaceid }}</span></div>
+          <div class="selected-content-row">指纹：<span>{{ selectedItem.fingerprint }}</span></div>
+        </div>
       </template>
       <div v-else class="no-data">暂无数据</div>
     </div>
@@ -67,42 +89,43 @@
 </template>
 
 <script>
-import { legendList, statusList } from "./define"
+import { legendList, statusList } from "./define";
 
 export default {
   name: "TableChart",
 
-  props:{
-    data:{
+  props: {
+    data: {
       type: Array,
       default: () => []
     },
 
-    ip:{
-      type:String,
-      default:""
+    ip: {
+      type: String,
+      default: ""
     }
   },
 
-  data(){
+  data() {
     return {
-      list:[],
+      list: [],
       legendList,
       statusList,
-      ipPrefix:"",
-      currentPage:1,
-      totalPage:0,
-      startIp:0,
-      endIp:0
-    }
+      ipPrefix: "",
+      currentPage: 1,
+      totalPage: 0,
+      startIp: 0,
+      endIp: 0,
+      selectedItem: {}
+    };
   },
 
-  watch:{
-    data(val){
-      if(!val) {
+  watch: {
+    data(val) {
+      if (!val) {
         this.list = [];
       }
-      else{
+      else {
         this.list = JSON.parse(JSON.stringify(val));
 
         this.startIp = this.list[0].ip;
@@ -111,20 +134,18 @@ export default {
     }
   },
 
-  methods:{
-    handlePageChange(val){
-
-    },
-
-    handleSelect(item){
+  methods: {
+    handleSelect(item) {
       item.selected = !item.selected;
+
+      this.selectedItem = item;
 
       this.list = [...this.list];
       
       this.$emit("on-selection-change", this.list.filter(item => item.selected));
     }
   }
-}
+};
 </script>
 
 <style lang="less">
