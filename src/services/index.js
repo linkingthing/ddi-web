@@ -82,8 +82,8 @@ export default {
     return axios.delete(`${baseUrl}/sortlists/1`);
   },
 
-  getZoneByViewId(id) {
-    return axios.get(`${baseUrl}/views/${id}/zones`);
+  getZoneByViewId(id, params) {
+    return axios.get(`${baseUrl}/views/${id}/zones`, { params });
   },
   deleteZone(viewId, zoneId) {
     return axios.delete(`${baseUrl}/views/${viewId}/zones/${zoneId}`);
@@ -280,7 +280,7 @@ export default {
   editChildNet(params, id) {
     return axios.put(`${baseUrl}/restsubnetv4s/${id}`, params);
   },
-    
+
   /**
      * 删除指定子网
      */
@@ -319,7 +319,7 @@ export default {
   /**
      * 删除IP地址
      */
-  deleteIpAddress(id) {        
+  deleteIpAddress(id) {
     return axios.delete(`${baseUrl}/scanaddresses/${id}`);
   },
 
