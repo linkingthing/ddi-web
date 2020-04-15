@@ -44,7 +44,7 @@ export default {
       // 表单数据
       dataConfig: {
         name: "",
-        zonetype: "master"
+        zonetype: "forward"
       },
       loading: false,
       // 表单验证规则

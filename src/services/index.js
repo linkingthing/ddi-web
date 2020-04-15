@@ -82,8 +82,8 @@ export default {
         return axios.delete(`${baseUrl}/sortlists/1`)
     },
 
-    getZoneByViewId(id) {
-        return axios.get(`${baseUrl}/views/${id}/zones`)
+    getZoneByViewId(id, params) {
+        return axios.get(`${baseUrl}/views/${id}/zones`, { params })
     },
     deleteZone(viewId, zoneId) {
         return axios.delete(`${baseUrl}/views/${viewId}/zones/${zoneId}`)
@@ -263,84 +263,84 @@ export default {
     /**
      * 获取子网管理列表
      */
-    getChildNetList(){
+    getChildNetList() {
         return axios.get(`${baseUrl}/restsubnetv4s`);
     },
 
     /**
      * 新增子网
      */
-    addChildNet(params){
+    addChildNet(params) {
         return axios.post(`${baseUrl}/restsubnetv4s`, params)
     },
 
     /**
      * 编辑子网
      */
-    editChildNet(params, id){
+    editChildNet(params, id) {
         return axios.put(`${baseUrl}/restsubnetv4s/${id}`, params);
     },
-    
+
     /**
      * 删除指定子网
      */
-    deleteChildNet(id){
+    deleteChildNet(id) {
         return axios.delete(`${baseUrl}/restsubnetv4s/${id}`)
     },
 
     /**
      * 拆分子网
      */
-    splitChildNet(params, subnetId){
+    splitChildNet(params, subnetId) {
         return axios.post(`${baseUrl}/restsubnetv4s/${subnetId}?action=mergesplit`, params)
     },
 
     /**
      * 合并子网
      */
-    mergeChildNet(params){
+    mergeChildNet(params) {
         return axios.post(`${baseUrl}/restsubnetv4s?action=mergesplit`, params)
     },
 
     /**
      * 获取规划IP地址列表
      */
-    getPlanIpList(id){
+    getPlanIpList(id) {
         return axios.get(`${baseUrl}/dividedaddresses/${id}`)
     },
 
     /**
      * 地址扫描
      */
-    addressScanning(id){
+    addressScanning(id) {
         return axios.get(`${baseUrl}/scanaddresses/${id}`)
     },
 
     /**
      * 删除IP地址
      */
-    deleteIpAddress(id){        
+    deleteIpAddress(id) {
         return axios.delete(`${baseUrl}/scanaddresses/${id}`)
     },
 
     /**
      * 转固定或保留
      */
-    changeToFixOrKeep(id, parmas){
+    changeToFixOrKeep(id, parmas) {
         return axios.post(`${baseUrl}/dividedaddresses/${id}?action=change`, parmas)
     },
 
     /**
      * 获取地址池列表
      */
-    getAddressPoolList(subnetId){
+    getAddressPoolList(subnetId) {
         return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools`);
     },
 
     /**
      * 修改/新增ipv6地址池
      */
-    saveIpv6AddressPool({subnetId, poolId, params, type = "post"}){
+    saveIpv6AddressPool({ subnetId, poolId, params, type = "post" }) {
         let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
 
         url = poolId ? `${url}/${poolId}` : url;
@@ -351,7 +351,7 @@ export default {
     /**
      * 修改/新增ipv4地址池
      */
-    saveIpv4AddressPool({subnetId, poolId, params, type = "post"}){
+    saveIpv4AddressPool({ subnetId, poolId, params, type = "post" }) {
         let url = `${baseUrl}/restsubnetv4s/${subnetId}/restpools`;
 
         url = poolId ? `${url}/${poolId}` : url;
@@ -362,7 +362,7 @@ export default {
     /**
      * 删除地址池
      */
-    deleteAddressPool(subnetId, poolId){
+    deleteAddressPool(subnetId, poolId) {
         return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`)
     },
 
@@ -373,28 +373,28 @@ export default {
     /**
      * 获取OPTION配置列表
      */
-    getOptionList(){
+    getOptionList() {
         return axios.get(`${baseUrl}/restoptionnames`)
     },
 
     /**
      * 删option
      */
-    deleteOption(id){
+    deleteOption(id) {
         return axios.delete(`${baseUrl}/restoptionnames/${id}`)
     },
 
     /**
      * 添加option
      */
-    addOption(params){
+    addOption(params) {
         return axios.post(`${baseUrl}/restoptionnames`, params)
     },
 
     /**
      * 编辑option
      */
-    editOption(params, id){
+    editOption(params, id) {
         return axios.put(`${baseUrl}/restoptionnames/${id}`, params)
     }
 
