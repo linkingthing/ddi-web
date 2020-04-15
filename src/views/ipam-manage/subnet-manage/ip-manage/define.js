@@ -1,4 +1,4 @@
-export const columns = [
+export const columns = scope => [
   {
     type: "selection",
     width: 60,
@@ -8,7 +8,17 @@ export const columns = [
     title: "IP地址",
     key: "ip",
     minWidth: 160,
-    align: "center"
+    align: "center",
+    render: (h, { row }) => {
+      return h("label", {
+        class: "ip-address",
+        on: {
+          click: () => {
+            scope.handleEdit(row);
+          }
+        }
+      }, row.ip);
+    }
   },
   {
     title: "MAC地址",
@@ -75,6 +85,23 @@ export const columns = [
     key: "leaseendtime",
     minWidth: 120,
     align: "center"
+  },
+  {
+    title: "操作",
+    align: "center",  
+    minWidth: 120,    
+    render: (h, { row }) => {
+      return h("div", [
+        h("label", {
+          class: "operate-label operate-edit",
+          on: {
+            click: () => {
+              scope.handleConfigAttibute(row);
+            }
+          }
+        }, "自定义属性")
+      ]);
+    }
   }
 ];
 

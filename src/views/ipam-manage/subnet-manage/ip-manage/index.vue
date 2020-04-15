@@ -18,7 +18,7 @@
         </Button>
         <Button 
           type="primary" 
-          @click="handleConfig" 
+          @click="handleToAddressPool" 
           class="top-button button-config"
         >
           地址池配置
@@ -65,6 +65,18 @@
       @confirmed="handleFixedOrKept"
     />
 
+    <ConfigAttribute 
+      :visible.sync="showConfig"
+      :data="editData"
+      @confirmed="handleConfiged"
+    />
+
+    <Edit 
+      :visible.sync="showEdit"
+      :data="editData"
+      @confirmed="handleSaved"
+    />
+
     <Search 
       :visible.sync="showSearch"
       :data="selectedData"
@@ -103,21 +115,23 @@ export default {
       subnetId: "",
       ipAddress: "",
       tableData: [],
-      columns,
+      columns: columns(this),
       tab: "chart",
       selectedData: [],
       showSearch: false,
       showFixOrKeep: false,
+      showConfig: false,
+      showEdit: false,
       typeofFixOrKeep: "",
       isIPv6: false,
-      currentData: null
+      editData: null
     };
   },
 
   created() {
-    let { id, addr } = this.$route.query;
+    let { subnetId, addr } = this.$route.query;
 
-    this.subnetId = id;
+    this.subnetId = subnetId;
     this.ipAddress = addr;
 
     this.isIPv6 = getAddressType(addr) === this.$ipTypes.ipv6;
@@ -185,12 +199,26 @@ export default {
       this.handleQuery();
     },
 
-    handleConfig() {
-      this.$router.push(`/ipam-manage/address-pool?id=${this.subnetId}`);
+    handleToAddressPool() {
+      this.$router.push(`/dhcp-service/address-pool?subnetId=${this.subnetId}`);
+    },
+
+    handleEdit(res) {
+      this.editData = res;
+      this.showEdit = true;
+    },
+
+    handleSaved() {
+      this.handleQuery();
     },
 
     handleConfigAttibute(res) {
-      
+      this.editData = res;
+      this.showConfig = true;
+    },
+
+    handleConfiged() {
+
     },
 
     async handleDelete(item) {

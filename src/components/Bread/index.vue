@@ -2,9 +2,9 @@
   <div class="wrapper" v-show="showBread">
     <Breadcrumb>
       <BreadcrumbItem
-        :key="item.id"
-        :to="index === breadcrumbList.length-1 ? '': item.path"
         v-for="(item, index) in breadcrumbList"
+        :key="index"
+        :to="index === breadcrumbList.length - 1 ? '': item.path"
       >
         {{item.title}}
         <template v-if="item.name">({{item.name}})</template>
@@ -14,23 +14,166 @@
 </template>
 
 <script>
+import configs from "@/router/configs";
+
 let autoId = 0;
+
 export default {
-  components: {},
-  props: {},
+  name: "Bread",
+
   data() {
     return {
       showBread: true,
-      breadcrumbList: []
+      breadcrumbList: [],
+      configs: [...configs]
     };
   },
 
-  computed: {},
-  created() {},
-  mounted() {
-    this.excuteBreadcrumbList(this.$route, this.$route);
+  watch: {
+    $route(route) {
+      this.getBreadcrumbList(route);
+      
+      // this.excuteBreadcrumbList(currentRoute, prevRoute);
+    }
   },
+
+  mounted() {
+    
+    // this.excuteBreadcrumbList(this.$route, this.$route);
+    this.getBreadcrumbList(this.$route);
+  },
+
   methods: {
+    getBreadcrumbList(route) {
+      let result = [];
+
+      this.breadcrumbList = this.getChildren(route.path, this.configs, result);      
+    },
+
+    getChildren(path, routes, result, parent) {
+      let len = routes.length;
+      let found = false;
+      let i = 0;
+
+      for (i = 0; i < len; i++) {
+        let item = routes[i];
+        
+        if (item.path === path) {
+          result.push({
+            path,
+            title: this.getTitle(item.meta.title)
+          });
+
+          found = true;
+
+          break;
+        }
+        else {
+          if (item.children) {
+            this.getChildren(path, item.children, result, item);
+          }
+        }
+      }
+
+      if (found && parent) {
+        this.setParent(parent, routes[i], result);
+      }
+
+      return result;
+    },
+
+    setParent(parent, child, result) {
+      if (!child) return;
+      
+      if (child.meta.from) {
+        let item = this.getItemByName(child.meta.from);
+          
+        result.unshift({
+          path: item.path,
+          title: this.getTitle(item.meta.title)
+        });
+
+        if (item.meta.from) {
+          let grandParent = this.getParent(parent);
+
+          if (!grandParent) return;
+
+          this.setParent(grandParent, parent, result);
+        }
+        else {
+          let title = this.getTitle(parent.meta.title);
+
+          if (title) {
+            result.unshift({
+              path: parent.path,
+              title
+            });
+          }
+        }
+      }
+      else {
+        let title = this.getTitle(parent.meta.title);
+
+        if (title) {
+          result.unshift({
+            path: parent.path,
+            title
+          });
+        }
+      }
+    },
+
+    getParent(item, res = this.configs) {
+      let result = res.find(item => item.name === item.name);
+
+      if (result) {
+        return result;
+      }
+      else if (result.children) {
+        let len = result.children.length;
+
+        for (let i = 0; i < len; i++) {
+          return this.getParent(item, result.children);
+        }
+      }
+      else {
+        return;
+      }
+    },
+
+    getItemByName(name, res = this.configs) {
+      let result = null;
+      
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].name === name) {
+          result = res[i];
+
+          break;
+        }
+        else {
+          result = this.getItemByName(name, res[i].children || []);
+
+          if (result) break;
+        }
+      }
+
+      return result;
+    },
+
+    getTitle(title = "") {
+      let arr = title.split(":");
+      let route = this.$route;
+
+      if (arr.length > 1) {
+        let key = arr[1];
+
+        return Object.keys(route.params).length ? route.params[key] : route.query[key];
+      }
+      else {
+        return arr[0];
+      }
+    },
+
     excuteBreadcrumbList(currentRoute, prevRoute) {
       const {
         fullPath: currentFullPath,
@@ -91,14 +234,10 @@ export default {
         title: currentTitle
       });
     }
-  },
-  watch: {
-    $route(currentRoute, prevRoute) {
-      this.excuteBreadcrumbList(currentRoute, prevRoute);
-    }
   }
 };
 </script>
+
 <style lang="less" scoped>
 .wrapper {
   padding: 12px 20px;
