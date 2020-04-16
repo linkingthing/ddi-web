@@ -56,6 +56,49 @@ function IPv6UnitTest(unitArr, callback) {
 }
 
 /**
+ * 将IPv6地址填充为完整的IPv6
+ * @param {String} address 
+ */
+export const fillIPv6 = address => {
+  // 如果没有简写，则直接返回
+  if (address.indexOf("::") < 0) return address;
+
+  let arr = address.split("::");
+  
+  let begin = arr[0], end = arr[1];
+  let beginLen = 0, endLen = 0;
+
+  if (!begin) {
+    beginLen = 0;
+  }
+  else {
+    beginLen = begin.split(":").length;
+  }
+
+  if (!end) {
+    endLen = 0;
+  }
+  else {
+    endLen = end.split(":").length;
+  }
+
+  const totalLen = 8;
+  const fillLen = totalLen - beginLen - endLen;
+  
+  let ret = new Array(fillLen).fill("0");
+
+  if (begin) {
+    ret.unshift(begin);
+  }
+
+  if (end) {
+    ret.push(end);
+  }
+
+  return ret.join(":");
+};
+
+/**
  * 获取ip地址的类型
  * 判断地址是否有冒号，如果有冒号，就认为是ipv6，反之则是ipv4
  */
