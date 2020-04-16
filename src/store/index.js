@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import modules from './modules'
+import Vue from "vue";
+import Vuex from "vuex";
+import modules from "./modules";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-const Cache = require('../util/store').default('sessionStorage')
+const Cache = require("../util/store").default("sessionStorage");
 
 
 export default new Vuex.Store({
-  strict: process.env.NODE_ENV !== 'production',
+  strict: process.env.NODE_ENV !== "production",
   plugins: [
     store => {
       store.subscribe(({ type, payload }) => {
@@ -22,8 +22,8 @@ export default new Vuex.Store({
           //   Cache.set(payload.key, payload.data)
           // }
         }
-      })
+      });
     }
   ],
   modules
-})
+});

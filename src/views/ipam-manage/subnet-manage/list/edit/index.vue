@@ -9,23 +9,36 @@
         <div class="info-row-label">区域</div>
         <Input
           maxlength="255"
-          v-model="name"
+          v-model="zoneName"
           placeholder="请输入区域"
           class="info-row-input" />
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">DNS</div>
-        <Checkbox v-model="enableDNS">启用</Checkbox>
+        <Checkbox v-model="dnsEnable" @on-change="handleDNSChange">启用</Checkbox>
+
+        <div v-if="showViewList" class="view-name">
+          <div class="info-row-label view-name-label">视图名称</div>
+          <Select v-model="viewId">
+            <Option 
+              v-for="item in viewList" 
+              :value="item.value" 
+              :key="item.value"
+            >
+              {{ item.label }}
+            </Option>
+          </Select>
+        </div>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">DHCP</div>
-        <Checkbox v-model="enableDHCP">启用</Checkbox>
+        <Checkbox v-model="dhcpEnable">启用</Checkbox>
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">备注</div>
         <Input
           maxlength="50"
-          v-model="remark"
+          v-model="note"
           type="textarea"
           class="info-row-input" />
       </div>
@@ -36,6 +49,7 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
+import { getAddressType } from "@/util/common";
 
 export default {
   components: {
@@ -57,10 +71,13 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      name: "",
-      remark: "",
-      enableDNS: false,
-      enableDHCP: true
+      zoneName: "",
+      note: "",
+      dnsEnable: false,
+      dhcpEnable: true,
+      showViewList: false,
+      viewId: "",
+      viewList: []
     };
   },
 
@@ -82,19 +99,59 @@ export default {
     }
   },
 
+  mounted() {
+    this.getViewList();
+  },
+
   methods: {
+    handleDNSChange(val) {
+      this.showViewList = val;
+    },
+
+    async getViewList() {
+      try {
+        let res = await this.$getViewList();
+
+        this.viewIdList = JSON.parse(JSON.stringify(res));
+        
+      } catch (error) {
+        console.error(error);
+        
+        this.$$error(error.message || "请求视图列表失败！");
+      }
+    },
+
     setValue(val = {}) {
-      this.name = val.name || "";
-      this.remark = val.remark || "";
-      this.enableDNS = val.enableDNS || false;
-      this.enableDHCP = val.enableDHCP === undefined ? true : val.enableDHCP;
+      this.zoneName = val.zoneName || "";
+      this.note = val.note || "";
+      this.dnsEnable = val.dnsEnable || false;
+      this.dhcpEnable = val.dhcpEnable === undefined ? true : val.dhcpEnable;
+      this.dhcpEnable = val.dhcpEnable === undefined ? true : val.dhcpEnable;
+      this.viewId = val.viewId || "";
     },
 
     async handleConfirm() {
       try {
         await this.validate();
+        
+        if (!this.dhcpEnable) {          
+          await new Promise((resolve, reject) => {
+            this.$Modal.confirm({
+              title: "警告",
+              content: "关闭DHCP功能，子网下的地址池配置将被删除，同时地址不能被DHCP服务管理。<br>您确认需要关闭吗？",
+              onOk: () => {
+                resolve();
+              },
+              onCancel: () => {
+                reject({ showMessage: false });
+              }
+            });
+          });
+        }
 
-        let { status, data } = await service.editChildNet(this.getParams());
+        const action = getAddressType(this.data.subnet) === "ipv4" ? "editIPv4ChildNet" : "editIPv6ChildNet";
+
+        let { status, data } = await service[action](this.getParams(), this.data.embedded.id);
 
         status = +status;
         
@@ -108,23 +165,40 @@ export default {
         this.$emit("confirmed");
       } 
       catch (err) {
-        console.error(err);
+        if (err) {
+          if (err.showMessage) {
+            console.error(err);
 
-        this.$$error(err && err.message || "保存失败！");
+            this.$$error(err.message || "保存失败！");
+          }
+        }
+        else {
+          this.$$error("保存失败");
+        }
+
+        return Promise.reject();
       }
     },
 
     validate() {
-      let { remark, name, enableDNS, enableDHCP } = this;
+      let { note, zoneName, dnsEnable } = this;
 
-      remark = remark.trim();
-      name = name.trim();
+      note = note.trim();
+      zoneName = zoneName.trim();
 
-      if (!name) {
+      if (!zoneName) {
         return Promise.reject({ message: "请输入区域！" });
       }
-      else if (name.length > 255) {
+      else if (zoneName.length > 255) {
         return Promise.reject({ message: "区域长度不得大于255个字符！" });
+      }
+
+      if (dnsEnable && !this.viewId) {
+        return Promise.reject({ message: "请选择视图！" });
+      }
+
+      if (note.length > 255) {
+        return Promise.reject({ message: "备注长度不得大于255个字符！" });
       }
 
       return Promise.resolve();
@@ -132,10 +206,11 @@ export default {
 
     getParams() {
       return {
-        remark: this.remark.trim(),
-        name: this.name.trim(),
-        enableDNS: this.enableDNS,
-        enableDHCP: this.enableDHCP
+        note: this.note.trim(),
+        zoneName: this.zoneName.trim(),
+        dnsEnable: this.dnsEnable,
+        dhcpEnable: this.dhcpEnable,
+        viewId: this.viewId
       };
     }
   }

@@ -12,7 +12,10 @@
         </div>
         <div class="info-row">
           <div class="info-row-label">子网掩码</div>
-          <Input v-model="subnetMask" placeholder="请输入子网掩码" class="info-row-input" />
+          <Input
+            v-model="subnetMask"
+            placeholder="请输入子网掩码"
+            class="info-row-input" />
         </div>
       </template>
       <div v-else class="info-row-label">{{allIps}}</div>
@@ -25,56 +28,56 @@ import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
 import { operateTypes } from "./../define";
-import { isPosNumber, getAddressType, gatewayIsValid } from "@/util/common"
+import { isPosNumber, getAddressType, gatewayIsValid } from "@/util/common";
 
 export default {
-  components:{
+  components: {
     ModalCustom
   },
 
-  props:{
-    visible:{
+  props: {
+    visible: {
       type: Boolean,
       default: false
     },
 
-    data:{
-      type:Array,
+    data: {
+      type: Array,
       default: () => []
     },
 
-    type:{
-      type:String,
-      default:operateTypes.merge
+    type: {
+      type: String,
+      default: operateTypes.merge
     }
   },
 
-  data(){
+  data() {
     return {
-      dialogVisible:false,
-      ipAddress:"",
-      currentMask:"",
-      subnetMask:"",
+      dialogVisible: false,
+      ipAddress: "",
+      currentMask: "",
+      subnetMask: "",
       operateTypes,
-      allIps:""
-    }
+      allIps: ""
+    };
   },
 
-  computed:{
-    getTitle(){
+  computed: {
+    getTitle() {
       return "子网" + (this.type === operateTypes.merge ? "合并" : "拆分");
     }
   },
 
-  watch:{
-    visible(val){
-      if(!val) return;
+  watch: {
+    visible(val) {
+      if (!val) return;
       
       this.dialogVisible = val;
     },
 
-    data(val){      
-      if(!val.length) return;
+    data(val) {      
+      if (!val.length) return;
 
       this.ipAddress = val[0].subnet;
       this.allIps = val.map(item => item.subnet).join("，");
@@ -84,14 +87,22 @@ export default {
       this.currentMask = parseInt(ip.substr(ip.lastIndexOf("/") + 1));
     },
 
-    dialogVisible(val){
-      this.$emit("update:visible", val)
+    dialogVisible(val) {
+      this.$emit("update:visible", val);
     }
   },
 
-  methods:{
-    async handleConfirm(){
-      const action = this.type === operateTypes.merge ? "mergeChildNet" : "splitChildNet";
+  methods: {
+    async handleConfirm() {
+      let action = "";
+      let type = getAddressType(this.data[0].subnet);
+
+      if (this.type === operateTypes.merge) {
+        action = type === "ipv4" ? "mergeIPv4ChildNet" : "mergeIPv6ChildNet";
+      }
+      else {
+        action = type === "ipv4" ? "splitIPv4ChildNet" : "splitIPv6ChildNet";
+      }
 
       try {
         await this.validate();
@@ -109,49 +120,49 @@ export default {
       }
     },
 
-    getParams(){
+    getParams() {
       let res = {
         oper: this.type
       };
 
       // 合并
-      if(this.type === operateTypes.merge){
-        res.ips = this.data.map(item => subnet).join(",")
+      if (this.type === operateTypes.merge) {
+        res.ips = this.data.map(item => item.subnet).join(",");
       }
       // 拆分
-      else{
+      else {
         res.mask = this.subnetMask;
       }
 
       return res;
     },
 
-    validate(){
+    validate() {
       const mask = parseInt(this.subnetMask);
       const data = this.data;
 
       // 如果是合并
-      if(this.type === operateTypes.merge){
+      if (this.type === operateTypes.merge) {
         // 如果ip的类型有多种
-        if(Array.from(new Set(data.map(item => getAddressType(item.subnet)))).length > 1){
-          return Promise.reject({ message:"不同类型的IP地址不能合并！" })
+        if (Array.from(new Set(data.map(item => getAddressType(item.subnet)))).length > 1) {
+          return Promise.reject({ message: "不同类型的IP地址不能合并！" });
         }
       }
       // 拆分
-      else{
-        if(!gatewayIsValid(mask, getAddressType(data.subnet))){
-          return Promise.reject({ message:"请输入正确的掩码！" })
+      else {
+        if (!gatewayIsValid(mask, getAddressType(data.subnet))) {
+          return Promise.reject({ message: "请输入正确的掩码！" });
         }
       }
 
-      if(mask <= this.currentMask){
-        return Promise.reject({ message:"输入的掩码必须大于原掩码！" })
+      if (mask <= this.currentMask) {
+        return Promise.reject({ message: "输入的掩码必须大于原掩码！" });
       }
 
       return Promise.resolve();
     }
   }
-}
+};
 </script>
 
 <style>

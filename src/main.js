@@ -84,6 +84,29 @@ Vue.prototype.$$confirm = function ({ title = "消息", content }) {
   });
 };
 
+
+const getStateByKey = async function (name, params = {}) {
+  try {   
+    let _res = store.getters[name];
+
+    // forceRequire：强制请求，设置此参数，将强制从服务器获取数据
+    if (!_res || (_res && !_res.length) || params.forceRequire) {
+      _res = await store.dispatch(name, params);
+    }
+
+    return _res;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 获取视图列表
+ */
+Vue.prototype.$getViewList = async params => {
+  return await getStateByKey("getViewList", params);
+};
+
 // Vue.config.productionTip = false
 
 /* eslint-disable no-new */

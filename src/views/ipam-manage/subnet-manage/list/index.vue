@@ -67,14 +67,15 @@
 </style>
 
 <script>
-import TablePagination from "./../../../../components/TablePagination";
+import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
 import Create from "./create";
 import MergeSplit from "./merge-split";
 
-import { operateTypes } from "./define";
+import { operateTypes, columns } from "./define";
 
-import services from "./../../../../services/index.js";
+import services from "@/services/index.js";
+import { getAddressType } from "@/util/common";
 
 export default {
   components: {
@@ -88,71 +89,7 @@ export default {
     return {
       keywords: "",
       tableData: [],
-      columns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "网络地址",
-          render: (h, { row }) => {
-            return h("label", {
-              class: "net-address",
-              on: {
-                click: () => {
-                  this.handleView(row);
-                }
-              }
-            }, row.subnet);
-          },
-          align: "center"
-        },
-        {
-          title: "区域",
-          key: "name",
-          align: "center"
-        },
-        {
-          title: "地址数量",
-          key: "total",
-          align: "center"
-        },
-        {
-          title: "创建时间",
-          key: "creationTimestamp",
-          align: "center"
-        },
-        {
-          title: "使用率",
-          key: "usage",
-          align: "center"
-        },
-        {
-          title: "操作",
-          align: "center",      
-          render: (h, { row }) => {
-            return h("div", [
-              h("label", {
-                class: "operate-label operate-edit",
-                on: {
-                  click: () => {
-                    this.handleEdit(row);
-                  }
-                }
-              }, "编辑"),
-              h("label", {
-                class: "operate-label operate-delete",
-                on: {
-                  click: () => {
-                    this.handleDelete(row);
-                  }
-                }
-              }, "删除")
-            ]);
-          }
-        }
-      ],
+      columns: columns(this),
       selectedData: [],
       showCreate: false,
       showEdit: false,
@@ -240,8 +177,10 @@ export default {
     async handleDelete(data) {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
+
+        const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
         
-        await services.deleteChildNet(data.subnet_id);
+        await services[action](data.subnet_id);
 
         this.$$success("删除成功！");
 

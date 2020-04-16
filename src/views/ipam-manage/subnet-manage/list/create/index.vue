@@ -9,7 +9,7 @@
         <div class="info-row-label">区域</div>
         <Input
           maxlength="255"
-          v-model="name"
+          v-model="zoneName"
           placeholder="请输入区域"
           class="info-row-input" />
       </div>
@@ -46,7 +46,7 @@ export default {
     return {
       dialogVisible: false,
       subnet: "",
-      name: ""
+      zoneName: ""
     };
   },
 
@@ -67,14 +67,16 @@ export default {
   methods: {
     init() {
       this.subnet = "";
-      this.name = "";
+      this.zoneName = "";
     },
 
     async handleConfirm() {
       try {
         await this.validate();
 
-        let { status, data } = await service.addChildNet(this.getParams());
+        const key = getAddressType(this.subnet) === "ipv4" ? "addIPv4ChildNet" : "addIPv6ChildNet";
+
+        let { status, data } = await service[key](this.getParams());
 
         status = +status;
         
@@ -95,11 +97,22 @@ export default {
     },
 
     validate() {
-      let { subnet, name } = this;
+      let { subnet, zoneName } = this;
+
+      // 验证区域
+      if (!zoneName) {
+        return Promise.reject({ message: "请输入区域！" });
+      }
+      else {
+        if (zoneName.length > 255) {
+          return Promise.reject({ message: "请输入正确的区域！" });
+        }
+      }
+      
       let tmp = subnet.trim().split("/");
 
       subnet = tmp[0];
-      name = name.trim();
+      zoneName = zoneName.trim();
 
       if (tmp.length > 2 || tmp.length === 1) {
         return Promise.reject({ message: "请输入正确的网络地址！" });
@@ -129,23 +142,13 @@ export default {
         return Promise.reject({ message: "请输入正确的网络地址掩码！" });
       }
 
-      // 验证区域
-      if (!name) {
-        return Promise.reject({ message: "请输入区域！" });
-      }
-      else {
-        if (name.length > 255) {
-          return Promise.reject({ message: "请输入正确的区域！" });
-        }
-      }
-
       return Promise.resolve();
     },
 
     getParams() {
       return {
         subnet: this.subnet.trim(),
-        name: this.name.trim()
+        zoneName: this.zoneName.trim()
       };
     }
   }
