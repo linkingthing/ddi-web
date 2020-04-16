@@ -495,7 +495,6 @@ export default {
       );
     },
     handleAddChildNode() {
-      console.log(33, this.currentNode);
       // 判断，当根节点没有subnet的时候，不能添加子节点
       if (!this.tree.id) {
         this.$Message.info("请先创建保存根节点后，再创建子节点");
