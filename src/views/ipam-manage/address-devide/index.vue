@@ -117,7 +117,7 @@
                 <span>总容量</span>
               </li>
               <li>
-                <Strong>{{Array.isArray(currentNode.children)? currentNode.children.length : 0}}</Strong>
+                <Strong>{{Array.isArray(currentNode.children)? currentNode.children.length-1 : 0}}</Strong>
                 <span>已用容量</span>
               </li>
             </ul>
@@ -433,8 +433,8 @@ export default {
     treeDataAddOther(tree) {
       const { subtreebitnum, children } = tree;
       if (Array.isArray(children)) {
-        const { beginsubnet } = children[children.length - 1];
-        const [ip, prefixLen] = beginsubnet.split("/");
+        const { endsubnet } = children[children.length - 1];
+        const [ip, prefixLen] = endsubnet.split("/");
 
         children.forEach(child => {
           child.type = "originalNode";
