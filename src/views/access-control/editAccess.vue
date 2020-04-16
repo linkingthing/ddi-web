@@ -99,6 +99,11 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填访问控制名称" },
+          {
+            type: "string",
+            max: 20,
+            message: "最多只能20个字符"
+          }
         ]
       }
     };

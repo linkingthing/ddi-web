@@ -106,8 +106,8 @@ export default {
           { required: true, message: "请填访问控制名称" },
           {
             type: "string",
-            max: 253,
-            message: "最多只能253个字符"
+            max: 20,
+            message: "最多只能20个字符"
           }
         ]
       }
