@@ -137,7 +137,7 @@
           <div class="child-node-group">
             <ul class="childList">
               <li
-                v-for="(item) in currentNode.children"
+                v-for="(item) in currentNode.children.filter(item => item.type !=='surplusNode')"
                 :key="item.id"
               >
                 <div class="child-node">
