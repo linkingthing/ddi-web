@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="eviceModal" title="修改访问控制表" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="eviceModal"
+    title="修改访问控制表"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="params"
       label-position="right"
@@ -10,11 +14,23 @@
       <div class="pop-content">
         <Row>
           <i-col span="20">
-            <form-item label="名称" prop="name">
-              <i-input v-model="params.name" placeholder="请填访问控制名称"></i-input>
+            <form-item
+              label="名称"
+              prop="name"
+            >
+              <i-input
+                v-model="params.name"
+                placeholder="请填访问控制名称"
+              />
             </form-item>
-            <form-item label="IP列表" prop="IP">
-              <div v-for="item in params.list" :key="item.name">
+            <form-item
+              label="IP列表"
+              prop="IP"
+            >
+              <div
+                v-for="item in params.list"
+                :key="item.name"
+              >
                 <Tag
                   type="border"
                   closable
@@ -25,15 +41,33 @@
             </form-item>
             <form-item label="acl">
               <Checkbox v-model="aclcheck">禁止</Checkbox>
-              <Select filterable style="width: 150px" v-model="acl">
-                <Option v-for="item in accessList" :key="item.id" :value="item.name">{{item.name}}</Option>
+              <Select
+                filterable
+                style="width: 150px"
+                v-model="acl"
+              >
+                <Option
+                  v-for="item in accessList"
+                  :key="item.id"
+                  :value="item.name"
+                >{{item.name}}</Option>
               </Select>
-              <Button type="primary" @click="handleAddAcl">添加</Button>
+              <Button
+                type="primary"
+                @click="handleAddAcl"
+              >添加</Button>
             </form-item>
             <form-item label="IP">
               <Checkbox v-model="ipcheck">禁止</Checkbox>
-              <Input v-model="ip" placeholder="输入ip后点击添加" style="width: 150px" />
-              <Button type="primary" @click="handleAddIP">添加</Button>
+              <Input
+                v-model="ip"
+                placeholder="输入ip后点击添加"
+                style="width: 150px"
+              />
+              <Button
+                type="primary"
+                @click="handleAddIP"
+              >添加</Button>
             </form-item>
           </i-col>
         </Row>
@@ -69,7 +103,7 @@ export default {
       }
     };
   },
-  mounted() {},
+  mounted() { },
   methods: {
     getInitAccessById(id) {
       services.getAccessById(id).then(res => {
@@ -96,6 +130,9 @@ export default {
       this.getInitAccessById(data.data);
     },
     handleAddAcl() {
+      if (/^\s+$/.test(this.acl) || this.acl === "") {
+        return;
+      }
       const acl = this.aclcheck ? `!${this.acl}` : this.acl;
       if (!this.params.list.map(item => item.name).includes(acl)) {
         this.params.list.push({
@@ -107,6 +144,9 @@ export default {
       }
     },
     handleAddIP() {
+      if (/^\s+$/.test(this.ip) || this.ip === "") {
+        return;
+      }
       const ip = this.ipcheck ? `!${this.ip}` : this.ip;
       if (!this.params.list.map(item => item.name).includes(ip)) {
         this.params.list.push({
