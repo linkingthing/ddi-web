@@ -205,7 +205,7 @@ export default {
     handleRemove(index) {
       this.dataConfig.exception.splice(index, 1);
     },
-    //关闭弹窗
+    // 关闭弹窗
     cancelModel() {
       this.eviceModal = false;
       this.$refs.formValidate.resetFields();
