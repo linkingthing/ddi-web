@@ -1,17 +1,21 @@
 <template>
   <div class="typeValue">
-    <form-item label="类型" prop="type" :label-width="110">
+    <form-item
+      label="类型"
+      prop="type"
+      :label-width="110"
+    >
       <i-select v-model="params.type">
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
-        <i-option value="MX">MX</i-option>
+        <!-- <i-option value="MX">MX</i-option>
         <i-option value="NS">NS</i-option>
         <i-option value="NAPTR">NAPTR</i-option>
         <i-option value="PTR">PTR</i-option>
         <i-option value="SRV">SRV</i-option>
         <i-option value="TXT">TXT</i-option>
-        <i-option value="URL">URL</i-option>
+        <i-option value="URL">URL</i-option> -->
       </i-select>
     </form-item>
     <form-item
@@ -25,7 +29,10 @@
             params.type === 'URL' && urlValidate
       ]"
     >
-      <i-input v-model="params.value" placeholder="请填写记录值"></i-input>
+      <i-input
+        v-model="params.value"
+        placeholder="请填写记录值"
+      ></i-input>
     </form-item>
   </div>
 </template>
