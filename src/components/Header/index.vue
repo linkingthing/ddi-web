@@ -1,7 +1,13 @@
 <template>
-  <div class="Head">
+  <div class="header-wrapper">
     <div class="header">
       <div class="header-inner">
+        <div class="logo">
+          <img :src="logoSrc" alt >
+        </div>
+        <div class="logo-text">
+          <img :src="logoTextSrc" alt >
+        </div>
         <div class="user">
           <Badge :count="3">
             <Icon type="ios-notifications-outline" style="font-size: 20px" />
@@ -24,6 +30,7 @@
         </div>
       </div>
     </div>
+
     <Modal v-model="visible" title="修改密码">
       <Form :label-width="80" style="width: 400px;margin:0 auto">
         <FormItem label="账号">admin</FormItem>
@@ -54,10 +61,15 @@
 import { mapMutations } from "vuex";
 import services from "@/services";
 
+import logoSrc from "@/assets/images/logo.jpg";
+import logoTextSrc from "@/assets/images/logo-text.jpg";
+
 export default {
   name: "Header",
   data() {
     return {
+      logoSrc,
+      logoTextSrc,
       visible: false,
       password: "",
       rePassword: ""

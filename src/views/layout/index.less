@@ -3,24 +3,21 @@
     height: 100%;
 
     .content-box {
-        height: 100%;
-        width: calc(~"100% - 241px");
-        top: 0;
-        left:241px;
+        width: 100%;
+        height: calc(~"100% - 80px");
         overflow: auto;
-        position: absolute;
+        display: flex;
     }
 
     .bread {
         padding: 20px;
     }
 
-    .content-wrapper {
-        padding: 83px 40px 0;
-        height: 100%;
-    }
     .content-padding {
         background: #fff;
-        min-height: 100%;
+        height: calc(~"100% - 32px");
+        margin: 16px;
+        flex: 1;
+        overflow: auto;
     }
 }

@@ -1,60 +1,55 @@
 <template>
   <div class="menu">
-    <div class="logo">
-      <img src="../../assets/images/logo.png" alt >
-    </div>
-    <div class="menu-list">
-      <vue-scroll :ops="ops">
-        <Menu
-          :theme="theme"
-          :active-name="tab"
-          :open-names="openNames"
-        >
-          <template v-for="(item, idx) in routes">
-            <MenuItem
-              v-if="item.meta.isSingle && PACK_SYSTEM.includes(item.meta.range)"
-              :key="idx"
-              :name="item.name"
-              @click.native="handleJump(item.path)"
-              class="single-node"
-            >
+    <vue-scroll :ops="ops">
+      <Menu
+        :theme="theme"
+        :active-name="tab"
+        :open-names="openNames"
+      >
+        <template v-for="(item, idx) in routes">
+          <MenuItem
+            v-if="item.meta.isSingle && PACK_SYSTEM.includes(item.meta.range)"
+            :key="idx"
+            :name="item.name"
+            @click.native="handleJump(item.path)"
+            class="single-node"
+          >
+            <i
+              v-if="item.icon"
+              class="menu-icon"
+              :class="item.icon" 
+            />
+            {{ item.meta.title }}
+          </MenuItem>
+            
+          <Submenu
+            :key="idx"
+            v-else-if="PACK_SYSTEM.includes(item.meta.range)"
+            :name="item.name"
+          >
+            <template slot="title">
               <i
                 v-if="item.icon"
                 class="menu-icon"
                 :class="item.icon" 
               />
               {{ item.meta.title }}
-            </MenuItem>
-            
-            <Submenu
-              :key="idx"
-              v-else-if="PACK_SYSTEM.includes(item.meta.range)"
-              :name="item.name"
-            >
-              <template slot="title">
-                <i
-                  v-if="item.icon"
-                  class="menu-icon"
-                  :class="item.icon" 
-                />
-                {{ item.meta.title }}
-              </template>
+            </template>
 
-              <template v-for="child in item.children">
-                <MenuItem 
-                  v-if="!child.meta.notInMenu"
-                  :key="child.path"
-                  :name="child.name" 
-                  @click.native="handleJump(child.path)"
-                >
-                  {{ child.meta.title }}
-                </MenuItem>
-              </template>
-            </Submenu>
-          </template>
-        </Menu>
-      </vue-scroll>
-    </div>
+            <template v-for="child in item.children">
+              <MenuItem 
+                v-if="!child.meta.notInMenu"
+                :key="child.path"
+                :name="child.name" 
+                @click.native="handleJump(child.path)"
+              >
+                {{ child.meta.title }}
+              </MenuItem>
+            </template>
+          </Submenu>
+        </template>
+      </Menu>
+    </vue-scroll>
   </div>
 </template>
 

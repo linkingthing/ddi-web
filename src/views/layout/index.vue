@@ -1,17 +1,15 @@
 <template>
   <article class="main-content">
+    <Header />
     <!-- 菜单 -->
-    <Menu />
     
     <section class="content-box">
-      <Header />
+      <Menu />
+      
+      <div class="content-padding">
+        <Bread />
 
-      <div class="content-wrapper">
-        <div class="content-padding">
-          <Bread />
-
-          <router-view />
-        </div>
+        <router-view />
       </div>
     </section>
   </article>
