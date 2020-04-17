@@ -315,7 +315,7 @@ export default {
       if (this.isRootNode) {
         if (this.hasTree) {
           if (this.currentNode.beginsubnet) {
-            const [, prefixLen] = this.currentNode.beginsubnet.split("/");
+            const [, prefixLen = 0] = this.currentNode.beginsubnet.split("/");
             return [0, prefixLen];
           } else {
             return [0, 0];
@@ -497,8 +497,8 @@ export default {
       const [, len] = params.prefix.split("/");
       services.checkIPv6Prefix(params).then(res => {
         this.bitFill = [
-          parseInt(res.data.binary.substring(0, len), 2),
-          parseInt(res.data.binary.substring(0, len), 2)
+          BigInt(parseInt(res.data.binary.substring(0, len), 2)),
+          BigInt(parseInt(res.data.binary.substring(0, len), 2))
         ];
       }).catch(e => {
         console.log(e)
