@@ -95,6 +95,7 @@ export default {
   methods: {
     async handleConfirm() {
       let action = "";
+      
       let type = getAddressType(this.data[0].subnet);
 
       if (this.type === operateTypes.merge) {
@@ -107,10 +108,16 @@ export default {
       try {
         await this.validate();
 
-        let res = await service[action](this.getParams(), this.data[0].embedded.id);
+        let { status, data } = await service[action](this.getParams(), this.data[0].subnet_id);
 
-        console.log(res);
-        
+        if (+status === 200) {
+          this.$$success("操作成功！");
+
+          this.$emit("success");
+        }
+        else {
+          Promise.reject({ message: data.message });
+        }        
       } catch (err) {
         console.error(err);
         
@@ -127,7 +134,7 @@ export default {
 
       // 合并
       if (this.type === operateTypes.merge) {
-        res.ips = this.data.map(item => item.subnet).join(",");
+        res.ips = this.data.map(item => item.subnet_id).join(",");
       }
       // 拆分
       else {
@@ -150,7 +157,7 @@ export default {
       }
       // 拆分
       else {
-        if (!gatewayIsValid(mask, getAddressType(data.subnet))) {
+        if (!gatewayIsValid(mask, getAddressType(data[0].subnet))) {
           return Promise.reject({ message: "请输入正确的掩码！" });
         }
       }

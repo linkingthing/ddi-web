@@ -117,7 +117,7 @@ export const getAddressType = val => {
  * @param {String, Number} ipType IP地址的类型  ipv4|ipv6
  */
 export const gatewayIsValid = (address, ipType) => {
-  let val = address;
+  let val = address.toString();
   let index = val.indexOf("/");
 
   if (ipType) {

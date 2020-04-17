@@ -9,9 +9,9 @@
           <img :src="logoTextSrc" alt >
         </div>
         <div class="user">
-          <Badge :count="3">
+          <!-- <Badge :count="3">
             <Icon type="ios-notifications-outline" style="font-size: 20px" />
-          </Badge>
+          </Badge> -->
           <Dropdown style="margin-left: 20px" @on-click="handleClickMenu">
             <a href="javascript:void(0)">
               <img

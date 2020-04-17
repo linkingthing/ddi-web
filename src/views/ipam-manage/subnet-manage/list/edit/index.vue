@@ -151,7 +151,7 @@ export default {
 
         const action = getAddressType(this.data.subnet) === "ipv4" ? "editIPv4ChildNet" : "editIPv6ChildNet";
 
-        let { status, data } = await service[action](this.getParams(), this.data.embedded.id);
+        let { status, data } = await service[action](this.getParams(), this.data.subnet_id);
 
         status = +status;
         

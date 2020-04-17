@@ -57,6 +57,7 @@
       :visible.sync="showMergSplit"
       :data="mergeSplitData"
       :type="mergeSplitType"
+      @success="handleQuery"
     />
   </div>
 </template>
