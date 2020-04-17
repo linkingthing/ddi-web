@@ -1,3 +1,5 @@
+import { Address6 } from "ip-address";
+
 export const isIPv4Reg = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/;
 
 export const fullIPv6Reg = /^(([\da-fA-F]{1,4}):){7}([\da-fA-F]{1,4}){1}$/;
@@ -294,19 +296,23 @@ export const subnetValidateFunc = (rule, value, callback) => {
   if (value) {
     const [ip, prefix] = value.split("/");
 
-    if (Number.isNaN(Number(prefix))) {
-      callback("prefix 应该是1-64整数");
-      return;
-    }
-    if (Number(prefix) > 0 && Number(prefix) <= 64) {
+    const address = new Address6(ip);
+
+    if (address.isValid()) {
+      if (Number.isNaN(Number(prefix))) {
+        callback("prefix 应该是1-64整数");
+        return;
+      }
+      if (Number(prefix) > 0 && Number(prefix) <= 64) {
+        callback();
+        return;
+      } else {
+        callback("prefix 应该是1-64整数");
+      }
       callback();
-      return;
     } else {
-      callback("prefix 应该是1-64整数");
-
+      callback("请正确输入subnet");
     }
-    IPv6SimpleValidateFunc(null, ip, callback);
-
   }
   callback("请正确输入subnet");
 };
