@@ -448,8 +448,9 @@ export default {
             };
           }
         })
-        .catch(() => {
-          this.$Message.error("数据获取失败");
+        .catch((e) => {
+          console.log(e)
+          // this.$Message.error("数据获取失败");
         });
     },
     transformTreeData(data) {
@@ -457,28 +458,33 @@ export default {
       return JSON.parse(str.replace(/nodes/g, "children"));
     },
     treeDataAddOther(tree) {
-      const { subtreebitnum, children } = tree;
+      let { subtreebitnum, children } = tree;
       if (Array.isArray(children)) {
-        const { endsubnet } = children[children.length - 1];
+        const { endsubnet, endnodecode } = children[children.length - 1];
         const [ip, prefixLen] = endsubnet.split("/");
-
         children.forEach(child => {
           child.type = "originalNode";
           this.treeDataAddOther(child);
         });
-        children.push({
-          id: "1000",
-          name: "剩余资源",
-          type: "surplusNode",
-          siblingsTotalBitNumber: subtreebitnum,
-          beginsubnet: excuteNextIPv6(ip, prefixLen, subtreebitnum, 1),
-          endsubnet: excuteNextIPv6(
-            ip,
-            prefixLen,
-            subtreebitnum,
-            Math.pow(2, subtreebitnum) - 1
-          )
-        });
+        // subtreebitnum = 0;  // 默认认为兄弟节点位宽相同
+
+        console.log(endnodecode)
+        if (endnodecode < Math.pow(2, subtreebitnum) - 1) {
+          children.push({
+            id: "1000",
+            name: "剩余资源",
+            type: "surplusNode",
+            siblingsTotalBitNumber: subtreebitnum,
+            beginsubnet: excuteNextIPv6(ip, prefixLen, 0, 1),
+            endsubnet: excuteNextIPv6(
+              ip,
+              prefixLen,
+              0,
+              Math.pow(2, subtreebitnum) - 1
+            )
+          });
+        }
+
       }
     },
     clearExtraNode(tree) {
