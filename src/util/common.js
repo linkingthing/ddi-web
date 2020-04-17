@@ -255,7 +255,7 @@ export const subnetValidateFunc = (rule, value, callback) => {
       callback("prefix 应该是1-64整数");
       return;
     }
-    if (Number(prefix) > 0 && Number(prefix) < 64) {
+    if (Number(prefix) > 0 && Number(prefix) <= 64) {
       callback();
       return;
     } else {
