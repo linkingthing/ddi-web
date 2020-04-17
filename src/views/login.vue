@@ -2,7 +2,7 @@
   <div class="login-content">
     <div class="login">
       <div class="login-head">
-        <img class="logo" src="../assets/images/logo.jpg" >
+        <img class="logo" src="../assets/images/logo.png" >
         <h1>{{isDNS ? "DNS": "DDI"}} 配置管理平台</h1>
       </div>
       <div>

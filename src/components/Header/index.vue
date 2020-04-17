@@ -61,7 +61,7 @@
 import { mapMutations } from "vuex";
 import services from "@/services";
 
-import logoSrc from "@/assets/images/logo.jpg";
+import logoSrc from "@/assets/images/logo.png";
 import logoTextSrc from "@/assets/images/logo-text.jpg";
 
 export default {
