@@ -29,6 +29,11 @@ export const nameValidate = {
   message: "名称由不超过64个a-zA-Z0-9_组成"
 };
 
+export const commonNameValidate = {
+  pattern: /^[a-zA-Z0-9_]{1,19}$/,
+  message: "名称由不超过20个a-zA-Z0-9_组成"
+};
+
 export const isIPv4Validate = {
   pattern: isIPv4Reg,
   message: "请正确输入IPv4地址"
@@ -92,7 +97,7 @@ export const gatewayIsValid = (address, ipType) => {
   val = parseFloat(val);
 
   if (!isPosNumber(val)) return false;
-    
+
   if (ipType === "ipv6") {
     return val > 1 && val < 128;
   }
@@ -246,7 +251,7 @@ export const subnetValidateFunc = (rule, value, callback) => {
   if (value) {
     const [ip, prefix] = value.split("/");
 
-    if (Number.isNaN( Number(prefix))) {
+    if (Number.isNaN(Number(prefix))) {
       callback("prefix 应该是1-64整数");
       return;
     }
@@ -270,7 +275,7 @@ export const subnetValidateFunc = (rule, value, callback) => {
  */
 export const formatDate = (res, formatter = "yyyy-MM-dd hh:mm:ss") => {
   if (!res) return "";
-  
+
   let date = new Date(res);
 
   if (isNaN(date.getTime())) throw new Error("日期格式错误");

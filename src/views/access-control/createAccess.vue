@@ -77,7 +77,7 @@
 
 <script>
 import services from "@/services";
-import { nameValidate } from "@/util/common";
+import { commonNameValidate } from "@/util/common";
 
 export default {
   name: "ConfigGroupMgConfig",
@@ -104,11 +104,7 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填访问控制名称" },
-          {
-            type: "string",
-            max: 20,
-            message: "最多只能20个字符"
-          }
+          commonNameValidate
         ]
       }
     };

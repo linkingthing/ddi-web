@@ -340,7 +340,8 @@ export default {
         this.currentNode.beginsubnet
       ) {
         const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-        start = prefixLen - parent.data.subtreebitnum;
+        const [, prefixLenPre] = parent.data.beginsubnet.split("/");
+        start = prefixLenPre;
       }
 
       return [start, end];
@@ -484,6 +485,9 @@ export default {
       this.operateType = tab;
     },
     handleChangeCaliper([min, max]) {
+      // let [ip, prefixLen] = this.currentNode.endsubnet.split("/");
+      // prefixLen = Number(prefixLen) + max - min;
+      // this.currentNode.endsubnet = [ip, prefixLen].join("/")
       if (this.currentParent) {
         this.currentParent.data.subtreebitnum = max - min;
       }
@@ -502,6 +506,7 @@ export default {
       }
       if (this.currentNode.id) {
         console.log(this.currentNode);
+        // 设置初始值
         const nodecodeIndex = Array.isArray(this.currentNode.children)
           ? this.currentNode.children.length
           : 0;
