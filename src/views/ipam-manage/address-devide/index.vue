@@ -294,7 +294,7 @@ export default {
       }
     },
     ableEditBeginSubnet() {
-      return !this.isRootNode;
+      return !this.isRootNode && this.hasTree;
     },
     ableEditEndnodecode() {
       return this.isRootNode;
@@ -313,8 +313,18 @@ export default {
         return [0, 0];
       }
       if (this.isRootNode) {
-        const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-        return [0, prefixLen];
+        if (this.hasTree) {
+          if (this.currentNode.beginsubnet) {
+            const [, prefixLen] = this.currentNode.beginsubnet.split("/");
+            return [0, prefixLen];
+          } else {
+            return [0, 0];
+          }
+        } else {
+          return [0, 0];
+        }
+
+
       }
 
       const parent = this.currentParent;
@@ -490,6 +500,8 @@ export default {
           parseInt(res.data.binary.substring(0, len), 2),
           parseInt(res.data.binary.substring(0, len), 2)
         ];
+      }).catch(e => {
+        console.log(e)
       });
     },
     handleTabOperate(tab) {
@@ -571,9 +583,9 @@ export default {
       }
       this.currentParent = data.parent;
       this.currentNode = data.data;
-      if (!this.currentNode.beginnodecode) {
-        this.currentNode.beginnodecode = 0;
-      }
+      // if (!this.currentNode.beginnodecode) {
+      //   this.currentNode.beginnodecode = 0;
+      // }
       if (this.isRootNode) {
         this.currentNode.endnodecode = 0;
       }
