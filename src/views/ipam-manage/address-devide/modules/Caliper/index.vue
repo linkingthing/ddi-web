@@ -4,6 +4,7 @@
     ref="calipers"
   >
     <div
+      v-if="this.innerValue[1]"
       class="top-show"
       :style="`right: ${right}; letter-spacing:${letterSpace}px;margin-right:-${letterSpace/2}px` "
     >
@@ -53,7 +54,7 @@ export default {
   computed: {
     disabled() {
       const [start, end] = this.value;
-      return true ;// end - start === 0;
+      return true;// end - start === 0;
     },
     netcodeBit() {
       const [min, max] = this.innerValue;
@@ -152,7 +153,6 @@ export default {
 .calipers {
   position: relative;
   height: 60px;
-  overflow: hidden;
   .top-show {
     position: absolute;
     overflow: hidden;
