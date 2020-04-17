@@ -1,7 +1,7 @@
 <template>
   <div class="child-net-manage">   
     <TablePagination 
-      title="网络管理"
+      title="IP地址管理"
       :data="tableData"
       :pagination-enable="false"
       :columns="columns"  
