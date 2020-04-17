@@ -403,6 +403,27 @@ export default {
       return this.operateType === "subnetMerge";
     }
   },
+  watch: {
+    autoAssign(value) {
+      if (value) {
+        this.currentNode.subtreebitnum = 0;
+      }
+    },
+    "currentNode.endnodecode"(value) {
+      if (this.currentParent) {
+        const siblings = this.currentParent.children;
+        const currentNode = this.currentNode;
+        const index = siblings.findIndex(
+          item => item.data.id === currentNode.id
+        );
+        const nextNode = this.currentParent.children[index + 1];
+        nextNode.data.beginnodecode = value + 1;
+        if (nextNode.data.endnodecode < value + 1) {
+          nextNode.data.endnodecode = value + 1;
+        }
+      }
+    }
+  },
   mounted() {
     this.getTreeData();
   },
@@ -498,6 +519,15 @@ export default {
         child => node.id !== child.id
       );
     },
+    excuteCurrentNodeStartNodeCode() {
+      if (Array.isArray(this.currentNode.children)) {
+        const siblings = this.currentNode.children.filter(item => item.type === "originalNode");
+        let lastNode = siblings.pop();
+        return Number(lastNode.endnodecode) + 1;
+      } else {
+        return 0;
+      }
+    },
     handleAddChildNode() {
       // 判断，当根节点没有subnet的时候，不能添加子节点
       if (!this.tree.id) {
@@ -510,11 +540,14 @@ export default {
         const nodecodeIndex = Array.isArray(this.currentNode.children)
           ? this.currentNode.children.length
           : 0;
+        const beginnodecode = this.excuteCurrentNodeStartNodeCode();
         const newNode = {
           id: `${currentId++}`,
           children: [],
           name: `子网${currentId}`,
           nodecode: nodecodeIndex,
+          beginnodecode,
+          endnodecode: beginnodecode,
           type: "addNode"
         };
 
@@ -626,27 +659,6 @@ export default {
     },
     handleClickSplitSubnet() { },
     handleClickMergeSubnet() { }
-  },
-  watch: {
-    autoAssign(value) {
-      if (value) {
-        this.currentNode.subtreebitnum = 0;
-      }
-    },
-    "currentNode.endnodecode"(value) {
-      if (this.currentParent) {
-        const siblings = this.currentParent.children;
-        const currentNode = this.currentNode;
-        const index = siblings.findIndex(
-          item => item.data.id === currentNode.id
-        );
-        const nextNode = this.currentParent.children[index + 1];
-        nextNode.data.beginnodecode = value + 1;
-        if (nextNode.data.endnodecode < value + 1) {
-          nextNode.data.endnodecode = value + 1;
-        }
-      }
-    }
   }
 };
 </script>
