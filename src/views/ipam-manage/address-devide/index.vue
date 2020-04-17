@@ -117,7 +117,7 @@
                 <span>总容量</span>
               </li>
               <li>
-                <Strong>{{Array.isArray(currentNode.children)? currentNode.children.length : 0}}</Strong>
+                <Strong>{{Array.isArray(currentNode.children)? currentNode.children.length-1 : 0}}</Strong>
                 <span>已用容量</span>
               </li>
             </ul>
@@ -137,7 +137,7 @@
           <div class="child-node-group">
             <ul class="childList">
               <li
-                v-for="(item) in currentNode.children"
+                v-for="(item) in currentNode.children ? currentNode.children.filter(item => item.type !=='surplusNode'): []"
                 :key="item.id"
               >
                 <div class="child-node">
@@ -433,8 +433,8 @@ export default {
     treeDataAddOther(tree) {
       const { subtreebitnum, children } = tree;
       if (Array.isArray(children)) {
-        const { beginsubnet } = children[children.length - 1];
-        const [ip, prefixLen] = beginsubnet.split("/");
+        const { endsubnet } = children[children.length - 1];
+        const [ip, prefixLen] = endsubnet.split("/");
 
         children.forEach(child => {
           child.type = "originalNode";
@@ -495,7 +495,6 @@ export default {
       );
     },
     handleAddChildNode() {
-      console.log(33, this.currentNode);
       // 判断，当根节点没有subnet的时候，不能添加子节点
       if (!this.tree.id) {
         this.$Message.info("请先创建保存根节点后，再创建子节点");

@@ -41,7 +41,7 @@
               slot="prepend" >
             </Input>
           </FormItem>
-          <FormItem>
+          <!-- <FormItem>
             <Input
               size="large"
               type="text"
@@ -58,9 +58,8 @@
               @click="getCaptcha"
             >
               <img :src="img" class="fl code-captcha" >
-              <!-- <p class="code-tips fl">看不清换一张</p> -->
             </div>
-          </FormItem>
+          </FormItem> -->
           <Button
             type="primary"
             long

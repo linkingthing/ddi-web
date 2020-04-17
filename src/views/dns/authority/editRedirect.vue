@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="linkModal" title="修改重定向列表" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="linkModal"
+    title="修改重定向列表"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="params"
       label-position="right"
@@ -9,16 +13,37 @@
     >
       <div class="pop-content">
         <div class="pop-box">
-          <!-- <p class="title">应用域名</p> -->
-          <div class="pop-body" style="padding-bottom:0">
-            <form-item label="域名" :label-width="110" prop="name">
-              <i-input v-model="params.name" placeholder="请填写正确域名"></i-input>
+          <div
+            class="pop-body"
+            style="padding-bottom:0"
+          >
+            <form-item
+              label="域名"
+              :label-width="110"
+              prop="name"
+            >
+              <i-input
+                v-model="params.name"
+                placeholder="请填写正确域名"
+              />
             </form-item>
             <TypeValue :params="params" />
-            <form-item label="TTL" prop="ttl" :label-width="110">
-              <InputNumber v-model="params.ttl" style="width: 260px" placeholder="请输入延缓时间"></InputNumber>
+            <form-item
+              label="TTL"
+              prop="ttl"
+              :label-width="110"
+            >
+              <i-input
+                type="number"
+                v-model="params.ttl"
+                placeholder="请输入延缓时间"
+              />
             </form-item>
-            <form-item label="重定向方式" prop="redirecttype" :label-width="110">
+            <form-item
+              label="重定向方式"
+              prop="redirecttype"
+              :label-width="110"
+            >
               <i-select v-model="params.redirecttype">
                 <i-option value="rpz">直接重定向</i-option>
                 <i-option value="redirect">NXDOMAIN重定向</i-option>

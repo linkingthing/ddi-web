@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="ipModal" title="新建重定向列表" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="ipModal"
+    title="新建重定向列表"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="upgradeConfig"
       label-position="right"
@@ -9,15 +13,37 @@
     >
       <div class="pop-content">
         <div class="pop-box">
-          <div class="pop-body" style="padding-bottom:0">
-            <form-item label="域名" :label-width="110" prop="name">
-              <i-input v-model="upgradeConfig.name" placeholder="请填写正确域名"></i-input>
+          <div
+            class="pop-body"
+            style="padding-bottom:0"
+          >
+            <form-item
+              label="域名"
+              :label-width="110"
+              prop="name"
+            >
+              <i-input
+                v-model="upgradeConfig.name"
+                placeholder="请填写正确域名"
+              />
             </form-item>
             <TypeValue :params="upgradeConfig" />
-            <form-item label="TTL" prop="ttl" :label-width="110">
-              <i-input type="number" v-model="upgradeConfig.ttl" placeholder="请输入延缓时间"></i-input>
+            <form-item
+              label="TTL"
+              prop="ttl"
+              :label-width="110"
+            >
+              <i-input
+                type="number"
+                v-model="upgradeConfig.ttl"
+                placeholder="请输入延缓时间"
+              />
             </form-item>
-            <form-item label="重定向方式" prop="redirecttype" :label-width="110">
+            <form-item
+              label="重定向方式"
+              prop="redirecttype"
+              :label-width="110"
+            >
               <i-select v-model="upgradeConfig.redirecttype">
                 <i-option value="rpz">直接重定向</i-option>
                 <i-option value="redirect">NXDOMAIN重定向</i-option>
