@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="analysis2Modal" title="修改视图" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="analysis2Modal"
+    title="修改视图"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="dataConfig"
       label-position="right"
@@ -12,8 +16,15 @@
           <div class="pop-body">
             <Row>
               <i-col span="18">
-                <form-item label="名称" prop="name">
-                  <i-input v-model="dataConfig.name" placeholder="请填访问控制名称" :disabled="true"></i-input>
+                <form-item
+                  label="名称"
+                  prop="name"
+                >
+                  <i-input
+                    v-model="dataConfig.name"
+                    placeholder="请填访问控制名称"
+                    :disabled="true"
+                  />
                 </form-item>
               </i-col>
             </Row>
@@ -24,24 +35,35 @@
           <div class="pop-body">
             <div style="width: 300px">
               <FormItem
-                v-for="(item, index) in dataConfig.exception"
-                :key="index"
+                v-for="(item , index) in dataConfig.exception"
+                :key="item.index"
                 :label="'控制列表' + item.index"
-                :prop="'exception.' + index + '.id'"
+                :prop="'exception.' + index"
                 :rules="{required: true, message: '控制列表 ' + item.index +'不能为空'}"
               >
                 <Row>
                   <!-- IP列表 -->
                   <Col span="18">
-                    <i-select v-model="item.id" v-show="true" style="width: 230px">
-                      <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                    </i-select>
+                  <i-select
+                    v-model="item.id"
+                    v-show="true"
+                    style="width: 230px"
+                  >
+                    <i-option
+                      v-for="item in list"
+                      :key="item.id"
+                      :value="item.id"
+                    >{{item.name}}</i-option>
+                  </i-select>
                   </Col>
                   <!-- 删除 -->
-                  <Col span="4" offset="1">
-                    <Button @click="handleRemove(index)">
-                      <Icon type="md-trash" />
-                    </Button>
+                  <Col
+                    span="4"
+                    offset="1"
+                  >
+                  <Button @click="handleRemove(index)">
+                    <Icon type="md-trash" />
+                  </Button>
                   </Col>
                 </Row>
               </FormItem>
@@ -49,18 +71,25 @@
 
             <Row style="margin-top:-10px;">
               <i-col span="24">
-                <a href="javascript:" class="add-config" @click="handleAdd">+添加控制列表</a>
+                <a
+                  href="javascript:"
+                  class="add-config"
+                  @click="handleAdd"
+                >+添加控制列表</a>
               </i-col>
             </Row>
             <Row>
               <i-col span="24">
-                <form-item label="优先级" prop="name">
+                <form-item
+                  label="优先级"
+                  prop="name"
+                >
                   <Input-number
                     :disabled="dataConfig.name === 'default'"
                     :max="maxPriority+1"
                     :min="1"
                     v-model="dataConfig.priority"
-                  ></Input-number>
+                  />
                 </form-item>
               </i-col>
             </Row>
@@ -68,7 +97,6 @@
         </div>
       </div>
     </i-form>
-
 
   </common-modal>
 </template>
@@ -94,18 +122,10 @@ export default {
       disabled: false,
       // 表单数据
       dataConfig: {
-        title: "",
         name: "",
         priority: 1,
-        model10: [],
         // 例外规则
-        exception: [
-          {
-            id: "",
-            index: 1,
-            status: 1
-          }
-        ]
+        exception: []
       },
       loading: false,
       // 表单验证规则
@@ -123,9 +143,9 @@ export default {
       this.dataConfig = { ...current };
       this.dataConfig.exception = Array.isArray(current.acls)
         ? current.acls.map((item, index) => ({
-            index,
-            ...item
-          }))
+          index: index + 1,
+          ...item
+        }))
         : [];
       this.index = Array.isArray(current.acls) ? current.acls.length || 1 : 1;
       this.analysis2Modal = true;
@@ -141,7 +161,7 @@ export default {
           console.log(err);
         });
     },
-    //新建
+    // 新建
     getModify() {
       services
         .updateView(this.id1, {
@@ -183,7 +203,7 @@ export default {
       this.dataConfig.exception.splice(index, 1);
       this.$forceUpdate();
     },
-    //关闭弹窗
+    // 关闭弹窗
     cancelModel() {
       this.analysis2Modal = false;
       this.$refs.formValidate.resetFields();

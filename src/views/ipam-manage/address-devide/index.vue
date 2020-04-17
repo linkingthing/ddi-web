@@ -48,6 +48,7 @@
                 prop="endnodecode"
               >
                 <Select
+                  :disabled="ableEditEndnodecode"
                   placeholder="结束编码"
                   class="base-input"
                   v-model.number="currentNode.endnodecode"
@@ -73,16 +74,15 @@
               :prop="beginsubnetprop"
             >
               <Input
+                :disabled="ableEditBeginSubnet"
                 placeholder="起始子网"
                 class="base-input"
                 v-model="currentNode.beginsubnet"
               />
             </FormItem>
-            <FormItem
-              label="结束子网"
-              :prop="endsubnetprop"
-            >
+            <FormItem label="结束子网">
               <Input
+                disabled
                 placeholder="结束子网"
                 class="base-input"
                 v-model="currentNode.endsubnet"
@@ -202,6 +202,7 @@
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
           <Caliper
+            :disabled="abledCaliper"
             :value="caliperValue"
             @onChange="handleChangeCaliper"
             :bit-fill="bitFill"
@@ -221,7 +222,6 @@
             <!-- <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
                 <button @click="handleAddChildNode(props)">增加节点</button>
-                <button @click="remove(props)">删除节点</button>
               </div>
             </template>-->
           </tree>
@@ -283,15 +283,6 @@ export default {
           {
             validator: subnetValidateFunc
           }
-        ],
-        endsubnet: [
-          {
-            required: true,
-            message: "请填写subnet"
-          },
-          {
-            validator: subnetValidateFunc
-          }
         ]
       };
     },
@@ -302,15 +293,17 @@ export default {
         return "beginsubnet2";
       }
     },
-    endsubnetprop() {
-      if (this.isRootNode) {
-        return "endsubnet";
-      } else {
-        return "endsubnet2";
-      }
+    ableEditBeginSubnet() {
+      return !this.isRootNode && this.hasTree;
+    },
+    ableEditEndnodecode() {
+      return this.isRootNode;
     },
     abledDelete() {
       return !(this.currentNode.id && this.currentNode.id.length > 5);
+    },
+    abledCaliper() {
+      return this.isRootNode;
     },
     caliperValue() {
       let start = 0,
@@ -319,28 +312,34 @@ export default {
       if (this.currentNode.type === "addNode") {
         return [0, 0];
       }
+      if (this.isRootNode) {
+        if (this.hasTree) {
+          if (this.currentNode.beginsubnet) {
+            const [, prefixLen] = this.currentNode.beginsubnet.split("/");
+            return [0, prefixLen];
+          } else {
+            return [0, 0];
+          }
+        } else {
+          return [0, 0];
+        }
 
-      if (
-        this.currentNode.beginsubnet &&
-        this.currentNode.beginsubnet.length > 4
-      ) {
-        const [, prefixLen] = this.currentNode.beginsubnet.split("/");
 
-        end = Number(prefixLen) || 0;
       }
+
       const parent = this.currentParent;
-      // if (parent && parent.data && parent.data.beginsubnet) {
-      //   const [, prefixLen] = parent.data.beginsubnet.split("/");
-      //   start = prefixLen;
-      // } 以前只有一个subnet，只有beginsubnet
       if (
-        parent &&
-        parent.data &&
-        parent.data.subtreebitnum &&
         this.currentNode.beginsubnet
       ) {
-        const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-        start = prefixLen - parent.data.subtreebitnum;
+        let subtreebitnum = 0;
+        if (parent &&
+          parent.data &&
+          parent.data.subtreebitnum) {
+          subtreebitnum = parent.data.subtreebitnum;
+          const [, prefixLen] = parent.data.beginsubnet.split("/");
+          start = prefixLen;
+          end = Number(prefixLen) + Number(subtreebitnum) || 0;
+        }
       }
 
       return [start, end];
@@ -388,7 +387,6 @@ export default {
           options.push(beginArr.join(""));
         }
       }
-
       return options.map(item => {
         return {
           value: parseInt(item, 2),
@@ -400,6 +398,30 @@ export default {
     },
     multiple() {
       return this.operateType === "subnetMerge";
+    }
+  },
+  watch: {
+    autoAssign(value) {
+      if (value) {
+        this.currentNode.subtreebitnum = 0;
+      }
+    },
+    "currentNode.endnodecode"(value) {
+      if (this.currentParent) {
+        const siblings = this.currentParent.children;
+        const currentNode = this.currentNode;
+        const index = siblings.findIndex(
+          item => item.data.id === currentNode.id
+        );
+        const nextNode = this.currentParent.children[index + 1];
+        if (nextNode) {
+          nextNode.data.beginnodecode = value + 1;
+          if (nextNode.data.endnodecode < value + 1) {
+            nextNode.data.endnodecode = value + 1;
+          }
+        }
+
+      }
     }
   },
   mounted() {
@@ -478,21 +500,38 @@ export default {
           parseInt(res.data.binary.substring(0, len), 2),
           parseInt(res.data.binary.substring(0, len), 2)
         ];
+      }).catch(e => {
+        console.log(e)
       });
     },
     handleTabOperate(tab) {
       this.operateType = tab;
     },
     handleChangeCaliper([min, max]) {
+      // let [ip, prefixLen] = this.currentNode.endsubnet.split("/");
+      // prefixLen = Number(prefixLen) + max - min;
+      // this.currentNode.endsubnet = [ip, prefixLen].join("/")
+      console.log(min, max)
       if (this.currentParent) {
-        this.currentParent.data.subtreebitnum = max - min;
+        this.currentParent.data.subtreebitnum = Number(max) - Number(min);
       }
+      console.log(this.currentParent.data.subtreebitnum)
     },
     handleDeleteNode(node, { children }) {
       // TODO: 这里要要深入学习一下js引用类型的原理
       this.currentNode.children = children.filter(
         child => node.id !== child.id
       );
+    },
+    excuteCurrentNodeNodeCode() {
+      if (Array.isArray(this.currentNode.children)) {
+        const siblings = this.currentNode.children.filter(item => item.type !== "surplusNode");
+        let lastNode = siblings[siblings.length - 1];
+        return Number(lastNode.endnodecode) + 1;
+      } else {
+        return 0;
+      }
+
     },
     handleAddChildNode() {
       // 判断，当根节点没有subnet的时候，不能添加子节点
@@ -502,21 +541,23 @@ export default {
       }
       if (this.currentNode.id) {
         console.log(this.currentNode);
-        const nodecodeIndex = Array.isArray(this.currentNode.children)
-          ? this.currentNode.children.length
-          : 0;
+        // 设置初始值
+        // const nodecodeIndex = Array.isArray(this.currentNode.children)
+        //   ? this.currentNode.children.length
+        //   : 0;
+        const nodeCode = this.excuteCurrentNodeNodeCode();
         const newNode = {
           id: `${currentId++}`,
           children: [],
           name: `子网${currentId}`,
-          nodecode: nodecodeIndex,
+          beginnodecode: nodeCode,
+          endnodecode: nodeCode,
           type: "addNode"
         };
-
         if (Array.isArray(this.currentNode.children)) {
           // 在倒数第二个上插入，倒数第一个时剩余量
           this.currentNode.children.splice(
-            this.currentNode.children.length - 1,
+            this.currentNode.children.length,
             0,
             newNode
           );
@@ -526,19 +567,6 @@ export default {
       } else {
         this.$Message.info("请先选择节点");
       }
-    },
-    remove({ node }) {
-      node.parent.data.children = node.parent.data.children.filter(child => {
-        return child.name !== node.data.name;
-      });
-    },
-    handleBeforeChangeNode(cb) {
-      // 节点点击之前校验 validateCurrentNode
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          cb();
-        }
-      });
     },
     handleClickNode(data) {
       console.log(data);
@@ -555,8 +583,11 @@ export default {
       }
       this.currentParent = data.parent;
       this.currentNode = data.data;
-      if (!this.currentNode.beginnodecode) {
-        this.currentNode.beginnodecode = 0;
+      // if (!this.currentNode.beginnodecode) {
+      //   this.currentNode.beginnodecode = 0;
+      // }
+      if (this.isRootNode) {
+        this.currentNode.endnodecode = 0;
       }
     },
     handleMultipleNode(nodes) {
@@ -621,27 +652,6 @@ export default {
     },
     handleClickSplitSubnet() { },
     handleClickMergeSubnet() { }
-  },
-  watch: {
-    autoAssign(value) {
-      if (value) {
-        this.currentNode.subtreebitnum = 0;
-      }
-    },
-    "currentNode.endnodecode"(value) {
-      if (this.currentParent) {
-        const siblings = this.currentParent.children;
-        const currentNode = this.currentNode;
-        const index = siblings.findIndex(
-          item => item.data.id === currentNode.id
-        );
-        const nextNode = this.currentParent.children[index + 1];
-        nextNode.data.beginnodecode = value + 1;
-        if (nextNode.data.endnodecode < value + 1) {
-          nextNode.data.endnodecode = value + 1;
-        }
-      }
-    }
   }
 };
 </script>

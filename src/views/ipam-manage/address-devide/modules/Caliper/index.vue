@@ -1,20 +1,32 @@
 <template>
-  <div class="calipers" ref="calipers">
+  <div
+    class="calipers"
+    ref="calipers"
+  >
     <div
+      v-if="this.innerValue[1]"
       class="top-show"
       :style="`right: ${right}; letter-spacing:${letterSpace}px;margin-right:-${letterSpace/2}px` "
     >
-      <dl class="bit-animate" ref="bitAnimate">
-        <dd v-for="item in netcodeBit" :key="item">{{item}}</dd>
+      <dl
+        class="bit-animate"
+        ref="bitAnimate"
+      >
+        <dd
+          v-for="item in netcodeBit"
+          :key="item"
+        >{{item}}</dd>
       </dl>
     </div>
     <Slider
+      :disabled="disabled"
       v-model="innerValue"
       :step="1"
       :max="64"
       range
       :marks="marks"
-      @on-change="handleChange"/>
+      @on-change="handleChange"
+    />
   </div>
 </template>
 
@@ -31,6 +43,10 @@ export default {
     bitFill: {
       type: Array,
       default: () => [0, 0]
+    },
+    disabled: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -86,7 +102,7 @@ export default {
     window.removeEventListener("resize", this.listenResize);
   },
   methods: {
-    listenResize: _.debounce(function() {
+    listenResize: _.debounce(function () {
       const calipers = this.$refs.calipers;
       const width = getComputedStyle(calipers).width;
       const letterWidth = parseFloat(width) / 64;
@@ -137,7 +153,6 @@ export default {
 .calipers {
   position: relative;
   height: 60px;
-  overflow: hidden;
   .top-show {
     position: absolute;
     overflow: hidden;

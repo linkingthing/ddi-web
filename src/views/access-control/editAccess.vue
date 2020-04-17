@@ -78,6 +78,7 @@
 
 <script>
 import services from "@/services";
+import { commonNameValidate } from "@/util/common";
 
 export default {
   name: "EviceStatisticsConfig",
@@ -99,6 +100,7 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填访问控制名称" },
+          commonNameValidate
         ]
       }
     };
@@ -200,7 +202,7 @@ export default {
     handleRemove(index) {
       this.dataConfig.exception.splice(index, 1);
     },
-    //关闭弹窗
+    // 关闭弹窗
     cancelModel() {
       this.eviceModal = false;
       this.$refs.formValidate.resetFields();

@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="deviceModal" title="新建视图" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="deviceModal"
+    title="新建视图"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="dataConfig"
       label-position="right"
@@ -12,8 +16,14 @@
           <div class="pop-body">
             <Row>
               <i-col span="18">
-                <form-item label="名称" prop="name">
-                  <i-input v-model="dataConfig.name" placeholder="请填访问控制名称"></i-input>
+                <form-item
+                  label="名称"
+                  prop="name"
+                >
+                  <i-input
+                    v-model="dataConfig.name"
+                    placeholder="请填访问控制名称"
+                  />
                 </form-item>
               </i-col>
             </Row>
@@ -27,19 +37,32 @@
                 v-for="(item, index) in dataConfig.exception"
                 :key="index"
                 :label="'控制列表' + item.index"
-                :prop="'exception.' +  index +'.id'"
+                :prop="'exception.' + index +'.id'"
                 :rules="{required: true, message: '控制列表 ' + item.index +'不能为空'}"
               >
                 <Row>
                   <Col span="18">
-                    <i-select v-model="item.id" style="width: 230px">
-                      <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
-                    </i-select>
+                  <i-select
+                    v-model="item.id"
+                    style="width: 230px"
+                  >
+                    <i-option
+                      v-for="item in list"
+                      :key="item.id"
+                      :value="item.id"
+                    >{{item.name}}</i-option>
+                  </i-select>
                   </Col>
-                  <Col span="4" offset="1">
-                    <Button @click="handleRemove(index)" style="font-size: 20px;marin-left: 20px;">
-                      <Icon type="md-trash" />
-                    </Button>
+                  <Col
+                    span="4"
+                    offset="1"
+                  >
+                  <Button
+                    @click="handleRemove(index)"
+                    style="font-size: 20px;marin-left: 20px;"
+                  >
+                    <Icon type="md-trash" />
+                  </Button>
                   </Col>
                 </Row>
               </FormItem>
@@ -47,13 +70,24 @@
 
             <Row style="margin-top:-10px;">
               <i-col span="24">
-                <a href="javascript:" class="add-config" @click="handleAdd">+添加控制列表</a>
+                <a
+                  href="javascript:"
+                  class="add-config"
+                  @click="handleAdd"
+                >+添加控制列表</a>
               </i-col>
             </Row>
             <Row>
               <i-col span="24">
-                <form-item label="优先级" prop="priority">
-                  <Input-number :max="maxPriority" :min="1" v-model="dataConfig.priority"></Input-number>
+                <form-item
+                  label="优先级"
+                  prop="priority"
+                >
+                  <Input-number
+                    :max="maxPriority"
+                    :min="1"
+                    v-model="dataConfig.priority"
+                  />
                 </form-item>
               </i-col>
             </Row>
@@ -124,7 +158,7 @@ export default {
           console.log(err);
         });
     },
-    //新建
+    // 新建
     update() {
       services
         .createView({
@@ -141,7 +175,6 @@ export default {
           this.cancelModel();
         })
         .catch(err => {
-          console.log(err);
           this.$Message.error("添加失败!");
         });
     },
