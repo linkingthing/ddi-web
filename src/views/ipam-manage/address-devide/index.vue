@@ -202,6 +202,7 @@
             <span>高亮区域表示所选节点的总容量</span>
           </h3>
           <Caliper
+            :disabled="abledCaliper"
             :value="caliperValue"
             @onChange="handleChangeCaliper"
             :bit-fill="bitFill"
@@ -301,6 +302,9 @@ export default {
     abledDelete() {
       return !(this.currentNode.id && this.currentNode.id.length > 5);
     },
+    abledCaliper() {
+      return this.isRootNode;
+    },
     caliperValue() {
       let start = 0,
         end = 0;
@@ -308,29 +312,24 @@ export default {
       if (this.currentNode.type === "addNode") {
         return [0, 0];
       }
-
-      if (
-        this.currentNode.beginsubnet &&
-        this.currentNode.beginsubnet.length > 4
-      ) {
+      if (this.isRootNode) {
         const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-
-        end = Number(prefixLen) || 0;
+        return [0, prefixLen];
       }
+
       const parent = this.currentParent;
-      // if (parent && parent.data && parent.data.beginsubnet) {
-      //   const [, prefixLen] = parent.data.beginsubnet.split("/");
-      //   start = prefixLen;
-      // } 以前只有一个subnet，只有beginsubnet
       if (
-        parent &&
-        parent.data &&
-        parent.data.subtreebitnum &&
         this.currentNode.beginsubnet
       ) {
-        const [, prefixLen] = this.currentNode.beginsubnet.split("/");
-        const [, prefixLenPre] = parent.data.beginsubnet.split("/");
-        start = prefixLenPre;
+        let subtreebitnum = 0;
+        if (parent &&
+          parent.data &&
+          parent.data.subtreebitnum) {
+          subtreebitnum = parent.data.subtreebitnum;
+          const [, prefixLen] = parent.data.beginsubnet.split("/");
+          start = prefixLen;
+          end = Number(prefixLen) + Number(subtreebitnum) || 0;
+        }
       }
 
       return [start, end];
@@ -500,9 +499,11 @@ export default {
       // let [ip, prefixLen] = this.currentNode.endsubnet.split("/");
       // prefixLen = Number(prefixLen) + max - min;
       // this.currentNode.endsubnet = [ip, prefixLen].join("/")
+      console.log(min, max)
       if (this.currentParent) {
-        this.currentParent.data.subtreebitnum = max - min;
+        this.currentParent.data.subtreebitnum = Number(max) - Number(min);
       }
+      console.log(this.currentParent.data.subtreebitnum)
     },
     handleDeleteNode(node, { children }) {
       // TODO: 这里要要深入学习一下js引用类型的原理

@@ -43,6 +43,10 @@ export default {
     bitFill: {
       type: Array,
       default: () => [0, 0]
+    },
+    disabled: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -52,10 +56,6 @@ export default {
     };
   },
   computed: {
-    disabled() {
-      const [start, end] = this.value;
-      return true;// end - start === 0;
-    },
     netcodeBit() {
       const [min, max] = this.innerValue;
       const len = max - min;
