@@ -48,6 +48,7 @@
                 prop="endnodecode"
               >
                 <Select
+                  :disabled="ableEditEndnodecode"
                   placeholder="结束编码"
                   class="base-input"
                   v-model.number="currentNode.endnodecode"
@@ -73,16 +74,15 @@
               :prop="beginsubnetprop"
             >
               <Input
+                :disabled="ableEditBeginSubnet"
                 placeholder="起始子网"
                 class="base-input"
                 v-model="currentNode.beginsubnet"
               />
             </FormItem>
-            <FormItem
-              label="结束子网"
-              :prop="endsubnetprop"
-            >
+            <FormItem label="结束子网">
               <Input
+                disabled
                 placeholder="结束子网"
                 class="base-input"
                 v-model="currentNode.endsubnet"
@@ -221,7 +221,6 @@
             <!-- <template slot="pop" slot-scope="{props}">
               <div class="btn-group-vertical">
                 <button @click="handleAddChildNode(props)">增加节点</button>
-                <button @click="remove(props)">删除节点</button>
               </div>
             </template>-->
           </tree>
@@ -283,15 +282,6 @@ export default {
           {
             validator: subnetValidateFunc
           }
-        ],
-        endsubnet: [
-          {
-            required: true,
-            message: "请填写subnet"
-          },
-          {
-            validator: subnetValidateFunc
-          }
         ]
       };
     },
@@ -302,12 +292,11 @@ export default {
         return "beginsubnet2";
       }
     },
-    endsubnetprop() {
-      if (this.isRootNode) {
-        return "endsubnet";
-      } else {
-        return "endsubnet2";
-      }
+    ableEditBeginSubnet() {
+      return !this.isRootNode;
+    },
+    ableEditEndnodecode() {
+      return this.isRootNode;
     },
     abledDelete() {
       return !(this.currentNode.id && this.currentNode.id.length > 5);
@@ -389,7 +378,6 @@ export default {
           options.push(beginArr.join(""));
         }
       }
-
       return options.map(item => {
         return {
           value: parseInt(item, 2),
@@ -417,10 +405,13 @@ export default {
           item => item.data.id === currentNode.id
         );
         const nextNode = this.currentParent.children[index + 1];
-        nextNode.data.beginnodecode = value + 1;
-        if (nextNode.data.endnodecode < value + 1) {
-          nextNode.data.endnodecode = value + 1;
+        if (nextNode) {
+          nextNode.data.beginnodecode = value + 1;
+          if (nextNode.data.endnodecode < value + 1) {
+            nextNode.data.endnodecode = value + 1;
+          }
         }
+
       }
     }
   },
@@ -519,14 +510,15 @@ export default {
         child => node.id !== child.id
       );
     },
-    excuteCurrentNodeStartNodeCode() {
+    excuteCurrentNodeNodeCode() {
       if (Array.isArray(this.currentNode.children)) {
-        const siblings = this.currentNode.children.filter(item => item.type === "originalNode");
-        let lastNode = siblings.pop();
+        const siblings = this.currentNode.children.filter(item => item.type !== "surplusNode");
+        let lastNode = siblings[siblings.length - 1];
         return Number(lastNode.endnodecode) + 1;
       } else {
         return 0;
       }
+
     },
     handleAddChildNode() {
       // 判断，当根节点没有subnet的时候，不能添加子节点
@@ -537,24 +529,22 @@ export default {
       if (this.currentNode.id) {
         console.log(this.currentNode);
         // 设置初始值
-        const nodecodeIndex = Array.isArray(this.currentNode.children)
-          ? this.currentNode.children.length
-          : 0;
-        const beginnodecode = this.excuteCurrentNodeStartNodeCode();
+        // const nodecodeIndex = Array.isArray(this.currentNode.children)
+        //   ? this.currentNode.children.length
+        //   : 0;
+        const nodeCode = this.excuteCurrentNodeNodeCode();
         const newNode = {
           id: `${currentId++}`,
           children: [],
           name: `子网${currentId}`,
-          nodecode: nodecodeIndex,
-          beginnodecode,
-          endnodecode: beginnodecode,
+          beginnodecode: nodeCode,
+          endnodecode: nodeCode,
           type: "addNode"
         };
-
         if (Array.isArray(this.currentNode.children)) {
           // 在倒数第二个上插入，倒数第一个时剩余量
           this.currentNode.children.splice(
-            this.currentNode.children.length - 1,
+            this.currentNode.children.length,
             0,
             newNode
           );
@@ -564,19 +554,6 @@ export default {
       } else {
         this.$Message.info("请先选择节点");
       }
-    },
-    remove({ node }) {
-      node.parent.data.children = node.parent.data.children.filter(child => {
-        return child.name !== node.data.name;
-      });
-    },
-    handleBeforeChangeNode(cb) {
-      // 节点点击之前校验 validateCurrentNode
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          cb();
-        }
-      });
     },
     handleClickNode(data) {
       console.log(data);
@@ -595,6 +572,9 @@ export default {
       this.currentNode = data.data;
       if (!this.currentNode.beginnodecode) {
         this.currentNode.beginnodecode = 0;
+      }
+      if (this.isRootNode) {
+        this.currentNode.endnodecode = 0;
       }
     },
     handleMultipleNode(nodes) {
