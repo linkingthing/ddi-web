@@ -124,9 +124,9 @@ export default {
     setValue(val = {}) {
       this.zoneName = val.zoneName || "";
       this.note = val.note || "";
-      this.dnsEnable = val.dnsEnable || false;
-      this.dhcpEnable = val.dhcpEnable === undefined ? true : val.dhcpEnable;
-      this.dhcpEnable = val.dhcpEnable === undefined ? true : val.dhcpEnable;
+      this.dnsEnable = Boolean(val.dnsEnable) || false;
+      this.dhcpEnable = val.dhcpEnable === undefined ? true : Boolean(val.dhcpEnable);
+      this.dhcpEnable = val.dhcpEnable === undefined ? true : Boolean(val.dhcpEnable);
       this.viewId = val.viewId || "";
     },
 
@@ -208,8 +208,8 @@ export default {
       return {
         note: this.note.trim(),
         zoneName: this.zoneName.trim(),
-        dnsEnable: this.dnsEnable,
-        dhcpEnable: this.dhcpEnable,
+        dnsEnable: Number(this.dnsEnable),
+        dhcpEnable: Number(this.dhcpEnable),
         viewId: this.viewId
       };
     }

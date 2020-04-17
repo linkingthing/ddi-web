@@ -127,6 +127,8 @@ export default {
           this.$$message("操作成功！");
           
           this.$emit("confirmed");
+
+          return Promise.reject();
         }
         else {
           Promise.reject({ message: data.message });

@@ -9,30 +9,21 @@ export const columns = scope => [
     key: "total",
     align: "center"
   },
+  // {
+  //   title: "类型",
+  //   key: "addressType",
+  //   align: "center"
+  // },
   {
-    title: "类型",
-    key: "addressType",
+    title: "DHCP使用率",
+    key: "usage",
     align: "center"
   },
   {
     title: "创建时间",
     key: "creationTime",
-    width: "130",
+    width: "120",
     align: "center"
-  },
-  {
-    title: "DHCP使用率",
-    key: "usage",
-    align: "center",
-    render: (h, { row }) => {
-      return h("Progress", {
-        props: {
-          percent: row.usage,
-          "stroke-width": 20,
-          "text-inside": true
-        }
-      }, "");
-    }
   },
   {
     title: "操作",

@@ -2,17 +2,28 @@
   <ModalCustom 
     :visible.sync="dialogVisible"
     title="自定义属性"
+    :width="560"
     @confirm="handleConfirm"
   >
     <div class="config-attribute">
-      <CheckboxGroup v-model="configs">
-        <Checkbox label="设备类型"/>
-        <Checkbox label="业务名称"/>
-        <Checkbox label="负责人"/>
-        <Checkbox label="电话"/>
-        <Checkbox label="所属部门"/>
-        <Checkbox label="位置"/>
-      </CheckboxGroup>
+      <Checkbox v-model="DeviceTypeFlag">
+        <span>设备类型</span>
+      </Checkbox>
+      <Checkbox v-model="BusinessFlag">
+        <span>业务名称</span>
+      </Checkbox>
+      <Checkbox v-model="ChargePersonFlag">
+        <span>负责人</span>
+      </Checkbox>
+      <Checkbox v-model="TelFlag">
+        <span>电话</span>
+      </Checkbox>
+      <Checkbox v-model="DepartmentFlag">
+        <span>所属部门</span>
+      </Checkbox>
+      <Checkbox v-model="PositionFlag">
+        <span>地址位置</span>
+      </Checkbox>
     </div>
   </ModalCustom>
 </template>
@@ -30,13 +41,23 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+
+    data: {
+      type: Object,
+      default: () => ({})
     }
   },
 
   data() {
     return {
       dialogVisible: false,
-      configs: []
+      DeviceTypeFlag: false,
+      BusinessFlag: false,
+      ChargePersonFlag: false,
+      TelFlag: false,
+      DepartmentFlag: false,
+      PositionFlag: false
     };
   },
 
@@ -59,32 +80,53 @@ export default {
   },
 
   methods: {
-    setValue(val = []) {
-      this.configs = val;
+    setValue(val = {}) {
+      this.DeviceTypeFlag = val.devicetypeflag === undefined ? false : val.devicetypeflag;
+      this.BusinessFlag = val.businessflag === undefined ? false : val.businessflag;
+      this.ChargePersonFlag = val.chargePersonflag === undefined ? false : val.chargePersonflag;
+      this.TelFlag = val.telflag === undefined ? false : val.telflag;
+      this.DepartmentFlag = val.departmentflag === undefined ? false : val.departmentflag;
+      this.PositionFlag = val.positionflag === undefined ? false : val.positionflag;
     },
 
     async handleConfirm() {
-      return;
-
       try {
-        let { status, data } = await service.editChildNet(this.getParams());
+        let params = this.getParams();
+
+        let { status, data } = await service.editSubnetConfig(this.data.id, params);
 
         status = +status;
         
         if (status === 200 || status === 201) {
           this.$$success("保存成功！");
+
+          this.$emit("confirmed", {
+            id: this.data.id,
+            params
+          });
         }
         else {
           Promise.reject({ message: data.message });
         }
-
-        this.$emit("confirmed");
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        return Promise.reject();
       }
+    },
+
+    getParams() {
+      return {
+        DeviceTypeFlag: this.DeviceTypeFlag,
+        BusinessFlag: this.BusinessFlag,
+        ChargePersonFlag: this.ChargePersonFlag,
+        TelFlag: this.TelFlag,
+        DepartmentFlag: this.DepartmentFlag,
+        PositionFlag: this.PositionFlag
+      };
     }
   }
 };

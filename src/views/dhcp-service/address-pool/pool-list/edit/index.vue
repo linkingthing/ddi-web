@@ -158,12 +158,19 @@ export default {
     },
 
     async handleConfirm() {
-      const key = this.type === "ipv4" ? "saveIpv4AddressPool" : "saveIpv4AddressPool";
+      const action = this.type === "ipv4" ? "saveIpv4AddressPool" : "saveIpv6AddressPool";
 
       try {
         await this.validate();
 
-        let res = await service[key](this.getParams());
+        let { status, data } = await service[action](this.getParams());
+
+        if (+status === 200) {
+          this.$emit("success");
+        }
+        else {
+          Promise.reject({ message: data.message || "保存失败！" });
+        }
       } catch (err) {
         this.$$error(err.message);
 
@@ -181,7 +188,9 @@ export default {
           beginAddress: this.beginAddress,
           endAddress: this.endAddress,
           validLifetime: this.validLifetime,
-          maxValidLifetime: this.maxValidLifetime
+          maxValidLifetime: this.maxValidLifetime,
+          hostNameServer: this.hostNameServer,
+          routeServer: this.routeServer
         }
       };
     },

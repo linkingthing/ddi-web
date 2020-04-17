@@ -39,6 +39,7 @@ export default {
             path: '/access-control/analysis-priority',
             component: () => import(/* webpackChunkName: "analysis-riority" */ '@/views/access-control/analysis-priority'),
             meta: {
+                notInMenu:true,
                 title: '解析优先级'
             }
         }

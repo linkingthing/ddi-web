@@ -20,6 +20,7 @@
       :data="editData"
       :type="addressType"
       :subnet-id="subnetId"
+      @success="handleQuery"
     />
   </div>
 </template>
@@ -72,7 +73,8 @@ export default {
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
-            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace("T", " ").replace("Z", "") : "";
+            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
+            item.usage = item.usage + "%";
 
             return item;
           });

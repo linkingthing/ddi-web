@@ -1,6 +1,6 @@
 <template>
   <div class="table-pagination">
-    <h3 v-if="title" class="table-pagination-title">{{ title }}</h3>
+    <h3 v-if="title" class="table-pagination-title">{{ getTitle }}</h3>
 
     <article v-if="$slots.top || $slots['top-left'] || $slots['top-right']" class="table-pagination-top">      
       <div class="top-left">
@@ -42,7 +42,7 @@ export default {
   name: "TablePagination",
 
   props: {
-    title:{
+    title: {
       type: String,
       default: ""
     },
@@ -52,27 +52,27 @@ export default {
       default: null
     },
 
-    data:{
-      type:Array,
+    data: {
+      type: Array,
       default: () => []
     },    
 
-    calcHeight:{
-      type: Boolean,
-      default:false
-    },
-
-    paginationEnable:{
-      type: Boolean,
-      default: true
-    },
-
-    tableAutoInnerHeight:{
+    calcHeight: {
       type: Boolean,
       default: false
     },
 
-    showTable:{
+    paginationEnable: {
+      type: Boolean,
+      default: true
+    },
+
+    tableAutoInnerHeight: {
+      type: Boolean,
+      default: false
+    },
+
+    showTable: {
       type: Boolean,
       default: true
     }
@@ -85,28 +85,40 @@ export default {
         .toString(36)
         .slice(2),
 
-      totalPage:0,
-      currentPage:0,
+      totalPage: 0,
+      currentPage: 0,
 
-      slotNames:[]
+      slotNames: []
     };
   },
 
-  watch:{
-    calcHeight(val){
-      if(!val) return;
+  computed: {
+    getTitle() {
+      let title = this.$route.meta.title;
+
+      if (!title || title.indexOf(":") === 0) {
+        title = this.title;
+      }
+
+      return title;
+    }
+  },
+
+  watch: {
+    calcHeight(val) {
+      if (!val) return;
 
       this.setTableHeight();
 
-      this.$emit("update:calc-height", false)
+      this.$emit("update:calc-height", false);
     },
 
-    columns(val){
-      if(val.length){
+    columns(val) {
+      if (val.length) {
         let names = [];
         
         val.forEach(col => {
-          if(col.slot){
+          if (col.slot) {
             names.push(col.slot);
           }
         });
@@ -115,10 +127,10 @@ export default {
       }
     },
 
-    data:{
+    data: {
       immediate: true,
-      async handler(newVal, oldVal){
-        if(JSON.stringify(newVal) === JSON.stringify(oldVal)) return;
+      async handler(newVal, oldVal) {
+        if (JSON.stringify(newVal) === JSON.stringify(oldVal)) return;
 
         this.setTableHeight();
       }
@@ -126,8 +138,8 @@ export default {
   },
 
   methods: {
-    async setTableHeight(){
-      if(this.tableAutoInnerHeight) return;
+    async setTableHeight() {
+      if (this.tableAutoInnerHeight) return;
 
       await this.$nextTick();
 
@@ -135,8 +147,8 @@ export default {
       const height = el.clientHeight;
 
       let titleEl = el.querySelector(".table-pagination-title"),
-      topEl = el.querySelector('.table-pagination-top'),
-      footerEl = el.querySelector(".table-pagination-footer");
+        topEl = el.querySelector(".table-pagination-top"),
+        footerEl = el.querySelector(".table-pagination-footer");
       
       this.tableHeight = height 
         - (titleEl ? titleEl.clientHeight : 0) 
@@ -146,15 +158,15 @@ export default {
 
     handlePageSizeChange(val) {
       this.$emit("size-change", {
-        size:val,
-        page:this.page
+        size: val,
+        page: this.page
       });
     },
 
     handlePageChange(val) {
       this.$emit("page-change", {
-        page:val,
-        size:this.size
+        page: val,
+        size: this.size
       });
     }
   }

@@ -1,7 +1,6 @@
 <template>
   <div class="child-net-manage">   
     <TablePagination 
-      title="IP地址管理"
       :data="tableData"
       :pagination-enable="false"
       :columns="columns"  
@@ -101,7 +100,7 @@ export default {
   },
 
   mounted() {    
-    this.handleQuery();
+    this.handleQuery();    
   },
 
   methods: {
@@ -112,7 +111,7 @@ export default {
         const { data } = res;
 
         this.tableData = data.data.map(item => {
-          item.creationTimestamp = item.creationTimestamp ? item.creationTimestamp.replace("T", " ") : "";
+          item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
 
           return item;
         });

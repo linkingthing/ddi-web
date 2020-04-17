@@ -6,9 +6,9 @@
     @confirm="handleConfirm"
   >
     <p class="fix-or-keep-info">
-        确定要将{{data[0] ? data[0].ip : ""}}
-        <br>
-        转为固定地址吗
+      确定要将{{data[0] ? data[0].ip : ""}}
+      <br>
+      转为固定地址吗
     </p>
   </ModalCustom>
 </template>
@@ -18,85 +18,87 @@ import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
 export default {
-  components:{
+  components: {
     ModalCustom
   },
 
-  props:{
-    visible:{
+  props: {
+    visible: {
       type: Boolean,
       default: false
     },
 
-    type:{
-      type:String,
-      default:""
+    type: {
+      type: String,
+      default: ""
     },
 
-    subnetId:{
-      type:String,
-      default:""
+    subnetId: {
+      type: String,
+      default: ""
     },
 
-    data:{
-      type:Array,
+    data: {
+      type: Array,
       default: () => []
     }
   },
 
-  computed:{
-    getTitle(){
-      return `转${this.type}`
+  computed: {
+    getTitle() {
+      return `转${this.type}`;
     },
 
-    dialogVisible:{
-      get(){
-        return this.visible
+    dialogVisible: {
+      get() {
+        return this.visible;
       },
-      set(val){
-        this.$emit("update:visible", val)
+      set(val) {
+        this.$emit("update:visible", val);
       }
     }
   },
 
-  methods:{
-    async handleConfirm(){
+  methods: {
+    async handleConfirm() {
       try {
         let { status, data } = await service.changeToFixOrKeep(this.subnetId, this.getParams());
 
-        if(status === 200){
-          this.$$success("操作成功！")
+        if (status === 200) {
+          this.$$success("操作成功！");
           
-          this.$emit("confirmed")
+          this.$emit("confirmed");
         }
-        else{
-          Promise.reject({ message:data.message })
+        else {
+          Promise.reject({ message: data.message });
         }
       } catch (err) {
         console.error(err);
 
-        this.$$error(err.message || "操作失败！")
+        this.$$error(err.message || "操作失败！");
+
+        return Promise.reject();
       }
     },
 
-    getParams(){
+    getParams() {
       const { 
         ip,
         hostname,
         macaddress        
-       } = this.data[0];
+      } = this.data[0];
        
       let data = { 
         subnetv4Id: this.subnetId,        
         ipaddress: ip
       };
 
-      if(this.type === "固定"){
+      if (this.type === "固定") {
         data.hostname = hostname;
         data.hwAddress = macaddress;
         // data.clientId = "";
       }
-      else{
+      else {
         // data.duid = "";
         // data.circuitId = "";
       }
@@ -104,10 +106,10 @@ export default {
       return {
         oper: this.type === "固定" ? "tostable" : "toresv",
         data
-      }
+      };
     }
   }
-}
+};
 </script>
 
 <style>

@@ -160,17 +160,16 @@ export default {
         const { status, message, data = { data: [] } } = res || {};
         
         if (status === 200) {
-          this.tableData = Object.entries(data.data)
-            .map(([ip, values]) => { 
-              values.leasestarttime = formatDate(values.leasestarttime);  
-              values.leaseendtime = formatDate(values.leaseendtime);
+          this.tableData = data.data.map(item => { 
+            item.leasestarttime = formatDate(item.leasestarttime);  
+            item.leaseendtime = formatDate(item.leaseendtime);
 
-              let type = legendList.find(item => item.value === values.AddressType);
+            let type = legendList.find(child => child.value === item.AddressType);
 
-              values.typeText = type ? type.label : "";
+            item.typeText = type ? type.label : "";
 
-              return { ip, ...values }; 
-            })
+            return item; 
+          })
             .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
         }
         else {
@@ -222,8 +221,48 @@ export default {
       this.showConfig = true;
     },
 
-    handleConfiged() {
+    handleConfiged({ id, params }) {
+      let row = this.tableData.find(item => id === item.id);
+      
+      const {        
+        DeviceTypeFlag,
+        BusinessFlag,
+        ChargePersonFlag,
+        TelFlag,
+        DepartmentFlag,
+        PositionFlag
+      } = params;
 
+      row.deviceTypeflag = DeviceTypeFlag;
+      row.businessflag = BusinessFlag;
+      row.chargePersonflag = ChargePersonFlag;
+      row.telflag = TelFlag;
+      row.departmentflag = DepartmentFlag;
+      row.positionflag = PositionFlag;
+
+      if (!DeviceTypeFlag) {
+        row.devicetype = "";
+      }
+
+      if (!BusinessFlag) {
+        row.business = "";
+      }
+
+      if (!ChargePersonFlag) {
+        row.chargeperson = "";
+      }
+
+      if (!TelFlag) {
+        row.tel = "";
+      }
+
+      if (!DepartmentFlag) {
+        row.department = "";
+      }
+
+      if (!PositionFlag) {
+        row.position = "";
+      }
     },
 
     async handleDelete(item) {

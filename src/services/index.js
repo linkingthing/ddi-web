@@ -264,7 +264,7 @@ export default {
    * 获取子网管理列表
    */
   getChildNetList() {
-    return axios.get(`${baseUrl}/restsubnetv4s`);
+    return axios.get(`${baseUrl}/restsubnetv46s`);
   },
 
   /**
@@ -341,7 +341,25 @@ export default {
    * 获取规划IP地址列表
    */
   getPlanIpList(id) {
-    return axios.get(`${baseUrl}/dividedaddresses/${id}`);
+    return axios.get(`${baseUrl}/dividedaddresses/?subnetid=${id}`);
+  },
+
+  /**
+   * IP地址扩展属性设置
+   * @param {String|Number} id IP的ID
+   * @param {Object} params 
+   */
+  editSubnetConfig(id, params) {
+    return axios.put(`${baseUrl}/ipattrappends/${id}`, params);
+  },
+
+  /**
+   * IP地址属性设置
+   * @param {String|Number} id IP的ID
+   * @param {Object} params 
+   */
+  editIpInfo(id, params) {
+    return axios.put(`${baseUrl}/dividedaddresses/${id}`, params);
   },
 
   /**
@@ -363,6 +381,14 @@ export default {
    */
   changeToFixOrKeep(id, parmas) {
     return axios.post(`${baseUrl}/dividedaddresses/${id}?action=change`, parmas);
+  },
+
+  /**
+   * 获取地址池子网列表
+   */
+  getAddressPoolSubnetList(subnetId) {
+    // return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools`);
+    return this.getChildNetList();
   },
 
   /**
@@ -395,10 +421,21 @@ export default {
   },
 
   /**
-   * 删除地址池
+   * 删除IPv4地址池
    */
-  deleteAddressPool(subnetId, poolId) {
-    return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
+  deleteIPv4AddressPool(subnetId, poolId) {
+    // return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
+
+    return this.deleteIPv4ChildNet(subnetId);
+  },
+
+  /**
+   * 删除IPv6地址池
+   */
+  deleteIPv6AddressPool(subnetId, poolId) {
+    // return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
+
+    return this.deleteIPv6ChildNet(subnetId);
   },
 
   /** 子网管理 end */

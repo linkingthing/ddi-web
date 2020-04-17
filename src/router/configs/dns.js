@@ -89,7 +89,8 @@ export default {
       component: A4ComposeView,
       meta: {
         // title: "A4地址合成视图"
-        title: "递归管理"
+        notInMenu: true,
+        title: "DNS64"
       }
     },
     {

@@ -1,7 +1,7 @@
 export const columns = scope => [    
   {
     title: "网络地址",
-    key: "poolName",
+    key: "subnet",
     align: "center",
     render: (h, { row }) => {
       return h("div", [
@@ -12,7 +12,7 @@ export const columns = scope => [
               scope.showDetail(row);
             }
           }
-        }, row.poolName)
+        }, row.subnet)
       ]);
     }
   },

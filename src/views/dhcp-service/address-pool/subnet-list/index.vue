@@ -15,6 +15,7 @@
 import TablePagination from "@/components/TablePagination";
 import service from "@/services";
 import { columns } from "./define";
+import { getAddressType } from "@/util/common";
 
 export default {
   components: {
@@ -41,7 +42,7 @@ export default {
   methods: {
     async handleQuery() {
       try {
-        let { status, data } = await service.getAddressPoolList(this.subnetId);
+        let { status, data } = await service.getAddressPoolSubnetList();
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
@@ -60,14 +61,16 @@ export default {
     },
 
     showDetail(row) {
-      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${row.id}&address=${row.ip}`);
+      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${row.subnet_id}&address=${row.subnet}`);
     },
 
     async handleDelete(data) {
       try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
+        await this.$$confirm({ content: "您确定要删除当前数据吗？" });        
 
-        let res = await service.deleteAddressPool(this.subnetId, data.embedded.id);
+        const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
+
+        let res = await service[action](data.subnet_id);
 
         if (res.status === 200) {
           this.$$success("删除成功！");

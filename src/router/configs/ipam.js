@@ -38,7 +38,7 @@ export default {
       path: '/ipam-manage/address-devide',
       component: () => import(/* webpackChuckName: "ip-address-devide" */ '@/views/ipam-manage/address-devide'),
       meta:{
-        title:"IP地址划分"
+        title:"IP地址规划"
       }
     }
   ]

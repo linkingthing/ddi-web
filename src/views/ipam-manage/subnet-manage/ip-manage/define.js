@@ -95,7 +95,7 @@ export const columns = scope => [
         h("label", {
           class: "operate-label operate-edit",
           on: {
-            click: () => {
+            click: () => {              
               scope.handleConfigAttibute(row);
             }
           }
