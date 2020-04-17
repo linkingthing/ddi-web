@@ -2,8 +2,7 @@
   <div class="login-content">
     <div class="login">
       <div class="login-head">
-        <img class="logo" src="../assets/images/logo.png" >
-        <h1>{{isDNS ? "DNS": "DDI"}} 配置管理平台</h1>
+        <h1>{{isDNS ? "DNS": "DDI"}} 配置管理系统</h1>
       </div>
       <div>
         <Form
@@ -232,8 +231,12 @@ export default {
 
   .login-head h1 {
     color: #59a2ec;
-    font-size: 40px;
+    font-size: 33px;
     padding: 0 70px;
+  }
+
+  .header-text{
+
   }
 
   .login-form {
