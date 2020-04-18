@@ -71,7 +71,7 @@ export default {
       try {
         const action = this.addressType === "ipv4" ? "getIPv4AddressPoolList" : "getIPv6AddressPoolList";
 
-        let { status, data } = await service[action](this.subnetId);
+        let { status, data, message } = await service[action](this.subnetId);
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
@@ -82,11 +82,13 @@ export default {
           });
         }
         else {
-          Promise.reject({ message: data.message || "查询失败！" });
+          Promise.reject({ message: message || "查询失败！" });
         }
       }
       catch (err) {
         console.error(err);
+        
+        this.$$error(err.message);
       }
     },
 
@@ -106,19 +108,21 @@ export default {
 
         const action = this.addressType === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
 
-        let res = await service[action](this.subnetId, data.embedded.id);
+        let { status, message } = await service[action](this.subnetId, data.embedded.id);
 
-        if (res.status === 200) {
+        if (+status === 200) {
           this.$$success("删除成功！");
 
           this.handleQuery();
         }
         else {
-          Promise.reject({ message: res.message || "删除失败！" });
+          Promise.reject({ message: message || "删除失败！" });
         }
       }
       catch (err) {
         console.error(err);
+        
+        this.$$error(err.message);
       }
     }
   }

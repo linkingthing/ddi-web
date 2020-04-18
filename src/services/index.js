@@ -15,7 +15,7 @@ axios.interceptors.request.use(
     }
     return config;
   },
-  error => {
+  error => {    
     return Promise.reject(error);
   },
 );
@@ -34,7 +34,7 @@ axios.interceptors.response.use(
 
     LoadingBar.error();
 
-    return Promise.reject(err);
+    return Promise.reject(err.response.data);
   },
 );
 
