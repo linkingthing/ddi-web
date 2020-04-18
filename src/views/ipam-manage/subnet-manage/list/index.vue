@@ -12,7 +12,8 @@
         <Input
           v-model="keywords"
           placeholder="请输入子网地址"
-          class="top-input" />
+          class="top-input"
+          @on-enter="handleQuery" />
         <Button
           type="primary"
           icon="ios-search"
@@ -112,7 +113,7 @@ export default {
       this.loading = true;
 
       try {
-        let { status, data, message } = await services.getChildNetList();
+        let { status, data, message } = await services.getChildNetList(this.keywords);
 
         if (+status === 200) {
           this.tableData = data.data.map(item => {
