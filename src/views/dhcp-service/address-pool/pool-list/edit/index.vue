@@ -46,7 +46,7 @@
           placeholder="请输入域名服务器"
           class="info-row-input" />
       </div>
-      <div class="info-row">
+      <div class="info-row" v-if="type === 'ipv4'">
         <div class="info-row-label">路由服务器</div>
         <Input
           maxlength="255"
@@ -163,13 +163,15 @@ export default {
       try {
         await this.validate();
 
-        let { status, data } = await service[action](this.getParams());
+        let { status, message } = await service[action](this.getParams());
 
-        if (+status === 200) {
+        status = +status;
+
+        if (status === 200 || status === 201) {
           this.$emit("success");
         }
         else {
-          Promise.reject({ message: data.message || "保存失败！" });
+          Promise.reject({ message: message || "保存失败！" });
         }
       } catch (err) {
         this.$$error(err.message);
@@ -237,6 +239,8 @@ export default {
       endAddress = endAddress.trim();
       validLifetime = validLifetime.trim();
       maxValidLifetime = maxValidLifetime.trim();
+      gateway = gateway.trim();
+      dnsServer = dnsServer.trim();
 
       const beginType = getAddressType(beginAddress);
       const endType = getAddressType(endAddress);
@@ -287,6 +291,24 @@ export default {
 
       if (maxValidLifetime.length > 12) {
         return Promise.reject({ message: "请填写正确的最大租赁时间！" });
+      }      
+
+      if (this.type === "ipv4") {
+        if (gateway && !isIPv4Reg.test(gateway)) {
+          return Promise.reject({ message: "请填写正确的域名服务器地址！" });
+        }
+      }
+
+      if (this.type === "ipv6") {
+        if (gateway && !fullIPv6Reg.test(gateway)) {
+          return Promise.reject({ message: "请填写正确的域名服务器地址！" });
+        }
+      }
+
+      if (this.type === "ipv4") {
+        if (dnsServer && !isIPv4Reg.test(dnsServer)) {
+          return Promise.reject({ message: "请填写正确的路由服务器地址！" });
+        }
       }
 
       return Promise.resolve();

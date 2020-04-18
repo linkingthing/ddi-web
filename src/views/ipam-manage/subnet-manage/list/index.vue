@@ -107,19 +107,23 @@ export default {
   methods: {
     async handleQuery() {
       try {
-        let res = await services.getChildNetList();
-        
-        const { data } = res;
+        let { status, data, message } = await services.getChildNetList();
 
-        this.tableData = data.data.map(item => {
-          item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
+        if (+status === 200) {
+          this.tableData = data.data.map(item => {
+            item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
 
-          return item;
-        });
+            return item;
+          });
+        }
+        else {
+          Promise.reject({ message });
+        }
         
       } catch (err) {
         console.error(err);
-        
+          
+        this.$$error(err.message || "数据请求错误！");
       }
     },
 

@@ -76,7 +76,7 @@ export default {
 
         const key = getAddressType(this.subnet) === "ipv4" ? "addIPv4ChildNet" : "addIPv6ChildNet";
 
-        let { status, data } = await service[key](this.getParams());
+        let { status, message } = await service[key](this.getParams());
 
         status = +status;
         
@@ -84,7 +84,7 @@ export default {
           this.$$success("保存成功！");
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
 
         this.$emit("confirmed");

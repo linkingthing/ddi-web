@@ -108,7 +108,7 @@ export default {
       try {
         await this.validate();
 
-        let { status, data } = await service[action](this.getParams(), this.data[0].subnet_id);
+        let { status, message } = await service[action](this.getParams(), this.data[0].subnet_id);
 
         if (+status === 200) {
           this.$$success("操作成功！");
@@ -116,7 +116,7 @@ export default {
           this.$emit("success");
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }        
       } catch (err) {
         console.error(err);
