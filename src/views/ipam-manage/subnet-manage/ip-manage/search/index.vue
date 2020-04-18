@@ -119,24 +119,22 @@ export default {
       try {
         this.loading = true;
 
-        let { status, data } = await service.addressScanning(this.subnetId);
+        let { status, data, message } = await service.addressScanning(this.subnetId);
 
         if (status === 200) {
-          console.log(data);
-
           this.$$message("操作成功！");
           
           this.$emit("confirmed");
-
-          return Promise.reject();
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
       } catch (err) {
         console.error(err);
 
         this.$$error(err.message || "操作失败！");
+
+        return Promise.reject();
       }
       finally {
         this.loading = false;

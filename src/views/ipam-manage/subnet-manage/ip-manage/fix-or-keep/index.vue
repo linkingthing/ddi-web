@@ -62,7 +62,7 @@ export default {
   methods: {
     async handleConfirm() {
       try {
-        let { status, data } = await service.changeToFixOrKeep(this.subnetId, this.getParams());
+        let { status, message } = await service.changeToFixOrKeep(this.subnetId, this.getParams());
 
         if (status === 200) {
           this.$$success("操作成功！");
@@ -70,7 +70,7 @@ export default {
           this.$emit("confirmed");
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
       } catch (err) {
         console.error(err);

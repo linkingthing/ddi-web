@@ -70,19 +70,21 @@ export default {
 
         const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
 
-        let res = await service[action](data.subnet_id);
+        let { status, message } = await service[action](data.subnet_id);
 
-        if (res.status === 200) {
+        if (+status === 200) {
           this.$$success("删除成功！");
 
           this.handleQuery();
         }
         else {
-          Promise.reject({ message: res.message || "删除失败！" });
+          Promise.reject({ message: message || "删除失败！" });
         }
       }
       catch (err) {
         console.error(err);
+
+        this.$$error(err.message);
       }
     }
   }

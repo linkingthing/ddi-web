@@ -188,7 +188,7 @@ export default {
       try {
         await this.validate();
 
-        let { status, data } = await service.editIpInfo(this.data.id, this.getParams());
+        let { status, message } = await service.editIpInfo(this.data.id, this.getParams());
 
         status = +status;
         
@@ -196,7 +196,7 @@ export default {
           this.$$success("保存成功！");
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
 
         this.$emit("confirmed");

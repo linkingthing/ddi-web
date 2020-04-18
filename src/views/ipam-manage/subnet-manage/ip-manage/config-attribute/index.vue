@@ -93,7 +93,7 @@ export default {
       try {
         let params = this.getParams();
 
-        let { status, data } = await service.editSubnetConfig(this.data.id, params);
+        let { status, message } = await service.editSubnetConfig(this.data.id, params);
 
         status = +status;
         
@@ -106,7 +106,7 @@ export default {
           });
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
       } 
       catch (err) {

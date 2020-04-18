@@ -157,9 +157,9 @@ export default {
       try {        
         let res = await service.getPlanIpList(this.subnetId);
 
-        const { status, message, data = { data: [] } } = res || {};
+        const { status, message, data } = res || {};
         
-        if (status === 200) {
+        if (+status === 200) {
           this.tableData = data.data.map(item => { 
             item.leasestarttime = formatDate(item.leasestarttime);  
             item.leaseendtime = formatDate(item.leaseendtime);
@@ -176,6 +176,8 @@ export default {
           Promise.reject({ message: message || "请求失败" });
         }
       } catch (err) {        
+        console.error(err);
+
         this.$$error(err.message || "请求失败！");
       }
     },
