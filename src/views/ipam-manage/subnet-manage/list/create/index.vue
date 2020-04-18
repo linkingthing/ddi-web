@@ -93,6 +93,8 @@ export default {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        return Promise.reject();
       }
     },
 
@@ -119,7 +121,7 @@ export default {
       }
 
       const addrType = getAddressType(subnet);
-
+      
       // 验证网络地址
       if (!subnet) {
         return Promise.reject({ message: "请输入网络地址！" });
@@ -138,7 +140,7 @@ export default {
       }
 
       // 验证网络地址掩码
-      if (!gatewayIsValid(subnet)) {
+      if (!gatewayIsValid(this.subnet)) {
         return Promise.reject({ message: "请输入正确的网络地址掩码！" });
       }
 
@@ -148,7 +150,8 @@ export default {
     getParams() {
       return {
         subnet: this.subnet.trim(),
-        zoneName: this.zoneName.trim()
+        zoneName: this.zoneName.trim(),
+        name: this.zoneName.trim()
       };
     }
   }

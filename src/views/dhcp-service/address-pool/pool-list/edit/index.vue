@@ -42,7 +42,7 @@
         <div class="info-row-label">域名服务器</div>
         <Input
           maxlength="255"
-          v-model="hostNameServer"
+          v-model="gateway"
           placeholder="请输入域名服务器"
           class="info-row-input" />
       </div>
@@ -50,7 +50,7 @@
         <div class="info-row-label">路由服务器</div>
         <Input
           maxlength="255"
-          v-model="routeServer"
+          v-model="dnsServer"
           placeholder="请输入路由服务器"
           class="info-row-input" />
       </div>
@@ -110,8 +110,8 @@ export default {
       endAddress: "",
       validLifetime: "",
       maxValidLifetime: "",
-      hostNameServer: "",
-      routeServer: "",
+      gateway: "",
+      dnsServer: "",
       isEdit: false
     };
   },
@@ -153,8 +153,8 @@ export default {
       this.endAddress = val.endAddress || "";
       this.validLifetime = val.validLifetime || "";
       this.maxValidLifetime = val.maxValidLifetime || "";
-      this.hostNameServer = val.hostNameServer || "";
-      this.routeServer = val.routeServer || "";
+      this.gateway = val.gateway || "";
+      this.dnsServer = val.dnsServer || "";
     },
 
     async handleConfirm() {
@@ -189,8 +189,8 @@ export default {
           endAddress: this.endAddress,
           validLifetime: this.validLifetime,
           maxValidLifetime: this.maxValidLifetime,
-          hostNameServer: this.hostNameServer,
-          routeServer: this.routeServer
+          gateway: this.gateway,
+          dnsServer: this.dnsServer
         }
       };
     },
@@ -224,7 +224,14 @@ export default {
     },
 
     validate() {
-      let { beginAddress, endAddress, validLifetime, maxValidLifetime } = this;
+      let { 
+        beginAddress, 
+        endAddress, 
+        validLifetime, 
+        maxValidLifetime,
+        gateway,
+        dnsServer
+      } = this;
 
       beginAddress = beginAddress.trim();
       endAddress = endAddress.trim();

@@ -68,7 +68,7 @@ export default {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });        
 
-        const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
+        const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
 
         let res = await service[action](data.subnet_id);
 

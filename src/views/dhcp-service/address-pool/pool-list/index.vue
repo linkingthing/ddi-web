@@ -69,7 +69,9 @@ export default {
   methods: {
     async handleQuery() {
       try {
-        let { status, data } = await service.getAddressPoolList(this.subnetId);
+        const action = this.addressType === "ipv4" ? "getIPv4AddressPoolList" : "getIPv6AddressPoolList";
+
+        let { status, data } = await service[action](this.subnetId);
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
@@ -102,7 +104,9 @@ export default {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
-        let res = await service.deleteAddressPool(this.subnetId, data.embedded.id);
+        const action = this.addressType === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
+
+        let res = await service[action](this.subnetId, data.embedded.id);
 
         if (res.status === 200) {
           this.$$success("删除成功！");
