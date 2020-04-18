@@ -5,6 +5,8 @@
     custom-class="fix-or-keep"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <p class="fix-or-keep-info">
       确定要将{{data[0] ? data[0].ip : ""}}
       <br>
@@ -44,6 +46,12 @@ export default {
     }
   },
 
+  data() {
+    return {
+      loading: false
+    };
+  },
+
   computed: {
     getTitle() {
       return `转${this.type}`;
@@ -62,6 +70,8 @@ export default {
   methods: {
     async handleConfirm() {
       try {
+        this.loading = true;
+
         let { status, message } = await service.changeToFixOrKeep(this.subnetId, this.getParams());
 
         if (status === 200) {
@@ -72,10 +82,14 @@ export default {
         else {
           Promise.reject({ message });
         }
+        
+        this.loading = false;
       } catch (err) {
         console.error(err);
 
         this.$$error(err.message || "操作失败！");
+        
+        this.loading = false;
 
         return Promise.reject();
       }

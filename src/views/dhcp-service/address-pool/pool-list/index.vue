@@ -1,5 +1,7 @@
 <template>
-  <div class="address-pool">   
+  <div class="address-pool">  
+    <IviewLoading v-if="loading" />
+
     <TablePagination 
       title="地址池管理"
       :data="tableData"
@@ -45,6 +47,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       keywords: "",
       tableData: [],
       columns: columns(this),
@@ -68,6 +71,8 @@ export default {
 
   methods: {
     async handleQuery() {
+      this.loading = true;
+
       try {
         const action = this.addressType === "ipv4" ? "getIPv4AddressPoolList" : "getIPv6AddressPoolList";
 
@@ -90,6 +95,9 @@ export default {
         
         this.$$error(err.message);
       }
+      finally {
+        this.loading = false;
+      }
     },
 
     handleAdd() {
@@ -105,6 +113,8 @@ export default {
     async handleDelete(data) {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
+
+        this.loading = true;
 
         const action = this.addressType === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
 
@@ -123,6 +133,9 @@ export default {
         console.error(err);
         
         this.$$error(err.message);
+      }
+      finally {
+        this.loading = false;
       }
     }
   }

@@ -4,6 +4,8 @@
     :title="getTitle"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="child-net-info">
       <template v-if="type === operateTypes.split">
         <div class="info-row">
@@ -54,6 +56,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       ipAddress: "",
       currentMask: "",
@@ -108,6 +111,8 @@ export default {
       try {
         await this.validate();
 
+        this.loading = true;
+
         let { status, message } = await service[action](this.getParams(), this.data[0].subnet_id);
 
         if (+status === 200) {
@@ -117,11 +122,15 @@ export default {
         }
         else {
           Promise.reject({ message });
-        }        
+        }
+        
+        this.loading = false;
       } catch (err) {
         console.error(err);
         
         this.$$error(err.message || "操作失败！");
+        
+        this.loading = false;
 
         return Promise.reject();
       }

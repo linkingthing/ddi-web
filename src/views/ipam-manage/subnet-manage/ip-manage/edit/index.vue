@@ -4,6 +4,8 @@
     title="IP地址编辑"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+    
     <div class="ip-info-edit">
       <div class="info-row-inline">
         <div class="info-row-label">主机名：</div>
@@ -116,6 +118,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       dialogVisible: false,
       hostname: "",
       macaddress: "",
@@ -188,6 +191,8 @@ export default {
       try {
         await this.validate();
 
+        this.loading = true;
+
         let { status, message } = await service.editIpInfo(this.data.id, this.getParams());
 
         status = +status;
@@ -200,11 +205,15 @@ export default {
         }
 
         this.$emit("confirmed");
+
+        this.loading = false;
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        this.loading = false;
 
         return Promise.reject();
       }

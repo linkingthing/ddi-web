@@ -46,6 +46,9 @@ Vue.component("table-page", TablePagination);
 import CommonModal from "@/components/CommonModal";
 Vue.component("common-modal", CommonModal);
 
+import IviewLoading from "@/components/IviewLoading";
+Vue.component("IviewLoading", IviewLoading);
+
 
 import store from "./store";
 import router from "./router";

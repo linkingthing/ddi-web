@@ -1,5 +1,7 @@
 <template>
-  <div class="address-pool">   
+  <div class="address-pool">  
+    <IviewLoading v-if="loading" />
+
     <TablePagination 
       title="地址池管理"
       :data="tableData"
@@ -24,6 +26,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       keywords: "",
       tableData: [],
       columns: columns(this),
@@ -41,8 +44,10 @@ export default {
 
   methods: {
     async handleQuery() {
+      this.loading = true;
+
       try {
-        let { status, data } = await service.getAddressPoolSubnetList();
+        let { status, data, message } = await service.getAddressPoolSubnetList();
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
@@ -52,11 +57,16 @@ export default {
           });
         }
         else {
-          Promise.reject({ message: data.message || "查询失败！" });
+          Promise.reject({ message: message || "查询失败！" });
         }
       }
       catch (err) {
         console.error(err);
+
+        this.$$error(err.message);
+      }
+      finally {        
+        this.loading = false;
       }
     },
 
@@ -66,7 +76,9 @@ export default {
 
     async handleDelete(data) {
       try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });        
+        await this.$$confirm({ content: "您确定要删除当前数据吗？" }); 
+        
+        this.loading = true;
 
         const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
 
@@ -85,6 +97,9 @@ export default {
         console.error(err);
 
         this.$$error(err.message);
+      }
+      finally {        
+        this.loading = false;
       }
     }
   }

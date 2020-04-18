@@ -4,6 +4,8 @@
     title="新增网络"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="child-net-info">
       <div class="info-row">
         <div class="info-row-label">区域</div>
@@ -44,6 +46,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       subnet: "",
       zoneName: ""
@@ -74,6 +77,8 @@ export default {
       try {
         await this.validate();
 
+        this.loading = true;
+
         const key = getAddressType(this.subnet) === "ipv4" ? "addIPv4ChildNet" : "addIPv6ChildNet";
 
         let { status, message } = await service[key](this.getParams());
@@ -88,11 +93,15 @@ export default {
         }
 
         this.$emit("confirmed");
+
+        this.loading = false;
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        this.loading = false;
 
         return Promise.reject();
       }

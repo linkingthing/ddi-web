@@ -4,6 +4,8 @@
     title="编辑网络"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="subnet-info-edit">
       <div class="info-row-inline">
         <div class="info-row-label">区域</div>
@@ -70,6 +72,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       zoneName: "",
       note: "",
@@ -94,7 +97,7 @@ export default {
       this.$emit("update:visible", val);
     },
 
-    data(val) {
+    data(val) {      
       this.setValue(val);
     }
   },
@@ -149,6 +152,8 @@ export default {
           });
         }
 
+        this.loading = true;
+
         const action = getAddressType(this.data.subnet) === "ipv4" ? "editIPv4ChildNet" : "editIPv6ChildNet";
 
         let { status, message } = await service[action](this.getParams(), this.data.subnet_id);
@@ -163,6 +168,8 @@ export default {
         }
 
         this.$emit("confirmed");
+
+        this.loading = false;
       } 
       catch (err) {
         if (err) {
@@ -175,6 +182,8 @@ export default {
         else {
           this.$$error("保存失败");
         }
+
+        this.loading = false;
 
         return Promise.reject();
       }
@@ -207,6 +216,7 @@ export default {
     getParams() {
       return {
         note: this.note.trim(),
+        name: this.zoneName.trim(),
         zoneName: this.zoneName.trim(),
         dnsEnable: Number(this.dnsEnable),
         dhcpEnable: Number(this.dhcpEnable),

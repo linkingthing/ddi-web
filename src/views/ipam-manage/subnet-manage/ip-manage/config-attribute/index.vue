@@ -5,6 +5,8 @@
     :width="560"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="config-attribute">
       <Checkbox v-model="DeviceTypeFlag">
         <span>设备类型</span>
@@ -51,6 +53,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       DeviceTypeFlag: false,
       BusinessFlag: false,
@@ -91,6 +94,8 @@ export default {
 
     async handleConfirm() {
       try {
+        this.loading = true;
+
         let params = this.getParams();
 
         let { status, message } = await service.editSubnetConfig(this.data.id, params);
@@ -108,11 +113,15 @@ export default {
         else {
           Promise.reject({ message });
         }
+
+        this.loading = false;
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        this.loading = false;
 
         return Promise.reject();
       }

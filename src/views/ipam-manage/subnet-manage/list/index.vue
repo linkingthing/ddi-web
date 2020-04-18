@@ -1,5 +1,7 @@
 <template>
   <div class="child-net-manage">   
+    <IviewLoading v-if="loading" />
+
     <TablePagination 
       :data="tableData"
       :pagination-enable="false"
@@ -87,6 +89,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       keywords: "",
       tableData: [],
       columns: columns(this),
@@ -106,6 +109,8 @@ export default {
 
   methods: {
     async handleQuery() {
+      this.loading = true;
+
       try {
         let { status, data, message } = await services.getChildNetList();
 
@@ -124,6 +129,9 @@ export default {
         console.error(err);
           
         this.$$error(err.message || "数据请求错误！");
+      }
+      finally {        
+        this.loading = false;
       }
     },
 
@@ -182,6 +190,8 @@ export default {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
+        this.loading = true;
+
         const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
         
         let { message, status } = await services[action](data.subnet_id);
@@ -199,6 +209,9 @@ export default {
         console.error(err);
 
         this.$$error(err.message || "删除失败！");
+      }
+      finally {
+        this.loading = false;
       }
     }
   }

@@ -1,5 +1,7 @@
 <template>
   <div class="child-net-ip-manage">
+    <IviewLoading v-if="loading" />
+
     <div class="ip-manage-title">IP管理</div>
 
     <div class="ip-manage-top">
@@ -113,6 +115,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       subnetId: "",
       ipAddress: "",
       tableData: [],
@@ -154,6 +157,8 @@ export default {
     async handleQuery() {
       this.selectedData = [];
 
+      this.loading = true;
+
       try {        
         let res = await service.getPlanIpList(this.subnetId);
 
@@ -171,6 +176,9 @@ export default {
             return item; 
           })
             .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
+
+          // console.log(this.tableData.find(item => item.ip === "192.168.0.1"));
+            
         }
         else {
           Promise.reject({ message: message || "请求失败" });
@@ -179,6 +187,9 @@ export default {
         console.error(err);
 
         this.$$error(err.message || "请求失败！");
+      }
+      finally {
+        this.loading = false;
       }
     },
 

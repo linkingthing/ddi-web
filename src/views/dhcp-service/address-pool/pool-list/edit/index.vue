@@ -5,6 +5,8 @@
     :width="560"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="address-pool-info">
       <div class="info-row">
         <div class="info-row-label">开始地址</div>
@@ -104,6 +106,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       types,
       beginAddress: "",
@@ -163,6 +166,8 @@ export default {
       try {
         await this.validate();
 
+        this.loading = true;
+
         let { status, message } = await service[action](this.getParams());
 
         status = +status;
@@ -173,10 +178,14 @@ export default {
         else {
           Promise.reject({ message: message || "保存失败！" });
         }
+
+        this.loading = false;
       } catch (err) {
         this.$$error(err.message);
 
         console.error(err);
+
+        this.loading = false;
 
         return Promise.reject();
       }
