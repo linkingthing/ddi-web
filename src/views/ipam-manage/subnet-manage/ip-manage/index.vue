@@ -3,6 +3,36 @@
     <IviewLoading v-if="loading" />
 
     <div class="ip-manage-title">IP管理</div>
+    
+    <div class="condition-wrapper">
+      <div class="condition-item">
+        <label class="condition-item-label">IP地址：</label>
+        <Input
+          v-model="model.ipAddress"
+          placeholder="请输入IP地址"
+          class="top-input" />
+      </div>
+      <div class="condition-item">
+        <label class="condition-item-label">主机名：</label>
+        <Input
+          v-model="model.hostName"
+          placeholder="请输入主机名"
+          class="top-input" />
+      </div>
+      <div class="condition-item">
+        <label class="condition-item-label">MAC：</label>
+        <Input
+          v-model="model.mac"
+          placeholder="请输入MAC"
+          class="top-input" />
+      </div>
+
+      <Button
+        type="primary"
+        icon="ios-search"
+        @click="handleQuery"
+        class="top-button">查询</Button>
+    </div>
 
     <div class="ip-manage-top">
       <Tabs v-if="!isIPv6" v-model="tab">
@@ -29,6 +59,7 @@
           type="primary" 
           @click="handleFixAndKeep('固定')" 
           class="top-button button-fix"
+          disabled
         >
           转固定
         </Button>
@@ -42,9 +73,8 @@
       </div>
     </div>
 
-    <div>
-      <Table 
-        v-show="tab === 'table'"
+    <div v-show="tab === 'table'">
+      <Table         
         :data="tableData"
         :columns="columns" 
         :max-height="540"
@@ -128,7 +158,12 @@ export default {
       showEdit: false,
       typeofFixOrKeep: "",
       isIPv6: false,
-      editData: null
+      editData: null,
+      model: {
+        ipAddress: "",
+        hostName: "",
+        mac: ""
+      }
     };
   },
 
@@ -144,6 +179,8 @@ export default {
       this.tab = "table";
     }
   },
+
+  // 172.16.86.1
 
   mounted() {
     this.handleQuery();    
@@ -176,8 +213,6 @@ export default {
             return item; 
           })
             .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
-
-          // console.log(this.tableData.find(item => item.ip === "192.168.0.1"));
             
         }
         else {
@@ -221,7 +256,7 @@ export default {
     },
 
     handleEdit(res) {
-      this.editData = res;
+      this.editData = { ...res };
       this.showEdit = true;
     },
 
@@ -229,8 +264,8 @@ export default {
       this.handleQuery();
     },
 
-    handleConfigAttibute(res) {
-      this.editData = res;
+    handleConfigAttibute(res) {      
+      this.editData = { ...res };
       this.showConfig = true;
     },
 
@@ -246,7 +281,7 @@ export default {
         PositionFlag
       } = params;
 
-      row.deviceTypeflag = DeviceTypeFlag;
+      row.devicetypeflag = DeviceTypeFlag;
       row.businessflag = BusinessFlag;
       row.chargePersonflag = ChargePersonFlag;
       row.telflag = TelFlag;

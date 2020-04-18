@@ -90,13 +90,18 @@ export default {
           this.handleQuery();
         }
         else {
-          Promise.reject({ message: message || "删除失败！" });
+          Promise.reject({ message });
         }
       }
       catch (err) {
+        // console.log(err);
+        
+        // const text = err.message || "删除失败！";
+        // console.log(text);
+
         console.error(err);
 
-        this.$$error(err.message);
+        this.$$error(err.message || "删除失败！");
       }
       finally {        
         this.loading = false;

@@ -146,7 +146,7 @@ export default {
     handleEdit(data) {
       this.showEdit = true;
 
-      this.editData = data;
+      this.editData = { ...data };
     },
 
     handleSplit() {

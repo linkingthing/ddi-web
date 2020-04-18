@@ -118,7 +118,7 @@ export default {
 
   data() {
     return {
-      loading: true,
+      loading: false,
       dialogVisible: false,
       hostname: "",
       macaddress: "",
@@ -171,6 +171,7 @@ export default {
       this.opersystem = val.opersystem || "";
       this.interfaceid = val.interfaceid || "";
       this.fingerprint = val.fingerprint || "";
+      // console.log(val);
 
       this.devicetypeflag = val.devicetypeflag === undefined ? false : val.devicetypeflag;
       this.businessflag = val.businessflag === undefined ? false : val.businessflag;
@@ -320,7 +321,7 @@ export default {
     },
 
     getParams() {
-      let { 
+      let {
         hostname,
         interfaceid,
 
@@ -340,6 +341,7 @@ export default {
       } = this;
 
       return {
+        ip: this.data.ip,
         hostname,
         interfaceid,
 

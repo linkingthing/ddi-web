@@ -86,7 +86,7 @@ export default {
     setValue(val = {}) {
       this.DeviceTypeFlag = val.devicetypeflag === undefined ? false : val.devicetypeflag;
       this.BusinessFlag = val.businessflag === undefined ? false : val.businessflag;
-      this.ChargePersonFlag = val.chargePersonflag === undefined ? false : val.chargePersonflag;
+      this.ChargePersonFlag = val.chargepersonflag === undefined ? false : val.chargepersonflag;
       this.TelFlag = val.telflag === undefined ? false : val.telflag;
       this.DepartmentFlag = val.departmentflag === undefined ? false : val.departmentflag;
       this.PositionFlag = val.positionflag === undefined ? false : val.positionflag;

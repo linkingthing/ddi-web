@@ -6,7 +6,7 @@
     <Icon
       type="ios-loading"
       size="18"
-      class="demo-spin-icon-load"/>
+      class="spin-icon-load"/>
     <div>{{text}}</div>
   </Spin>
 </template>
