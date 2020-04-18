@@ -196,7 +196,9 @@ export default {
         
         let { message, status } = await services[action](data.subnet_id);
 
-        if (+status === 200) {
+        status = +status;
+
+        if (status === 200 || status === 204) {
           this.$$success("删除成功！");
 
           this.handleQuery();

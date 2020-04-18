@@ -151,7 +151,7 @@ export default {
     setValue(val) {
       if (!val) val = {};
 
-      this.poolId = val.id || null;
+      this.poolId = val.embedded.id || null;
       this.beginAddress = val.beginAddress || "";
       this.endAddress = val.endAddress || "";
       this.validLifetime = val.validLifetime || "";
@@ -195,6 +195,7 @@ export default {
       return {
         subnetId: this.subnetId,
         poolId: this.poolId,
+        type: this.isEdit ? "put" : "post",
         params: {
           beginAddress: this.beginAddress,
           endAddress: this.endAddress,

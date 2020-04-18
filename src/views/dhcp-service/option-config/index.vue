@@ -32,17 +32,17 @@
 import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
 
-import services from "@/services/index.js"
+import services from "@/services/index.js";
 
 export default {
-  components:{
+  components: {
     TablePagination,
     Edit
   },
 
-  data(){
+  data() {
     return {
-      tableData:[],
+      tableData: [],
       columns: [
         {
           title: "序号",
@@ -51,7 +51,7 @@ export default {
         },
         {
           title: "名称",
-          key:"optionName",
+          key: "optionName",
           align: "center"
         },
         {
@@ -63,38 +63,38 @@ export default {
           title: "操作",
           align: "center",      
           render: (h, { row }) => {
-            return h('div', [
-              h('label', {
-                class: 'operate-label operate-edit',
+            return h("div", [
+              h("label", {
+                class: "operate-label operate-edit",
                 on: {
                   click: () => {
-                    this.handleEdit(row)
+                    this.handleEdit(row);
                   }
                 }
-              }, '编辑'),
-              h('label', {
-                class: 'operate-label operate-delete',
+              }, "编辑"),
+              h("label", {
+                class: "operate-label operate-delete",
                 on: {
                   click: () => {
-                    this.handleDelete(row)
+                    this.handleDelete(row);
                   }
                 }
-              }, '删除')
+              }, "删除")
             ]);
           }
         }
       ],
-      showEdit:false,
-      editData:null
-    }
+      showEdit: false,
+      editData: null
+    };
   },
 
-  mounted(){    
+  mounted() {    
     this.handleQuery();
   },
 
-  methods:{
-    async handleQuery(){
+  methods: {
+    async handleQuery() {
       try {
         let res = await services.getOptionList();
         
@@ -112,40 +112,47 @@ export default {
       }
     },
 
-    handleAdd(){
+    handleAdd() {
       this.showEdit = true;
 
       this.editData = null;
     },
 
-    handleView(data){
+    handleView(data) {
       // this.$router.push(`/address-manage/ip-manage?id=${data.subnet_id}&addr=${data.subnet}`);
     },
 
-    handleEdit(data){
+    handleEdit(data) {
       this.showEdit = true;
 
       this.editData = data;
     },
 
-    handleSaved(){
+    handleSaved() {
       this.handleQuery();
     },
 
-    async handleDelete(data){
-      try{
-        await this.$$confirm({ content:"您确定要删除当前数据吗？" });
+    async handleDelete(data) {
+      try {
+        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
         
-        await services.deleteOption(data.embedded.id);
+        let { message, status } = await services.deleteOption(data.embedded.id);
 
-        this.$$success("删除成功！");
+        status = +status;
 
-        this.handleQuery();
+        if (status === 200 || status === 204) {
+          this.$$success("删除成功！");
+
+          this.handleQuery();
+        }
+        else {
+          Promise.reject({ message });
+        }
       }
-      catch(err){
-        this.$$error(err.message || "删除失败！")
+      catch (err) {
+        this.$$error(err.message || "删除失败！");
       }
     }
   }
-}
+};
 </script>

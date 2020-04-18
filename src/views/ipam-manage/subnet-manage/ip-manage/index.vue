@@ -59,7 +59,6 @@
           type="primary" 
           @click="handleFixAndKeep('固定')" 
           class="top-button button-fix"
-          disabled
         >
           转固定
         </Button>
@@ -67,6 +66,7 @@
           type="primary" 
           @click="handleFixAndKeep('保留')" 
           class="top-button button-keep"
+          disabled
         >
           转保留
         </Button>
@@ -213,6 +213,8 @@ export default {
             return item; 
           })
             .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
+
+          // console.log(this.tableData.find(item => item.ip === "172.16.86.1"));
             
         }
         else {

@@ -120,7 +120,9 @@ export default {
 
         let { status, message } = await service[action](this.subnetId, data.embedded.id);
 
-        if (+status === 200) {
+        status = +status;
+
+        if (status === 200 || status === 204) {
           this.$$success("删除成功！");
 
           this.handleQuery();
