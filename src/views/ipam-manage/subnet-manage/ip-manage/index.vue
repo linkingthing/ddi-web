@@ -10,21 +10,24 @@
         <Input
           v-model="model.ipAddress"
           placeholder="请输入IP地址"
-          class="top-input" />
+          class="top-input"
+          @on-enter="handleQuery" />
       </div>
       <div class="condition-item">
         <label class="condition-item-label">主机名：</label>
         <Input
           v-model="model.hostName"
           placeholder="请输入主机名"
-          class="top-input" />
+          class="top-input"
+          @on-enter="handleQuery" />
       </div>
       <div class="condition-item">
         <label class="condition-item-label">MAC：</label>
         <Input
           v-model="model.mac"
           placeholder="请输入MAC"
-          class="top-input" />
+          class="top-input"
+          @on-enter="handleQuery" />
       </div>
 
       <Button
@@ -196,8 +199,14 @@ export default {
 
       this.loading = true;
 
-      try {        
-        let res = await service.getPlanIpList(this.subnetId);
+      try {       
+        const {
+          ipAddress: ip,
+          hostName: hostname,
+          mac
+        } = this.model;        
+        
+        let res = await service.getPlanIpList(this.subnetId, `ip=${ip}&hostname=${hostname}&mac=${mac}`);
 
         const { status, message, data } = res || {};
         
@@ -211,8 +220,7 @@ export default {
             item.typeText = type ? type.label : "";
 
             return item; 
-          })
-            .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
+          }).sort((prev, next) => this.getIpLastNum(prev && prev.ip) - this.getIpLastNum(next && next.ip));
 
           // console.log(this.tableData.find(item => item.ip === "172.16.86.1"));
             

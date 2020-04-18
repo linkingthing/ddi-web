@@ -340,8 +340,8 @@ export default {
   /**
    * 获取规划IP地址列表
    */
-  getPlanIpList(id) {
-    return axios.get(`${baseUrl}/dividedaddresses/?subnetid=${id}`);
+  getPlanIpList(id, params) {
+    return axios.get(`${baseUrl}/dividedaddresses/?subnetid=${id}&${params}`);
   },
 
   /**
