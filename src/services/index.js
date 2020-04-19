@@ -264,7 +264,13 @@ export default {
    * 获取子网管理列表
    */
   getChildNetList(subnet) {
-    return axios.get(`${baseUrl}/restsubnetv46s?subnet=${subnet}`);
+    let url = `${baseUrl}/restsubnetv46s`;
+
+    if (subnet) {
+      url += `?subnet=${subnet}`;
+    }
+
+    return axios.get(url);
   },
 
   /**
