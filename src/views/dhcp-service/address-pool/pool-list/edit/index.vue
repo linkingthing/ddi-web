@@ -142,7 +142,6 @@ export default {
       if (!val) {        
         this.setValue();
       }
-      console.log(val);
 
       this.$emit("update:visible", val);
     }
