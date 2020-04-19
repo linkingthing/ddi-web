@@ -147,9 +147,9 @@ export default {
           }
         }
       }
-
+      
       // 验证网络地址掩码
-      if (!gatewayIsValid(this.subnet)) {
+      if (!gatewayIsValid(this.subnet.trim())) {
         return Promise.reject({ message: "请输入正确的网络地址掩码！" });
       }
 
