@@ -142,6 +142,7 @@ export default {
       if (!val) {        
         this.setValue();
       }
+      console.log(val);
 
       this.$emit("update:visible", val);
     }
@@ -151,7 +152,7 @@ export default {
     setValue(val) {
       if (!val) val = {};
 
-      this.poolId = val.embedded.id || null;
+      this.poolId = val.embedded ? val.embedded.id : val.id || null;
       this.beginAddress = val.beginAddress || "";
       this.endAddress = val.endAddress || "";
       this.validLifetime = val.validLifetime || "";
