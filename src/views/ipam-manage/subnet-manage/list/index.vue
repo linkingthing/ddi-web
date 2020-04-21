@@ -1,5 +1,7 @@
 <template>
   <div class="child-net-manage">   
+    <IviewLoading v-if="loading" />
+
     <TablePagination 
       :data="tableData"
       :pagination-enable="false"
@@ -10,7 +12,8 @@
         <Input
           v-model="keywords"
           placeholder="请输入子网地址"
-          class="top-input" />
+          class="top-input"
+          @on-enter="handleQuery" />
         <Button
           type="primary"
           icon="ios-search"
@@ -87,6 +90,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       keywords: "",
       tableData: [],
       columns: columns(this),
@@ -106,20 +110,29 @@ export default {
 
   methods: {
     async handleQuery() {
+      this.loading = true;
+
       try {
-        let res = await services.getChildNetList();
-        
-        const { data } = res;
+        let { status, data, message } = await services.getChildNetList(this.keywords);
 
-        this.tableData = data.data.map(item => {
-          item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
+        if (+status === 200) {
+          this.tableData = data.data.map(item => {
+            item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
 
-          return item;
-        });
+            return item;
+          });
+        }
+        else {
+          Promise.reject({ message });
+        }
         
       } catch (err) {
         console.error(err);
-        
+          
+        this.$$error(err.message || "数据请求错误！");
+      }
+      finally {        
+        this.loading = false;
       }
     },
 
@@ -134,7 +147,7 @@ export default {
     handleEdit(data) {
       this.showEdit = true;
 
-      this.editData = data;
+      this.editData = { ...data };
     },
 
     handleSplit() {
@@ -178,16 +191,30 @@ export default {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
+        this.loading = true;
+
         const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
         
-        await services[action](data.subnet_id);
+        let { message, status } = await services[action](data.subnet_id);
 
-        this.$$success("删除成功！");
+        status = +status;
 
-        this.handleQuery();
+        if (status === 200 || status === 204) {
+          this.$$success("删除成功！");
+
+          this.handleQuery();
+        }
+        else {
+          Promise.reject({ message });
+        }
       }
       catch (err) {
+        console.error(err);
+
         this.$$error(err.message || "删除失败！");
+      }
+      finally {
+        this.loading = false;
       }
     }
   }

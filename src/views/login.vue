@@ -190,7 +190,7 @@ export default {
                   }
                 })
                 .catch(res => {
-                  this.$Message.error(res.response.data.message);
+                  this.$Message.error(res.message);
                 });
             })
             .catch(err => err);

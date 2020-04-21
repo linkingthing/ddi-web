@@ -1,5 +1,7 @@
 <template>
-  <div class="address-pool">   
+  <div class="address-pool">  
+    <IviewLoading v-if="loading" />
+
     <TablePagination 
       title="地址池管理"
       :data="tableData"
@@ -45,6 +47,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       keywords: "",
       tableData: [],
       columns: columns(this),
@@ -68,8 +71,12 @@ export default {
 
   methods: {
     async handleQuery() {
+      this.loading = true;
+
       try {
-        let { status, data } = await service.getAddressPoolList(this.subnetId);
+        const action = this.addressType === "ipv4" ? "getIPv4AddressPoolList" : "getIPv6AddressPoolList";
+
+        let { status, data, message } = await service[action](this.subnetId);
 
         if (status === 200) {
           this.tableData = data.data.map(item => {
@@ -80,11 +87,16 @@ export default {
           });
         }
         else {
-          Promise.reject({ message: data.message || "查询失败！" });
+          Promise.reject({ message: message || "查询失败！" });
         }
       }
       catch (err) {
         console.error(err);
+        
+        this.$$error(err.message);
+      }
+      finally {
+        this.loading = false;
       }
     },
 
@@ -95,26 +107,37 @@ export default {
 
     handleEdit(data) {
       this.showEdit = true;
-      this.editData = data;
+      this.editData = { ...data };
     },
 
     async handleDelete(data) {
       try {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
-        let res = await service.deleteAddressPool(this.subnetId, data.embedded.id);
+        this.loading = true;
 
-        if (res.status === 200) {
+        const action = this.addressType === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
+
+        let { status, message } = await service[action](this.subnetId, data.embedded.id);
+
+        status = +status;
+
+        if (status === 200 || status === 204) {
           this.$$success("删除成功！");
 
           this.handleQuery();
         }
         else {
-          Promise.reject({ message: res.message || "删除失败！" });
+          Promise.reject({ message: message || "删除失败！" });
         }
       }
       catch (err) {
         console.error(err);
+        
+        this.$$error(err.message);
+      }
+      finally {
+        this.loading = false;
       }
     }
   }

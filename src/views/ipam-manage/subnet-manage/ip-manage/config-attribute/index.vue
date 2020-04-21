@@ -5,6 +5,8 @@
     :width="560"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="config-attribute">
       <Checkbox v-model="DeviceTypeFlag">
         <span>设备类型</span>
@@ -51,6 +53,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       DeviceTypeFlag: false,
       BusinessFlag: false,
@@ -83,7 +86,7 @@ export default {
     setValue(val = {}) {
       this.DeviceTypeFlag = val.devicetypeflag === undefined ? false : val.devicetypeflag;
       this.BusinessFlag = val.businessflag === undefined ? false : val.businessflag;
-      this.ChargePersonFlag = val.chargePersonflag === undefined ? false : val.chargePersonflag;
+      this.ChargePersonFlag = val.chargepersonflag === undefined ? false : val.chargepersonflag;
       this.TelFlag = val.telflag === undefined ? false : val.telflag;
       this.DepartmentFlag = val.departmentflag === undefined ? false : val.departmentflag;
       this.PositionFlag = val.positionflag === undefined ? false : val.positionflag;
@@ -91,9 +94,11 @@ export default {
 
     async handleConfirm() {
       try {
+        this.loading = true;
+
         let params = this.getParams();
 
-        let { status, data } = await service.editSubnetConfig(this.data.id, params);
+        let { status, message } = await service.editSubnetConfig(this.data.id, params);
 
         status = +status;
         
@@ -106,13 +111,17 @@ export default {
           });
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
+
+        this.loading = false;
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        this.loading = false;
 
         return Promise.reject();
       }

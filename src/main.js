@@ -46,6 +46,9 @@ Vue.component("table-page", TablePagination);
 import CommonModal from "@/components/CommonModal";
 Vue.component("common-modal", CommonModal);
 
+import IviewLoading from "@/components/IviewLoading";
+Vue.component("IviewLoading", IviewLoading);
+
 
 import store from "./store";
 import router from "./router";
@@ -53,20 +56,33 @@ import router from "./router";
 import mixin from "./mixin";
 Vue.mixin(mixin);
 
+function showMessage(type, msg, scope) {
+  let options = {
+    content: msg,
+    duration: 3
+  };
+
+  if (typeof msg === "object") {
+    options = msg; 
+  }
+
+  scope.$Message[type](options);
+}
+
 Vue.prototype.$$success = function (msg) {
-  this.$Message.success(msg);
+  showMessage("success", msg, this);
 };
 
 Vue.prototype.$$info = function (msg) {
-  this.$Message.info(msg);
+  showMessage("info", msg, this);
 };
 
 Vue.prototype.$$warning = function (msg) {
-  this.$Message.warning(msg);
+  showMessage("warning", msg, this);
 };
 
 Vue.prototype.$$error = function (msg) {
-  this.$Message.error(msg);
+  showMessage("error", msg, this);
 };
 
 Vue.prototype.$$confirm = function ({ title = "消息", content }) {

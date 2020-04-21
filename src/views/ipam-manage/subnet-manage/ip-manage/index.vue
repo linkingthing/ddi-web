@@ -1,6 +1,41 @@
 <template>
   <div class="child-net-ip-manage">
+    <IviewLoading v-if="loading" />
+
     <div class="ip-manage-title">IP管理</div>
+    
+    <div class="condition-wrapper">
+      <div class="condition-item">
+        <label class="condition-item-label">IP地址：</label>
+        <Input
+          v-model="model.ipAddress"
+          placeholder="请输入IP地址"
+          class="top-input"
+          @on-enter="handleQuery" />
+      </div>
+      <div class="condition-item">
+        <label class="condition-item-label">主机名：</label>
+        <Input
+          v-model="model.hostName"
+          placeholder="请输入主机名"
+          class="top-input"
+          @on-enter="handleQuery" />
+      </div>
+      <div class="condition-item">
+        <label class="condition-item-label">MAC：</label>
+        <Input
+          v-model="model.mac"
+          placeholder="请输入MAC"
+          class="top-input"
+          @on-enter="handleQuery" />
+      </div>
+
+      <Button
+        type="primary"
+        icon="ios-search"
+        @click="handleQuery"
+        class="top-button">查询</Button>
+    </div>
 
     <div class="ip-manage-top">
       <Tabs v-if="!isIPv6" v-model="tab">
@@ -34,15 +69,15 @@
           type="primary" 
           @click="handleFixAndKeep('保留')" 
           class="top-button button-keep"
+          disabled
         >
           转保留
         </Button>
       </div>
     </div>
 
-    <div>
-      <Table 
-        v-show="tab === 'table'"
+    <div v-show="tab === 'table'">
+      <Table         
         :data="tableData"
         :columns="columns" 
         :max-height="540"
@@ -113,6 +148,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       subnetId: "",
       ipAddress: "",
       tableData: [],
@@ -125,7 +161,12 @@ export default {
       showEdit: false,
       typeofFixOrKeep: "",
       isIPv6: false,
-      editData: null
+      editData: null,
+      model: {
+        ipAddress: "",
+        hostName: "",
+        mac: ""
+      }
     };
   },
 
@@ -142,6 +183,8 @@ export default {
     }
   },
 
+  // 172.16.86.1
+
   mounted() {
     this.handleQuery();    
   },
@@ -154,12 +197,20 @@ export default {
     async handleQuery() {
       this.selectedData = [];
 
-      try {        
-        let res = await service.getPlanIpList(this.subnetId);
+      this.loading = true;
 
-        const { status, message, data = { data: [] } } = res || {};
+      try {       
+        const {
+          ipAddress: ip,
+          hostName: hostname,
+          mac
+        } = this.model;        
         
-        if (status === 200) {
+        let res = await service.getPlanIpList(this.subnetId, `ip=${ip}&hostname=${hostname}&mac=${mac}`);
+
+        const { status, message, data } = res || {};
+        
+        if (+status === 200) {
           this.tableData = data.data.map(item => { 
             item.leasestarttime = formatDate(item.leasestarttime);  
             item.leaseendtime = formatDate(item.leaseendtime);
@@ -169,14 +220,21 @@ export default {
             item.typeText = type ? type.label : "";
 
             return item; 
-          })
-            .sort((prev, next) => this.getIpLastNum(prev.ip) - this.getIpLastNum(next.ip));
+          }).sort((prev, next) => this.getIpLastNum(prev && prev.ip) - this.getIpLastNum(next && next.ip));
+
+          // console.log(this.tableData.find(item => item.ip === "172.16.86.1"));
+            
         }
         else {
           Promise.reject({ message: message || "请求失败" });
         }
       } catch (err) {        
+        console.error(err);
+
         this.$$error(err.message || "请求失败！");
+      }
+      finally {
+        this.loading = false;
       }
     },
 
@@ -208,7 +266,7 @@ export default {
     },
 
     handleEdit(res) {
-      this.editData = res;
+      this.editData = { ...res };
       this.showEdit = true;
     },
 
@@ -216,8 +274,8 @@ export default {
       this.handleQuery();
     },
 
-    handleConfigAttibute(res) {
-      this.editData = res;
+    handleConfigAttibute(res) {      
+      this.editData = { ...res };
       this.showConfig = true;
     },
 
@@ -233,7 +291,7 @@ export default {
         PositionFlag
       } = params;
 
-      row.deviceTypeflag = DeviceTypeFlag;
+      row.devicetypeflag = DeviceTypeFlag;
       row.businessflag = BusinessFlag;
       row.chargePersonflag = ChargePersonFlag;
       row.telflag = TelFlag;

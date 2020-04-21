@@ -15,7 +15,7 @@ axios.interceptors.request.use(
     }
     return config;
   },
-  error => {
+  error => {    
     return Promise.reject(error);
   },
 );
@@ -34,7 +34,7 @@ axios.interceptors.response.use(
 
     LoadingBar.error();
 
-    return Promise.reject(err);
+    return Promise.reject(err.response.data);
   },
 );
 
@@ -263,13 +263,19 @@ export default {
   /**
    * 获取子网管理列表
    */
-  getChildNetList() {
-    return axios.get(`${baseUrl}/restsubnetv46s`);
+  getChildNetList(subnet) {
+    let url = `${baseUrl}/restsubnetv46s`;
+
+    if (subnet) {
+      url += `?subnet=${subnet}`;
+    }
+
+    return axios.get(url);
   },
 
   /**
-     * 新增IPv4子网
-     */
+   * 新增IPv4子网
+   */
   addIPv4ChildNet(params) {
     return axios.post(`${baseUrl}/restsubnetv4s`, params);
   },
@@ -340,8 +346,8 @@ export default {
   /**
    * 获取规划IP地址列表
    */
-  getPlanIpList(id) {
-    return axios.get(`${baseUrl}/dividedaddresses/?subnetid=${id}`);
+  getPlanIpList(id, params) {
+    return axios.get(`${baseUrl}/dividedaddresses/?subnetid=${id}&${params}`);
   },
 
   /**
@@ -392,10 +398,17 @@ export default {
   },
 
   /**
-   * 获取地址池列表
+   * 获取IPv4地址池列表
    */
-  getAddressPoolList(subnetId) {
+  getIPv4AddressPoolList(subnetId) {
     return axios.get(`${baseUrl}/restsubnetv4s/${subnetId}/restpools`);
+  },
+
+  /**
+   * 获取IPv6地址池列表
+   */
+  getIPv6AddressPoolList(subnetId) {
+    return axios.get(`${baseUrl}/restsubnetv6s/${subnetId}/restpoolv6s`);
   },
 
   /**
@@ -424,18 +437,14 @@ export default {
    * 删除IPv4地址池
    */
   deleteIPv4AddressPool(subnetId, poolId) {
-    // return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
-
-    return this.deleteIPv4ChildNet(subnetId);
+    return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
   },
 
   /**
    * 删除IPv6地址池
    */
   deleteIPv6AddressPool(subnetId, poolId) {
-    // return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
-
-    return this.deleteIPv6ChildNet(subnetId);
+    return axios.delete(`${baseUrl}/restsubnetv6s/${subnetId}/restpoolv6s/${poolId}`);
   },
 
   /** 子网管理 end */

@@ -4,6 +4,8 @@
     title="新增网络"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="child-net-info">
       <div class="info-row">
         <div class="info-row-label">区域</div>
@@ -44,6 +46,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       subnet: "",
       zoneName: ""
@@ -74,9 +77,11 @@ export default {
       try {
         await this.validate();
 
+        this.loading = true;
+
         const key = getAddressType(this.subnet) === "ipv4" ? "addIPv4ChildNet" : "addIPv6ChildNet";
 
-        let { status, data } = await service[key](this.getParams());
+        let { status, message } = await service[key](this.getParams());
 
         status = +status;
         
@@ -84,15 +89,21 @@ export default {
           this.$$success("保存成功！");
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
 
         this.$emit("confirmed");
+
+        this.loading = false;
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        this.loading = false;
+
+        return Promise.reject();
       }
     },
 
@@ -119,7 +130,7 @@ export default {
       }
 
       const addrType = getAddressType(subnet);
-
+      
       // 验证网络地址
       if (!subnet) {
         return Promise.reject({ message: "请输入网络地址！" });
@@ -136,9 +147,9 @@ export default {
           }
         }
       }
-
+      
       // 验证网络地址掩码
-      if (!gatewayIsValid(subnet)) {
+      if (!gatewayIsValid(this.subnet.trim())) {
         return Promise.reject({ message: "请输入正确的网络地址掩码！" });
       }
 
@@ -148,7 +159,8 @@ export default {
     getParams() {
       return {
         subnet: this.subnet.trim(),
-        zoneName: this.zoneName.trim()
+        zoneName: this.zoneName.trim(),
+        name: this.zoneName.trim()
       };
     }
   }

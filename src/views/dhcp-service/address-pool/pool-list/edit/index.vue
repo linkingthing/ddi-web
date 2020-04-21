@@ -5,6 +5,8 @@
     :width="560"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+
     <div class="address-pool-info">
       <div class="info-row">
         <div class="info-row-label">开始地址</div>
@@ -42,15 +44,15 @@
         <div class="info-row-label">域名服务器</div>
         <Input
           maxlength="255"
-          v-model="hostNameServer"
+          v-model="gateway"
           placeholder="请输入域名服务器"
           class="info-row-input" />
       </div>
-      <div class="info-row">
+      <div class="info-row" v-if="type === 'ipv4'">
         <div class="info-row-label">路由服务器</div>
         <Input
           maxlength="255"
-          v-model="routeServer"
+          v-model="dnsServer"
           placeholder="请输入路由服务器"
           class="info-row-input" />
       </div>
@@ -104,14 +106,15 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       types,
       beginAddress: "",
       endAddress: "",
       validLifetime: "",
       maxValidLifetime: "",
-      hostNameServer: "",
-      routeServer: "",
+      gateway: "",
+      dnsServer: "",
       isEdit: false
     };
   },
@@ -148,13 +151,13 @@ export default {
     setValue(val) {
       if (!val) val = {};
 
-      this.poolId = val.id || null;
+      this.poolId = val.embedded ? val.embedded.id : val.id || null;
       this.beginAddress = val.beginAddress || "";
       this.endAddress = val.endAddress || "";
       this.validLifetime = val.validLifetime || "";
       this.maxValidLifetime = val.maxValidLifetime || "";
-      this.hostNameServer = val.hostNameServer || "";
-      this.routeServer = val.routeServer || "";
+      this.gateway = val.gateway || "";
+      this.dnsServer = val.dnsServer || "";
     },
 
     async handleConfirm() {
@@ -163,18 +166,26 @@ export default {
       try {
         await this.validate();
 
-        let { status, data } = await service[action](this.getParams());
+        this.loading = true;
 
-        if (+status === 200) {
+        let { status, message } = await service[action](this.getParams());
+
+        status = +status;
+
+        if (status === 200 || status === 201) {
           this.$emit("success");
         }
         else {
-          Promise.reject({ message: data.message || "保存失败！" });
+          Promise.reject({ message: message || "保存失败！" });
         }
+
+        this.loading = false;
       } catch (err) {
         this.$$error(err.message);
 
         console.error(err);
+
+        this.loading = false;
 
         return Promise.reject();
       }
@@ -184,13 +195,14 @@ export default {
       return {
         subnetId: this.subnetId,
         poolId: this.poolId,
+        type: this.isEdit ? "put" : "post",
         params: {
           beginAddress: this.beginAddress,
           endAddress: this.endAddress,
           validLifetime: this.validLifetime,
           maxValidLifetime: this.maxValidLifetime,
-          hostNameServer: this.hostNameServer,
-          routeServer: this.routeServer
+          gateway: this.gateway,
+          dnsServer: this.dnsServer
         }
       };
     },
@@ -224,12 +236,21 @@ export default {
     },
 
     validate() {
-      let { beginAddress, endAddress, validLifetime, maxValidLifetime } = this;
+      let { 
+        beginAddress, 
+        endAddress, 
+        validLifetime, 
+        maxValidLifetime,
+        gateway,
+        dnsServer
+      } = this;
 
       beginAddress = beginAddress.trim();
       endAddress = endAddress.trim();
       validLifetime = validLifetime.trim();
       maxValidLifetime = maxValidLifetime.trim();
+      gateway = gateway.trim();
+      dnsServer = dnsServer.trim();
 
       const beginType = getAddressType(beginAddress);
       const endType = getAddressType(endAddress);
@@ -280,6 +301,24 @@ export default {
 
       if (maxValidLifetime.length > 12) {
         return Promise.reject({ message: "请填写正确的最大租赁时间！" });
+      }      
+
+      if (this.type === "ipv4") {
+        if (gateway && !isIPv4Reg.test(gateway)) {
+          return Promise.reject({ message: "请填写正确的域名服务器地址！" });
+        }
+      }
+
+      if (this.type === "ipv6") {
+        if (gateway && !fullIPv6Reg.test(gateway)) {
+          return Promise.reject({ message: "请填写正确的域名服务器地址！" });
+        }
+      }
+
+      if (this.type === "ipv4") {
+        if (dnsServer && !isIPv4Reg.test(dnsServer)) {
+          return Promise.reject({ message: "请填写正确的路由服务器地址！" });
+        }
       }
 
       return Promise.resolve();

@@ -4,6 +4,8 @@
     title="IP地址编辑"
     @confirm="handleConfirm"
   >
+    <IviewLoading v-if="loading" />
+    
     <div class="ip-info-edit">
       <div class="info-row-inline">
         <div class="info-row-label">主机名：</div>
@@ -116,6 +118,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       hostname: "",
       macaddress: "",
@@ -168,6 +171,7 @@ export default {
       this.opersystem = val.opersystem || "";
       this.interfaceid = val.interfaceid || "";
       this.fingerprint = val.fingerprint || "";
+      // console.log(val);
 
       this.devicetypeflag = val.devicetypeflag === undefined ? false : val.devicetypeflag;
       this.businessflag = val.businessflag === undefined ? false : val.businessflag;
@@ -188,7 +192,9 @@ export default {
       try {
         await this.validate();
 
-        let { status, data } = await service.editIpInfo(this.data.id, this.getParams());
+        this.loading = true;
+
+        let { status, message } = await service.editIpInfo(this.data.id, this.getParams());
 
         status = +status;
         
@@ -196,15 +202,19 @@ export default {
           this.$$success("保存成功！");
         }
         else {
-          Promise.reject({ message: data.message });
+          Promise.reject({ message });
         }
 
         this.$emit("confirmed");
+
+        this.loading = false;
       } 
       catch (err) {
         console.error(err);
 
         this.$$error(err && err.message || "保存失败！");
+
+        this.loading = false;
 
         return Promise.reject();
       }
@@ -311,7 +321,7 @@ export default {
     },
 
     getParams() {
-      let { 
+      let {
         hostname,
         interfaceid,
 
@@ -331,6 +341,7 @@ export default {
       } = this;
 
       return {
+        ip: this.data.ip,
         hostname,
         interfaceid,
 
