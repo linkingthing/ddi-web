@@ -1,6 +1,6 @@
 <template>
   <div class="table-pagination">
-    <h3 v-if="title" class="table-pagination-title">{{ getTitle }}</h3>
+    <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3>
 
     <article v-if="$slots.top || $slots['top-left'] || $slots['top-right']" class="table-pagination-top">      
       <div class="top-left">
