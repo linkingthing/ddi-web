@@ -11,7 +11,7 @@
       <template slot="top-left">
         <Input
           v-model="keywords"
-          placeholder="请输入子网地址"
+          placeholder="请输入网络地址"
           class="top-input"
           @on-enter="handleQuery" />
         <Button
