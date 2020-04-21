@@ -30,7 +30,13 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
-import { isIPv4Reg, ipv6IsValid, getAddressType, gatewayIsValid } from "@/util/common";
+import { 
+  isIPv4Reg, 
+  ipv6IsValid, 
+  getAddressType, 
+  gatewayIsValid, 
+  resourceDomainValidateFunc 
+} from "@/util/common";
 
 export default {
   components: {
@@ -109,21 +115,20 @@ export default {
 
     validate() {
       let { subnet, zoneName } = this;
+      
+      zoneName = zoneName.trim();
 
       // 验证区域
       if (!zoneName) {
         return Promise.reject({ message: "请输入区域！" });
       }
-      else {
-        if (zoneName.length > 255) {
-          return Promise.reject({ message: "请输入正确的区域！" });
-        }
+      else if (!resourceDomainValidateFunc(zoneName)) {
+        return Promise.reject({ message: "请输入正确的区域！" });        
       }
       
       let tmp = subnet.trim().split("/");
 
       subnet = tmp[0];
-      zoneName = zoneName.trim();
 
       if (tmp.length > 2 || tmp.length === 1) {
         return Promise.reject({ message: "请输入正确的网络地址！" });
