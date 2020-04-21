@@ -43,12 +43,12 @@
               <Checkbox v-model="aclcheck">禁止</Checkbox>
               <Select
                 style="width: 140px"
-                v-model="acl"
+                @on-change="handleSelectAcl"
               >
                 <Option
                   v-for="item in accessList"
                   :key="item.id"
-                  :value="item.name"
+                  :value="item.id"
                 >{{item.name}}</Option>
               </Select>
               <Button
@@ -115,6 +115,9 @@ export default {
       this.params.name = "";
       this.params.list = [];
     },
+    handleSelectAcl(id) {
+      this.acl = this.accessList.find(item => item.id === id)
+    },
     handleAddAcl() {
 
       if (/^\s+$/.test(this.acl) || this.acl === "") {
@@ -125,7 +128,9 @@ export default {
       if (!this.params.list.map(item => item.name).includes(acl)) {
         this.params.list.push({
           check: this.aclcheck,
-          name: acl
+          name: acl.name,
+          aclid: acl.id,
+          type: "acl"
         });
       } else {
         this.$Message.info("请勿重复添加");
@@ -139,7 +144,9 @@ export default {
       if (!this.params.list.map(item => item.name).includes(ip)) {
         this.params.list.push({
           check: this.ipcheck,
-          name: ip
+          name: ip,
+          aclid: "1",
+          type: "ip"
         });
       } else {
         this.$Message.info("请勿重复添加");
@@ -150,12 +157,10 @@ export default {
       this.params.list.splice(index, 1);
     },
     update() {
-      const ips = this.params.list.map(item => item.name);
       services
-        .createAccess({
-          name: this.params.name,
-          IP: ips.filter(item => item)
-        })
+        .createAccess(
+          this.params
+        )
         .then(res => {
           this.cancelModel();
           this.$Message.success("添加成功!");

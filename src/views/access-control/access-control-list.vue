@@ -49,7 +49,7 @@ export default {
           render: (h, { row }) => {
             return h("Tags", {
               props: {
-                list: row.IP,
+                list: row.list,
                 field: row
               }
             });

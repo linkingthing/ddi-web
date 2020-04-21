@@ -44,12 +44,12 @@
               <Select
                 filterable
                 style="width: 150px"
-                v-model="acl"
+                @on-change="handleSelectAcl"
               >
                 <Option
                   v-for="item in accessList"
                   :key="item.id"
-                  :value="item.name"
+                  :value="item.id"
                 >{{item.name}}</Option>
               </Select>
               <Button
@@ -109,22 +109,13 @@ export default {
   methods: {
     getInitAccessById(id) {
       services.getAccessById(id).then(res => {
-        const { IP, name } = res.data;
+        const { list, name } = res.data;
         this.params.name = name;
-        this.params.list = IP.map(item => {
-          if (String(item).startsWith("!")) {
-            return {
-              name: item,
-              check: true
-            };
-          } else {
-            return {
-              name: item,
-              check: false
-            };
-          }
-        });
+        this.params.list = list;
       });
+    },
+    handleSelectAcl(id) {
+      this.acl = this.accessList.find(item => item.id === id)
     },
     openConfig(data) {
       this.eviceModal = true;
@@ -139,7 +130,9 @@ export default {
       if (!this.params.list.map(item => item.name).includes(acl)) {
         this.params.list.push({
           check: this.aclcheck,
-          name: acl
+          name: acl.name,
+          aclid: acl.id,
+          type: "acl"
         });
       } else {
         this.$Message.info("请勿重复添加");
@@ -153,7 +146,9 @@ export default {
       if (!this.params.list.map(item => item.name).includes(ip)) {
         this.params.list.push({
           check: this.ipcheck,
-          name: ip
+          name: ip,
+          // aclid: "1",
+          type: "ip"
         });
       } else {
         this.$Message.info("请勿重复添加");
@@ -181,7 +176,7 @@ export default {
       services
         .updateAccess(this.accessId, {
           name: this.params.name,
-          IP: ips.filter(item => item)
+          list: this.params.list
         })
         .then(res => {
           this.$emit("onSuccess");
