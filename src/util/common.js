@@ -318,6 +318,17 @@ export const subnetValidateFunc = (rule, value, callback) => {
 };
 
 /**
+ * 判断是否是合法的ipv6，不校验掩码
+ */
+export const ipv6IsValid = address => {
+  if (address.indexOf("/")) {
+    address = address.split("/")[0];
+  }
+
+  return new Address6(address).isValid();
+};
+
+/**
  * 格式化日期
  * @param { Date|String } res 时间对象或字符串 
  * @param { String } formatter 格式化方式  yyyy-MM-dd hh:mm:ss

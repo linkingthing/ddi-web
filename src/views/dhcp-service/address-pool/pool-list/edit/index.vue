@@ -64,7 +64,7 @@
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
-import { fullIPv6Reg, isIPv4Reg, getAddressType } from "@/util/common";
+import { ipv6IsValid, isIPv4Reg, getAddressType } from "@/util/common";
 
 const types = [
   {
@@ -286,11 +286,11 @@ export default {
       }
 
       if (this.type === "ipv6") {
-        if (!fullIPv6Reg.test(beginAddress)) {
+        if (!ipv6IsValid(beginAddress)) {
           return Promise.reject({ message: "请填写正确的开始地址！" });
         }
         
-        if (!fullIPv6Reg.test(endAddress)) {
+        if (!ipv6IsValid(endAddress)) {
           return Promise.reject({ message: "请填写正确的结束地址！" });
         }
       }
@@ -310,7 +310,7 @@ export default {
       }
 
       if (this.type === "ipv6") {
-        if (gateway && !fullIPv6Reg.test(gateway)) {
+        if (gateway && !ipv6IsValid(gateway)) {
           return Promise.reject({ message: "请填写正确的域名服务器地址！" });
         }
       }

@@ -30,7 +30,7 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
-import { isIPv4Reg, fullIPv6Reg, getAddressType, gatewayIsValid } from "@/util/common";
+import { isIPv4Reg, ipv6IsValid, getAddressType, gatewayIsValid } from "@/util/common";
 
 export default {
   components: {
@@ -142,7 +142,7 @@ export default {
           }
         }
         else if (addrType === "ipv6") {
-          if (!fullIPv6Reg.test(subnet)) {
+          if (!ipv6IsValid(subnet)) {
             return Promise.reject({ message: "请输入正确的网络地址！" });
           }
         }
