@@ -171,7 +171,7 @@ export default {
         }
       }
 
-      if (mask <= this.currentMask) {
+      if (this.type === operateTypes.split && mask <= this.currentMask) {
         return Promise.reject({ message: "输入的掩码必须大于原掩码！" });
       }
 
