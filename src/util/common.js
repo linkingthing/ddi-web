@@ -283,6 +283,14 @@ export const prefixValidateFunc = (rule, value, callback) => {
   callback();
 };
 
+/**
+ * 验证域名是否合法
+ * @param {String} value 域名
+ */
+export const domainIsValid = value => {
+  return value === "*" || value === "@" || domainReg.test(value);
+};
+
 export const resourceDomainValidateFunc = (rule, value, callback) => {
   if (value === "*" || value === "@" || domainReg.test(value)) {
     callback();

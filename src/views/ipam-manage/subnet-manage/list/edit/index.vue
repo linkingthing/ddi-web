@@ -51,7 +51,7 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
-import { getAddressType, resourceDomainValidateFunc } from "@/util/common";
+import { getAddressType, domainIsValid } from "@/util/common";
 
 export default {
   components: {
@@ -192,14 +192,14 @@ export default {
 
     validate() {
       let { note, zoneName, dnsEnable } = this;
-
+      
       note = note.trim();
       zoneName = zoneName.trim();
 
       if (!zoneName) {
         return Promise.reject({ message: "请输入区域！" });
       }
-      else if (!resourceDomainValidateFunc(null, zoneName)) {
+      else if (!domainIsValid(null, zoneName)) {
         return Promise.reject({ message: "区域长度不得大于255个字符！" });
       }
 

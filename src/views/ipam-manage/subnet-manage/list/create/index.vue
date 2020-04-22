@@ -35,7 +35,7 @@ import {
   ipv6IsValid, 
   getAddressType, 
   gatewayIsValid, 
-  resourceDomainValidateFunc 
+  domainIsValid 
 } from "@/util/common";
 
 export default {
@@ -122,7 +122,7 @@ export default {
       if (!zoneName) {
         return Promise.reject({ message: "请输入区域！" });
       }
-      else if (!resourceDomainValidateFunc(zoneName)) {
+      else if (!domainIsValid(zoneName)) {
         return Promise.reject({ message: "请输入正确的区域！" });        
       }
       
