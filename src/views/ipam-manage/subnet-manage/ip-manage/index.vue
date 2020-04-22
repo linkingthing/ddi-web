@@ -38,7 +38,10 @@
     </div>
 
     <div class="ip-manage-top">
-      <Tabs v-if="!isIPv6" v-model="tab">
+      <Tabs
+        v-if="!isIPv6"
+        v-model="tab"
+        @on-click="handleTabClick">
         <TabPane label="图形" name="chart"/>
         <TabPane label="列表" name="table"/>
       </Tabs>
@@ -76,7 +79,7 @@
       </div>
     </div>
 
-    <div v-show="tab === 'table'">
+    <div v-show="currentTab === 'table'">
       <Table         
         :data="tableData"
         :columns="columns" 
@@ -87,7 +90,7 @@
 
     <TableChart 
       v-if="!isIPv6"
-      v-show="tab === 'chart'"
+      v-show="currentTab === 'chart'"
       :data="tableData"
       @on-selection-change="handleTableSelect"
     />
@@ -154,6 +157,7 @@ export default {
       tableData: [],
       columns: columns(this),
       tab: "chart",
+      currentTab: "chart",
       selectedData: [],
       showSearch: false,
       showFixOrKeep: false,
@@ -180,6 +184,7 @@ export default {
 
     if (this.isIPv6) {
       this.tab = "table";
+      this.currentTab = "table";
     }
   },
 
@@ -192,6 +197,13 @@ export default {
   methods: {
     getIpLastNum(ip) {
       return parseInt(ip.substr(ip.lastIndexOf(".") + 1));
+    },
+
+    handleTabClick(tab) {      
+      if (tab === this.currentTab) return;
+
+      this.currentTab = tab;      
+      this.selectedData = [];
     },
 
     async handleQuery() {
