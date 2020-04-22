@@ -118,6 +118,7 @@ export default {
         if (+status === 200) {
           this.tableData = data.data.map(item => {
             item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
+            item.subnet = item.subnet || "";
 
             return item;
           });

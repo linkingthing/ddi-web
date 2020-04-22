@@ -109,13 +109,14 @@ export default {
   methods: {
     handleDNSChange(val) {
       this.showViewList = val;
+      this.viewId = "";
     },
 
     async getViewList() {
       try {
         let res = await this.$getViewList();
 
-        this.viewIdList = JSON.parse(JSON.stringify(res));
+        this.viewList = JSON.parse(JSON.stringify(res));
         
       } catch (error) {
         console.error(error);
