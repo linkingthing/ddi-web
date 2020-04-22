@@ -2,6 +2,7 @@
   <Spin
     fix
     size="large"
+    class="loading-custom"
   >
     <Icon
       type="ios-loading"
@@ -23,3 +24,7 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+@import "./index.less";
+</style>

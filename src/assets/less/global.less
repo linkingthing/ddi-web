@@ -275,12 +275,14 @@ a:active {
     display: none;
 }
 
-.ivu-spin-fix{
-    z-index: 999999999;
+.spin-icon-load{
+    animation: loading-spin 1s linear infinite;
 }
 
-.spin-icon-load{
-    animation: ani-demo-spin 1s linear infinite;
+@keyframes loading-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
 }
 
 .ivu-btn-primary[disabled]{
