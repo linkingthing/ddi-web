@@ -36,7 +36,7 @@
                   closable
                   :color="item.check ? 'error' : 'primary'"
                   @on-close="handleDeleteTag(item.name)"
-                >{{item.name}}</Tag>
+                ><span class="taglen" :title="item.name">{{item.name}}</span></Tag>
               </div>
             </form-item>
             <form-item label="acl">
@@ -221,5 +221,13 @@ export default {
   border: 0px solid transparent;
   margin-left: 100px;
   color: #4796ff;
+}
+
+.taglen {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 12em;
+  vertical-align: bottom;
 }
 </style>
