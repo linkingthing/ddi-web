@@ -36,7 +36,10 @@
                   closable
                   :color="item.check ? 'error' : 'primary'"
                   @on-close="handleDeleteTag(item.name)"
-                ><span class="taglen" :title="item.name">{{item.name}}</span></Tag>
+                ><span
+                    class="taglen"
+                    :title="item.name"
+                  >{{item.name}}</span></Tag>
               </div>
             </form-item>
             <form-item label="acl">
@@ -104,7 +107,11 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填访问控制名称" },
-          commonNameValidate
+          commonNameValidate,
+          {
+            pattern: /^.*[^\d].*$/,
+            message: "访问控制列表名称不能为纯数字"
+          }
         ]
       }
     };
