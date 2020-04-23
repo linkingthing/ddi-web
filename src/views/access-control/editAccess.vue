@@ -111,7 +111,7 @@ export default {
       services.getAccessById(id).then(res => {
         const { list, name } = res.data;
         this.params.name = name;
-        this.params.list = list;
+        this.params.list = list || [];
       });
     },
     handleSelectAcl(id) {

@@ -11,7 +11,7 @@
       <li>
         服务器状态:
         <Badge :status="host.state ? 'success' : 'error'" />
-        {{host.state ? "(在线)": "(利线)" }}
+        {{host.state ? "(在线)": "(离线)" }}
       </li>
     </ul>
   </div>
