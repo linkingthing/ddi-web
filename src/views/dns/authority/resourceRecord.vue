@@ -1,12 +1,26 @@
 <template>
   <div class>
-    <table-page title="资源记录" :data="resList" :columns="columns" :paginationEnable="false">
+    <table-page
+      title="资源记录"
+      :data="resList"
+      :columns="columns"
+      :pagination-enable="false"
+    >
       <template slot="top-right">
-        <i-button type="success" @click="handleOpenCreate(viewId,zoneId)">新建</i-button>
+        <i-button
+          type="success"
+          @click="handleOpenCreate(viewId,zoneId)"
+        >新建</i-button>
       </template>
     </table-page>
-    <createResource ref="configRef" @onCreateSuccess="getResources"></createResource>
-    <editResource ref="analysisRef" @onEditSuccess="getResources"></editResource>
+    <createResource
+      ref="configRef"
+      @onCreateSuccess="getResources"
+    />
+    <editResource
+      ref="analysisRef"
+      @onEditSuccess="getResources"
+    />
   </div>
 </template>
 
@@ -17,6 +31,10 @@ import editResource from "./editResource";
 
 export default {
   name: "resourceRecord",
+  components: {
+    createResource,
+    editResource
+  },
   data() {
     return {
       columns: [
@@ -113,10 +131,6 @@ export default {
         }
       });
     }
-  },
-  components: {
-    createResource,
-    editResource
   }
 };
 </script>
