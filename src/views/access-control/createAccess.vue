@@ -123,7 +123,7 @@ export default {
       this.params.list = [];
     },
     handleSelectAcl(id) {
-      this.acl = this.accessList.find(item => item.id === id)
+      this.acl = this.accessList.find(item => item.id === id);
     },
     handleAddAcl() {
 
@@ -132,7 +132,7 @@ export default {
       }
       const acl = this.aclcheck ? `!${this.acl}` : this.acl;
 
-      if (!this.params.list.map(item => item.name).includes(acl)) {
+      if (!this.params.list.map(item => item.name).includes(acl.name)) {
         this.params.list.push({
           check: this.aclcheck,
           name: acl.name,

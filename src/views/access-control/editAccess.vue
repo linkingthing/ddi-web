@@ -113,9 +113,6 @@ export default {
       }
     };
   },
-  mounted() {
-    console.log(this.accessList, this.id)
-  },
   methods: {
     getInitAccessById(id) {
       services.getAccessById(id).then(res => {
@@ -138,7 +135,7 @@ export default {
         return;
       }
       const acl = this.aclcheck ? `!${this.acl}` : this.acl;
-      if (!this.params.list.map(item => item.name).includes(acl)) {
+      if (!this.params.list.map(item => item.name).includes(acl.name)) {
         this.params.list.push({
           check: this.aclcheck,
           name: acl.name,
