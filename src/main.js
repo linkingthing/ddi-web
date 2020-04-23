@@ -1,94 +1,136 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue";
+import App from "./App.vue";
 
-// iview UI 框架
-import iView from 'iview';
+import ViewUI from "view-design";
+import "@/assets/less/theme.less";
+Vue.use(ViewUI);
 
-import 'iview/dist/styles/iview.css';
-Vue.use(iView)
+import tags from "@/components/tags";
+Vue.component("Tags", tags);
 
-import tags from '@/components/tags';
-Vue.component('Tags', tags)
-
-// 导入vue-echarts插件
-import ECharts from 'vue-echarts/components/ECharts'
-// 按需导入echarts的图形类型
-import 'echarts/lib/chart/radar'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/chart/pie'
-// 导入工具部分
-import 'echarts/lib/component/tooltip'
-import 'echarts/lib/component/title';
-// register component to use
-import 'echarts/lib/component/legendScroll';
-// register component to use
-import 'echarts/lib/component/dataZoom';
-import 'echarts/lib/component/markPoint';
-import 'echarts/lib/component/markLine';
-import 'echarts/lib/component/markArea';
-import 'echarts/lib/component/dataZoom';
-// 全局注册chart组件
-Vue.component('chart', ECharts)
-
-
-import axios from 'axios'
-Vue.prototype.$axios = axios
-
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 // 滚动条以及配置
-import vuescroll from 'vuescroll';
+import vuescroll from "vuescroll";
 Vue.use(vuescroll); // install the vuescroll first
 Vue.prototype.$vuescrollConfig = {
   bar: {
-    size: '8px',
-    background: '#4796FF',
+    size: "8px",
+    background: "#4796FF",
     keepShow: true
   },
   rail: {
-    background: '#EEEEEE',
+    background: "#EEEEEE",
     opacity: 1,
-    size: '8px',
-    gutterOfEnds: '0px',
-    gutterOfSide: '0px'
+    size: "8px",
+    gutterOfEnds: "0px",
+    gutterOfSide: "0px"
   }
 };
 
-import './components/Loading/index.css';
-import Loading from './components/Loading/index';
+import "./components/Loading/index.css";
+import Loading from "./components/Loading/index";
 Vue.use(Loading);
 
-import Bread from '@/components/Bread';
-Vue.component(
-  'bread', Bread
-)
+import BaseBtnEdit from "@/components/BaseBtnEdit";
+Vue.component("btn-edit", BaseBtnEdit);
 
-import BaseBtnEdit from '@/components/BaseBtnEdit';
-Vue.component(
-  'btn-edit', BaseBtnEdit
-)
+import BaseBtnDel from "@/components/BaseBtnDel";
+Vue.component("btn-del", BaseBtnDel);
 
-import BaseBtnDel from '@/components/BaseBtnDel';
-Vue.component(
-  'btn-del', BaseBtnDel
-)
+import TablePagination from "@/components/TablePagination";
+Vue.component("table-page", TablePagination);
 
-import store from './store'
-import router from './router'
+import CommonModal from "@/components/CommonModal";
+Vue.component("common-modal", CommonModal);
 
-import mixin from './mixin'
+import IviewLoading from "@/components/IviewLoading";
+Vue.component("IviewLoading", IviewLoading);
+
+
+import store from "./store";
+import router from "./router";
+
+import mixin from "./mixin";
 Vue.mixin(mixin);
+
+function showMessage(type, msg, scope) {
+  let options = {
+    content: msg,
+    duration: 3
+  };
+
+  if (typeof msg === "object") {
+    options = msg; 
+  }
+
+  scope.$Message[type](options);
+}
+
+Vue.prototype.$$success = function (msg) {
+  showMessage("success", msg, this);
+};
+
+Vue.prototype.$$info = function (msg) {
+  showMessage("info", msg, this);
+};
+
+Vue.prototype.$$warning = function (msg) {
+  showMessage("warning", msg, this);
+};
+
+Vue.prototype.$$error = function (msg) {
+  showMessage("error", msg, this);
+};
+
+Vue.prototype.$$confirm = function ({ title = "消息", content }) {
+  return new Promise((resolve, reject) => {
+    this.$Modal.confirm({
+      title,
+      content,
+      onOk: () => {
+        resolve();
+      },
+      onCancel: () => {
+        reject();
+      }
+    });
+  });
+};
+
+
+const getStateByKey = async function (name, params = {}) {
+  try {   
+    let _res = store.getters[name];
+
+    // forceRequire：强制请求，设置此参数，将强制从服务器获取数据
+    if (!_res || (_res && !_res.length) || params.forceRequire) {
+      _res = await store.dispatch(name, params);
+    }
+
+    return _res;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 获取视图列表
+ */
+Vue.prototype.$getViewList = async params => {
+  return await getStateByKey("getViewList", params);
+};
 
 // Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el: "#app",
   store,
   router,
-  template: '<App/>',
-  components: { App }
-}).$mount('#app')
+  components: { App },
+  template: "<App/>"
+}).$mount("#app");
+

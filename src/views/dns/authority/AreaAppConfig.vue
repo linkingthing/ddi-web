@@ -1,46 +1,38 @@
 <template>
-  <modal
-    v-model="areaModal"
-    class-name="pop vertical-center-modal"
-    :mask-closable="false"
-    width="500"
-    :closable="false"
+  <common-modal
+    :visible.sync="areaModal"
+    title="新建区域"
+    @confirm="handleSubmit"
   >
-    <div slot="header">新建区域</div>
-    <div>
-      <vue-scroll ref="vs">
-        <i-form
-          :model="dataConfig"
-          label-position="right"
-          :label-width="80"
-          :rules="ruleValidate"
-          ref="formValidate"
-        >
-          <div class="pop-content">
-            <div class="pop-box">
-              <div class="pop-body">
-                <Row>
-                  <i-col span="18">
-                    <form-item label="名称" prop="name">
-                      <i-input v-model="dataConfig.name" placeholder="请填区域名称"></i-input>
-                    </form-item>
-                  </i-col>
-                </Row>
-              </div>
-            </div>
+    <i-form
+      :model="dataConfig"
+      label-position="right"
+      :label-width="80"
+      :rules="ruleValidate"
+      ref="formValidate"
+    >
+      <div class="pop-content">
+        <div class="pop-box">
+          <div class="pop-body">
+            <form-item
+              label="名称"
+              prop="name"
+            >
+              <i-input
+                v-model="dataConfig.name"
+                placeholder="请填区域名称"
+              />
+            </form-item>
           </div>
-        </i-form>
-      </vue-scroll>
-    </div>
-    <div slot="footer">
-      <i-button class="me-button k-btn" @click="areaModal = false">取消</i-button>
-      <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
-    </div>
-  </modal>
+        </div>
+      </div>
+    </i-form>
+  </common-modal>
 </template>
 
 <script>
 import services from "@/services";
+import { domainValidate } from "@/util/common";
 
 export default {
   name: "AreaAppConfig",
@@ -52,12 +44,15 @@ export default {
       // 表单数据
       dataConfig: {
         name: "",
-        isused: 1
+        zonetype: "master"
       },
       loading: false,
       // 表单验证规则
       ruleValidate: {
-        name: [{ required: true, message: "请填区域名称" }],
+        name: [
+          { required: true, message: "请填区域名称" },
+          domainValidate
+        ]
       }
     };
   },
@@ -66,7 +61,7 @@ export default {
       this.id = id2;
       this.areaModal = true;
     },
-    //新建
+    // 新建
     update() {
       services
         .createZone(this.id, this.dataConfig)

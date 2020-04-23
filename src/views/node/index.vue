@@ -1,66 +1,31 @@
 <template>
   <div class="nodeManage">
-    <Tabs @on-click="handleTab" value>
+    <Tabs @on-click="handleTab">
       <TabPane label="拓扑图" name="topology">
-        <div class="parent tab-item">
-          <div class="host" @click="handleGoDeviceInfo">
-            <img src="../../assets/images/host.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
+        <div style="zoom: 0.6">
+          <div class="parent tab-item">
+            <div
+              class="host"
+              @click="handleGoDeviceInfo(item)"
+              v-for="item in serverList.filter(item => item.role === 'controller') "
+              :key="item.ip"
+            >
+              <host-node :host="item" />
+            </div>
           </div>
-        </div>
-        <div class="children">
-          <div class="host-item">
-            <img src="../../assets/images/dns.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
-          </div>
-          <div class="host-item">
-            <img src="../../assets/images/dhcp.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
-          </div>
-          <div class="host-item">
-            <img src="../../assets/images/dhcp.png" alt />
-            <ul class="host-info">
-              <li>图层服务器类型: Controller</li>
-              <li>服务器名称: Server1</li>
-              <li>服务器IP:10.1.1.1</li>
-              <li>服务器状态: (在线)</li>
-            </ul>
+          <div class="children">
+            <host-node
+              :host="item"
+              @click="handleGoDeviceInfo(item)"
+              :key="item.ip"
+              v-for="item in serverList.filter(item => item.role !== 'controller') "
+            />
           </div>
         </div>
       </TabPane>
       <TabPane label="服务器列表" name="serverList">
-        <div class="table-box tab-item">
-          <table class="table-default">
-            <thead>
-              <th>服务器类型</th>
-              <th>服务器名称</th>
-              <th>服务器IP</th>
-              <th>服务器状态</th>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="tab-item">
+          <Table :data="serverList" :columns="serviceColumns" />
         </div>
       </TabPane>
     </Tabs>
@@ -68,26 +33,90 @@
 </template>
 
 <script>
+import services from "@/services";
+import HostNode from "./HostNode";
 export default {
-  components: {},
+  components: {
+    "host-node": HostNode
+  },
   props: {},
   data() {
-    return {};
+    return {
+      serviceColumns: [
+        {
+          title: "服务器类型",
+          key: "role",
+          align: "center"
+        },
+        {
+          title: "服务器名称",
+          key: "hostname",
+          align: "center"
+        },
+        {
+          title: "服务器IP",
+          key: "ip",
+          align: "center"
+        },
+        {
+          title: "服务器状态",
+          key: "state",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", [
+              h("Badge", {
+                props: {
+                  status: row.state ? "success" : "error"
+                }
+              }),
+              row.state ? "(在线)" : "(利线)"
+            ]);
+          }
+        }
+      ],
+      serverList: []
+    };
   },
-  watch: {},
-  computed: {},
+
+  mounted() {
+    this.getList();
+  },
+
   methods: {
+    getList() {
+      services
+        .getServerList()
+        .then(res => {
+          this.serverList = res.data.data;
+        })
+        .catch(err => err);
+    },
     handleTab(tab) {
       console.log(tab);
     },
-    handleGoDeviceInfo() {
-      this.$router.push({
-        name: "DeviceInformation"
-      });
+    handleGoDeviceInfo({ ip, role }) {
+      if (role === "controller") {
+        this.$router.push({
+          name: "ControllerDashboard",
+          query: { ip }
+        });
+      }
+      console.log(role);
+      if (role === "dns") {
+        this.$router.push({
+          name: "DNSDashboard",
+          query: { ip }
+        });
+      }
+
+      if (role === "dhcp") {
+        this.$router.push({
+          name: "DHCPDashboard",
+          query: { ip }
+        });
+      }
     }
-  },
-  created() {},
-  mounted() {}
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -97,14 +126,13 @@ export default {
 .parent {
   display: flex;
   justify-content: center;
-  .host-info {
-  }
   .host {
     position: relative;
     &::before {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       bottom: -60px;
       height: 80px;
       width: 2px;
@@ -112,20 +140,12 @@ export default {
     }
   }
 }
-.host-info {
-  display: inline-block;
-  color: #252422;
-  margin-left: 12px;
 
-  li {
-    margin-bottom: 20px;
-  }
-}
 .children {
   text-align: center;
   margin-top: 140px;
 
-  .host-item {
+  .host {
     position: relative;
     display: inline-block;
     text-align: left;
@@ -136,6 +156,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       top: -80px;
       height: 80px;
       width: 0;
@@ -145,6 +166,7 @@ export default {
       content: "";
       position: absolute;
       left: 50%;
+      margin-left: -110px;
       top: -80px;
       width: 340px;
       border-top: 2px dotted #006fe4;

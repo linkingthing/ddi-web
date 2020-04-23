@@ -1,33 +1,10 @@
 <template>
-  <div class="index-main columns t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div>
-      <div class="table-box">
-        <div class="table-s">
-          <table class="table-default">
-            <thead>
-              <tr>
-                <th width="170">视图</th>
-                <th width="170">域名数量</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr v-for="item in this.list" :key="item.id">
-                <td>
-                  <router-link
-                    :to="{
-                      name:'zoneQueryForward',
-                      query:{id:item.id,name:item.name}
-                    }"
-                  >{{item.name}}</router-link>
-                </td>
-                <td>{{item.zonesize}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div class="zoneForward">
+    <table-page
+      title="转发视图"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false" />
   </div>
 </template>
 
@@ -37,12 +14,38 @@ export default {
   name: "applicationFirewall",
   data() {
     return {
-      list: [],
-      IP: [],
-      id: "",
-      name: "",
-      remove: "",
-      modal1: false
+      columns: [
+        {
+          title: "视图",
+          key: "name",
+          align: "center",
+          render: (h, { row }) => {
+            return h(
+              "router-link",
+              {
+                props: {
+                  to: {
+                    name: "zone-query-forward",
+                    query: { id: row.id, name: row.name }
+                  }
+                }
+              },
+              row.name
+            );
+          }
+        },
+        {
+          title: "域名数量",
+          key: "zonesize",
+          align: "center"
+        },
+        {
+          title: "创建时间",
+          key: "creationTimestamp",
+          align: "center"
+        }
+      ],
+      list: []
     };
   },
   mounted() {
@@ -63,8 +66,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.table-box table a {
-  text-decoration: none;
-}
-</style>

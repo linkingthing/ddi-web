@@ -1,47 +1,26 @@
 <template>
-  <div class="index-main appUpgrade t-box" :style="{minHeight:docHeight-200+'px'}">
-    <div class="header-title">
-      <span class="tit">资源记录</span>
-      <div class="button-box fr">
+  <div class>
+    <table-page
+      title="资源记录"
+      :data="resList"
+      :columns="columns"
+      :pagination-enable="false"
+    >
+      <template slot="top-right">
         <i-button
-          type="primary"
-          class="me-button add-btn"
-          icon="md-add"
+          type="success"
           @click="handleOpenCreate(viewId,zoneId)"
         >新建</i-button>
-      </div>
-    </div>
-    <div class="table-box">
-      <div class="table-s">
-        <vue-scroll :style="{minHeight:tableHeight+'px'}">
-          <table class="table-default" ref="ele">
-            <thead>
-              <tr>
-                <th width="140">名称</th>
-                <th width="140">类型</th>
-                <th width="160">记录值</th>
-                <th width="95">TTL</th>
-                <th width="240">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in this.resList" :key="item.id">
-                <td>{{item.name}}</td>
-                <td>{{item.type}}</td>
-                <td>{{item.value}}</td>
-                <td>{{item.ttl+'s'}}</td>
-                <td>
-                  <i-button class="k-btn" @click="goAnalysis(viewId, zoneId, item.id)">修改</i-button>
-                  <i-button class="k-btn" @click="delect(item.id)">删除</i-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </vue-scroll>
-      </div>
-    </div>
-    <createResource ref="configRef" @onCreateSuccess="getResources"></createResource>
-    <editResource ref="analysisRef" @onEditSuccess="getResources"></editResource>
+      </template>
+    </table-page>
+    <createResource
+      ref="configRef"
+      @onCreateSuccess="getResources"
+    />
+    <editResource
+      ref="analysisRef"
+      @onEditSuccess="getResources"
+    />
   </div>
 </template>
 
@@ -52,8 +31,59 @@ import editResource from "./editResource";
 
 export default {
   name: "resourceRecord",
+  components: {
+    createResource,
+    editResource
+  },
   data() {
     return {
+      columns: [
+        {
+          title: "名称",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "类型",
+          key: "type",
+          align: "center"
+        },
+        {
+          title: "记录值",
+          key: "value",
+          align: "center"
+        },
+        {
+          title: "TTL",
+          key: "ttl",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", [
+              h("btn-edit", {
+                class: "k-btn",
+                on: {
+                  click: () => {
+                    this.goAnalysis(this.viewId, this.zoneId, row.id);
+                  }
+                }
+              }),
+              h("btn-del", {
+                class: "k-btn",
+                on: {
+                  click: () => {
+                    this.delect(row.id);
+                  }
+                }
+              })
+            ]);
+          }
+        }
+      ],
       viewId: "",
       zoneId: " ",
       resList: []
@@ -91,20 +121,16 @@ export default {
         onOk: () => {
           services
             .deleteResourceById(this.viewId, this.zoneId, data)
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getResources();
             })
-            .catch(err => {
+            .catch(() => {
               this.$Message.success("删除失败");
             });
         }
       });
     }
-  },
-  components: {
-    createResource,
-    editResource
   }
 };
 </script>
