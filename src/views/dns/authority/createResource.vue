@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="configModal" title="新建资源记录" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="configModal"
+    title="新建资源记录"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="upgradeConfig"
       label-position="right"
@@ -9,13 +13,32 @@
     >
       <div class="pop-content">
         <div class="pop-box">
-          <div class="pop-body" style="padding-bottom:0">
-            <form-item label="名称" :label-width="110" prop="name">
-              <i-input v-model="upgradeConfig.name" placeholder="请填写资源名称"></i-input>
+          <div
+            class="pop-body"
+            style="padding-bottom:0"
+          >
+            <form-item
+              label="名称"
+              :label-width="110"
+              prop="name"
+            >
+              <i-input
+                v-model="upgradeConfig.name"
+                placeholder="请填写资源名称"
+              />
             </form-item>
             <TypeValue :params="upgradeConfig" />
-            <form-item label="TTL" prop="ttl" :label-width="110">
-              <i-input type="text" v-model="upgradeConfig.ttl" placeholder="请输入延缓时间" number></i-input>
+            <form-item
+              label="TTL"
+              prop="ttl"
+              :label-width="110"
+            >
+              <i-input
+                type="text"
+                v-model="upgradeConfig.ttl"
+                placeholder="请输入延缓时间"
+                number
+              />
             </form-item>
           </div>
         </div>
@@ -42,7 +65,7 @@ export default {
       upgradeConfig: {
         title: "",
         name: "",
-        type: "",
+        type: "A",
         value: "",
         ttl: ""
       },
@@ -80,6 +103,7 @@ export default {
         .then(() => {
           this.$Message.success("新建成功!");
           this.configModal = false;
+          this.$refs.formValidate.resetFields();
           this.$emit("onCreateSuccess");
         })
         .catch(() => {

@@ -108,11 +108,6 @@ export default {
         .getAccessList()
         .then(function (res) {
           _self.list = res.data.data;
-          for (var key in _self.list) {
-            _self.id = _self.list[key].id;
-            _self.name = _self.list[key].name;
-            _self.IP = _self.list[key].IP;
-          }
         })
         .catch(function (err) {
           console.log(err);
@@ -143,7 +138,7 @@ export default {
               this.getManger();
             })
             .catch(err => {
-              this.$Message.success("删除失败");
+              this.$Message.error("删除失败");
             });
         }
       });

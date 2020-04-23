@@ -36,7 +36,10 @@
                   closable
                   :color="item.check ? 'error' : 'primary'"
                   @on-close="handleDeleteTag(item.name)"
-                >{{item.name}}</Tag>
+                ><span
+                    class="taglen"
+                    :title="item.name"
+                  >{{item.name}}</span></Tag>
               </div>
             </form-item>
             <form-item label="acl">
@@ -47,7 +50,7 @@
                 @on-change="handleSelectAcl"
               >
                 <Option
-                  v-for="item in accessList"
+                  v-for="item in accessListNoSelf"
                   :key="item.id"
                   :value="item.id"
                 >{{item.name}}</Option>
@@ -86,6 +89,7 @@ export default {
   data() {
     return {
       value: "",
+      accessListNoSelf: [],
       IP: [],
       accessId: "",
       eviceModal: false,
@@ -100,34 +104,38 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: "请填访问控制名称" },
-          commonNameValidate
+          commonNameValidate,
+          {
+            pattern: /^.*[^\d].*$/,
+            message: "访问控制列表名称不能为纯数字"
+          }
         ]
       }
     };
   },
-  mounted() { },
   methods: {
     getInitAccessById(id) {
       services.getAccessById(id).then(res => {
         const { list, name } = res.data;
         this.params.name = name;
-        this.params.list = list;
+        this.params.list = list || [];
       });
     },
     handleSelectAcl(id) {
-      this.acl = this.accessList.find(item => item.id === id)
+      this.acl = this.accessList.find(item => item.id === id);
     },
     openConfig(data) {
       this.eviceModal = true;
       this.accessId = data.data;
       this.getInitAccessById(data.data);
+      this.accessListNoSelf = this.accessList.filter(item => item.id !== data.data);
     },
     handleAddAcl() {
       if (/^\s+$/.test(this.acl) || this.acl === "") {
         return;
       }
       const acl = this.aclcheck ? `!${this.acl}` : this.acl;
-      if (!this.params.list.map(item => item.name).includes(acl)) {
+      if (!this.params.list.map(item => item.name).includes(acl.name)) {
         this.params.list.push({
           check: this.aclcheck,
           name: acl.name,
@@ -217,5 +225,13 @@ export default {
   border: 0px solid transparent;
   margin-left: 100px;
   color: #4796ff;
+}
+
+.taglen {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 12em;
+  vertical-align: bottom;
 }
 </style>
