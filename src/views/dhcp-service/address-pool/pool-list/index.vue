@@ -5,6 +5,7 @@
     <TablePagination 
       title="地址池管理"
       :data="tableData"
+      :pagination-enable="false"
       :columns="columns"> 
       <template slot="top-right">
         <Button 
