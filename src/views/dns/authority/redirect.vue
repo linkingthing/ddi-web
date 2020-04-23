@@ -4,7 +4,7 @@
       title="重定向"
       :data="list"
       :columns="columns"
-      :paginationEnable="false"
+      :pagination-enable="false"
     >
       <template slot="top-right">
         <i-button
@@ -17,11 +17,11 @@
     <createRedirect
       ref="ipRef"
       @onCreateSuccess="getView"
-    ></createRedirect>
+    />
     <editRedirect
       ref="linkRef"
       @onSuccess="getView"
-    ></editRedirect>
+    />
   </div>
 </template>
 
@@ -32,6 +32,10 @@ import services from "@/services";
 
 export default {
   name: "redirect",
+  components: {
+    createRedirect,
+    editRedirect
+  },
   data() {
     return {
       columns: [
@@ -104,10 +108,6 @@ export default {
       acls: []
     };
   },
-  components: {
-    createRedirect,
-    editRedirect
-  },
   created() {
     this.id = this.$route.query.id;
   },
@@ -119,7 +119,7 @@ export default {
       this.$refs.ipRef.openConfig(data);
     },
     handleOpenEdit(a, b, item) {
-      this.$refs.linkRef.openConfig(a, b, item);
+      this.$refs.linkRef.openConfig(a, b, {...item});
     },
     getView() {
       let _self = this;
