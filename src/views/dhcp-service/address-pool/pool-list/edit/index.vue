@@ -64,7 +64,12 @@
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
-import { ipv6IsValid, isIPv4Reg, getAddressType } from "@/util/common";
+import { 
+  ipv6IsValid, 
+  isIPv4Reg, 
+  getAddressType, 
+  isPosNumber 
+} from "@/util/common";
 
 const types = [
   {
@@ -267,8 +272,20 @@ export default {
         return Promise.reject({ message: "请填写默认租赁时间！" });
       }
 
+      if (validLifetime.length > 12 || !isPosNumber(validLifetime)) {
+        return Promise.reject({ message: "请填写正确的默认租赁时间！" });
+      }
+
       if (!maxValidLifetime) {
         return Promise.reject({ message: "请填写最大租赁时间！" });
+      }
+
+      if (maxValidLifetime.length > 12 || !isPosNumber(maxValidLifetime)) {
+        return Promise.reject({ message: "请填写正确的最大租赁时间！" });
+      }
+      
+      if (validLifetime > maxValidLifetime) {
+        return Promise.reject({ message: "最大租赁时间不能小于默认租赁时间！" });
       }
 
       if (beginType !== endType) {
@@ -294,14 +311,6 @@ export default {
           return Promise.reject({ message: "请填写正确的结束地址！" });
         }
       }
-
-      if (validLifetime.length > 12) {
-        return Promise.reject({ message: "请填写正确的默认租赁时间！" });
-      }
-
-      if (maxValidLifetime.length > 12) {
-        return Promise.reject({ message: "请填写正确的最大租赁时间！" });
-      }      
 
       if (this.type === "ipv4") {
         if (gateway && !isIPv4Reg.test(gateway)) {

@@ -166,6 +166,8 @@ export const isNumber = val => {
  * 是否是正整数
  */
 export const isPosNumber = val => {
+  val = isNaN(val) ? val : val.toString();
+
   return /^[1-9]([0-9]+)?$/g.test(val);
 };
 
