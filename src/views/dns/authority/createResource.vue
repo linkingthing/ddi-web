@@ -65,7 +65,7 @@ export default {
       upgradeConfig: {
         title: "",
         name: "",
-        type: "",
+        type: "A",
         value: "",
         ttl: ""
       },

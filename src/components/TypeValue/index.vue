@@ -23,16 +23,16 @@
       :label-width="110"
       prop="value"
       :rules="[requiredValidate, 
-            params.type === 'A' && isIPv4Validate,
-            params.type === 'AAAA' && IPv6SimpleValidateFunc,
-            params.type === 'CNAME' && domainValidate,
-            params.type === 'URL' && urlValidate
+               params.type === 'A' && isIPv4Validate,
+               params.type === 'AAAA' && IPv6SimpleValidateFunc,
+               params.type === 'CNAME' && domainValidate,
+               params.type === 'URL' && urlValidate
       ]"
     >
       <i-input
         v-model="params.value"
         placeholder="请填写记录值"
-      ></i-input>
+      />
     </form-item>
   </div>
 </template>
@@ -50,7 +50,9 @@ export default {
   props: {
     params: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        type: "A"
+      })
     }
   },
   data() {
