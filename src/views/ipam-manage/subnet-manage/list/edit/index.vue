@@ -197,10 +197,10 @@ export default {
       zoneName = zoneName.trim();
 
       if (!zoneName) {
-        return Promise.reject({ message: "请输入区域！" });
+        return Promise.reject({ message: "请输入区域名称！" });
       }
-      else if (!domainIsValid(null, zoneName)) {
-        return Promise.reject({ message: "区域长度不得大于255个字符！" });
+      else if (!domainIsValid(zoneName)) {
+        return Promise.reject({ message: "请输入正确的区域名称！" });
       }
 
       if (dnsEnable && !this.viewId) {

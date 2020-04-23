@@ -112,6 +112,8 @@ export default {
     async handleQuery() {
       this.loading = true;
 
+      this.selectedData = [];
+
       try {
         let { status, data, message } = await services.getChildNetList(this.keywords);
 

@@ -120,10 +120,10 @@ export default {
 
       // 验证区域
       if (!zoneName) {
-        return Promise.reject({ message: "请输入区域！" });
+        return Promise.reject({ message: "请输入区域名称！" });
       }
       else if (!domainIsValid(zoneName)) {
-        return Promise.reject({ message: "请输入正确的区域！" });        
+        return Promise.reject({ message: "请输入正确的区域名称！" });        
       }
       
       let tmp = subnet.trim().split("/");
