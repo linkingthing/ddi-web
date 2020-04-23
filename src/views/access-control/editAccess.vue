@@ -47,7 +47,7 @@
                 @on-change="handleSelectAcl"
               >
                 <Option
-                  v-for="item in accessList"
+                  v-for="item in accessListNoSelf"
                   :key="item.id"
                   :value="item.id"
                 >{{item.name}}</Option>
@@ -86,6 +86,7 @@ export default {
   data() {
     return {
       value: "",
+      accessListNoSelf: [],
       IP: [],
       accessId: "",
       eviceModal: false,
@@ -105,7 +106,9 @@ export default {
       }
     };
   },
-  mounted() { },
+  mounted() {
+    console.log(this.accessList, this.id)
+  },
   methods: {
     getInitAccessById(id) {
       services.getAccessById(id).then(res => {
@@ -115,12 +118,13 @@ export default {
       });
     },
     handleSelectAcl(id) {
-      this.acl = this.accessList.find(item => item.id === id)
+      this.acl = this.accessList.find(item => item.id === id);
     },
     openConfig(data) {
       this.eviceModal = true;
       this.accessId = data.data;
       this.getInitAccessById(data.data);
+      this.accessListNoSelf = this.accessList.filter(item => item.id !== data.data);
     },
     handleAddAcl() {
       if (/^\s+$/.test(this.acl) || this.acl === "") {
