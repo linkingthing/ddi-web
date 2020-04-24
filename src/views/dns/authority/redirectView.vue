@@ -32,13 +32,13 @@ export default {
           }
         },
         {
-          title: "重定向配置数量",
-          key: "rpzsize",
+          title: "本地区配置数量",
+          key: "localzonesize",
           align: "center"
         },
         {
           title: "NXDOMAIN重定向配置数量",
-          key: "redirectsize",
+          key: "nxdomainsize",
           align: "center"
         }
       ],
