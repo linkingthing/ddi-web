@@ -16,7 +16,7 @@ export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za
 
 export const domainReg = /^(?=^.{1,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*$/;
 
-export const macReg = /(([A-Fa-f0-9]{2}-){5})|(([A-Fa-f0-9]{2}:){5})[A-Fa-f0-9]{2}/;
+export const macReg = /^((([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2})|(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}))$/;
 
 export const urlValidate = {
   pattern: urlReg,

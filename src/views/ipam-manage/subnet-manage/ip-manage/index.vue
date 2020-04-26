@@ -358,6 +358,11 @@ export default {
 
         return;
       }
+      else if (!this.selectedData[0].macaddress.trim()) {
+        this.$$warning("该IP的MAC地址为空，不能进行转保留操作！");
+
+        return;
+      }
 
       this.typeofFixOrKeep = type;
       this.showFixOrKeep = true;
