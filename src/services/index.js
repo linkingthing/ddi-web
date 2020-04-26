@@ -386,9 +386,11 @@ export default {
 
   /**
    * 转固定或保留
+   * @param {String|Number} subnetId 子网ID
+   * @param {String|Number} id IP的ID
    */
-  changeToFixOrKeep(id, parmas) {
-    return axios.post(`${baseUrl}/dividedaddresses/${id}?action=change`, parmas);
+  changeToFixOrKeep(subnetId, id, parmas) {
+    return axios.post(`${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}?action=change`, parmas);
   },
 
   /**
