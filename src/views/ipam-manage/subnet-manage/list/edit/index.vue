@@ -179,9 +179,12 @@ export default {
 
             this.$$error(err.message || "保存失败！");
           }
+          else if (err.showMessage === undefined) {
+            this.$$error(err.message || "保存失败");
+          }
         }
         else {
-          this.$$error("保存失败");
+          this.$$error(err.message || "保存失败");
         }
 
         this.loading = false;
