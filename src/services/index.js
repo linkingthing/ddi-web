@@ -347,25 +347,27 @@ export default {
    * 获取规划IP地址列表
    */
   getPlanIpList(id, params) {
-    return axios.get(`${baseUrl}/dividedaddresses/?subnetid=${id}&${params}`);
+    return axios.get(`${baseUrl}/restsubnetv4s/${id}/ipaddresses/?${params}`);
   },
 
   /**
    * IP地址扩展属性设置
+   * @param {String|Number} subnetId 子网ID
    * @param {String|Number} id IP的ID
    * @param {Object} params 
    */
-  editSubnetConfig(id, params) {
-    return axios.put(`${baseUrl}/ipattrappends/${id}`, params);
+  editSubnetConfig(subnetId, id, params) {
+    return axios.put(`${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}/ipattrappends/ipattrappend`, params);
   },
 
   /**
    * IP地址属性设置
+   * @param {String|Number} subnetId 子网ID
    * @param {String|Number} id IP的ID
    * @param {Object} params 
    */
-  editIpInfo(id, params) {
-    return axios.put(`${baseUrl}/dividedaddresses/${id}`, params);
+  editIpInfo(subnetId, id, params) {
+    return axios.put(`${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}`, params);
   },
 
   /**

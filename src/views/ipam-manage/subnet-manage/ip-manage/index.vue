@@ -106,12 +106,14 @@
     <ConfigAttribute 
       :visible.sync="showConfig"
       :data="editData"
+      :subnet-id="subnetId"
       @confirmed="handleConfiged"
     />
 
     <Edit 
       :visible.sync="showEdit"
       :data="editData"
+      :subnet-id="subnetId"
       @confirmed="handleSaved"
     />
 
