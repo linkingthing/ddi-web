@@ -7,46 +7,68 @@
         :open-names="openNames"
       >
         <template v-for="(item, idx) in routes">
-          <MenuItem
-            v-if="item.meta.isSingle && PACK_SYSTEM.includes(item.meta.range)"
-            :key="idx"
-            :name="item.name"
-            @click.native="handleJump(item.path)"
-            class="single-node"
-          >
-            <i
-              v-if="item.icon"
-              class="menu-icon"
-              :class="item.icon" 
-            />
-            {{ item.meta.title }}
-          </MenuItem>
-            
-          <Submenu
-            :key="idx"
-            v-else-if="PACK_SYSTEM.includes(item.meta.range)"
-            :name="item.name"
-          >
-            <template slot="title">
+          <template v-if="item.meta.isFlat && PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range) ">
+            <template v-for="child in item.children">
+              <MenuItem
+                :key="child.path"
+                :name="child.name"
+                @click.native="handleJump(child.path)"
+                class="sigle-menu"
+              >
               <i
                 v-if="item.icon"
                 class="menu-icon"
-                :class="item.icon" 
+                :class="item.icon"
               />
-              {{ item.meta.title }}
-            </template>
-
-            <template v-for="child in item.children">
-              <MenuItem 
-                v-if="!child.meta.notInMenu"
-                :key="child.path"
-                :name="child.name" 
-                @click.native="handleJump(child.path)"
-              >
-                {{ child.meta.title }}
+              {{ child.meta.title }}
               </MenuItem>
             </template>
-          </Submenu>
+          </template>
+
+          <template v-else>
+            <MenuItem
+              v-if="item.meta.isSingle && PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range)"
+              :key="idx"
+              :name="item.name"
+              @click.native="handleJump(item.path)"
+              class="single-node"
+            >
+            <i
+              v-if="item.icon"
+              class="menu-icon"
+              :class="item.icon"
+            />
+            {{ item.meta.title }}
+            </MenuItem>
+
+            <Submenu
+              :key="idx"
+              v-else-if="PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range)"
+              :name="item.name"
+              class="level-menu"
+            >
+              <template slot="title">
+                <i
+                  v-if="item.icon"
+                  class="menu-icon"
+                  :class="item.icon"
+                />
+                {{ item.meta.title }}
+              </template>
+
+              <template v-for="child in item.children">
+                <MenuItem
+                  v-if="!child.meta.notInMenu"
+                  :key="child.path"
+                  :name="child.name"
+                  @click.native="handleJump(child.path)"
+                >
+                {{ child.meta.title }}
+                </MenuItem>
+              </template>
+            </Submenu>
+          </template>
+
         </template>
       </Menu>
     </vue-scroll>
@@ -61,18 +83,17 @@ export default {
 
   data() {
     const route = this.$route;
-    
+    this.openNames = [
+      "ipam-manage",
+      "dns-service",
+      "access-control",
+      "dhcp-service",
+      "system-safe"
+    ];
     return {
-    // eslint-disable-next-line no-undef
+      // eslint-disable-next-line no-undef
       PACK_SYSTEM,
       theme: "dark",
-      openNames: [
-        "ipam-manage",
-        "dns-service",
-        "access-control",
-        "dhcp-service",
-        "system-safe"
-      ],
       ops: {
         vuescroll: {
           mode: "native",
@@ -98,7 +119,7 @@ export default {
   created() {
     this.formatMenus();
   },
-  
+
   methods: {
     handleJump(res) {
       this.$router.push(res);
@@ -116,8 +137,14 @@ export default {
         else {
           return item;
         }
-      });      
+      });
+    },
+
+    hasShowMenu(range) {
+      const [, moduleName] = this.$route.path.split("/");
+      return moduleName === range;
     }
+
   }
 };
 </script>

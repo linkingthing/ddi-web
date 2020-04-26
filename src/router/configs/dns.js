@@ -9,25 +9,21 @@ const redirect = r => require.ensure([], () => r(require("@/views/dns/authority/
 const A4ComposeView = r => require.ensure([], () => r(require("@/views/dns/recursion/A4ComposeView")), "dnsLayout");
 const A4Compose = r => require.ensure([], () => r(require("@/views/dns/recursion/A4Compose")), "dnsLayout");
 
-const zoneForward = r => require.ensure([], () => r(require("@/views/dns/forward/zoneForward")), "dnsLayout");
-const zoneQueryForward = r => require.ensure([], () => r(require("@/views/dns/forward/zoneQueryForward")), "dnsLayout");
-const forwardList = r => require.ensure([], () => r(require("@/views/dns/forward/forwardList")), "dnsLayout");
-
-
 /**
  * meta.notInMenu：表示不在菜单中显示
  * meta.isRootMen：表示是根节点
  */
 
 export default {
-  path: "",
+  path: "/dns",
   component: Layout,
   icon: "icon-authority",
   meta: {
-    title: "DNS服务",
+    title: "权威服务",
     range: "dns"
   },
   name: "dns-service",
+  redirect: { name: "config-group" },
   children: [
     {
       // 配置组管理
@@ -101,37 +97,6 @@ export default {
         notInMenu: true,
         from: "a4-compose-view",
         title: "A4地址合成"
-      }
-    },
-
-    {
-      // 区域转发
-      name: "zone-forward",
-      path: "/dns/forward/zoneForward",
-      component: zoneForward,
-      meta: {
-        // title: "转发视图"
-        title: "转发管理"
-      }
-    },
-    {
-      name: "zone-query-forward",
-      path: "/dns/forword/zoneQueryForward",
-      component: zoneQueryForward,
-      meta: {
-        title: "转发区域",
-        notInMenu: true,
-        from: "zone-forward"
-      }
-    },
-    {
-      name: "forward-list",
-      path: "/dns/forword/forwardList",
-      component: forwardList,
-      meta: {
-        title: "区域转发列表",
-        notInMenu: true,
-        from: "zone-query-forward"
       }
     }
   ]

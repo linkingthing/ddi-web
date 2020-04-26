@@ -2,10 +2,10 @@
   <article class="main-content">
     <Header />
     <!-- 菜单 -->
-    
+
     <section class="content-box">
       <Menu />
-      
+
       <div class="content-padding">
         <Bread />
 
@@ -22,7 +22,7 @@ import Bread from "@/components/Bread";
 
 export default {
   name: "Layout",
-  
+
   components: {
     Menu,
     Header,

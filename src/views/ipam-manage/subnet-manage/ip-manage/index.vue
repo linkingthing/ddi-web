@@ -274,7 +274,7 @@ export default {
     },
 
     handleToAddressPool() {
-      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${this.subnetId}&address=${this.ipAddress}`);
+      this.$router.push(`/address/dhcp-service/address-pool-list?subnetId=${this.subnetId}&address=${this.ipAddress}`);
     },
 
     handleEdit(res) {
