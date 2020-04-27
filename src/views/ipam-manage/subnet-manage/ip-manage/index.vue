@@ -201,6 +201,10 @@ export default {
       return parseInt(ip.substr(ip.lastIndexOf(".") + 1));
     },
 
+    getIpAllNums(ip) {
+      return parseInt(ip.split(".").map(item => Array(3 - item.length).fill("0").join("") + item).join(""));
+    },
+
     handleTabClick(tab) {      
       if (tab === this.currentTab) return;
 
@@ -234,7 +238,7 @@ export default {
             item.typeText = type ? type.label : "";
 
             return item; 
-          }).sort((prev, next) => this.getIpLastNum(prev && prev.ip) - this.getIpLastNum(next && next.ip));
+          }).sort((prev, next) => this.getIpAllNums(prev && prev.ip) - this.getIpAllNums(next && next.ip));
 
           // console.log(this.tableData.find(item => item.ip === "172.16.86.1"));
             
