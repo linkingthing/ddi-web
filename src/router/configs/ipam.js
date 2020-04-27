@@ -13,7 +13,7 @@ export default {
     range: "address"
   },
   name: "ipam-manage",
-  icon: "icon-address",
+  icon: "icon-ipam",
   redirect: { name: "subnet-manage" },
   children: [
     {

@@ -9,7 +9,7 @@ export default {
   path: "",
   component: Layout,
   icon: "icon-recursive",
-  name: "dhcp-service",
+  name: "dhcp-dhcp",
   meta: {
     title: "DHCP服务",
     range: "address"

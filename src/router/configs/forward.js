@@ -3,7 +3,7 @@ import Layout from "@/views/layout";
 export default {
   path: "/dns",
   component: Layout,
-  icon: "icon-safe",
+  icon: "icon-forward",
   meta: {
     title: "转发管理",
     range: "dns",

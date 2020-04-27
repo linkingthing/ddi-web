@@ -15,7 +15,6 @@ export default {
     isFlat: true
   },
   name: "node-manage",
-  icon: "icon-node",
   children: [
     {
       name: 'nodeManage',
@@ -31,6 +30,7 @@ export default {
       name: 'DNSDashboard',
       path: '/monitor/dns',
       component: () => import('@/views/node/DNSDashboard'),
+      icon: "icon-dns",
       meta: {
         from: "nodeManage",
         title: "DNS服务器"
@@ -40,6 +40,7 @@ export default {
       name: 'DHCPDashboard',
       path: '/monitor/dhcp',
       component: () => import('@/views/node/DHCPDashboard'),
+      icon: "icon-dhcp",
       meta: {
         from: "nodeManage",
         title: "DHCP服务器"
@@ -49,6 +50,7 @@ export default {
       name: 'ControllerDashboard',
       path: '/monitor/controller',
       component: () => import('@/views/node/ControllerDashboard'),
+      icon: "icon-ipam",
       meta: {
         from: "nodeManage",
         title: "Conroller服务器"

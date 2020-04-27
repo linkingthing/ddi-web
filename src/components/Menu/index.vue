@@ -16,9 +16,8 @@
                 class="sigle-menu"
               >
               <i
-                v-if="item.icon"
                 class="menu-icon"
-                :class="item.icon"
+                :class="child.icon"
               />
               {{ child.meta.title }}
               </MenuItem>
