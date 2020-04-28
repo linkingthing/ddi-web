@@ -1,7 +1,10 @@
 <template>
   <div class="nodeManage">
-    <Tabs @on-click="handleTab">
-      <TabPane label="拓扑图" name="topology">
+    <!-- <Tabs @on-click="handleTab">
+      <TabPane
+        label="拓扑图"
+        name="topology"
+      >
         <div style="zoom: 0.6">
           <div class="parent tab-item">
             <div
@@ -23,21 +26,104 @@
           </div>
         </div>
       </TabPane>
-      <TabPane label="服务器列表" name="serverList">
+      <TabPane
+        label="服务器列表"
+        name="serverList"
+      >
         <div class="tab-item">
-          <Table :data="serverList" :columns="serviceColumns" />
+          <Table
+            :data="serverList"
+            :columns="serviceColumns"
+          />
         </div>
       </TabPane>
-    </Tabs>
+    </Tabs> -->
+
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px"
+    >
+      <i-col span="11">
+        <Card title="QPS">
+          <line-bar
+            :labels="qpsLabels"
+            :values="qpsValues"
+          />
+        </Card>
+
+      </i-col>
+      <i-col span="11">
+        <Card title="解析成功率">
+          <line-bar
+            :labels="successRateLabels"
+            :values="successRateValues"
+          />
+        </Card>
+      </i-col>
+    </Row>
+
+    <Row
+      type="flex"
+      justify="space-between"
+    >
+      <i-col span="11">
+        <Card title="解析成功率">
+          <line-bar
+            :labels="successRateLabels"
+            :values="successRateValues"
+          />
+        </Card>
+      </i-col>
+      <i-col span="11">
+        <Card title="DHCP使用率">
+          <line-bar
+            line-theme="brown"
+            :labels="dhcpUsageLabels"
+            :values="dhcpUsageValues"
+          />
+        </Card>
+      </i-col>
+    </Row>
+
+    <Row
+      type="flex"
+      justify="space-between"
+    >
+
+      <i-col span="11">
+        <Card title="Leases总量统计">
+          <line-bar
+            line-theme="golden"
+            :labels="dhcpLeaseLabels"
+            :values="dhcpLeaseValues"
+          />
+        </Card>
+      </i-col>
+      <i-col span="11">
+        <Card title="DHCP报文统计">
+          <line-bar
+            :labels="dhcpLabels"
+            :values="dhcpValues"
+          />
+        </Card>
+      </i-col>
+    </Row>
+
   </div>
 </template>
 
 <script>
 import services from "@/services";
 import HostNode from "./HostNode";
+import Card from "./Card";
+import Line from "./Line";
+
 export default {
   components: {
-    "host-node": HostNode
+    "host-node": HostNode,
+    Card,
+    "line-bar": Line
   },
   props: {},
   data() {
@@ -74,7 +160,17 @@ export default {
           }
         }
       ],
-      serverList: []
+      serverList: [],
+      qpsLabels: [],
+      qpsValues: [],
+      successRateLabels: [],
+      successRateValues: [],
+      dhcpLeaseLabels: [],
+      dhcpLeaseValues: [],
+      dhcpUsageLabels: [],
+      dhcpUsageValues: [],
+      dhcpLabels: [],
+      dhcpValues: []
     };
   },
 

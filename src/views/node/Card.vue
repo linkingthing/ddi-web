@@ -5,7 +5,7 @@
       <span v-for="item in infos" :key="item">{{item}}</span>
     </h3>
 
-    <slot></slot>
+    <slot/>
   </div>
 </template>
 

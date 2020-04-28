@@ -23,7 +23,17 @@ export default {
       icon: "icon-node",
       meta: {
         range: "monitor",
-        title: "节点管理"
+        title: "概览"
+      }
+    },
+    {
+      name: 'nodeMonitor',
+      path: '/monitor/node',
+      component: () => import('@/views/node'),
+      icon: "icon-node",
+      meta: {
+        range: "monitor",
+        title: "概览"
       }
     },
     {
@@ -50,7 +60,7 @@ export default {
       name: 'ControllerDashboard',
       path: '/monitor/controller',
       component: () => import('@/views/node/ControllerDashboard'),
-      icon: "icon-ipam",
+      icon: "icon-controller",
       meta: {
         from: "nodeManage",
         title: "Conroller服务器"
