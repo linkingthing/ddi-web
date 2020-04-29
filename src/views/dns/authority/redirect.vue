@@ -62,13 +62,7 @@ export default {
         {
           title: "重定向方式",
           key: "redirecttype",
-          align: "center",
-          render: (h, { row }) => {
-            return h(
-              "div",
-              row.redirecttype === "redirect" ? "NXDOMAIN重定向" : "直接重定向"
-            );
-          }
+          align: "center"
         },
         {
           title: "操作",
