@@ -1,6 +1,6 @@
 <template>
   <div class="ControllerDashboard dashboard">
-    <h1 class="d-title">Conroller服务器</h1>
+    <h1 class="d-title">DNS节点信息</h1>
 
     <Row
       type="flex"
@@ -8,7 +8,7 @@
       style="margin-bottom: 50px"
     >
       <i-col span="11">
-        <HostInfo />
+        <HostInfo :ip="node"/>
       </i-col>
       <i-col span="11">
         <Card title="CPU利用率">
@@ -50,16 +50,16 @@
 import Card from "./Card";
 import HostInfo from "./HostInfo";
 import Line from "./Line";
-import Pie from "./Pie";
 import { getDeviceHistoryInfo } from "./tools";
 import services from "@/services";
 
 export default {
   name: "ControllerDashboard",
-  components: { Card, HostInfo, "line-bar": Line, Pie },
+  components: { Card, HostInfo, "line-bar": Line },
   props: {},
   data() {
     return {
+      node: "",
       timer: null,
       cpuLabels: [],
       cpuValues: [],
@@ -71,14 +71,14 @@ export default {
   },
   computed: {},
   watch: {},
-  created() { 
-    this.getList()
+  created() {
+    this.getList();
   },
   mounted() {
     const node = this.$route.query.ip;
     this.batchExecute(node);
     // this.timer = setInterval(() => {
-    this.batchExecute(node);
+    // this.batchExecute(node);
     // }, 3000);
   },
   beforeDestroy() {
@@ -89,7 +89,8 @@ export default {
       services
         .getServerList()
         .then(res => {
-          this.serverList = res.data.data;
+          this.node = res.data.data.find(item => item.role === "controller").ip;
+          this.batchExecute(this.node);
         })
         .catch(err => err);
     },
@@ -117,8 +118,8 @@ export default {
           node,
           type
         }).then(([labels, values]) => {
-          this[labelsField] = labels;
-          this[valuesField] = values;
+          this[labelsField] = labels || [];
+          this[valuesField] = values || [];
         });
       });
     }

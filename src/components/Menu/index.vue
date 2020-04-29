@@ -10,6 +10,7 @@
           <template v-if="item.meta.isFlat && PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range) ">
             <template v-for="child in item.children">
               <MenuItem
+                v-if="!child.meta.notInMenu"
                 :key="child.path"
                 :name="child.name"
                 @click.native="handleJump(child.path)"

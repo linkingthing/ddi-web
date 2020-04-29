@@ -14,7 +14,7 @@ export default {
     title: "监控分析",
     isFlat: true
   },
-  name: "node-manage",
+  name: "monitor",
   children: [
     {
       name: 'nodeManage',
@@ -27,13 +27,13 @@ export default {
       }
     },
     {
-      name: 'nodeMonitor',
-      path: '/monitor/node',
-      component: () => import('@/views/node'),
-      icon: "icon-node",
+      name: 'nodeControll',
+      path: '/monitor/node-control',
+      component: () => import('@/views/node/NodeControl'),
+      icon: "icon-dns",
       meta: {
         range: "monitor",
-        title: "概览"
+        title: "节点控制",
       }
     },
     {
@@ -42,8 +42,9 @@ export default {
       component: () => import('@/views/node/DNSDashboard'),
       icon: "icon-dns",
       meta: {
-        from: "nodeManage",
-        title: "DNS服务器"
+        from: "monitor",
+        title: "DNS服务器",
+        notInMenu: true,
       }
     },
     {
@@ -52,7 +53,8 @@ export default {
       component: () => import('@/views/node/DHCPDashboard'),
       icon: "icon-dhcp",
       meta: {
-        from: "nodeManage",
+        notInMenu: true,
+        from: "monitor",
         title: "DHCP服务器"
       }
     },
@@ -62,8 +64,8 @@ export default {
       component: () => import('@/views/node/ControllerDashboard'),
       icon: "icon-controller",
       meta: {
-        from: "nodeManage",
-        title: "Conroller服务器"
+        range: "nodeManage",
+        title: "DNS节点信息"
       }
     }
   ]

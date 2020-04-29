@@ -1,5 +1,21 @@
 <template>
-  <Chart :options="options"></Chart>
+  <Chart
+    v-if="values.length"
+    :options="options"
+  />
+  <figure
+    v-else
+    style="text-align:center;color: #666"
+  >
+    <img
+      src="../../assets/images/empt.png"
+      alt=""
+    >
+    <figcaption>
+      暂无数据！
+    </figcaption>
+  </figure>
+
 </template>
 
 <script>

@@ -2,32 +2,57 @@
   <div class="DHCPDashboard dashboard">
     <h1 class="d-title">DHCP服务器</h1>
 
-    <Row type="flex" justify="space-between" style="margin-bottom: 50px">
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px"
+    >
       <i-col span="11">
         <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="DHCP报文统计">
-          <line-bar :labels="dhcpLabels" :values="dhcpValues"></line-bar>
+          <line-bar
+            :labels="dhcpLabels"
+            :values="dhcpValues"
+          ></line-bar>
         </Card>
       </i-col>
     </Row>
-    <Row type="flex" style="margin-bottom: 50px">
+    <Row
+      type="flex"
+      style="margin-bottom: 50px"
+    >
       <i-col span="24">
         <Card title="IP地址分配状态">
-          <Table :data="assignList" :columns="ipColumns" style="padding-top: 30px" />
+          <Table
+            :data="assignList"
+            :columns="ipColumns"
+            style="padding-top: 30px"
+          />
         </Card>
       </i-col>
     </Row>
-    <Row type="flex" justify="space-between">
+    <Row
+      type="flex"
+      justify="space-between"
+    >
       <i-col span="11">
         <Card title="DHCP使用率">
-          <line-bar lineTheme="brown" :labels="dhcpUsageLabels" :values="dhcpUsageValues"></line-bar>
+          <line-bar
+            lineTheme="brown"
+            :labels="dhcpUsageLabels"
+            :values="dhcpUsageValues"
+          ></line-bar>
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="Leases总量统计">
-          <line-bar lineTheme="golden" :labels="dhcpLeaseLabels" :values="dhcpLeaseValues"></line-bar>
+          <line-bar
+            lineTheme="golden"
+            :labels="dhcpLeaseLabels"
+            :values="dhcpLeaseValues"
+          ></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -44,7 +69,12 @@ import services from "../../services";
 export default {
   name: "DHCPDashboard",
   components: { Card, HostInfo, "line-bar": Line },
-  props: {},
+  props: {
+    ip: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       ipColumns: [
@@ -102,7 +132,7 @@ export default {
       this.batchExecute();
     },
     batchExecute() {
-      const node = this.$route.query.ip;
+      const node = this.ip || this.$route.query.ip;
       const batch = [
         {
           type: "dhcppacket",

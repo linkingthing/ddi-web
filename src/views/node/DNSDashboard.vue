@@ -5,26 +5,32 @@
     <Row
       type="flex"
       justify="space-between"
-      style="margin-bottom: 50px">
+      style="margin-bottom: 50px"
+    >
       <i-col span="11">
         <HostInfo />
       </i-col>
       <i-col span="11">
         <Card title="QPS">
-          <line-bar :labels="qpsLabels" :values="qpsValues"/>
+          <line-bar
+            :labels="qpsLabels"
+            :values="qpsValues"
+          />
         </Card>
       </i-col>
     </Row>
     <Row
       type="flex"
       justify="space-between"
-      style="margin-bottom: 50px">
+      style="margin-bottom: 50px"
+    >
       <i-col span="11">
         <Card title="TOP请求域名">
           <Table
             :data="domains"
             :columns="topDomainColumns"
-            style="padding-top: 30px" />
+            style="padding-top: 30px"
+          />
         </Card>
       </i-col>
       <i-col span="11">
@@ -32,14 +38,16 @@
           <Table
             :data="ips"
             :columns="topIPColumns"
-            style="padding-top: 30px" />
+            style="padding-top: 30px"
+          />
         </Card>
       </i-col>
     </Row>
     <Row
       type="flex"
       justify="space-between"
-      style="margin-bottom: 50px">
+      style="margin-bottom: 50px"
+    >
       <i-col span="11">
         <Card title="解析状态">
           <Pie :values="status" />
@@ -51,15 +59,24 @@
         </Card>
       </i-col>
     </Row>
-    <Row type="flex" justify="space-between">
+    <Row
+      type="flex"
+      justify="space-between"
+    >
       <i-col span="11">
         <Card title="解析成功率">
-          <line-bar :labels="successRateLabels" :values="successRateValues" />
+          <line-bar
+            :labels="successRateLabels"
+            :values="successRateValues"
+          />
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="缓存命中率">
-          <line-bar :labels="memoHitRateLabels" :values="memoHitRateValues" />
+          <line-bar
+            :labels="memoHitRateLabels"
+            :values="memoHitRateValues"
+          />
         </Card>
       </i-col>
     </Row>
@@ -79,7 +96,12 @@ import { getDeviceHistoryInfo } from "./tools";
 export default {
   name: "DNSDashboard",
   components: { Card, HostInfo, "line-bar": Line, Pie },
-  props: {},
+  props: {
+    ip: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       topDomainColumns: [
@@ -131,7 +153,7 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {},
+  created() { },
   mounted() {
     this.initDataRequest();
     this.timer = setInterval(() => {
@@ -144,21 +166,22 @@ export default {
 
   methods: {
     initDataRequest() {
-      this.getDNSTop();
-      this.getQpsList();
-      this.getDNSAnalysisStateData();
-      this.getDNSAnalysisStateSuccessRecode();
-      this.getMemoHitRateData();
+      const node = this.ip || this.$route.query.ip;
+      this.getDNSTop(node);
+      this.getQpsList(node);
+      this.getDNSAnalysisStateData(node);
+      this.getDNSAnalysisStateSuccessRecode(node);
+      this.getMemoHitRateData(node);
     },
-    getQpsList() {
+    getQpsList(node) {
       const params = {
-        node: this.$route.query.ip,
+        node,
         type: "qps"
       };
       getDeviceHistoryInfo(params)
         .then(([labels, values]) => {
-          this.qpsLabels = labels;
-          this.qpsValues = values;
+          this.qpsLabels = labels || [];
+          this.qpsValues = values || [];
         })
         .catch(err => err);
     },
@@ -176,9 +199,9 @@ export default {
         })
         .catch(err => err);
     },
-    getDNSAnalysisStateData() {
+    getDNSAnalysisStateData(node) {
       const params = {
-        node: this.$route.query.ip,
+        node,
         start: parseInt(new Date().getTime() / 1000)
       };
       services
@@ -194,10 +217,10 @@ export default {
         })
         .catch(err => err);
     },
-    getDNSAnalysisStateSuccessRecode() {
+    getDNSAnalysisStateSuccessRecode(node) {
       services
         .getDNSAnalysisState({
-          node: this.$route.query.ip,
+          node,
           start: parseInt(new Date().getTime() / 1000 - 5 * 24 * 60 * 60),
           end: parseInt(new Date().getTime() / 1000)
         })
@@ -288,9 +311,9 @@ export default {
         };
       });
     },
-    getMemoHitRateData() {
+    getMemoHitRateData(node) {
       const params = {
-        node: this.$route.query.ip,
+        node,
         start: moment().unix() - 5 * 24 * 60 * 60,
         end: moment().unix()
       };
