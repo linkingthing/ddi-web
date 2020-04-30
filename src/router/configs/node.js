@@ -23,7 +23,7 @@ export default {
       icon: "icon-node",
       meta: {
         range: "monitor",
-        title: "概览"
+        title: "概览",
       }
     },
     {
@@ -33,7 +33,7 @@ export default {
       icon: "icon-dns",
       meta: {
         range: "monitor",
-        title: "节点控制",
+        title: "系统信息",
       }
     },
     {
@@ -65,7 +65,7 @@ export default {
       icon: "icon-controller",
       meta: {
         range: "nodeManage",
-        title: "DNS节点信息"
+        title: "节点监控"
       }
     }
   ]

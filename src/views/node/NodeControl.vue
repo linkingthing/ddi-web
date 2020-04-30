@@ -1,5 +1,5 @@
 <template>
-  <div class="NodeControll">
+  <div class="node-controll">
     <Select
       class="select-node"
       v-model="currentNode"
@@ -71,7 +71,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.select-node {
-  padding: 20px;
+.node-controll {
+  position: relative;
+  height: 240px;
+  .select-node {
+    position: absolute;
+    left: 200px;
+    top: 12px;
+    padding: 20px;
+  }
 }
 </style>

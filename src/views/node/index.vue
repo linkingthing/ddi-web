@@ -1,10 +1,5 @@
 <template>
-  <div class="nodeManage">
-    <!-- <Tabs @on-click="handleTab">
-      <TabPane
-        label="拓扑图"
-        name="topology"
-      > -->
+  <div>
     <div class="node-topology">
       <Row>
         <i-col :span="8">
@@ -59,8 +54,14 @@
         </i-col>
       </Row>
     </div>
+    <div class="nodeManage">
+      <!-- <Tabs @on-click="handleTab">
+      <TabPane
+        label="拓扑图"
+        name="topology"
+      > -->
 
-    <!-- </TabPane>
+      <!-- </TabPane>
       <TabPane
         label="服务器列表"
         name="serverList"
@@ -74,76 +75,77 @@
       </TabPane>
     </Tabs> -->
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="QPS">
-          <line-bar
-            :labels="qpsLabels"
-            :values="qpsValues"
-          />
-        </Card>
+      <Row
+        type="flex"
+        justify="space-between"
+        style="margin-bottom: 50px"
+      >
+        <i-col span="11">
+          <Card title="QPS">
+            <line-bar
+              :labels="qpsLabels"
+              :values="qpsValues"
+            />
+          </Card>
 
-      </i-col>
-      <i-col span="11">
-        <Card title="解析成功率">
-          <line-bar
-            :labels="successRateLabels"
-            :values="successRateValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+        </i-col>
+        <i-col span="11">
+          <Card title="解析成功率">
+            <line-bar
+              :labels="successRateLabels"
+              :values="successRateValues"
+            />
+          </Card>
+        </i-col>
+      </Row>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="解析状态">
-          <Pie :values="status" />
+      <Row
+        type="flex"
+        justify="space-between"
+        style="margin-bottom: 50px"
+      >
+        <i-col span="11">
+          <Card title="解析状态">
+            <Pie :values="status" />
 
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="DHCP使用率">
-          <line-bar
-            line-theme="brown"
-            :labels="dhcpUsageLabels"
-            :values="dhcpUsageValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+          </Card>
+        </i-col>
+        <i-col span="11">
+          <Card title="DHCP使用率">
+            <line-bar
+              line-theme="brown"
+              :labels="dhcpUsageLabels"
+              :values="dhcpUsageValues"
+            />
+          </Card>
+        </i-col>
+      </Row>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
+      <Row
+        type="flex"
+        justify="space-between"
+        style="margin-bottom: 50px"
+      >
 
-      <i-col span="11">
-        <Card title="Leases总量统计">
-          <line-bar
-            line-theme="golden"
-            :labels="dhcpLeaseLabels"
-            :values="dhcpLeaseValues"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="DHCP报文统计">
-          <line-bar
-            :labels="dhcpLabels"
-            :values="dhcpValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+        <i-col span="11">
+          <Card title="Leases总量统计">
+            <line-bar
+              line-theme="golden"
+              :labels="dhcpLeaseLabels"
+              :values="dhcpLeaseValues"
+            />
+          </Card>
+        </i-col>
+        <i-col span="11">
+          <Card title="DHCP报文统计">
+            <line-bar
+              :labels="dhcpLabels"
+              :values="dhcpValues"
+            />
+          </Card>
+        </i-col>
+      </Row>
+    </div>
 
   </div>
 </template>
@@ -412,7 +414,14 @@ export default {
 .node-topology {
   height: 360px;
   padding: 50px 40px 20px;
-  background-image: url("../../assets/images/bg-node-topology.png");
+  // background-image: url("../../assets/images/bg-node-topology.png");
+  background: linear-gradient(
+    -75deg,
+    rgba(216, 230, 255, 1),
+    rgba(255, 255, 255, 1)
+  );
+
+  margin-bottom: 50px;
 
   article {
     margin-bottom: 120px;

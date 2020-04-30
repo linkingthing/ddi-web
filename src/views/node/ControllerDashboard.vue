@@ -1,6 +1,6 @@
 <template>
   <div class="ControllerDashboard dashboard">
-    <h1 class="d-title">DNS节点信息</h1>
+    <h1 class="d-title">Controller服务器</h1>
 
     <Row
       type="flex"

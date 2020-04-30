@@ -59,8 +59,7 @@ export default {
   }
   p {
     padding-top: 15px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
   }
 }
 </style>

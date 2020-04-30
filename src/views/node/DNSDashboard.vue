@@ -8,7 +8,7 @@
       style="margin-bottom: 50px"
     >
       <i-col span="11">
-        <HostInfo />
+        <HostInfo :ip="ip"/>
       </i-col>
       <i-col span="11">
         <Card title="QPS">
@@ -19,30 +19,7 @@
         </Card>
       </i-col>
     </Row>
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="TOP请求域名">
-          <Table
-            :data="domains"
-            :columns="topDomainColumns"
-            style="padding-top: 30px"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="TOP请求IP">
-          <Table
-            :data="ips"
-            :columns="topIPColumns"
-            style="padding-top: 30px"
-          />
-        </Card>
-      </i-col>
-    </Row>
+
     <Row
       type="flex"
       justify="space-between"
@@ -76,6 +53,30 @@
           <line-bar
             :labels="memoHitRateLabels"
             :values="memoHitRateValues"
+          />
+        </Card>
+      </i-col>
+    </Row>
+    <Row
+      type="flex"
+      justify="space-between"
+      style="margin-bottom: 50px"
+    >
+      <i-col span="11">
+        <Card title="TOP请求域名">
+          <Table
+            :data="domains"
+            :columns="topDomainColumns"
+            style="padding-top: 30px"
+          />
+        </Card>
+      </i-col>
+      <i-col span="11">
+        <Card title="TOP请求IP">
+          <Table
+            :data="ips"
+            :columns="topIPColumns"
+            style="padding-top: 30px"
           />
         </Card>
       </i-col>

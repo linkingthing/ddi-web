@@ -3,23 +3,13 @@
     v-if="values.length"
     :options="options"
   />
-  <figure
-    v-else
-    style="text-align:center;color: #666"
-  >
-    <img
-      src="../../assets/images/empt.png"
-      alt=""
-    >
-    <figcaption>
-      暂无数据！
-    </figcaption>
-  </figure>
+  <NoDataFigure v-else />
 
 </template>
 
 <script>
 import Chart from "./Chart";
+import NoDataFigure from "./NoDataFigure";
 
 export default {
   name: "ChartLine",
@@ -31,7 +21,7 @@ export default {
       }
     }
   },
-  components: { Chart },
+  components: { Chart, NoDataFigure },
   computed: {
     options() {
       const labels = this.values.map(item => item.name);

@@ -112,7 +112,7 @@ export default {
   name: "Header",
   data() {
     this.mainMenuList = [{
-      title: "监控分析",
+      title: "系统状态",
       url: "/monitor"
     }, {
       title: "DNS管理",

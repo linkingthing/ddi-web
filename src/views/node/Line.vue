@@ -3,23 +3,13 @@
     v-if="values.length"
     :options="options"
   />
-  <figure
-    v-else
-    style="text-align:center;color: #666"
-  >
-    <img
-      src="../../assets/images/empt.png"
-      alt=""
-    >
-    <figcaption>
-      暂无数据！
-    </figcaption>
-  </figure>
+  <NoDataFigure v-else/>
 
 </template>
 
 <script>
 import Chart from "./Chart";
+import NoDataFigure from "./NoDataFigure";
 
 const ThemeConfig = {
   blue: {
@@ -59,7 +49,7 @@ export default {
       default: "blue"
     }
   },
-  components: { Chart },
+  components: { Chart, NoDataFigure },
   computed: {
     options() {
       const { primaryColor, gradualColor } =
@@ -163,3 +153,4 @@ export default {
   }
 };
 </script>
+

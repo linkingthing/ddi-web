@@ -52,8 +52,8 @@ export default {
         this.deviceState = result.usage[ip] || {};
         const deviceInfo = result.nodes[ip] || {};
         this.infos = [
-          `服务器名称：${deviceInfo.hostname}`,
-          `服务器IP：${deviceInfo.ip}`
+          `服务器名称：${deviceInfo.hostname || ""}`,
+          `服务器IP：${deviceInfo.ip || this.ip || ""}`
         ];
       });
     }

@@ -8,14 +8,38 @@
       style="margin-bottom: 50px"
     >
       <i-col span="11">
-        <HostInfo />
+        <HostInfo :ip="ip" />
       </i-col>
       <i-col span="11">
         <Card title="DHCP报文统计">
           <line-bar
             :labels="dhcpLabels"
             :values="dhcpValues"
-          ></line-bar>
+          />
+        </Card>
+      </i-col>
+    </Row>
+
+    <Row
+      type="flex"
+      justify="space-between"
+    >
+      <i-col span="11">
+        <Card title="DHCP使用率">
+          <line-bar
+            line-theme="brown"
+            :labels="dhcpUsageLabels"
+            :values="dhcpUsageValues"
+          />
+        </Card>
+      </i-col>
+      <i-col span="11">
+        <Card title="Leases总量统计">
+          <line-bar
+            line-theme="golden"
+            :labels="dhcpLeaseLabels"
+            :values="dhcpLeaseValues"
+          />
         </Card>
       </i-col>
     </Row>
@@ -30,29 +54,6 @@
             :columns="ipColumns"
             style="padding-top: 30px"
           />
-        </Card>
-      </i-col>
-    </Row>
-    <Row
-      type="flex"
-      justify="space-between"
-    >
-      <i-col span="11">
-        <Card title="DHCP使用率">
-          <line-bar
-            lineTheme="brown"
-            :labels="dhcpUsageLabels"
-            :values="dhcpUsageValues"
-          ></line-bar>
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="Leases总量统计">
-          <line-bar
-            lineTheme="golden"
-            :labels="dhcpLeaseLabels"
-            :values="dhcpLeaseValues"
-          ></line-bar>
         </Card>
       </i-col>
     </Row>
@@ -123,6 +124,12 @@ export default {
       assignList: []
     };
   },
+  watch: {
+    ip() {
+      this.init();
+      this.getDHCPAssignData();
+    }
+  },
   mounted() {
     this.init();
     this.getDHCPAssignData();
@@ -165,7 +172,7 @@ export default {
       services
         .getDHCPAssign()
         .then(res => {
-          console.log(res.data);
+          console.log(res)
           this.assignList = res.data;
         })
         .catch(err => err);
