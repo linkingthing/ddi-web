@@ -106,12 +106,14 @@
     <ConfigAttribute 
       :visible.sync="showConfig"
       :data="editData"
+      :subnet-id="subnetId"
       @confirmed="handleConfiged"
     />
 
     <Edit 
       :visible.sync="showEdit"
       :data="editData"
+      :subnet-id="subnetId"
       @confirmed="handleSaved"
     />
 
@@ -199,6 +201,10 @@ export default {
       return parseInt(ip.substr(ip.lastIndexOf(".") + 1));
     },
 
+    getIpAllNums(ip) {
+      return parseInt(ip.split(".").map(item => Array(3 - item.length).fill("0").join("") + item).join(""));
+    },
+
     handleTabClick(tab) {      
       if (tab === this.currentTab) return;
 
@@ -230,9 +236,10 @@ export default {
             let type = legendList.find(child => child.value === item.AddressType);
 
             item.typeText = type ? type.label : "";
+            item.ip = item.ip.trim();
 
             return item; 
-          }).sort((prev, next) => this.getIpLastNum(prev && prev.ip) - this.getIpLastNum(next && next.ip));
+          }).sort((prev, next) => this.getIpAllNums(prev && prev.ip) - this.getIpAllNums(next && next.ip));
 
           // console.log(this.tableData.find(item => item.ip === "172.16.86.1"));
             
@@ -353,6 +360,11 @@ export default {
       }
       else if (!this.selectedData.length) {
         this.$$warning("请选择一个地址进行操作！");
+
+        return;
+      }
+      else if (!this.selectedData[0].macaddress.trim()) {
+        this.$$warning("该IP的MAC地址为空，不能进行转保留操作！");
 
         return;
       }

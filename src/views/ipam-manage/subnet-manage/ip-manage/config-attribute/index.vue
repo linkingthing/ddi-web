@@ -48,6 +48,11 @@ export default {
     data: {
       type: Object,
       default: () => ({})
+    },
+
+    subnetId: {
+      type: [Number,String],
+      default: null
     }
   },
 
@@ -98,7 +103,7 @@ export default {
 
         let params = this.getParams();
 
-        let { status, message } = await service.editSubnetConfig(this.data.id, params);
+        let { status, message } = await service.editSubnetConfig(this.subnetId, this.data.id, params);
 
         status = +status;
         

@@ -17,11 +17,19 @@
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">MAC地址：</div>
-        <div class="info-row-text">{{macaddress}}</div>
+        <Input
+          maxlength="255"
+          v-model="macaddress"
+          placeholder="请输入"
+          class="info-row-input" />
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">厂家：</div>
-        <div class="info-row-text">{{macvender}}</div>
+        <Input
+          maxlength="255"
+          v-model="macvender"
+          placeholder="请输入"
+          class="info-row-input" />
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">地址类型：</div>
@@ -29,19 +37,27 @@
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">操作系统：</div>
-        <div class="info-row-text">{{opersystem}}</div>
-      </div>
-      <div class="info-row-inline">
-        <div class="info-row-label">端口号：</div>
         <Input
           maxlength="255"
+          v-model="opersystem"
+          placeholder="请输入"
+          class="info-row-input" />
+      </div>
+      <div class="info-row-inline">
+        <div class="info-row-label">交换机端口号：</div>
+        <Input
+          maxlength="3"
           v-model="interfaceid"
           placeholder="请输入"
           class="info-row-input" />
       </div>
       <div class="info-row-inline">
         <div class="info-row-label">指纹：</div>
-        <div class="info-row-text">{{fingerprint}}</div>
+        <Input
+          maxlength="255"
+          v-model="fingerprint"
+          placeholder="请输入"
+          class="info-row-input" />
       </div>
       <div class="info-row-inline" v-if="devicetypeflag">
         <div class="info-row-label">设备类型：</div>
@@ -98,6 +114,7 @@
 <script>
 import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
+import { isPosNumber, macAddressIsValid } from "@/util/common";
 
 export default {
   components: {
@@ -113,6 +130,11 @@ export default {
     data: {
       type: Object,
       default: () => ({})
+    },
+
+    subnetId: {
+      type: [Number,String],
+      default: null
     }
   },
 
@@ -194,7 +216,7 @@ export default {
 
         this.loading = true;
 
-        let { status, message } = await service.editIpInfo(this.data.id, this.getParams());
+        let { status, message } = await service.editIpInfo(this.subnetId, this.data.id, this.getParams());
 
         status = +status;
         
@@ -224,6 +246,10 @@ export default {
       let { 
         hostname,
         interfaceid,
+        macaddress,
+        macvender,
+        opersystem,
+        fingerprint,    
 
         devicetypeflag,
         businessflag,
@@ -242,6 +268,10 @@ export default {
 
       hostname = hostname.trim();
       interfaceid = interfaceid.trim();
+      macaddress = macaddress.trim();
+      macvender = macvender.trim();
+      opersystem = opersystem.trim();
+      fingerprint = fingerprint.trim();
       deviceType = deviceType.trim();
       business = business.trim();
       chargeperson = chargeperson.trim();
@@ -252,23 +282,36 @@ export default {
       if (!hostname) {
         return Promise.reject({ message: "请输入主机名！" });
       }
-      else if (hostname.length > 255) {
-        return Promise.reject({ message: "主机名长度不得大于255个字符！" });
+
+      if (!macaddress) {
+        return Promise.reject({ message: "请输入MAC地址！" });
+      }
+      else if (!macAddressIsValid(macaddress)) {
+        return Promise.reject({ message: "请输入正确的MAC地址！" });
+      }
+
+      if (!macvender) {
+        return Promise.reject({ message: "请输入厂家！" });
+      }
+
+      if (!opersystem) {
+        return Promise.reject({ message: "请输入操作系统！" });
       }
 
       if (!interfaceid) {
-        return Promise.reject({ message: "请输入端口号！" });
+        return Promise.reject({ message: "请输入交换机端口号！" });
       }
-      else if (interfaceid.length > 255) {
-        return Promise.reject({ message: "端口号长度不得大于255个字符！" });
+      else if (!isPosNumber(interfaceid) || parseFloat(interfaceid) > 100) {
+        return Promise.reject({ message: "交换机端口号不得大于100！" });
+      }
+
+      if (!fingerprint) {
+        return Promise.reject({ message: "请输入指纹！" });
       }
 
       if (devicetypeflag) {
         if (!deviceType) {
           return Promise.reject({ message: "请输入设备类型！" });
-        }
-        else if (deviceType.length > 255) {
-          return Promise.reject({ message: "设备类型长度不得大于255个字符！" });
         }
       }
 
@@ -276,17 +319,11 @@ export default {
         if (!business) {
           return Promise.reject({ message: "请输入业务名称！" });
         }
-        else if (business.length > 255) {
-          return Promise.reject({ message: "业务名称长度不得大于255个字符！" });
-        }
       }
 
       if (chargepersonflag) {
         if (!chargeperson) {
           return Promise.reject({ message: "请输入负责人！" });
-        }
-        else if (chargeperson.length > 255) {
-          return Promise.reject({ message: "负责人长度不得大于255个字符！" });
         }
       }
 
@@ -294,26 +331,17 @@ export default {
         if (!tel) {
           return Promise.reject({ message: "请输入电话！" });
         }
-        else if (tel.length > 255) {
-          return Promise.reject({ message: "电话长度不得大于255个字符！" });
-        }
       }
 
       if (departmentflag) {
         if (!department) {
           return Promise.reject({ message: "请输入所属部门！" });
         }
-        else if (department.length > 255) {
-          return Promise.reject({ message: "所属部门长度不得大于255个字符！" });
-        }
       }
 
       if (positionflag) {
         if (!position) {
           return Promise.reject({ message: "请输入地址位置！" });
-        }
-        else if (position.length > 255) {
-          return Promise.reject({ message: "地址位置长度不得大于255个字符！" });
         }
       }
 
@@ -324,6 +352,10 @@ export default {
       let {
         hostname,
         interfaceid,
+        macaddress,
+        macvender,
+        opersystem,
+        fingerprint, 
 
         devicetypeflag,
         businessflag,
@@ -344,6 +376,10 @@ export default {
         ip: this.data.ip,
         hostname,
         interfaceid,
+        macaddress,
+        macvender,
+        opersystem,
+        fingerprint, 
 
         devicetypeflag,
         businessflag,
