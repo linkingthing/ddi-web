@@ -54,7 +54,7 @@ export default {
               emphasis: {
                 show: true,
                 textStyle: {
-                  fontSize: "30",
+                  fontSize: "18",
                   fontWeight: "bold"
                 }
               }

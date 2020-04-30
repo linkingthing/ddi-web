@@ -8,11 +8,12 @@
       style="margin-bottom: 50px"
     >
       <i-col span="11">
-        <HostInfo :ip="node"/>
+        <HostInfo :ip="node" />
       </i-col>
       <i-col span="11">
         <Card title="CPU利用率">
           <line-bar
+            is-percent
             :labels="cpuLabels"
             :values="cpuValues"
           />
@@ -27,6 +28,7 @@
       <i-col span="11">
         <Card title="内存利用率">
           <line-bar
+            is-percent
             line-theme="purple"
             :labels="memoLabels"
             :values="memoValues"
@@ -36,6 +38,7 @@
       <i-col span="11">
         <Card title="磁盘利用率">
           <line-bar
+            is-percent
             line-theme="brown"
             :labels="diskLabels"
             :values="diskValues"
@@ -119,7 +122,7 @@ export default {
           type
         }).then(([labels, values]) => {
           this[labelsField] = labels || [];
-          this[valuesField] = values || [];
+          this[valuesField] = Array.isArray(values) ? values.map(item => Number(item).toFixed(2) / 100) : [];
         });
       });
     }

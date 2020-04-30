@@ -23,10 +23,12 @@
     <Row
       type="flex"
       justify="space-between"
+      style="margin-bottom: 50px"
     >
       <i-col span="11">
         <Card title="DHCP使用率">
           <line-bar
+            is-percent
             line-theme="brown"
             :labels="dhcpUsageLabels"
             :values="dhcpUsageValues"
@@ -165,15 +167,20 @@ export default {
         }).then(([labels, values]) => {
           this[labelsField] = labels;
           this[valuesField] = values;
+
+          if (valuesField === "dhcpUsageValues") {
+            this.dhcpUsageValues = this.dhcpUsageValues.map(item => Number(item / 100).toFixed(4));
+          }
         });
       });
+
     },
     getDHCPAssignData() {
       services
         .getDHCPAssign()
         .then(res => {
-          console.log(res)
-          this.assignList = res.data;
+          console.log(res.data.data)
+          this.assignList = res.data.data;
         })
         .catch(err => err);
     }

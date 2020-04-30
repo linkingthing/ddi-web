@@ -92,6 +92,7 @@
         <i-col span="11">
           <Card title="解析成功率">
             <line-bar
+              is-percent
               :labels="successRateLabels"
               :values="successRateValues"
             />
@@ -113,6 +114,7 @@
         <i-col span="11">
           <Card title="DHCP使用率">
             <line-bar
+              is-percent
               line-theme="brown"
               :labels="dhcpUsageLabels"
               :values="dhcpUsageValues"
@@ -376,6 +378,9 @@ export default {
         }).then(([labels, values]) => {
           this[labelsField] = labels || [];
           this[valuesField] = values || [];
+          if (valuesField === "dhcpUsageValues") {
+            this.dhcpUsageValues = this.dhcpUsageValues.map(item => Number(item / 100).toFixed(4));
+          }
         });
       });
     },
@@ -538,7 +543,6 @@ export default {
       border: 0;
     }
   }
-
 }
 .tab-item {
   padding-top: 60px;

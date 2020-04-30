@@ -1,5 +1,9 @@
 <template>
-  <div class="charts" ref="chart" :style="theme"></div>
+  <div
+    class="charts"
+    ref="chart"
+    :style="theme"
+  />
 </template>
 
 <script>
@@ -35,7 +39,7 @@ export default {
         // const defaultOption = {};
         // const option = Object.assign(null, defaultOption, this.options);
         myChart.setOption(this.options);
-        window.addEventListener("resize", function() {
+        window.addEventListener("resize", function () {
           myChart.resize();
         });
       }
@@ -50,7 +54,7 @@ export default {
   },
   watch: {
     options: {
-      handler: function() {
+      handler: function () {
         this.initChart();
       },
       deep: true,

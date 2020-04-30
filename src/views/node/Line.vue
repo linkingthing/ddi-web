@@ -3,7 +3,7 @@
     v-if="values.length"
     :options="options"
   />
-  <NoDataFigure v-else/>
+  <NoDataFigure v-else />
 
 </template>
 
@@ -32,6 +32,10 @@ const ThemeConfig = {
 export default {
   name: "ChartLine",
   props: {
+    isPercent: {
+      type: Boolean,
+      default: false
+    },
     labels: {
       type: Array,
       default: () => {
@@ -54,13 +58,14 @@ export default {
     options() {
       const { primaryColor, gradualColor } =
         ThemeConfig[this.lineTheme] || ThemeConfig.blue;
+      const self = this;
       return {
         color: "#f80",
         grid: {
-          left: "25px",
-          right: "20px",
+          left: "50px",
+          right: "50px",
           top: "20px",
-          bottom: "20px"
+          bottom: "40px"
         },
         xAxis: {
           type: "category",
@@ -75,6 +80,13 @@ export default {
           },
           axisLine: {
             show: false
+          },
+          axisLabel: {
+            // interval: 0,
+            // rotate: "45"
+            formatter: function (params) {
+              return params.split(" ").join("\n");
+            }
           }
         },
         yAxis: {
@@ -94,11 +106,25 @@ export default {
           },
           minorTick: {
             show: false
+          },
+          axisLabel: {
+            formatter: function (params) {
+              if (self.isPercent) {
+                return Number(params) * 100 + "%";
+              }
+              return params;
+            }
           }
         },
         tooltip: {
           // show: true,
-          trigger: "axis"
+          trigger: "axis",
+          formatter: function ([data]) {
+            if (self.isPercent) {
+              return (Number(data.data) * 100).toFixed(2) + "%";
+            }
+            return Number(data.data);
+          }
         },
         dataZoom: [
           //   {

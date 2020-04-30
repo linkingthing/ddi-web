@@ -44,6 +44,7 @@
       <i-col span="11">
         <Card title="解析成功率">
           <line-bar
+            is-percent
             :labels="successRateLabels"
             :values="successRateValues"
           />
@@ -52,6 +53,7 @@
       <i-col span="11">
         <Card title="缓存命中率">
           <line-bar
+            is-percent
             :labels="memoHitRateLabels"
             :values="memoHitRateValues"
           />
@@ -256,7 +258,7 @@ export default {
           });
 
           this.successRateLabels = data.map(item => item.time);
-          this.successRateValues = data.map(item => item.successRate);
+          this.successRateValues = data.map(item => item.successRate.toFixed(4));
         })
         .catch(err => err);
     },
