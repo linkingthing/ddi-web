@@ -44,7 +44,7 @@
         <div class="info-row-label">域名服务器</div>
         <Input
           maxlength="255"
-          v-model="gateway"
+          v-model="dnsServer"
           placeholder="请输入域名服务器"
           class="info-row-input" />
       </div>
@@ -52,7 +52,7 @@
         <div class="info-row-label">路由服务器</div>
         <Input
           maxlength="255"
-          v-model="dnsServer"
+          v-model="gateway"
           placeholder="请输入路由服务器"
           class="info-row-input" />
       </div>
@@ -313,19 +313,19 @@ export default {
       }
 
       if (this.type === "ipv4") {
-        if (gateway && !isIPv4Reg.test(gateway)) {
+        if (dnsServer && !isIPv4Reg.test(dnsServer)) {
           return Promise.reject({ message: "请填写正确的域名服务器地址！" });
         }
       }
 
       if (this.type === "ipv6") {
-        if (gateway && !ipv6IsValid(gateway)) {
+        if (dnsServer && !ipv6IsValid(dnsServer)) {
           return Promise.reject({ message: "请填写正确的域名服务器地址！" });
         }
       }
 
       if (this.type === "ipv4") {
-        if (dnsServer && !isIPv4Reg.test(dnsServer)) {
+        if (gateway && !isIPv4Reg.test(gateway)) {
           return Promise.reject({ message: "请填写正确的路由服务器地址！" });
         }
       }
