@@ -236,6 +236,7 @@ export default {
             let type = legendList.find(child => child.value === item.AddressType);
 
             item.typeText = type ? type.label : "";
+            item.ip = item.ip.trim();
 
             return item; 
           }).sort((prev, next) => this.getIpAllNums(prev && prev.ip) - this.getIpAllNums(next && next.ip));
