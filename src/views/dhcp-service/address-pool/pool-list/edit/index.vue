@@ -284,7 +284,7 @@ export default {
         return Promise.reject({ message: "请填写正确的最大租赁时间！" });
       }
       
-      if (validLifetime > maxValidLifetime) {
+      if (parseInt(validLifetime) > parseInt(maxValidLifetime)) {
         return Promise.reject({ message: "最大租赁时间不能小于默认租赁时间！" });
       }
 
