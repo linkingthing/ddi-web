@@ -4,7 +4,7 @@
       <h3>设备信息</h3>
       <i-col span="8" v-for="dash in dashboardList" :key="dash.type">
         <div>
-          <my-chart :values="dash"></my-chart>
+          <my-chart :values="dash"/>
         </div>
       </i-col>
     </Row>

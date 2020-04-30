@@ -8,7 +8,7 @@
       style="margin-bottom: 50px"
     >
       <i-col span="11">
-        <HostInfo :ip="ip"/>
+        <HostInfo :ip="ip" />
       </i-col>
       <i-col span="11">
         <Card title="QPS">
@@ -39,6 +39,7 @@
     <Row
       type="flex"
       justify="space-between"
+      style="margin-bottom: 50px"
     >
       <i-col span="11">
         <Card title="解析成功率">
@@ -153,7 +154,11 @@ export default {
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    ip() {
+      this.initDataRequest();
+    }
+  },
   created() { },
   mounted() {
     this.initDataRequest();

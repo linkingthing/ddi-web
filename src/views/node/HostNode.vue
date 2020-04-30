@@ -73,6 +73,7 @@ export default {
 .hostNode {
   position: relative;
   cursor: pointer;
+
   .tiptool {
     opacity: 0;
     position: absolute;

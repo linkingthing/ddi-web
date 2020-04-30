@@ -2,7 +2,7 @@
   <div class="Card">
     <h3>
       {{title}}
-      <span v-for="item in infos" :key="item">{{item}}</span>
+      <!-- <span v-for="item in infos" :key="item">{{item}}</span> -->
     </h3>
 
     <slot/>

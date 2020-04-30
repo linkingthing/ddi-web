@@ -29,7 +29,7 @@
         <i-col
           :span="16"
           class="innerbox"
-          style="text-align: right;overflow: auto;"
+          style="text-align: right;"
         >
           <div class="node-box">
             <div class="parent">
@@ -47,7 +47,7 @@
                 :host="item"
                 @click="handleGoDeviceInfo(item)"
                 :key="item.ip"
-                v-for="item in serverList.filter(item => item.role !== 'controller') "
+                v-for="(item,index) in serverList.filter(item => item.role !== 'controller') "
               />
             </div>
           </div>
@@ -206,6 +206,7 @@ export default {
       ],
       serverList: [],
       node: "",
+      dhcpNode: "",
       qpsLabels: [],
       qpsValues: [],
       status: [],
@@ -222,6 +223,9 @@ export default {
   watch: {
     node() {
       this.initDataRequest();
+    },
+    dhcpNode(node) {
+      this.batchExecute(node);
     }
   },
 
@@ -234,14 +238,15 @@ export default {
       this.getQpsList();
       this.getDNSAnalysisStateData();
       this.getDNSAnalysisStateSuccessRecode();
-      this.batchExecute();
     },
+
     getList() {
       services
         .getServerList()
         .then(res => {
           this.serverList = res.data.data || [];
-          this.node = res.data.data.find(item => item.role === "controller").ip;
+          this.node = res.data.data.find(item => item.role === "dns").ip;
+          this.dhcpNode = res.data.data.find(item => item.role === "dhcp").ip;
         })
         .catch(err => err);
     },
@@ -345,8 +350,7 @@ export default {
 
       return result;
     },
-    batchExecute() {
-      const node = this.node;
+    batchExecute(node) {
       const batch = [
         {
           type: "dhcppacket",
@@ -534,6 +538,7 @@ export default {
       border: 0;
     }
   }
+
 }
 .tab-item {
   padding-top: 60px;
