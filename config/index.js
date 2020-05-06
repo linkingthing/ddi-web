@@ -33,6 +33,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/apis': {
+        // target: 'http://10.0.0.101:8081/apis',
         // target: 'http://10.0.0.19:8081/apis',
         target: 'http://10.0.0.101:8081/apis',
         // target:'http://172.31.0.201:8081/apis',

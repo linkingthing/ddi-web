@@ -45,8 +45,8 @@
               :label-width="110"
             >
               <i-select v-model="params.redirecttype">
-                <i-option value="rpz">直接重定向</i-option>
-                <i-option value="redirect">NXDOMAIN重定向</i-option>
+                <i-option value="localzone">localzone</i-option>
+                <i-option value="nxdomain">nxdomain</i-option>
               </i-select>
             </form-item>
           </div>
