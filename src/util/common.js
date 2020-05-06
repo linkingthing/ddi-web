@@ -16,6 +16,8 @@ export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za
 
 export const domainReg = /^(?=^.{1,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*$/;
 
+export const macReg = /^((([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2})|(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}))$/;
+
 export const urlValidate = {
   pattern: urlReg,
   message: "请正确输入url"
@@ -61,6 +63,12 @@ function IPv6UnitTest(unitArr, callback) {
     return /^[0-9a-fA-F]{1,4}$/.test(unit);
   });
 }
+
+/**
+ * 校验Mac是否合法
+ * @param {String} mac MAC地址
+ */
+export const macAddressIsValid = mac => macReg.test(mac.trim());
 
 /**
  * 将IPv6地址填充为完整的IPv6

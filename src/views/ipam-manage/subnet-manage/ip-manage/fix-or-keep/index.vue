@@ -72,7 +72,7 @@ export default {
       try {
         this.loading = true;
 
-        let { status, message } = await service.changeToFixOrKeep(this.subnetId, this.getParams());
+        let { status, message } = await service.changeToFixOrKeep(this.subnetId,this.data[0].id, this.getParams());
 
         if (status === 200) {
           this.$$success("操作成功！");
