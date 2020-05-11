@@ -1,9 +1,15 @@
 <template>
-  <Chart :options="options"></Chart>
+  <Chart
+    v-if="values.length"
+    :options="options"
+  />
+  <NoDataFigure v-else />
+
 </template>
 
 <script>
 import Chart from "./Chart";
+import NoDataFigure from "./NoDataFigure";
 
 export default {
   name: "ChartLine",
@@ -15,7 +21,7 @@ export default {
       }
     }
   },
-  components: { Chart },
+  components: { Chart, NoDataFigure },
   computed: {
     options() {
       const labels = this.values.map(item => item.name);
@@ -48,7 +54,7 @@ export default {
               emphasis: {
                 show: true,
                 textStyle: {
-                  fontSize: "30",
+                  fontSize: "18",
                   fontWeight: "bold"
                 }
               }

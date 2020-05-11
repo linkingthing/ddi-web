@@ -2,10 +2,10 @@
   <div class="Card">
     <h3>
       {{title}}
-      <span v-for="item in infos" :key="item">{{item}}</span>
+      <!-- <span v-for="item in infos" :key="item">{{item}}</span> -->
     </h3>
 
-    <slot></slot>
+    <slot/>
   </div>
 </template>
 
@@ -35,8 +35,8 @@ export default {
 <style lang="less" scoped>
 .Card {
   h3 {
-    font-size: 24px;
-    color: #697075;
+    font-size: 18px;
+    color: #777777;
     span {
       font-size: 16px;
       color: #929292;

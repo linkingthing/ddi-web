@@ -1,6 +1,9 @@
 <template>
-  <Card title="服务器信息" :infos="infos">
-    <DeviceInfo :deviceState="deviceState" />
+  <Card
+    title="服务器信息"
+    :infos="infos"
+  >
+    <DeviceInfo :device-state="deviceState" />
   </Card>
 </template>
 
@@ -14,13 +17,23 @@ export default {
     Card,
     DeviceInfo
   },
-  props: {},
+  props: {
+    ip: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       deviceState: {},
       infos: [],
       timer: null
     };
+  },
+  watch: {
+    ip() {
+      this.getDeviceInfo();
+    }
   },
   mounted() {
     this.getDeviceInfo();
@@ -30,19 +43,21 @@ export default {
   },
   methods: {
     getDeviceInfo() {
-      const ip = this.$route.query.ip;
+      const ip = this.ip || this.$route.query.ip;
+      if (!ip) {
+        return;
+      }
       services.getNodeList({ node: ip }).then(res => {
         const result = res.data.data;
-        this.deviceState = result.usage[ip];
-        const deviceInfo = result.nodes[ip];
+        this.deviceState = result.usage[ip] || {};
+        const deviceInfo = result.nodes[ip] || {};
         this.infos = [
-          `服务器名称：${deviceInfo.hostname}`,
-          `服务器IP：${deviceInfo.ip}`
+          `服务器名称：${deviceInfo.hostname || ""}`,
+          `服务器IP：${deviceInfo.ip || this.ip || ""}`
         ];
       });
     }
   },
-  watch: {},
   beforeDestroy() {
     clearInterval(this.timer);
   }

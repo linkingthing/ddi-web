@@ -183,7 +183,7 @@ export default {
     },
 
     handleView(data) {
-      this.$router.push(`/ipam-manage/ip-manage?subnetId=${data.subnet_id}&addr=${data.subnet}`);
+      this.$router.push(`/address/ipam-manage/ip-manage?subnetId=${data.subnet_id}&addr=${data.subnet}`);
     },
 
     handleSaved() {

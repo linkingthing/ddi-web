@@ -72,7 +72,7 @@ export default {
     },
 
     showDetail(row) {
-      this.$router.push(`/dhcp-service/address-pool-list?subnetId=${row.subnet_id}&address=${row.subnet}`);
+      this.$router.push(`/address/dhcp-service/address-pool-list?subnetId=${row.subnet_id}&address=${row.subnet}`);
     },
 
     async handleDelete(data) {

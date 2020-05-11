@@ -18,7 +18,7 @@ export default {
         {
             // 访问控制列表
             name: 'access-control-list',
-            path: '/access-control/list',
+            path: '/dns/access-control/list',
             component: () => import(/* webpackChunkName: "access-control-list" */ "@/views/access-control/access-control-list"),
             meta: {
                 title: '访问控制列表'
@@ -27,7 +27,7 @@ export default {
         {
             // 视图管理
             name: 'view-manage',
-            path: '/access-control/view-manage',
+            path: '/dns/access-control/view-manage',
             component: () =>  import(/* webpackChunkName: "view-manage" */ "@/views/access-control/view-manage"),
             meta: {
                 title: '视图管理'
@@ -36,7 +36,7 @@ export default {
         {
             // 解析优先级
             name: 'analysis-priority',
-            path: '/access-control/analysis-priority',
+            path: '/dns/access-control/analysis-priority',
             component: () => import(/* webpackChunkName: "analysis-riority" */ '@/views/access-control/analysis-priority'),
             meta: {
                 notInMenu:true,

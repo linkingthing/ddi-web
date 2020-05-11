@@ -9,36 +9,38 @@ export default {
   path: "",
   component: Layout,
   icon: "icon-recursive",
-  name:"dhcp-service",
-  meta:{
-      title: "DHCP服务",
-      range:"ipam"
+  name: "dhcp-dhcp",
+  meta: {
+    title: "DHCP服务",
+    range: "address"
   },
-  children:[
+  children: [
     {
       name: 'subnet-pool-subnet',
-      path: '/dhcp-service/subnet-pool-list',
+      path: '/address/dhcp-service/subnet-pool-list',
       component: () => import(/* webpackChuckName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"),
-      meta:{
-        title:"地址池管理"
+      meta: {
+        range: "address",
+
+        title: "地址池管理"
       }
     },
     {
       name: 'address-pool-list',
-      path: '/dhcp-service/address-pool-list',
+      path: '/address/dhcp-service/address-pool-list',
       component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"),
-      meta:{
-        notInMenu:true,
-        from:"subnet-pool-subnet",
-        title:":address"
+      meta: {
+        notInMenu: true,
+        from: "subnet-pool-subnet",
+        title: ":address"
       }
     },
     {
       name: 'option-config',
-      path: '/dhcp-service/option-config',
+      path: '/address/dhcp-service/option-config',
       component: () => import(/* webpackChuckName: "option-config" */ "@/views/dhcp-service/option-config"),
-      meta:{
-        title:"OPTION配置"
+      meta: {
+        title: "OPTION配置"
       }
     }
     // {
@@ -48,4 +50,3 @@ export default {
     // }
   ]
 };
-  

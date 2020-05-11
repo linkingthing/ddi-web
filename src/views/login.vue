@@ -185,7 +185,7 @@ export default {
                     this.$Message.success("Success!");
                     this.SET_TOKEN(res.data.token);
                     this.$router.push({
-                      path: "/node"
+                      path: "/"
                     });
                   }
                 })

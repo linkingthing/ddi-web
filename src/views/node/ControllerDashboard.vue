@@ -1,36 +1,48 @@
 <template>
   <div class="ControllerDashboard dashboard">
-    <h1 class="d-title">Conroller服务器</h1>
+    <h1 class="d-title">Controller服务器</h1>
 
     <Row
       type="flex"
       justify="space-between"
-      style="margin-bottom: 50px">
+      style="margin-bottom: 50px"
+    >
       <i-col span="11">
-        <HostInfo />
+        <HostInfo :ip="node" />
       </i-col>
       <i-col span="11">
         <Card title="CPU利用率">
-          <line-bar :labels="cpuLabels" :values="cpuValues"/>
+          <line-bar
+            is-percent
+            :labels="cpuLabels"
+            :values="cpuValues"
+          />
         </Card>
       </i-col>
     </Row>
 
-    <Row type="flex" justify="space-between">
+    <Row
+      type="flex"
+      justify="space-between"
+    >
       <i-col span="11">
         <Card title="内存利用率">
           <line-bar
+            is-percent
             line-theme="purple"
             :labels="memoLabels"
-            :values="memoValues"/>
+            :values="memoValues"
+          />
         </Card>
       </i-col>
       <i-col span="11">
         <Card title="磁盘利用率">
           <line-bar
+            is-percent
             line-theme="brown"
             :labels="diskLabels"
-            :values="diskValues"/>
+            :values="diskValues"
+          />
         </Card>
       </i-col>
     </Row>
@@ -41,15 +53,16 @@
 import Card from "./Card";
 import HostInfo from "./HostInfo";
 import Line from "./Line";
-import Pie from "./Pie";
 import { getDeviceHistoryInfo } from "./tools";
+import services from "@/services";
 
 export default {
   name: "ControllerDashboard",
-  components: { Card, HostInfo, "line-bar": Line, Pie },
+  components: { Card, HostInfo, "line-bar": Line },
   props: {},
   data() {
     return {
+      node: "",
       timer: null,
       cpuLabels: [],
       cpuValues: [],
@@ -61,18 +74,29 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {},
+  created() {
+    this.getList();
+  },
   mounted() {
     const node = this.$route.query.ip;
     this.batchExecute(node);
-    this.timer = setInterval(() => {
-      this.batchExecute(node);
-    }, 3000);
+    // this.timer = setInterval(() => {
+    // this.batchExecute(node);
+    // }, 3000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
   },
   methods: {
+    getList() {
+      services
+        .getServerList()
+        .then(res => {
+          this.node = res.data.data.find(item => item.role === "controller").ip;
+          this.batchExecute(this.node);
+        })
+        .catch(err => err);
+    },
     batchExecute(node) {
       const batch = [
         {
@@ -97,8 +121,8 @@ export default {
           node,
           type
         }).then(([labels, values]) => {
-          this[labelsField] = labels;
-          this[valuesField] = values;
+          this[labelsField] = labels || [];
+          this[valuesField] = Array.isArray(values) ? values.map(item => Number(item).toFixed(2) / 100) : [];
         });
       });
     }

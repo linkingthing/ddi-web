@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import store from "../util/store";
 import Login from "../views/login";
 import DefaultLayout from "../views/default-layout";
 
@@ -35,7 +34,7 @@ router.beforeEach((to, from, next) => {
     next();
   } 
   else if (to.path === "/") {
-    next("/node");
+    next("/monitor");
   }
   else {
     next();

@@ -35,8 +35,9 @@ module.exports = {
       '/apis': {
         // target: 'http://10.0.0.101:8081/apis',
         // target: 'http://10.0.0.19:8081/apis',
-        target: 'http://10.0.0.101:8081/apis',
-        // target:'http://172.31.0.201:8081/apis',
+        // target: 'http://10.0.0.101:8081/apis',
+        target: 'http://172.31.0.201:8081/apis',
+
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数
         // secure: false,  // 如果是https接口，需要配置这个参数
@@ -63,10 +64,10 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
   },
-  PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,node,ipam'"
+  PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,monitor,address'"
 }
 
-console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2) : ['dns', 'node', 'ipam'], "相关模块")
+console.log("正在生成", process.argv.slice(2).length ? process.argv.slice(2) : ['dns', 'monitor', 'address'], "相关模块")
 console.log("正在生成...")
 console.log("正在生成......")
 console.log("正在生成.........")
