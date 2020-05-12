@@ -63,20 +63,20 @@ async function netCall(request) {
   }
 }
 
-function get({ baseUrl, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.get(baseUrl + url, params, otherOptions));
+function get({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.get(url, params, otherOptions));
 }
 
-function post({ baseUrl, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.post(baseUrl + url, params, otherOptions));
+function post({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.post(url, params, otherOptions));
 }
 
-function put({ baseUrl, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.put(baseUrl + url, params, otherOptions));
+function put({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.put(url, params, otherOptions));
 }
 
-function del({ baseUrl, url, otherOptions = {} }) {
-  return netCall(instance.delete(baseUrl + url, otherOptions));
+function del({ url, otherOptions = {} }) {
+  return netCall(instance.delete(url, otherOptions));
 }
 
 export {
