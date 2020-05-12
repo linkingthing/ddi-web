@@ -26,7 +26,7 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-            {{item.title}}
+              {{item.title}}
             </MenuItem>
           </Menu>
         </div>

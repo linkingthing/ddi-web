@@ -172,6 +172,10 @@ export default {
         ipAddress: "",
         hostName: "",
         mac: ""
+      },
+      ipTypes: {
+        ipv4: "ipv4",
+        ipv6: "ipv6"
       }
     };
   },
@@ -182,7 +186,7 @@ export default {
     this.subnetId = subnetId;
     this.ipAddress = addr;
 
-    this.isIPv6 = getAddressType(addr) === this.$ipTypes.ipv6;
+    this.isIPv6 = getAddressType(addr) === this.ipTypes.ipv6;
 
     if (this.isIPv6) {
       this.tab = "table";

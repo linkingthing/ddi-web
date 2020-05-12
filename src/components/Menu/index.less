@@ -12,11 +12,17 @@
   .level-menu {
 
   }
+
   .sigle-menu:first-child {
     margin-top: 20px;
   }
+
   .level-menu:first-child {
     margin-top: 20px;
+  }
+
+  .ivu-menu-dark{
+    background: #455484;
   }
 
   .ivu-menu-dark.ivu-menu-vertical {
@@ -35,12 +41,21 @@
 
     .ivu-menu-opened{
       background-color: transparent;
+
+      .ivu-menu-submenu-title {
+        background: #455484;
+      }
     }
 
     .ivu-menu-submenu-title{
       padding-left: 37px;
       font-size: 16px;
       color: #D1D0CE;
+
+      &:hover{
+        background: #455484;
+        color: #fff;
+      }
     }
 
     .ivu-menu-item{
@@ -51,6 +66,11 @@
       // margin-right: 31px;
       &.sigle-menu {
         padding-left: 43px !important;
+      }
+
+      &:hover{
+        background: #455484;
+        color: #fff;
       }
     }
 

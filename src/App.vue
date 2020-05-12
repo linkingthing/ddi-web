@@ -21,9 +21,3 @@ export default {
   mounted() {}
 };
 </script>
-
-<style lang="less">
-@import "./assets/less/global";
-@import "./assets/less/index";
-@import "./assets/less/dns";
-</style>
