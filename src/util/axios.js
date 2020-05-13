@@ -66,7 +66,7 @@ async function netCall(request) {
 }
 
 function get({ url, params = {}, otherOptions = {} }) {
-  return netCall(instance.get(url, params, otherOptions));
+  return netCall(instance.get(url, { params }, otherOptions));
 }
 
 function post({ url, params = {}, otherOptions = {} }) {
