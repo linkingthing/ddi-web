@@ -4,23 +4,29 @@
 }
 
 .ivu-table {
-    th {
-        background-color: rgba(184,184,184, .1);
+    &::before{
+        background-color: rgba(102,97,91, .1);
+    }
+
+    &-header thead tr th{
+        background-color: rgba(244,247,253, .8);
         border-bottom   : none;
+        padding: 12px 0;
 
         .ivu-table-cell span {
-            font-size  : 14px;
+            font-size  : 16px;
             font-weight: 500;
             color      : #9F9F9F;
         }
     }
 
     td {
-        border-bottom-color: rgba(204, 197, 186, .3);
+        border-bottom-color: rgba(102,97,91, .1);
+        height: 50px;
 
         .ivu-table-cell {
             span {
-                color    : #666;
+                color    : #999;
                 font-size: 14px;
             }
 
@@ -28,6 +34,10 @@
                 font-size: 14px;
             }
         }
+    }
+        
+    .ivu-checkbox-inner{
+        border-color: #66615B;
     }
 
     a {
