@@ -119,7 +119,7 @@ export default {
       url: "/dns"
     }, {
       title: "地址管理",
-      url: "/address"
+      url: "/ipam"
     }];
     return {
       logoSrc,
