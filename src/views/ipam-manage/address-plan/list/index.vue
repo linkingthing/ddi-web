@@ -67,7 +67,11 @@ export default {
       try {
         let res = await this.$get({ url: this.url });
         
-        this.tableData = res;
+        this.tableData = res.map(item => {
+          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+
+          return item;
+        });
       } catch (err) {
         console.error(err);
           

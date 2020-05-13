@@ -113,6 +113,11 @@ Vue.prototype.$getViewList = async params => {
   return await getStateByKey("getViewList", params);
 };
 
+/**
+ * 修建日期，将日期的多余的Z、T以及+号后面的内容去掉
+ */
+Vue.prototype.$trimDate = date => date.replace("T", " ").replace(/(Z|\+\S*)/g, "");
+
 Vue.prototype.$get = get;
 Vue.prototype.$put = put;
 Vue.prototype.$post = post;
