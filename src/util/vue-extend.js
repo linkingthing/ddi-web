@@ -81,22 +81,29 @@ const getStateByKey = async function (name, params = {}) {
 /**
  * 根据当前路由获取对应的url
  */
-Vue.prototype.$getCurrentApi = () => {
+Vue.prototype.$getApiByRoute = () => {
   let paths = router.currentRoute.path.slice(1).split("/");
   
   const block = paths[1];
 
   paths.splice(0,2);
-  
-  return baseUrl.replace("{block}", block) + "/" + paths.map(item => {
-    let index = item.indexOf("_");
 
-    if (index > 0) {
-      item = item.substring(0, index);
+  let child = "";
+  
+  let url = baseUrl.replace("{block}", block) + "/" + paths.map(item => {
+    let temp = item.split("_");
+
+    if (temp.length > 1) {
+      child = item[1];
     }
 
-    return item;
+    return temp[0];
   }).join("/");
+
+  return {
+    url,
+    child
+  };
 };
   
 /**

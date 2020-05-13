@@ -46,7 +46,7 @@ export default {
 
   data() {
     return {
-      url: this.$getCurrentApi(),
+      url: this.$getApiByRoute().url,
       loading: true,
       tableData: [],
       columns: columns(this),
