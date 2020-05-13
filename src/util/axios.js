@@ -4,11 +4,8 @@ import router from "@/router";
 import { LoadingBar, Message } from "view-design";
 
 export const baseUrl = "/apis/linkingthing.com/{block}/v1";
-const successCode = [200, 201, 202, 204];
 
-function getUrl(block, url) {
-  return baseUrl.replace("{block}", block) + url;
-}
+const successCode = [200, 201, 202, 204];
 
 const instance = axios.create();
 
@@ -68,20 +65,20 @@ async function netCall(request) {
   }
 }
 
-function get({ block, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.get(getUrl(block, url), params, otherOptions));
+function get({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.get(url, params, otherOptions));
 }
 
-function post({ block, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.post(getUrl(block, url), params, otherOptions));
+function post({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.post(url, params, otherOptions));
 }
 
-function put({ block, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.put(getUrl(block, url), params, otherOptions));
+function put({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.put(url, params, otherOptions));
 }
 
-function del({ block, url, otherOptions = {} }) {
-  return netCall(instance.delete(getUrl(block, url), otherOptions));
+function del({ url, otherOptions = {} }) {
+  return netCall(instance.delete(url, otherOptions));
 }
 
 export {

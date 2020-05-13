@@ -46,6 +46,7 @@ export default {
 
   data() {
     return {
+      url: this.$getCurrentApi(),
       loading: true,
       tableData: [],
       columns: columns(this),
@@ -64,10 +65,7 @@ export default {
       this.selectedData = [];
 
       try {
-        let res = await this.$get({
-          block: "ipam",
-          url: "/plans"
-        });
+        let res = await this.$get({ url: this.url });
         
         this.tableData = res;
       } catch (err) {

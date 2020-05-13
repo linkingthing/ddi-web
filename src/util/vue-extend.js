@@ -1,7 +1,7 @@
 import Vue from "vue";
 import store from "@/store";
 import router from "@/router";
-import { del,post,put,get,axios } from "./axios";
+import { del, post, put, get, axios, baseUrl } from "./axios";
 
 function showMessage(type, msg, scope) {
   let options = {
@@ -81,20 +81,22 @@ const getStateByKey = async function (name, params = {}) {
 /**
  * 根据当前路由获取对应的url
  */
-Vue.prototype.$getCurrentApis = () => {
-  let pathArr = router.currentRoute.path.split("/")
-    .splice(0,1)
-    .map(item => {
-      let index = item.indexOf("_");
-
-      if (index > 0) {
-        item = item.substring(0, index);
-      }
-
-      return item;
-    });
+Vue.prototype.$getCurrentApi = () => {
+  let paths = router.currentRoute.path.slice(1).split("/");
   
-  return pathArr.join("/");
+  const block = paths[1];
+
+  paths.splice(0,2);
+  
+  return baseUrl.replace("{block}", block) + "/" + paths.map(item => {
+    let index = item.indexOf("_");
+
+    if (index > 0) {
+      item = item.substring(0, index);
+    }
+
+    return item;
+  }).join("/");
 };
   
 /**

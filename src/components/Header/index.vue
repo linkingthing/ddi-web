@@ -119,7 +119,7 @@ export default {
       url: "/dns"
     }, {
       title: "地址管理",
-      url: "/ipam"
+      url: "/address"
     }];
     return {
       logoSrc,
@@ -139,7 +139,7 @@ export default {
       setToken: "SET_TOKEN"
     }),
 
-    handleClickMainMenu(menu) {
+    handleClickMainMenu(menu) {  
       this.$router.push({ path: menu });
     },
 

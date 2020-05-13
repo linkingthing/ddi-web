@@ -12,21 +12,20 @@ export default {
   name: "dhcp-dhcp",
   meta: {
     title: "DHCP服务",
-    range: "ipam"
+    range: "address"
   },
   children: [
     {
       name: 'subnet-pool-subnet',
-      path: '/ipam/dhcp-service/subnet-pool-list',
+      path: '/address/dhcp/subnet-pool-list',
       component: () => import(/* webpackChuckName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"),
       meta: {
-        range: "ipam",
         title: "地址池管理"
       }
     },
     {
       name: 'address-pool-list',
-      path: '/ipam/dhcp-service/address-pool-list',
+      path: '/address/dhcp/address-pool-list',
       component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"),
       meta: {
         notInMenu: true,
@@ -36,7 +35,7 @@ export default {
     },
     {
       name: 'option-config',
-      path: '/ipam/dhcp-service/option-config',
+      path: '/address/dhcp/option-config',
       component: () => import(/* webpackChuckName: "option-config" */ "@/views/dhcp-service/option-config"),
       meta: {
         title: "OPTION配置"
