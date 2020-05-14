@@ -6,9 +6,17 @@
         v-for="value in unfold ? list : list.slice(0, 3) "
         :key="value.id"
       >{{value.name || value}}</Tag>
-      <Icon :type="unfold ? 'ios-arrow-up' : 'ios-arrow-down' " @click="handleUnfold" />
+      <Icon
+        :type="unfold ? 'ios-arrow-up' : 'ios-arrow-down' "
+        @click="handleUnfold"
+      />
     </template>
-    <Tag v-else color="default" v-for="value in list" :key="value.id">{{value.name || value}}</Tag>
+    <Tag
+      v-else
+      color="default"
+      v-for="value in list"
+      :key="value.id"
+    >{{value.name || value}}</Tag>
   </div>
 </template>
 

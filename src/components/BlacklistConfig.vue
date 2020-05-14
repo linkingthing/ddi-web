@@ -8,14 +8,30 @@
   >
     <div slot="header">新建访问控制列表</div>
     <div>
-      <vue-scroll style="height: 500px;" ref="vs">
-        <i-form :model="dataConfig" label-position="right" :label-width="80" ref="formValidate">
+      <vue-scroll
+        style="height: 500px;"
+        ref="vs"
+      >
+        <i-form
+          :model="dataConfig"
+          label-position="right"
+          :label-width="80"
+          ref="formValidate"
+        >
           <div class="pop-content">
             <div class="pop-box">
               <div class="pop-body">
-                <form-item label="新建访问控制列表" prop="name" :label-width="137">
+                <form-item
+                  label="新建访问控制列表"
+                  prop="name"
+                  :label-width="137"
+                >
                   <i-select v-model="dataConfig.id">
-                    <i-option v-for="item in select" :key="item.id" :value="item.id">{{item.name}}</i-option>
+                    <i-option
+                      v-for="item in select"
+                      :key="item.id"
+                      :value="item.id"
+                    >{{item.name}}</i-option>
                   </i-select>
                 </form-item>
               </div>
@@ -25,8 +41,15 @@
       </vue-scroll>
     </div>
     <div slot="footer">
-      <i-button class="me-button k-btn" @click="blacklistModal = false">取消</i-button>
-      <i-button type="primary" class="me-button add-btn" @click="handleSubmit">确定</i-button>
+      <i-button
+        class="me-button k-btn"
+        @click="blacklistModal = false"
+      >取消</i-button>
+      <i-button
+        type="primary"
+        class="me-button add-btn"
+        @click="handleSubmit"
+      >确定</i-button>
     </div>
   </modal>
 </template>
