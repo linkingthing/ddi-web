@@ -4,7 +4,12 @@
       <i-button @click="handleReduce">
         <Icon type="md-remove" />
       </i-button>
-      <i-input v-model="time.label" readonly class="input" placeholder></i-input>
+      <i-input
+        v-model="time.label"
+        readonly
+        class="input"
+        placeholder
+      />
       <i-button @click="handleAdd">
         <Icon type="md-add" />
       </i-button>
@@ -16,10 +21,16 @@
       type="datetime"
       placeholder="选择开始日期"
       style="width: 160px"
-    ></DatePicker>
-    <InputNumber v-model="step" style="width: 120px"></InputNumber>
+    />
+    <InputNumber
+      v-model="step"
+      style="width: 120px"
+    />
 
-    <i-button type="primary" @click="handleSearch">搜索</i-button>
+    <i-button
+      type="primary"
+      @click="handleSearch"
+    >搜索</i-button>
   </div>
 </template>
 
