@@ -107,7 +107,8 @@ export default {
     },
 
     handleManualScan() {
-      this.showManualScan = true;
+      this.showAutoScan = true;
+      // this.showManualScan = true;
     },
 
     handleViewNet(data) {

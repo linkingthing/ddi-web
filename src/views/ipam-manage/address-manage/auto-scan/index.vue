@@ -7,9 +7,9 @@
   >
     <IviewLoading v-if="loading" />
 
-    <div>
-      <div class="info-row">
-        <div class="info-row-label">扫描频率</div>
+    <div class="auto-scan-info">
+      <div class="info-row-inline">
+        <div class="info-row-label">扫描频率：</div>
         <Select v-model="frequency" style="width:260px">
           <Option
             v-for="item in frequencies"
@@ -20,8 +20,8 @@
           </Option>
         </Select>
       </div>
-      <div class="info-row">
-        <div class="info-row-label">开始时间</div>
+      <div class="info-row-inline">
+        <div class="info-row-label">开始时间：</div>
         <TimePicker
           format="HH:mm"
           v-model="startTime"
@@ -144,3 +144,7 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+@import "./index.less";
+</style>
