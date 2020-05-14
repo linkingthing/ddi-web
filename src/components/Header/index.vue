@@ -139,7 +139,7 @@ export default {
       setToken: "SET_TOKEN"
     }),
 
-    handleClickMainMenu(menu) {
+    handleClickMainMenu(menu) {  
       this.$router.push({ path: menu });
     },
 

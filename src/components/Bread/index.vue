@@ -47,7 +47,10 @@ export default {
     getBreadcrumbList(route) {
       let result = [];
 
-      this.breadcrumbList = this.getChildren(route.path, this.configs, result);      
+      this.breadcrumbList = this.getChildren(route.path, this.configs, result); 
+      
+      // 将root菜单给去掉
+      this.breadcrumbList.splice(0,1);
     },
 
     getChildren(path, routes, result, parent) {
@@ -240,6 +243,10 @@ export default {
 
 <style lang="less" scoped>
 .wrapper {
-  padding: 12px 20px;
+  position: absolute;
+  z-index: 1;
+  height: 62px;
+  line-height: 62px;
+  padding: 0 20px;
 }
 </style>

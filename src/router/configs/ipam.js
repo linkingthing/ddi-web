@@ -14,32 +14,42 @@ export default {
   },
   name: "ipam-manage",
   icon: "icon-ipam",
-  redirect: { name: "subnet-manage" },
+  redirect: { name: "ipam-address-plan" },
   children: [
     {
-      name: 'subnet-manage',
-      path: '/address/ipam-manage/subnet-manage',
-      component: () => import(/* webpackChuckName: "subnet-manage" */ "@/views/ipam-manage/subnet-manage/list"),
+      name: 'ipam-address-plan',
+      path: '/address/ipam/plans',
+      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan'),
+      meta: {
+        title: "IP地址规划"
+      }
+    },
+    {
+      name: 'ipam-address-layouts',
+      path: '/address/ipam/plans/:plansId/layouts',
+      component: () => import(/* webpackChuckName: "ipam-address-layouts" */ '@/views/ipam-manage/address-layout'),
+      meta: {
+        notInMenu: true,
+        from: "address-plan",
+        title: "地址布局"
+      }
+    },
+    {
+      name: 'ipam-address-manage',
+      path: '/address/ipam/subnets',
+      component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
         title: "IP地址管理"
       }
     },
     {
-      name: 'ip-manage',
-      path: '/address/ipam-manage/ip-manage',
-      component: () => import(/* webpackChuckName: "ip-manage" */ "@/views/ipam-manage/subnet-manage/ip-manage"),
+      name: 'ipam-net-manage',
+      path: '/address/ipam/subnets/:subnetsId/nets',
+      component: () => import(/* webpackChuckName: "ipam-net-manage" */ "@/views/ipam-manage/net-manage"),
       meta: {
         notInMenu: true,
-        from: "subnet-manage",
-        title: ":addr"
-      }
-    },
-    {
-      name: 'ip-address-devide',
-      path: '/address/ipam-manage/address-devide',
-      component: () => import(/* webpackChuckName: "ip-address-devide" */ '@/views/ipam-manage/address-devide'),
-      meta: {
-        title: "IP地址规划"
+        from: "address-manage",
+        title: "网络"
       }
     }
   ]

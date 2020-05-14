@@ -5,6 +5,8 @@ import { LoadingBar, Message } from "view-design";
 
 export const baseUrl = "/apis/linkingthing.com/{block}/v1";
 
+const successCode = [200, 201, 202, 204];
+
 const instance = axios.create();
 
 instance.interceptors.request.use(
@@ -33,7 +35,7 @@ async function netCall(request) {
     
     let { message, data } = resData;
 
-    if (status === 0) { // 请求成功
+    if (successCode.includes(status)) { // 请求成功
       LoadingBar.finish();
 
       return data;
@@ -63,20 +65,20 @@ async function netCall(request) {
   }
 }
 
-function get({ baseUrl, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.get(baseUrl + url, params, otherOptions));
+function get({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.get(url, { params }, otherOptions));
 }
 
-function post({ baseUrl, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.post(baseUrl + url, params, otherOptions));
+function post({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.post(url, params, otherOptions));
 }
 
-function put({ baseUrl, url, params = {}, otherOptions = {} }) {
-  return netCall(instance.put(baseUrl + url, params, otherOptions));
+function put({ url, params = {}, otherOptions = {} }) {
+  return netCall(instance.put(url, params, otherOptions));
 }
 
-function del({ baseUrl, url, otherOptions = {} }) {
-  return netCall(instance.delete(baseUrl + url, otherOptions));
+function del({ url, otherOptions = {} }) {
+  return netCall(instance.delete(url, otherOptions));
 }
 
 export {

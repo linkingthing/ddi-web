@@ -1,6 +1,6 @@
 <template>
   <div class="table-pagination">
-    <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3>
+    <!-- <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3> -->
 
     <article v-if="$slots.top || $slots['top-left'] || $slots['top-right']" class="table-pagination-top">      
       <div class="top-left">
@@ -93,15 +93,15 @@ export default {
   },
 
   computed: {
-    getTitle() {
-      let title = this.$route.meta.title;
+    // getTitle() {
+    //   let title = this.$route.meta.title;
 
-      if (!title || title.indexOf(":") === 0) {
-        title = this.title;
-      }
+    //   if (!title || title.indexOf(":") === 0) {
+    //     title = this.title;
+    //   }
 
-      return title;
-    }
+    //   return title;
+    // }
   },
 
   watch: {
