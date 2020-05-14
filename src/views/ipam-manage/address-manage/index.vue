@@ -100,14 +100,14 @@ export default {
       this.selectedData = [...res];
     },
 
-    handleAutoScan() {
-      this.showCreate = true;
-    },
-
-    handleManualScan(data) {
-      this.showEdit = true;
+    handleAutoScan(data) {
+      this.showAutoScan = true;
 
       this.editData = { ...data };
+    },
+
+    handleManualScan() {
+      this.showManualScan = true;
     },
 
     handleViewNet(data) {
