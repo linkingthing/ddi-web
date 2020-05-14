@@ -14,7 +14,7 @@ export default {
   },
   name: "ipam-manage",
   icon: "icon-ipam",
-  redirect: { name: "ip-address-plan" },
+  redirect: { name: "ipam-address-plan" },
   children: [
     {
       name: 'ipam-address-plan',

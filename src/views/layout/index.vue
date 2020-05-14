@@ -7,7 +7,7 @@
       <Menu />
 
       <div class="content-padding">
-        <!-- <Bread /> -->
+        <Bread />
 
         <router-view />
       </div>

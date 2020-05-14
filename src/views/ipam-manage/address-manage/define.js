@@ -1,10 +1,3 @@
-import { getAddressType } from "@/util/common";
-
-export const operateTypes = {
-  merge: "merge",
-  split: "split"
-};
-
 export const columns = scope => [  
   {
     type: "selection",
@@ -14,15 +7,11 @@ export const columns = scope => [
   {
     title: "网络地址",
     render: (h, { row }) => {
-      const isIPv4 = getAddressType(row.subnet) === "ipv4"; 
-
-      return h("label", {
-        class: isIPv4 ? "net-address" : "",
+      return h("a", {
+        class: "label-link",
         on: {
           click: () => {
-            if (!isIPv4) return;
-
-            scope.handleView(row);
+            scope.handleViewNet(row);
           }
         }
       }, row.subnet);
@@ -53,24 +42,14 @@ export const columns = scope => [
     title: "操作",
     align: "center",      
     render: (h, { row }) => {
-      return h("div", [
-        h("label", {
-          class: "operate-label operate-edit",
-          on: {
-            click: () => {
-              scope.handleEdit(row);
-            }
+      return h("label", {
+        class: "operate-button button-primary",
+        on: {
+          click: () => {
+            scope.handleAutoScan(row);
           }
-        }, "编辑"),
-        h("label", {
-          class: "operate-label operate-delete",
-          on: {
-            click: () => {
-              scope.handleDelete(row);
-            }
-          }
-        }, "删除")
-      ]);
+        }
+      }, "自动扫描");
     }
   }
 ];

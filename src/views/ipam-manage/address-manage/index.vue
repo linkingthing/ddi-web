@@ -4,63 +4,32 @@
 
     <TablePagination 
       :data="tableData"
-      :pagination-enable="false"
       :columns="columns"  
       @on-selection-change="handleSelecChange"
     > 
-      <template slot="top-left">
-        <Input
-          v-model="keywords"
-          placeholder="请输入网络地址"
-          class="top-input"
-          @on-enter="handleQuery" />
-        <Button
-          type="primary"
-          icon="ios-search"
-          @click="handleQuery"
-          class="top-button">查询</Button>
-      </template>
       <template slot="top-right">
         <Button 
           type="primary" 
-          @click="handleAdd" 
-          class="top-button button-add"
+          @click="handleManualScan" 
+          class="top-button button-blue"
         >
-          新建
-        </Button>
-        <Button 
-          type="primary" 
-          @click="handleSplit" 
-          class="top-button button-split"
-        >
-          子网拆分
-        </Button>
-        <Button 
-          type="primary" 
-          @click="handleMerge" 
-          class="top-button button-merge"
-        >
-          子网合并
+          手动扫描
         </Button>
       </template>
     </TablePagination>
 
-    <Create 
-      :visible.sync="showCreate"
-      @confirmed="handleSaved"
+    <AutoScan 
+      :visible.sync="showAutoScan"
+      :data="selectedData"
+      :url="url"
+      @confirmed="handleQuery"
     />
 
-    <Edit 
-      :visible.sync="showEdit"
-      :data="editData"
-      @confirmed="handleSaved"
-    />
-
-    <MergeSplit 
-      :visible.sync="showMergSplit"
-      :data="mergeSplitData"
-      :type="mergeSplitType"
-      @success="handleQuery"
+    <ManualScan 
+      :visible.sync="showManualScan"
+      :data="currentData"
+      :url="url"
+      @confirmed="handleQuery"
     />
   </div>
 </template>
@@ -71,36 +40,29 @@
 
 <script>
 import TablePagination from "@/components/TablePagination";
-import Edit from "./edit";
-import Create from "./create";
-import MergeSplit from "./merge-split";
+import AutoScan from "./auto-scan";
+import ManualScan from "./manual-scan";
 
-import { operateTypes, columns } from "./define";
-
-import services from "@/services/index.js";
-import { getAddressType } from "@/util/common";
+import { columns } from "./define";
 
 export default {
   components: {
     TablePagination,
-    Create,
-    Edit,
-    MergeSplit
+    AutoScan,
+    ManualScan
   },
 
   data() {
     return {
       loading: true,
-      keywords: "",
+      url: this.$getApiByRoute().url,
       tableData: [],
       columns: columns(this),
       selectedData: [],
-      showCreate: false,
-      showEdit: false,
-      editData: null,
-      showMergSplit: false,
-      mergeSplitData: null,
-      mergeSplitType: null
+      currentData: null,
+      showAutoScan: false,
+      showManualScan: false,
+      editData: null
     };
   },
 
@@ -115,19 +77,14 @@ export default {
       this.selectedData = [];
 
       try {
-        let { status, data, message } = await services.getChildNetList(this.keywords);
+        let { data } = await this.$get({ url: this.url });
+        
+        this.tableData = data.map(item => {
+          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+          item.subnet = item.subnet || "";
 
-        if (+status === 200) {
-          this.tableData = data.data.map(item => {
-            item.creationTimestamp = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
-            item.subnet = item.subnet || "";
-
-            return item;
-          });
-        }
-        else {
-          Promise.reject({ message });
-        }
+          return item;
+        });
         
       } catch (err) {
         console.error(err);
@@ -143,82 +100,18 @@ export default {
       this.selectedData = [...res];
     },
 
-    handleAdd() {
+    handleAutoScan() {
       this.showCreate = true;
     },
 
-    handleEdit(data) {
+    handleManualScan(data) {
       this.showEdit = true;
 
       this.editData = { ...data };
     },
 
-    handleSplit() {
-      if (this.selectedData.length > 1) {
-        this.$$warning("只能对一个子网进行拆分！");
-
-        return;
-      }
-      else if (!this.selectedData.length) {
-        this.$$warning("请选择一个子网进行拆分！");
-
-        return;
-      }
-
-      this.mergeSplitType = operateTypes.split;
-      this.showMergSplit = true;
-      this.mergeSplitData = this.selectedData;
-    },
-
-    handleMerge() {
-      if (this.selectedData.length <= 1) {
-        this.$$warning("请选择多个子网进行合并！");
-
-        return;
-      }
-
-      this.mergeSplitType = operateTypes.merge;
-      this.showMergSplit = true;
-      this.mergeSplitData = this.selectedData;
-    },
-
-    handleView(data) {
-      this.$router.push(`/address/ipam-manage/ip-manage?subnetId=${data.subnet_id}&addr=${data.subnet}`);
-    },
-
-    handleSaved() {
-      this.handleQuery();
-    },
-
-    async handleDelete(data) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
-
-        this.loading = true;
-
-        const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
-        
-        let { message, status } = await services[action](data.subnet_id);
-
-        status = +status;
-
-        if (status === 200 || status === 204) {
-          this.$$success("删除成功！");
-
-          this.handleQuery();
-        }
-        else {
-          Promise.reject({ message });
-        }
-      }
-      catch (err) {
-        console.error(err);
-
-        this.$$error(err.message || "删除失败！");
-      }
-      finally {
-        this.loading = false;
-      }
+    handleViewNet(data) {
+      this.$router.push(`/address/ipam/subnets/${data.id}/nets`);
     }
   }
 };
