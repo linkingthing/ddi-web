@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-list">   
+  <div class="plan-list">   
     <IviewLoading v-if="loading" />
 
     <TablePagination 
@@ -25,6 +25,12 @@
         </Button>
       </template>
     </TablePagination>
+
+    <Edit 
+      :visible.sync="showEdit"
+      :url="url"
+      @saved="handleSaved"
+    />
   </div>
 </template>
 
@@ -34,22 +40,24 @@
 
 <script>
 import TablePagination from "@/components/TablePagination";
+import Edit from "./edit";
 
 import { columns } from "./define";
 
-import { getAddressType } from "@/util/common";
-
 export default {
   components: {
-    TablePagination
+    TablePagination,
+    Edit
   },
 
   data() {
     return {
+      url: this.$getApiByRoute().url,
       loading: true,
       tableData: [],
       columns: columns(this),
-      selectedData: []
+      selectedData: [],
+      showEdit: false
     };
   },
 
@@ -64,12 +72,13 @@ export default {
       this.selectedData = [];
 
       try {
-        let res = await this.$get({
-          block: "ipam",
-          url: "/plans"
-        });
+        let res = await this.$get({ url: this.url });
         
-        this.tableData = res;
+        this.tableData = res.map(item => {
+          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+
+          return item;
+        });
       } catch (err) {
         console.error(err);
           
@@ -85,10 +94,12 @@ export default {
     },
 
     handleViewLayouts(data) {
-      this.$router.push(`/ipam/plans/${data.id}/layouts`);
+      this.$router.push(`/address/ipam/plans/${data.id}/layouts`);
     },
 
-    handleAdd() {},
+    handleAdd() {
+      this.showEdit = true;
+    },
 
     handleSaved() {
       this.handleQuery();
@@ -99,26 +110,19 @@ export default {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
-
-        // const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
         
-        // let { message, status } = await services[action](data.subnet_id);
+        await this.$delete({ url: this.url + "/" + data.id });
+        
+        this.$$success("删除成功！");
 
-        // status = +status;
-
-        // if (status === 200 || status === 204) {
-        //   this.$$success("删除成功！");
-
-        //   this.handleQuery();
-        // }
-        // else {
-        //   Promise.reject({ message });
-        // }
+        this.handleQuery();
       }
       catch (err) {
         console.error(err);
 
-        this.$$error(err.message || "删除失败！");
+        if (err.message) {
+          this.$$error(err.message);
+        }
       }
       finally {
         this.loading = false;

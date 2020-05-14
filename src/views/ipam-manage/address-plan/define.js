@@ -16,10 +16,10 @@ export const columns = scope => [
         class: "cell-prefix",
         on: {
           click: () => {
-            scope.handleViewPlanDetail(row);
+            scope.handleViewLayouts(row);
           }
         }
-      }, row.prefix);
+      }, 1111 + row.prefix);
     },
     align: "center"
   },

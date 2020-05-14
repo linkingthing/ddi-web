@@ -1,5 +1,5 @@
 <template>
-  <div class="plan-list">   
+  <div class="layout-list">   
     <IviewLoading v-if="loading" />
 
     <TablePagination 
@@ -46,8 +46,8 @@ export default {
 
   data() {
     return {
-      url: this.$getApiByRoute().url,
       loading: true,
+      url: this.$getApiByRoute().url,
       tableData: [],
       columns: columns(this),
       selectedData: []
@@ -66,11 +66,13 @@ export default {
 
       try {
         let res = await this.$get({ url: this.url });
+        console.log(res);
         
         this.tableData = res.map(item => {
-          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+          const segments = item.item.segmentWidth;
 
-          return item;
+          item.segments = segments.join("-");
+          item.blocks = Math.pow(2, segments[segments.length - 1]);
         });
       } catch (err) {
         console.error(err);
@@ -91,6 +93,12 @@ export default {
     },
 
     handleAdd() {},
+
+    handleViewNetDetail() {},
+
+    handleSymbolManage() {},
+
+    handleEdit() {},
 
     handleSaved() {
       this.handleQuery();
