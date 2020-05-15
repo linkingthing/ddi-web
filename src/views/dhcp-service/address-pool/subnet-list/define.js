@@ -41,10 +41,9 @@ export const columns = scope => [
     render: (h, { row }) => {
       return h("div", [
         h("btn-edit", {
-          
           on: {
             click: () => {
-              scope.handleDelete(row);
+              scope.handleEdit(row);
             }
           }
         })

@@ -9,7 +9,7 @@
   >
     <div class="modal-header" slot="header">
       {{ title }}
-      <i class="el-icon-close" @click="handleClose" />
+      <!-- <i class="el-icon-close" @click="handleClose" /> -->
 
       <div v-if="$slots['header-right']" class="header-right">
         <slot name="header-right" />
