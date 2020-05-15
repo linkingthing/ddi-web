@@ -40,37 +40,15 @@ export default {
   mounted() {
     this.subnetId = this.$route.query.subnetId;
 
-    this.handleQuery();
+    this.$getData().then(res => {
+      console.log(res)
+      this.loading = false;
+
+    });    
   },
 
   methods: {
-    async handleQuery() {
-      this.loading = true;
-
-      try {
-        let { status, data, message } = await service.getAddressPoolSubnetList();
-
-        if (status === 200) {
-          this.tableData = data.data.map(item => {
-            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace("T", " ") : "";
-
-            return item;
-          });
-        }
-        else {
-          Promise.reject({ message: message || "查询失败！" });
-        }
-      }
-      catch (err) {
-        console.error(err);
-
-        this.$$error(err.message);
-      }
-      finally {        
-        this.loading = false;
-      }
-    },
-
+    
     showDetail(row) {
       this.$router.push(`/address/dhcp-service/address-pool-list?subnetId=${row.subnet_id}&address=${row.subnet}`);
     },

@@ -81,7 +81,7 @@ const getStateByKey = async function (name, params = {}) {
 /**
  * 根据当前路由获取对应的url
  */
-Vue.prototype.$getApiByRoute = () => {
+function getApiByRoute() {
   let paths = router.currentRoute.path.slice(1).split("/");
   
   const block = paths[1];
@@ -106,6 +106,8 @@ Vue.prototype.$getApiByRoute = () => {
   };
 };
   
+
+Vue.prototype.$getApiByRoute = getApiByRoute;
 /**
  * 获取视图列表
  */
@@ -123,4 +125,5 @@ Vue.prototype.$put = put;
 Vue.prototype.$post = post;
 Vue.prototype.$delete = del;
 Vue.prototype.$axios = axios;
+Vue.prototype.$getData = () => get(getApiByRoute()); 
 

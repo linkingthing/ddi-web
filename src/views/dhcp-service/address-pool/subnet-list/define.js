@@ -1,6 +1,6 @@
 export const columns = scope => [    
   {
-    title: "网络地址",
+    title: "子网地址",
     key: "subnet",
     align: "center",
     render: (h, { row }) => {
@@ -17,14 +17,17 @@ export const columns = scope => [
     }
   },
   {
-    title: "地址数量",
+    title: "地址总量",
     key: "total",
     align: "center"
   },
   {
-    title: "使用率",
+    title: "DHCP使用率",
     key: "usage",
-    align: "center"
+    align: "center",
+    render: (h, { row }) => {
+      return h("div", 2);
+    }
   },
   {
     title: "操作",

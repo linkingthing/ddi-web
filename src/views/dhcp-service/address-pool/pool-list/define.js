@@ -1,6 +1,6 @@
 export const columns = scope => [    
   {
-    title: "IP地址",
+    title: "子网地址",
     key: "poolName",
     align: "center"
   },
