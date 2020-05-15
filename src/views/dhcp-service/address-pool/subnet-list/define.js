@@ -25,23 +25,29 @@ export const columns = scope => [
     title: "DHCP使用率",
     key: "usage",
     align: "center",
+    width: "130",
     render: (h, { row }) => {
-      return h("div", 2);
+      return h("common-process",{
+        props: {
+          percent: 25
+        }
+      });    
+
     }
   },
   {
     title: "操作",
-    align: "center",      
+    align: "right",      
     render: (h, { row }) => {
       return h("div", [
-        h("label", {
-          class: "operate-label operate-delete",
+        h("btn-edit", {
+          
           on: {
             click: () => {
               scope.handleDelete(row);
             }
           }
-        }, "删除")
+        })
       ]);
     }
   }

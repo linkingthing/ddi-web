@@ -1,5 +1,9 @@
 <template>
-  <span class="btn-edit" @click="$emit('click')">编辑</span>
+  <Icon
+    type="ios-create-outline"
+    class="btn-edit"
+    @click="$emit('click')"
+  />
 </template>
 
 <script>
@@ -8,9 +12,9 @@ export default {};
 
 <style lang="less" scoped>
 .btn-edit {
-  font-size: 15px;
+  font-size: 18px;
   margin: 0 8px;
-  color: rgba(71, 179, 255, 0.8) !important;
+  color: #6A94EA !important;
   cursor: pointer;
 }
 </style>

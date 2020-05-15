@@ -29,7 +29,7 @@ export default {
     return {
       loading: true,
       keywords: "",
-      tableData: [],
+      tableData: [{}],
       columns: columns(this),
       showEdit: false,
       editData: null,

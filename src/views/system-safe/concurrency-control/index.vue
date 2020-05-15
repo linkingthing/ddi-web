@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="title">开发控制</div>
     <div class="divline">
       <i-form :label-width="260" :model="formItem">
         <Row>
@@ -87,12 +86,5 @@ export default {
 <style scoped>
 .divline {
   padding-top: 50px;
-}
-.title {
-  padding: 27px 33px 0;
-  line-height: 1;
-  font-size: 24px;
-  color: #252422;
-  font-weight: 400;
 }
 </style>
