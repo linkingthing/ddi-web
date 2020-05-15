@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal  
     width="413px"
     :visible.sync="dialogVisible"
     title="手动扫描提示"
@@ -11,17 +11,11 @@
       <h3>您确定开始子网扫描吗？</h3>
       <p>手动扫描将会在后台自动运行，可查看结果</p>
     </div>
-  </ModalCustom>
+  </common-modal >
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
-
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

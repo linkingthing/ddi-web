@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal 
     :visible.sync="dialogVisible"
     :title="getTitle"
     custom-class="fix-or-keep"
@@ -12,18 +12,13 @@
       <br>
       转为固定地址吗
     </p>
-  </ModalCustom>
+  </common-modal>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

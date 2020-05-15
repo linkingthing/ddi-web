@@ -12,8 +12,8 @@ export const columns = scope => [
   {
     title: "前缀",
     render: (h, { row }) => {
-      return h("label", {
-        class: "cell-prefix",
+      return h("a", {
+        class: "cell-prefix is-link",
         on: {
           click: () => {
             scope.handleViewLayouts(row);

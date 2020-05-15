@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal  
     :visible.sync="dialogVisible"
     title="添加"
     @confirm="handleConfirm"
@@ -15,18 +15,13 @@
           class="info-row-input" />
       </div>
     </div>
-  </ModalCustom>
+  </common-modal>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 import { getAddressType } from "@/util/common";
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

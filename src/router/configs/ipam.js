@@ -30,8 +30,8 @@ export default {
       component: () => import(/* webpackChuckName: "ipam-address-layouts" */ '@/views/ipam-manage/address-layout'),
       meta: {
         notInMenu: true,
-        from: "address-plan",
-        title: "地址布局"
+        from: "ipam-address-plan",
+        title: ":prefix"
       }
     },
     {
@@ -48,8 +48,8 @@ export default {
       component: () => import(/* webpackChuckName: "ipam-net-manage" */ "@/views/ipam-manage/net-manage"),
       meta: {
         notInMenu: true,
-        from: "address-manage",
-        title: "网络"
+        from: "ipam-address-manage",
+        title: ":subnet"
       }
     }
   ]

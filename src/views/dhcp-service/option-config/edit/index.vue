@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal 
     :visible.sync="dialogVisible"
     :title="getTitle"
     @cancel="handleCancel"
@@ -8,87 +8,88 @@
     <div class="option-config-info">
       <div class="info-row">
         <div class="info-row-label">名称</div>
-        <Input v-model="optionName" placeholder="请输入OPTION名称" class="info-row-input" />
+        <Input
+          v-model="optionName"
+          placeholder="请输入OPTION名称"
+          class="info-row-input" />
       </div>
       <div class="info-row">
         <div class="info-row-label">类型</div>
-        <Input v-model="optionType" placeholder="请输入类型" class="info-row-input" />
+        <Input
+          v-model="optionType"
+          placeholder="请输入类型"
+          class="info-row-input" />
       </div>
     </div>
-  </ModalCustom>
+  </common-modal >
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
-import service from '@/services'
+import service from "@/services";
 
 export default {
-  components:{
-    ModalCustom
-  },
-
-  props:{
-    visible:{
+  props: {
+    visible: {
       type: Boolean,
       default: false
     },
 
-    data:{
-      type:Object,
-      default: ()=> ({})
+    data: {
+      type: Object,
+      default: () => ({})
     }
   },
 
-  data(){
+  data() {
     return {
-      dialogVisible:false,
-      optionId:"",
-      optionName:"",
-      optionType:"",
-      isEdit:false
-    }
+      dialogVisible: false,
+      optionId: "",
+      optionName: "",
+      optionType: "",
+      isEdit: false
+    };
   },
 
-  computed:{
-    getTitle(){
+  computed: {
+    getTitle() {
       return (this.isEdit ? "编辑" : "添加") + "OPTION";
     }
   },
 
-  watch:{
-    visible(val){
-      if(!val) return;
+  watch: {
+    visible(val) {
+      if (!val) return;
       
       this.dialogVisible = val;
     },
 
-    data(val){
+    data(val) {
       this.isEdit = !!val;
 
-      if(!val) return;
+      if (!val) return;
 
       this.optionId = val.optionId;
       this.optionName = val.optionName;
       this.optionType = val.optionType;
     },
 
-    dialogVisible(val){
-      this.$emit("update:visible", val)
+    dialogVisible(val) {
+      this.$emit("update:visible", val);
     }
   },
 
-  methods:{
-    init(){
+  methods: {
+    init() {
       this.optionId = "";
       this.optionName = "";
       this.optionType = "";
     },
 
-    handleCancel(){
+    handleCancel() {
       this.init();
     },
 
-    async handleConfirm(){
+    async handleConfirm() {
       try {
         const action = this.isEdit ? "editOption" : "addOption";
 
@@ -99,22 +100,22 @@ export default {
 
         this.init();
 
-        this.$emit("confirmed")
+        this.$emit("confirmed");
       } catch (err) {
         console.error(err);
       }
     },
 
-    getParams(){
+    getParams() {
       return {
-        optionId:this.optionId,
-        optionName:this.optionName,
-        optionType:this.optionType,
-        optionVer:this.data ? this.data.optionVer : ""
-      }
+        optionId: this.optionId,
+        optionName: this.optionName,
+        optionType: this.optionType,
+        optionVer: this.data ? this.data.optionVer : ""
+      };
     }
   }
-}
+};
 </script>
 
 <style>

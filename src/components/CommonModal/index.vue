@@ -5,27 +5,36 @@
     :closable="closable"
     :mask-closable="maskClosable"
     :class-name="`modal-custom ${customClass}`"
+    :width="width"
   >
     <div class="modal-header" slot="header">
       {{ title }}
       <i class="el-icon-close" @click="handleClose" />
+
+      <div v-if="$slots['header-right']" class="header-right">
+        <slot name="header-right" />
+      </div>
     </div>
 
     <slot />
 
-    <template v-if="showFooter" slot="footer">
-      <Button
-        v-if="buttons.cancel"
-        class="button-cancel"
-        type="primary"
-        @click="handleClose"
-      >{{ buttons.cancel.text }}</Button>
-      <Button
-        v-if="buttons.confirm"
-        class="button-confirm"
-        type="primary"
-        @click="handleConfirm"
-      >{{ buttons.confirm.text }}</Button>
+    <template
+      v-if="showFooter"
+      slot="footer"
+    >
+      <slot name="footer-left" />
+
+      <Button 
+        v-for="button in buttons"
+        :key="button.label"
+        :class="button.class"
+        :type="button.type || 'primary'"
+        @click="handleButtonClick(button)"
+      >
+        {{ button.label }}
+      </Button>
+
+      <slot name="footer-right" />
     </template>
   </Modal>
 </template>
@@ -36,19 +45,25 @@
 
 <script>
 export default {
-  name: "common-modal",
+  name: "DialogCustom",
 
   props: {
     buttons: {
-      type: Object,
-      default: () => ({
-        cancel: {
-          text: "取消"
+      type: Array,
+      default: () => [
+        {
+          label: "取消",
+          type: "cancel",
+          class: "button-cancel",
+          event: "cancel"
         },
-        confirm: {
-          text: "确定"
+        {
+          label: "确认",
+          type: "primary",
+          class: "button-confirm",
+          event: "confirm"
         }
-      })
+      ]
     },
 
     visible: {
@@ -81,10 +96,9 @@ export default {
       default: true
     },
 
-    /**是否在点击确认按钮后立即关闭弹窗 */
-    immediateCloseAfterConfirm: {
-      type: Boolean,
-      default: false
+    width: {
+      type: [String, Number],
+      default: 520
     }
   },
 
@@ -107,17 +121,13 @@ export default {
   },
 
   methods: {
-    // 关于$listeners，若存在"confirm"和"cancel"需返回Promise
-
-    handleConfirm() {
-      this.$emit("confirm");
-    },
-
-    handleClose() {
-      this.$emit("cancel");
+    async handleButtonClick(button) {
+      const listener = this.$listeners[button.event];
+      
       this.dialogVisible = false;
-    },
-
+      
+      listener && listener();
+    }
   }
 };
 </script>

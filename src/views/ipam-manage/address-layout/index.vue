@@ -66,7 +66,6 @@ export default {
 
       try {
         let res = await this.$get({ url: this.url });
-        console.log(res);
         
         this.tableData = res.map(item => {
           const segments = item.item.segmentWidth;
