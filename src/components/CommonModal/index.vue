@@ -124,7 +124,9 @@ export default {
     async handleButtonClick(button) {
       const listener = this.$listeners[button.event];
       
-      this.dialogVisible = false;
+      if (button.event === "cancel") {
+        this.dialogVisible = false;
+      }
       
       listener && listener();
     }
