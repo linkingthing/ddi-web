@@ -46,14 +46,15 @@ export default {
   methods: {
     getBreadcrumbList(route) {
       let result = [];
+      console.log(route);
 
-      this.breadcrumbList = this.getChildren(route.path, this.configs, result); 
+      this.breadcrumbList = this.getChildren(route.name, this.configs, result); 
       
       // 将root菜单给去掉
       this.breadcrumbList.splice(0,1);
     },
 
-    getChildren(path, routes, result, parent) {
+    getChildren(name, routes, result, parent) {
       let len = routes.length;
       let found = false;
       let i = 0;
@@ -61,9 +62,9 @@ export default {
       for (i = 0; i < len; i++) {
         let item = routes[i];
         
-        if (item.path === path) {
+        if (item.name === name) {
           result.push({
-            path,
+            name,
             title: this.getTitle(item.meta.title)
           });
 
@@ -73,7 +74,7 @@ export default {
         }
         else {
           if (item.children) {
-            this.getChildren(path, item.children, result, item);
+            this.getChildren(name, item.children, result, item);
           }
         }
       }
@@ -92,7 +93,7 @@ export default {
         let item = this.getItemByName(child.meta.from);
           
         result.unshift({
-          path: item.path,
+          name: item.name,
           title: this.getTitle(item.meta.title)
         });
 
@@ -108,7 +109,7 @@ export default {
 
           if (title) {
             result.unshift({
-              path: parent.path,
+              name: parent.name,
               title
             });
           }
@@ -119,7 +120,7 @@ export default {
 
         if (title) {
           result.unshift({
-            path: parent.path,
+            name: parent.name,
             title
           });
         }

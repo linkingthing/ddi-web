@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal 
     :visible.sync="dialogVisible"
     title="自定义属性"
     :width="560"
@@ -27,18 +27,13 @@
         <span>地址位置</span>
       </Checkbox>
     </div>
-  </ModalCustom>
+  </common-modal>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

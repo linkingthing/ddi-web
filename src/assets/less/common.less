@@ -28,7 +28,7 @@ body {
 }
 
 a {
-	color: #2d8cf0;
+	color: inherit;
 	background: transparent;
 	text-decoration: none;
 	outline: none;
@@ -40,6 +40,18 @@ a {
 	&:hover,
 	&:active {
 		color: #000;
+	}
+
+	/* 如果a元素为超链接，或者需要设置为超链接样式的，可以设置class为is-link */
+	&.is-link{
+		color: #2d8cf0;
+
+		&:link,
+		&:visited,
+		&:hover,
+		&:active {
+			color: #1d7ce0;
+		}
 	}
 }
 

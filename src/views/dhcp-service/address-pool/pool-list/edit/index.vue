@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal 
     :visible.sync="dialogVisible"
     :title="getTitle"
     :width="560"
@@ -57,11 +57,10 @@
           class="info-row-input" />
       </div>
     </div>
-  </ModalCustom>
+  </common-modal >
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 
 import { 
@@ -83,10 +82,6 @@ const types = [
 ];
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

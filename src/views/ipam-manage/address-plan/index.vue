@@ -12,14 +12,14 @@
         <Button 
           type="primary" 
           @click="handleAdd" 
-          class="top-button button-add"
+          class="top-button"
         >
           添加
         </Button>
         <Button 
-          type="primary" 
+          type="warning" 
           @click="handleDelete" 
-          class="top-button button-split"
+          class="top-button"
         >
           删除
         </Button>
@@ -94,7 +94,7 @@ export default {
     },
 
     handleViewLayouts(data) {
-      this.$router.push(`/address/ipam/plans/${data.id}/layouts`);
+      this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}`);
     },
 
     handleAdd() {
@@ -105,8 +105,14 @@ export default {
       this.handleQuery();
     },
 
-    async handleDelete(data) {
+    async handleDelete() {
       try {
+        if (!this.selectedData.length) {
+          this.$$warning("请选择要删除的项！");
+
+          return;
+        }
+
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;

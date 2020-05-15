@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal 
     :visible.sync="dialogVisible"
     :width="560"
     title="网络探测"
@@ -39,19 +39,14 @@
         </Tag>
       </div> -->
     </div>
-  </ModalCustom>
+  </common-modal>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 import { protocals } from "./../define";
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

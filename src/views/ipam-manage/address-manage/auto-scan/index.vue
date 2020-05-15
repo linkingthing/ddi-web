@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal  
     width="413px"
     :visible.sync="dialogVisible"
     title="自动扫描设置"
@@ -29,11 +29,10 @@
           style="width: 260px" />
       </div>
     </div>
-  </ModalCustom>
+  </common-modal >
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 
 const frequencies = [
   {
@@ -51,10 +50,6 @@ const frequencies = [
 ];
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,

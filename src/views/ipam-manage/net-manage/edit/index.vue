@@ -1,5 +1,5 @@
 <template>
-  <ModalCustom 
+  <common-modal 
     :visible.sync="dialogVisible"
     title="IP地址编辑"
     @confirm="handleConfirm"
@@ -108,19 +108,14 @@
           class="info-row-input" />
       </div>
     </div>
-  </ModalCustom>
+  </common-modal>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
 import service from "@/services";
 import { isPosNumber, macAddressIsValid } from "@/util/common";
 
 export default {
-  components: {
-    ModalCustom
-  },
-
   props: {
     visible: {
       type: Boolean,
