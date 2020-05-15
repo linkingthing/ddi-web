@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" v-show="showBread">
+  <div class="bread-wrapper" v-show="showBread">
     <Breadcrumb>
       <BreadcrumbItem
         v-for="(item, index) in breadcrumbList"
@@ -241,12 +241,16 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-.wrapper {
+<style lang="less">
+.bread-wrapper {
   position: absolute;
   z-index: 1;
   height: 60px;
   line-height: 60px;
-  padding: 0 30px;
+  padding: 0 20px;
+
+  .ivu-breadcrumb-item-link{
+    font-size: 18px;
+  }
 }
 </style>

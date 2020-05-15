@@ -1,5 +1,6 @@
 <template>
   <ModalCustom 
+    width="413px"
     :visible.sync="dialogVisible"
     title="手动扫描提示"
     @confirm="handleConfirm"
