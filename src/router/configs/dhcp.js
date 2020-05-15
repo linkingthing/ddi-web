@@ -17,7 +17,7 @@ export default {
   children: [
     {
       name: 'subnet-pool-subnet',
-      path: '/address/dhcp/subnet-pool-list',
+      path: '/address/dhcp/subnets',
       component: () => import(/* webpackChuckName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"),
       meta: {
         title: "地址池管理"
@@ -25,7 +25,7 @@ export default {
     },
     {
       name: 'address-pool-list',
-      path: '/address/dhcp/address-pool-list',
+      path: '/address/dhcp/subnets/:id/pools',
       component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"),
       meta: {
         notInMenu: true,
@@ -35,10 +35,10 @@ export default {
     },
     {
       name: 'option-config',
-      path: '/address/dhcp/option-config',
+      path: '/address/dhcp/dhcpconfigs',
       component: () => import(/* webpackChuckName: "option-config" */ "@/views/dhcp-service/option-config"),
       meta: {
-        title: "OPTION配置"
+        title: "基础配置"
       }
     }
     // {

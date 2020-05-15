@@ -48,7 +48,7 @@ export default {
 
   data() {
     return {
-      loading: true,
+      loading: false,
       keywords: "",
       tableData: [],
       columns: columns(this),
@@ -67,7 +67,6 @@ export default {
 
     this.addressType = getAddressType(address);
 
-    this.handleQuery();
   },
 
   methods: {

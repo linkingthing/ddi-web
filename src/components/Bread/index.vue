@@ -245,8 +245,8 @@ export default {
 .wrapper {
   position: absolute;
   z-index: 1;
-  height: 62px;
-  line-height: 62px;
-  padding: 0 20px;
+  height: 60px;
+  line-height: 60px;
+  padding: 0 30px;
 }
 </style>
