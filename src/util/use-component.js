@@ -24,5 +24,8 @@ Vue.component("common-modal", CommonModal);
 import IviewLoading from "@/components/IviewLoading";
 Vue.component("IviewLoading", IviewLoading);
 
+import CommonProcess from "@/components/CommonProcess";
+Vue.component("common-process", CommonProcess);
+
 import mixin from "./../mixin";
 Vue.mixin(mixin);
