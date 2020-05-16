@@ -46,7 +46,9 @@ export default {
     return {
       loading: true,
       keywords: "",
-      tableData: [{}],
+      tableData: [{
+        subnet: "10.0.0.2"
+      }],
       columns: columns(this),
       showEdit: false,
       editData: null,

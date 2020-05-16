@@ -1,0 +1,181 @@
+<template>
+  <div class="common-form">
+    <FormItem
+      :label="item.label"
+      v-for="(item) in formItemList"
+      :key="item.name"
+    >
+      <i-input
+        v-if="item.type === 'input'"
+        v-model.trim="formModel[item.model]"
+        :type="item.inputType"
+        :disabled="item.disabled"
+        :placeholder="item.placeholder"
+        :size="item.size"
+      />
+      <RadioGroup
+        v-if="item.type === 'radio'"
+        v-model="formModel[item.model]"
+      >
+        <Radio
+          v-for="(e, i) in item.children"
+          :key="i"
+          :label="e.label"
+        >
+          {{ e.text }}
+        </Radio>
+        <slot
+          v-if="item.slot"
+          :name="item.slot"
+        />
+      </RadioGroup>
+      <CheckboxGroup
+        v-if="item.type === 'checkbox'"
+        v-model="formModel[item.model]"
+        class="mycheck-group"
+      >
+        <Checkbox
+          v-for="e in item.children"
+          :key="e.label"
+          :label="e.label"
+          :disabled="e.disabled"
+        >
+          {{ e.text }}
+        </Checkbox>
+      </CheckboxGroup>
+      <Checkbox
+        v-if="item.type === 'check'"
+        v-model="formModel[item.model]"
+        :label="item.checklabel"
+        :disabled="e.disabled"
+      >
+        {{ e.text }}
+        <slot
+          v-if="item.slot"
+          :name="item.slot"
+        />
+      </Checkbox>
+      <DatePicker
+        v-if="item.type === 'datePicker'"
+        v-model="formModel[item.model]"
+        style="width:100%;"
+        :value="formModel[item.model]"
+        :type="item.pickertype ? item.pickertype : 'date'"
+        :options="item.options"
+        :transfer="item.transfer"
+        :format="item.format"
+        :size="item.size"
+        :placeholder="item.placeholder"
+      />
+      <i-input
+        v-if="item.type === 'textarea'"
+        v-model="formModel[item.model]"
+        :autosize="item.autosize"
+        :placeholder="item.placeholder"
+        type="textarea"
+        :size="item.size"
+      />
+      <Select
+        v-if="item.type === 'select'"
+        v-model="formModel[item.model]"
+        :disabled="item.disabled"
+        :filterable="item.filterable"
+        :size="item.size"
+        :placeholder="item.placeholder"
+      >
+        <Option
+          v-for="e in item.children"
+          :key="e.label"
+          :value="e.label"
+        >
+          {{ e.text }}
+        </Option>
+      </Select>
+      <label
+        v-if="item.type === 'text'"
+        :size="item.size"
+      >
+        {{ item.text }}
+        <slot
+          v-if="item.slot"
+          :name="item.slot"
+          :params="item.params"
+        />
+      </label>
+      <InputNumber
+        v-if="item.type==='number'"
+        v-model="formModel[item.model]"
+        style="width:100%;"
+        :formatter="value => `${value}`.replace(/(?=(?!\b)(\d{3})+\.)/g,',')"
+        :parser="value => value.replace(/$s?|(,*)/g, '')"
+        :precision="item.precision"
+        :min="item.min"
+        :max="item.max"
+        :disabled="item.disabled"
+        :placeholder="item.placeholder"
+        :size="item.size"
+      />
+      <Input
+        v-if="item.type==='number2'"
+        v-model="formModel[item.model]"
+        :maxlength="16"
+        placeholder=""
+        type="text"
+        @on-focus="inputFocus(item.model)"
+      />
+
+      <div
+        v-if="item.type === 'inputSlot'"
+        style="postion:relative;"
+      >
+        <i-input
+          v-model="formModel[item.model]"
+          :type="item.inputType"
+          :disabled="item.disabled"
+          :placeholder="item.placeholder"
+          :size="item.size"
+        />
+        <slot
+          v-if="item.slot"
+          :name="item.slot"
+          :params="item.params"
+        />
+      </div>
+    </FormItem>
+  </div>
+</template>
+
+<script>
+export default {
+  components: {},
+  props: {
+    formModel: {
+      type: Object,
+      default: () => ({})
+    },
+    formItemList: {
+      type: Array,
+      default: () => ([])
+    }
+  },
+  data() {
+    return {
+    };
+  },
+  computed: {},
+  created() { },
+  mounted() { },
+  methods: {},
+  watch: {},
+};
+</script>
+
+<style lang="less" scoped>
+.common-form {
+  .ivu-form-item {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+</style>

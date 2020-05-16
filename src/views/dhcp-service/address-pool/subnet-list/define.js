@@ -9,7 +9,7 @@ export const columns = scope => [
           class: "operate-label operate-link",
           on: {
             click: () => {
-              scope.showDetail(row);
+              scope.$router.push({ path: "/address/dhcp/subnets/123/pools" });
             }
           }
         }, row.subnet)
@@ -18,12 +18,12 @@ export const columns = scope => [
   },
   {
     title: "地址总量",
-    key: "total",
+    key: "capacity",
     align: "center"
   },
   {
     title: "DHCP使用率",
-    key: "usage",
+    key: "usedRatio",
     align: "center",
     width: "130",
     render: (h, { row }) => {
