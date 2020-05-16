@@ -1,35 +1,42 @@
 <template>
   <common-modal  
     :visible.sync="dialogVisible"
+    :width="750"
     title="规划网络"
     :buttons="buttons"
+    custom-class="create-layout"
     @confirm="handleConfirm"
+    @save="handleSave"
     @next-step="handleNextStep"
   >
     <IviewLoading v-if="loading" />
 
-    <div slot="header-right">
+    <div slot="header-right" v-if="step > 1">
       <Button 
-        icon="ios-undo"
         class="prev-step"
         @click="handlePrevStep"
       >
+        <img :src="backImg" class="back-img">
         上一页
       </Button>
     </div>
     
     <FirstStep 
-      v-show="step === 1" 
+      v-if="step === 1" 
+      :mask="mask"
+      :ip-type="ipType"
       @confirm="handleFirstConfirm"
     />
     
     <SecondStep 
-      v-show="step === 2" 
+      v-if="step === 2" 
+      :mask="mask"
+      :ip-type="ipType"
       @confirm="handleSecondConfirm"
     />
     
     <ThirdStep
-      v-show="step === 3" 
+      v-if="step === 3" 
       @confirm="handleThirdConfirm"
     />
   </common-modal >
@@ -39,6 +46,8 @@
 import FirstStep from "./first-step";
 import SecondStep from "./second-step";
 import ThirdStep from "./third-step";
+
+import backImg from "@/assets/images/back.png";
 
 import { getAddressType } from "@/util/common";
 
@@ -55,9 +64,14 @@ export default {
       default: false
     },
 
-    url: {
+    prefix: {
       type: String,
       default: ""
+    },
+
+    maskLen: {
+      type: Number,
+      default: 0
     },
 
     data: {
@@ -68,14 +82,15 @@ export default {
 
   data() {
     return {
+      backImg,
       loading: false,
       dialogVisible: false,
-      prefix: "",
+      mask: 0,
       step: 1,
       buttons: [
         {
           label: "取消",
-          type: "cancel",
+          type: "default",
           class: "button-cancel",
           event: "cancel"
         },
@@ -86,8 +101,12 @@ export default {
         }
       ],
 
+      ipType: "",
       layoutId: null,
-      segmentId: null
+      segmentId: null,
+
+      layoutData: {},
+      segmentData: {}
     };
   },
 
@@ -104,9 +123,21 @@ export default {
       this.$emit("update:visible", val);
     },
 
-    data(val) {      
-      this.setValue(val);
+    prefix: {
+      immediate: true,
+      handler(val) {
+        if (!val) return;
+
+        let temp = val.split("/");
+    
+        this.mask = parseInt(temp[1]);
+        this.ipType = getAddressType(temp[0]);
+      }
     }
+
+    // data(val) {      
+    //   this.setValue(val);
+    // }
   },
 
   methods: {
@@ -127,7 +158,15 @@ export default {
 
     handleSecondConfirm(res) {},
 
-    handleThirdConfirm(res) {}
+    handleThirdConfirm(res) {},
+
+    handleSave(res) {},
+
+    handleConfirm(res) {}
   }
 };
 </script>
+
+<style lang="less">
+@import "./index.less";
+</style>

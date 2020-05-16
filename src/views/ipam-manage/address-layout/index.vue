@@ -11,7 +11,7 @@
       <template slot="top-right">
         <Button 
           type="primary" 
-          @click="handleAdd" 
+          @click="handleCreate" 
           class="top-button button-add"
         >
           添加
@@ -25,6 +25,12 @@
         </Button>
       </template>
     </TablePagination>
+
+    <Create 
+      :visible.sync="showCreate"
+      :prefix="prefix"
+      :mask-len="maskLen"
+    />
   </div>
 </template>
 
@@ -34,6 +40,7 @@
 
 <script>
 import TablePagination from "@/components/TablePagination";
+import Create from "./create";
 
 import { columns } from "./define";
 
@@ -41,16 +48,22 @@ import { getAddressType } from "@/util/common";
 
 export default {
   components: {
-    TablePagination
+    TablePagination,
+    Create
   },
 
   data() {
+    const { prefix, maskLen } = this.$route.query;
+
     return {
+      prefix,
+      maskLen: parseInt(maskLen),
       loading: true,
       url: this.$getApiByRoute().url,
       tableData: [],
       columns: columns(this),
-      selectedData: []
+      selectedData: [],
+      showCreate: false
     };
   },
 
@@ -91,7 +104,9 @@ export default {
       this.$router.push(`/ipam/plans/${data.id}/layouts`);
     },
 
-    handleAdd() {},
+    handleCreate() {
+      this.showCreate = true;
+    },
 
     handleViewNetDetail() {},
 
