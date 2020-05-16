@@ -27,5 +27,12 @@ Vue.component("IviewLoading", IviewLoading);
 import CommonProcess from "@/components/CommonProcess";
 Vue.component("common-process", CommonProcess);
 
+import CommonTab from "@/components/CommonTab";
+Vue.component("common-tab", CommonTab);
+
+import CommonForm from "@/components/CommonForm";
+Vue.component("common-form", CommonForm);
+
+
 import mixin from "./../mixin";
 Vue.mixin(mixin);

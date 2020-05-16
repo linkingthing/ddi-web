@@ -2,7 +2,7 @@
   <div class="table-pagination">
     <!-- <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3> -->
 
-    <article class="table-pagination-top">      
+    <article class="table-pagination-top">
       <div class="top-left">
         <slot name="top-left" />
       </div>
@@ -11,21 +11,24 @@
         <slot name="top-right" />
       </div>
     </article>
-
+    <slot name="neck" />
     <Table
       v-if="showTable"
       :data="data"
       :columns="columns"
       v-on="$listeners"
-    /> 
+    />
 
     <slot />
 
-    <article v-if="paginationEnable" class="table-pagination-footer">
-      <Page 
-        :current="currentPage" 
+    <article
+      v-if="paginationEnable"
+      class="table-pagination-footer"
+    >
+      <Page
+        :current="currentPage"
         :total="totalPage"
-        prev-text="上一页" 
+        prev-text="上一页"
         next-text="下一页"
         @on-change="handlePageChange"
       />
@@ -55,7 +58,7 @@ export default {
     data: {
       type: Array,
       default: () => []
-    },    
+    },
 
     calcHeight: {
       type: Boolean,
@@ -116,7 +119,7 @@ export default {
     columns(val) {
       if (val.length) {
         let names = [];
-        
+
         val.forEach(col => {
           if (col.slot) {
             names.push(col.slot);
@@ -149,10 +152,10 @@ export default {
       let titleEl = el.querySelector(".table-pagination-title"),
         topEl = el.querySelector(".table-pagination-top"),
         footerEl = el.querySelector(".table-pagination-footer");
-      
-      this.tableHeight = height 
-        - (titleEl ? titleEl.clientHeight : 0) 
-        - (topEl ? topEl.clientHeight : 0) 
+
+      this.tableHeight = height
+        - (titleEl ? titleEl.clientHeight : 0)
+        - (topEl ? topEl.clientHeight : 0)
         - (footerEl ? footerEl.clientHeight : 0);
     },
 
