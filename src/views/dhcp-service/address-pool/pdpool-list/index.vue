@@ -69,7 +69,7 @@ export default {
 
   data() {
     return {
-      subnetChild: "pools",
+      subnetChild: "pdpools",
       loading: false,
       keywords: "",
       tableData: [{

@@ -46,6 +46,7 @@ export default {
   methods: {
     getBreadcrumbList(route) {
       let result = [];
+      // console.log(route);
 
       this.breadcrumbList = this.getChildren(route.name, this.configs, result); 
       

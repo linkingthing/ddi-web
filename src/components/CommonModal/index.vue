@@ -7,11 +7,17 @@
     :class-name="`modal-custom ${customClass}`"
     :width="width"
   >
-    <div class="modal-header" slot="header">
+    <div
+      class="modal-header"
+      slot="header"
+    >
       {{ title }}
       <!-- <i class="el-icon-close" @click="handleClose" /> -->
 
-      <div v-if="$slots['header-right']" class="header-right">
+      <div
+        v-if="$slots['header-right']"
+        class="header-right"
+      >
         <slot name="header-right" />
       </div>
     </div>
@@ -24,11 +30,11 @@
     >
       <slot name="footer-left" />
 
-      <Button 
+      <Button
         v-for="button in buttons"
         :key="button.label"
         :class="button.class"
-        :type="button.type || 'primary'"
+        :type="typeList.includes(button.type) ? button.type : 'primary'"
         @click="handleButtonClick(button)"
       >
         {{ button.label }}
@@ -103,6 +109,7 @@ export default {
   },
 
   data() {
+    this.typeList = ["default", "primary", "dashed", "text", "info", "success", "warning", "error"];
     return {
       loading: false,
       isEdit: false
@@ -123,11 +130,11 @@ export default {
   methods: {
     async handleButtonClick(button) {
       const listener = this.$listeners[button.event];
-      
+
       if (button.event === "cancel") {
         this.dialogVisible = false;
       }
-      
+
       listener && listener();
     }
   }

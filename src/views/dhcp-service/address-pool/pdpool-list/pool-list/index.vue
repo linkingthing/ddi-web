@@ -12,11 +12,11 @@
       />
       <TabPane
         label="固定地址"
-        name="reservations"
+        name="reservation"
       />
       <TabPane
         label="前缀委派"
-        name="pdpools"
+        name="pdpool"
       />
     </Tabs>
 

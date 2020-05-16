@@ -34,6 +34,26 @@ export default {
       }
     },
     {
+      name: 'address-pdpool-list',
+      path: '/address/dhcp/subnets/:id/pdpools',
+      component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pdpool-list"),
+      meta: {
+        notInMenu: true,
+        from: "subnet-pool-subnet",
+        title: ":address"
+      }
+    },
+    {
+      name: 'address-reservations-list',
+      path: '/address/dhcp/subnets/:id/reservations',
+      component: () => import(/* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/reservations-list"),
+      meta: {
+        notInMenu: true,
+        from: "subnet-pool-subnet",
+        title: ":address"
+      }
+    },
+    {
       name: 'option-config',
       path: '/address/dhcp/dhcpconfigs',
       component: () => import(/* webpackChuckName: "option-config" */ "@/views/dhcp-service/option-config"),
