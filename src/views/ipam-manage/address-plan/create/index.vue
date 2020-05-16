@@ -1,17 +1,26 @@
 <template>
   <common-modal  
     :visible.sync="dialogVisible"
-    title="添加"
+    title="添加地址"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
 
     <div class="subnet-info-edit">
       <div class="info-row-inline">
-        <div class="info-row-label">地址前缀</div>
+        <div class="info-row-label">网络地址</div>
         <Input
           maxlength="50"
           v-model="prefix"
+          placeholder="请填写网络地址"
+          class="info-row-input" />
+      </div>
+      <div class="info-row-inline">
+        <div class="info-row-label">备注</div>
+        <Input
+          maxlength="255"
+          v-model="description"
+          placeholder="请填写备注"
           class="info-row-input" />
       </div>
     </div>
@@ -43,7 +52,8 @@ export default {
     return {
       loading: false,
       dialogVisible: false,
-      prefix: ""
+      prefix: "",
+      description: ""
     };
   },
 
@@ -76,11 +86,11 @@ export default {
 
         this.loading = true;
 
-        await this.$post({ url: this.url, prarams: this.getParams() });
+        await this.$post({ url: this.url, params: this.getParams() });
         
         this.$$success("保存成功！");
 
-        this.$emit("confirmed");
+        this.$emit("saved");
       } 
       catch (err) {
         this.$$error(err.message);
@@ -93,7 +103,7 @@ export default {
     },
 
     validate() {
-      let { prefix } = this;
+      let { prefix, description } = this;
       
       prefix = prefix.trim();
 
@@ -101,8 +111,12 @@ export default {
     },
 
     getParams() {
+      const temp = this.prefix.split("/");
+
       return {
-        prefix: this.prefix.trim()
+        prefix: this.prefix.trim(),
+        maskLen: getAddressType(temp[0]) === "ipv4" ? 24 : 64,
+        description: this.description
       };
     }
   }

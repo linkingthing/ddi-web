@@ -26,8 +26,8 @@
       </template>
     </TablePagination>
 
-    <Edit 
-      :visible.sync="showEdit"
+    <Create 
+      :visible.sync="showCreate"
       :url="url"
       @saved="handleSaved"
     />
@@ -40,14 +40,14 @@
 
 <script>
 import TablePagination from "@/components/TablePagination";
-import Edit from "./edit";
+import Create from "./create";
 
 import { columns } from "./define";
 
 export default {
   components: {
     TablePagination,
-    Edit
+    Create
   },
 
   data() {
@@ -57,7 +57,7 @@ export default {
       tableData: [],
       columns: columns(this),
       selectedData: [],
-      showEdit: false
+      showCreate: false
     };
   },
 
@@ -94,14 +94,16 @@ export default {
     },
 
     handleViewLayouts(data) {
-      this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}`);
+      this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}&maskLen=${data.maskLen}`);
     },
 
     handleAdd() {
-      this.showEdit = true;
+      this.showCreate = true;
     },
 
     handleSaved() {
+      this.showCreate = false;
+
       this.handleQuery();
     },
 

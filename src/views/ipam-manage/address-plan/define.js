@@ -19,7 +19,7 @@ export const columns = scope => [
             scope.handleViewLayouts(row);
           }
         }
-      }, 1111 + row.prefix);
+      }, row.prefix);
     },
     align: "center"
   },

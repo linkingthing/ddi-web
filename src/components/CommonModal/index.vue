@@ -59,7 +59,7 @@ export default {
       default: () => [
         {
           label: "取消",
-          type: "cancel",
+          type: "default",
           class: "button-cancel",
           event: "cancel"
         },
