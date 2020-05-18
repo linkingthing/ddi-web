@@ -1,5 +1,5 @@
 <template>
-  <div class="dhcp-config-layout">
+  <div class="pool-layout">
     <common-tab
       class="tab-box"
       @on-tab="handleTab"
@@ -16,13 +16,17 @@ export default {
   props: {},
   data() {
     this.tabList = [{
-      name: "dhcpconfigs",
-      label: "全局参数",
-      route: "option-dhcpconfigs"
+      name: "pools",
+      label: "地址池",
+      route: "address-pool-list"
     }, {
-      name: "clientclasses",
-      label: "option60",
-      route: "option-clientclasses"
+      name: "reservations",
+      label: "固定地址",
+      route: "address-pdpool-list"
+    }, {
+      name: "pdpools",
+      label: "前缀委派",
+      route: "address-reservations-list"
     }];
     return {
       tab: ""
@@ -46,7 +50,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.dhcp-config-layout {
+.pool-layout {
   margin-top: 60px;
 
   .tab-box {

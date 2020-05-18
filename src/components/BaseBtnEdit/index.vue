@@ -1,7 +1,6 @@
 <template>
-  <Icon
-    type="ios-create-outline"
-    class="btn-edit"
+  <i
+    class="icon-edit btn-edit"
     @click="$emit('click')"
   />
 </template>
@@ -14,8 +13,14 @@ export default {};
 .btn-edit {
   font-size: 18px;
   margin: 0 8px;
-  color: #6A94EA !important;
+  color: #6a94ea !important;
   cursor: pointer;
+}
+.icon-edit {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url(./icon-edit.png);
 }
 </style>
 

@@ -24,44 +24,53 @@ export default {
 				title: '地址池管理'
 			}
 		},
+
 		{
-			name: 'address-pool-list',
-			path: '/address/dhcp/subnets/:id/pools',
-			component: () =>
-				import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/pool-list'),
-			meta: {
-				notInMenu: true,
-				from: 'subnet-pool-subnet',
-				title: ':address'
-			}
-		},
-		{
-			name: 'address-pdpool-list',
-			path: '/address/dhcp/subnets/:id/pdpools',
-			component: () =>
-				import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/pdpool-list'),
-			meta: {
-				notInMenu: true,
-				from: 'subnet-pool-subnet',
-				title: ':address'
-			}
-		},
-		{
-			name: 'address-reservations-list',
-			path: '/address/dhcp/subnets/:id/reservations',
-			component: () =>
-				import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/reservations-list'),
-			meta: {
-				notInMenu: true,
-				from: 'subnet-pool-subnet',
-				title: ':address'
-			}
+			name: 'dhcp-pools',
+			path: '/address/dhcp/pools',
+      redirect: '/address/dhcp/subnets/:id/pools',
+      component: () => import('@/views/dhcp-service/address-pool/pools-layout'),
+			children: [
+				{
+					name: 'address-pool-list',
+					path: '/address/dhcp/subnets/:id/pools',
+					component: () =>
+						import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/pool-list'),
+					meta: {
+						notInMenu: true,
+						from: 'subnet-pool-subnet',
+						title: ':address'
+					}
+				},
+				{
+					name: 'address-pdpool-list',
+					path: '/address/dhcp/subnets/:id/pdpools',
+					component: () =>
+						import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/pdpool-list'),
+					meta: {
+						notInMenu: true,
+						from: 'subnet-pool-subnet',
+						title: ':address'
+					}
+				},
+				{
+					name: 'address-reservations-list',
+					path: '/address/dhcp/subnets/:id/reservations',
+					component: () =>
+						import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/reservations-list'),
+					meta: {
+						notInMenu: true,
+						from: 'subnet-pool-subnet',
+						title: ':address'
+					}
+				}
+			]
 		},
 		{
 			name: 'dhcp-config',
-      path: '/address/dhcp/config',
-      redirect: "/address/dhcp/dhcpconfigs",
-      meta: {
+			path: '/address/dhcp/config',
+			redirect: '/address/dhcp/dhcpconfigs',
+			meta: {
 				title: '基础配置'
 			},
 			component: () => import('@/views/dhcp-service/option-config/layout'),

@@ -1,25 +1,5 @@
 <template>
   <div class="address-pool">
-
-    <Tabs
-      :value="subnetChild"
-      style="margin: 60px 0 -75px"
-      @on-click="handleChangeChild"
-    >
-      <TabPane
-        label="地址池"
-        name="pools"
-      />
-      <TabPane
-        label="固定地址"
-        name="reservations"
-      />
-      <TabPane
-        label="前缀委派"
-        name="pdpools"
-      />
-    </Tabs>
-
     <IviewLoading v-if="loading" />
 
     <TablePagination
@@ -92,13 +72,6 @@ export default {
 
   },
   methods: {
-    handleChangeChild(child) {
-      const { path } = this.$route;
-      const pathSplit = path.split("/");
-      pathSplit[pathSplit.length - 1] = child;
-      this.$router.push({ path: pathSplit.join("/") });
-    },
-
     async handleQuery() {
       this.loading = true;
 
