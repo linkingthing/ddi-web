@@ -50,6 +50,8 @@
 </style>
 
 <script>
+import { toKebabCase } from "@/util/common";
+
 export default {
   name: "DialogCustom",
 
@@ -129,9 +131,11 @@ export default {
 
   methods: {
     async handleButtonClick(button) {
-      const listener = this.$listeners[button.event];
+      let event = button.event;
+      
+      let listener = this.$listeners[event] || this.$listeners[toKebabCase(event)];
 
-      if (button.event === "cancel") {
+      if (event === "cancel") {
         this.dialogVisible = false;
       }
 

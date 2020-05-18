@@ -380,3 +380,21 @@ export const formatDate = (res, formatter = "yyyy-MM-dd hh:mm:ss") => {
 
   return formatter;
 };
+
+/**
+ * 将驼峰字符串转换为短横线连接字符串
+ * @param {String} str 
+ */
+export const toKebabCase = str => {
+  return str.split("").map((item, idx) => {
+    let code = item.charCodeAt();
+
+    if (code >= 65 && code <= 90) {
+      const result = item.toLocaleLowerCase();
+
+      return idx ? `-${result}` : result;
+    }
+
+    return item;
+  }).join("");
+};
