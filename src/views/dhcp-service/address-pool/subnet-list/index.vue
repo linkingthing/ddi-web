@@ -59,7 +59,9 @@ export default {
 
     this.$getData().then(res => {
       this.loading = false;
-    });
+    }).catch().finally(() => {
+      this.loading = false;
+    })
 
 
   },
@@ -82,7 +84,7 @@ export default {
       this.showEdit = true;
     },
     handleSaved(a) {
-      console.log(a)
+      console.log(a);
     }
   }
 };

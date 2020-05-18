@@ -3,10 +3,13 @@
     <div class="header">
       <div class="header-inner">
         <div class="logo">
-          <img
-            :src="logoSrc"
-            alt
-          >
+          <div class="logo-image">
+            <img
+              :src="require('@/assets/images/logo.png')"
+              alt
+            >
+          </div>
+          <h1>DDI配置管理平台</h1>
         </div>
         <!-- <div class="logo-text">
           <img
@@ -26,7 +29,7 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-              {{item.title}}
+            {{item.title}}
             </MenuItem>
           </Menu>
         </div>
@@ -106,7 +109,6 @@ import { mapMutations } from "vuex";
 import services from "@/services";
 
 import logoSrc from "@/assets/images/logo.png";
-import logoTextSrc from "@/assets/images/logo-text.jpg";
 
 export default {
   name: "Header",
@@ -124,7 +126,6 @@ export default {
     return {
       logoSrc,
       currentMainMenu: "/monitor",
-      logoTextSrc,
       visible: false,
       password: "",
       rePassword: ""
@@ -139,7 +140,7 @@ export default {
       setToken: "SET_TOKEN"
     }),
 
-    handleClickMainMenu(menu) {  
+    handleClickMainMenu(menu) {
       this.$router.push({ path: menu });
     },
 
@@ -179,5 +180,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import "../../assets/less/var.less";
+
 @import "./index.less";
 </style>
