@@ -1,27 +1,26 @@
 <template>
-  <common-modal 
+  <common-modal
     :visible.sync="dialogVisible"
     :title="getTitle"
     @cancel="handleCancel"
-    @confirm="handleConfirm"
+    @confirm="handleConfirm('formInline')"
   >
-    <div class="option-config-info">
-      <div class="info-row">
-        <div class="info-row-label">名称</div>
-        <Input
-          v-model="optionName"
-          placeholder="请输入OPTION名称"
-          class="info-row-input" />
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">类型</div>
-        <Input
-          v-model="optionType"
-          placeholder="请输入类型"
-          class="info-row-input" />
-      </div>
-    </div>
-  </common-modal >
+    <Form
+      ref="formInline"
+      label-position="left"
+      :label-width="100"
+      :label-colon="true"
+      :rules="rules"
+      :model="formModel"
+    >
+
+      <common-form
+        :form-model="formModel"
+        :form-item-list="formItemList"
+      />
+
+    </Form>
+  </common-modal>
 </template>
 
 <script>
@@ -34,14 +33,31 @@ export default {
       default: false
     },
 
-    data: {
+    links: {
       type: Object,
-      default: () => ({})
+      default: () => null
     }
   },
 
   data() {
+    this.formItemList = [
+      {
+        label: "名称",
+        model: "name",
+        type: "input",
+        placeholder: "请填写名称",
+      },
+      {
+        label: "配置条件",
+        model: "regexp",
+        type: "input",
+        placeholder: "请填写配置条件",
+      },
+    ];
+
+    this.rules = {};
     return {
+      formModel: {},
       dialogVisible: false,
       optionId: "",
       optionName: "",
@@ -52,25 +68,20 @@ export default {
 
   computed: {
     getTitle() {
-      return (this.isEdit ? "编辑" : "添加") + "OPTION";
+      return (this.links ? "编辑" : "添加") + "OPTION";
     }
   },
 
   watch: {
     visible(val) {
       if (!val) return;
-      
+      if (this.links) {
+        this.$axios(this.links.self).then(({ data }) => {
+          this.formModel = data;
+        });
+      }
+
       this.dialogVisible = val;
-    },
-
-    data(val) {
-      this.isEdit = !!val;
-
-      if (!val) return;
-
-      this.optionId = val.optionId;
-      this.optionName = val.optionName;
-      this.optionType = val.optionType;
     },
 
     dialogVisible(val) {
@@ -78,46 +89,46 @@ export default {
     }
   },
 
+  created() {
+    console.log(11)
+
+  },
   methods: {
-    init() {
-      this.optionId = "";
-      this.optionName = "";
-      this.optionType = "";
-    },
 
     handleCancel() {
-      this.init();
+      this.dialogVisible = false;
     },
 
-    async handleConfirm() {
-      try {
-        const action = this.isEdit ? "editOption" : "addOption";
+    handleConfirm(name) {
+      this.$refs[name].validate((valid) => {
 
-        let res = await service[action](this.getParams(), this.optionId);
-        
-        console.log(res);
-        
+        if (valid) {
+          if (this.links) {
+            this.$put({ url: this.links.update, params: this.formModel }).then(res => {
+              this.$$success("更新成功");
+              this.dialogVisible = false;
+              this.$emit("confirmed");
+            }).catch((err) => {
 
-        this.init();
+            });
+          } else {
+            this.$createEntity(this.formModel).then(res => {
+              this.$$success("创建成功");
+              this.$emit("confirmed");
+              this.dialogVisible = false;
+            }).catch(err => {
+              console.dir(err)
+              this.$$error(err.response.data.message);
+            });
+          }
+        }
+      });
 
-        this.$emit("confirmed");
-      } catch (err) {
-        console.error(err);
-      }
-    },
-
-    getParams() {
-      return {
-        optionId: this.optionId,
-        optionName: this.optionName,
-        optionType: this.optionType,
-        optionVer: this.data ? this.data.optionVer : ""
-      };
     }
+
   }
 };
 </script>
 
 <style>
-
 </style>

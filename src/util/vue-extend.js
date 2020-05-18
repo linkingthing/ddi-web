@@ -126,4 +126,5 @@ Vue.prototype.$post = post;
 Vue.prototype.$delete = del;
 Vue.prototype.$axios = axios;
 Vue.prototype.$getData = () => get(getApiByRoute()); 
+Vue.prototype.$createEntity = (params) => post({...getApiByRoute(), params}); 
 

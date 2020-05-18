@@ -248,7 +248,7 @@ export default {
   z-index: 1;
   height: 60px;
   line-height: 60px;
-  padding: 0 30px;
+  padding: 0 26px;
 
   .ivu-breadcrumb-item-link{
     font-size: 18px;

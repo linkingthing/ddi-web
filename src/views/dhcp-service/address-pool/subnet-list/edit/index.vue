@@ -11,7 +11,7 @@
       label-position="left"
       :label-colon="true"
     >
-      <CommonForm
+      <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
       />
@@ -21,13 +21,9 @@
 </template>
 
 <script>
-import CommonForm from "@/components/CommonForm";
 import { getAddressType } from "@/util/common";
 
 export default {
-  components: {
-    CommonForm
-  },
   props: {
     visible: {
       type: Boolean,
