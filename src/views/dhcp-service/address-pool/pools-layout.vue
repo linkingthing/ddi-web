@@ -20,11 +20,11 @@ export default {
       label: "地址池",
       route: "address-pool-list"
     }, {
-      name: "reservations",
+      name: "pdpools",
       label: "固定地址",
       route: "address-pdpool-list"
     }, {
-      name: "pdpools",
+      name: "reservations",
       label: "前缀委派",
       route: "address-reservations-list"
     }];

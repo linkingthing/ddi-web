@@ -37,7 +37,6 @@
 import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
 import service from "@/services";
-import { columns } from "./define";
 
 import { getAddressType } from "@/util/common";
 
@@ -54,7 +53,42 @@ export default {
       tableData: [{
 
       }],
-      columns: columns(this),
+      columns: [
+        {
+          title: "开始地址",
+          key: "poolName",
+          align: "center"
+        },
+        {
+          title: "结束地址",
+          key: "total",
+          align: "center"
+        },
+        {
+          title: "操作",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", [
+              h("label", {
+                class: "operate-label operate-edit",
+                on: {
+                  click: () => {
+                    this.handleEdit(row);
+                  }
+                }
+              }, "编辑"),
+              h("label", {
+                class: "operate-label operate-delete",
+                on: {
+                  click: () => {
+                    this.handleDelete(row);
+                  }
+                }
+              }, "删除")
+            ]);
+          }
+        }
+      ],
       showEdit: false,
       editData: null,
       subnetId: null,
@@ -67,16 +101,9 @@ export default {
     this.subnetId = subnetId;
     this.address = address;
 
-    this.addressType = getAddressType(address);
 
   },
   methods: {
-    handleChangeChild(child) {
-      const { path } = this.$route;
-      const pathSplit = path.split("/");
-      pathSplit[pathSplit.length - 1] = child;
-      this.$router.push({ path: pathSplit.join("/") });
-    },
 
     async handleQuery() {
       this.loading = true;

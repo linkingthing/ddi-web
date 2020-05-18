@@ -24,12 +24,14 @@ export default {
 				title: '地址池管理'
 			}
 		},
-
 		{
 			name: 'dhcp-pools',
 			path: '/address/dhcp/pools',
-      redirect: '/address/dhcp/subnets/:id/pools',
-      component: () => import('@/views/dhcp-service/address-pool/pools-layout'),
+			redirect: 'address-pool-list',
+			component: () => import('@/views/dhcp-service/address-pool/pools-layout'),
+			meta: {
+        notInMenu: true,
+			},
 			children: [
 				{
 					name: 'address-pool-list',
@@ -81,6 +83,7 @@ export default {
 					component: () =>
 						import(/* webpackChuckName: "option-config" */ '@/views/dhcp-service/option-config/dhcp-configs'),
 					meta: {
+            notInMenu: true,
 						title: '基础配置'
 					}
 				},

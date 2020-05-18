@@ -40,7 +40,6 @@ export default {
         },
         {
           validator: function (rule, value, callback) {
-            console.log(self.formModel)
             if (value > self.formModel.maxValidLifetime) {
               callback("租约时长不能大于最长租约时长");
             }
@@ -106,6 +105,8 @@ export default {
       this.$refs[name].validate((valid) => {
 
         if (valid) {
+          const params = this.formModel;
+          params.domainServers = params.domainServers.split(",");
           this.$axios.put(this.formModel.links.update, this.formModel).then(res => {
             this.$Message.success("Success!");
 

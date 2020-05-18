@@ -1,73 +1,37 @@
 <template>
-  <common-modal 
+  <common-modal
     :visible.sync="dialogVisible"
     :title="getTitle"
-    :width="560"
+    :width="413"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
+    <Form
+      ref="formInline"
+      label-position="left"
+      :label-width="80"
+      :label-colon="true"
+      :rules="rules"
+      :model="formModel"
+    >
 
-    <div class="address-pool-info">
-      <div class="info-row">
-        <div class="info-row-label">开始地址</div>
-        <Input
-          maxlength="50"
-          v-model="beginAddress"
-          placeholder="请输入开始名称"
-          class="info-row-input" />
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">结束地址</div>
-        <Input
-          maxlength="50"
-          v-model="endAddress"
-          placeholder="请输入结束地址"
-          class="info-row-input" />
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">默认租赁时间</div>
-        <Input
-          maxlength="16"
-          v-model="validLifetime"
-          class="info-row-input" />
-        <label>秒</label>
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">最大租赁时间</div>
-        <Input
-          maxlength="16"
-          v-model="maxValidLifetime"
-          class="info-row-input" />
-        <label>秒</label>
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">域名服务器</div>
-        <Input
-          maxlength="255"
-          v-model="dnsServer"
-          placeholder="请输入域名服务器"
-          class="info-row-input" />
-      </div>
-      <div class="info-row" v-if="type === 'ipv4'">
-        <div class="info-row-label">路由服务器</div>
-        <Input
-          maxlength="255"
-          v-model="gateway"
-          placeholder="请输入路由服务器"
-          class="info-row-input" />
-      </div>
-    </div>
-  </common-modal >
+      <common-form
+        :form-model="formModel"
+        :form-item-list="formItemList"
+      />
+
+    </Form>
+  </common-modal>
 </template>
 
 <script>
 import service from "@/services";
 
-import { 
-  ipv6IsValid, 
-  isIPv4Reg, 
-  getAddressType, 
-  isPosNumber 
+import {
+  ipv6IsValid,
+  isIPv4Reg,
+  getAddressType,
+  isPosNumber
 } from "@/util/common";
 
 const types = [
@@ -105,7 +69,24 @@ export default {
   },
 
   data() {
+    this.formItemList = [
+      {
+        label: "启始地址",
+        model: "name",
+        type: "input",
+        placeholder: "请填写起始地址",
+      },
+      {
+        label: "结束地址",
+        model: "regexp",
+        type: "input",
+        placeholder: "请填写结束地址",
+      },
+    ];
+
+    this.rules = {};
     return {
+      formModel: {},
       loading: false,
       dialogVisible: false,
       types,
@@ -121,14 +102,14 @@ export default {
 
   computed: {
     getTitle() {
-      return (this.isEdit ? "编辑" : "添加") + "地址池";
+      return (this.isEdit ? "编辑" : "新建") + "地址池";
     }
   },
 
   watch: {
     visible(val) {
       if (!val) return;
-      
+
       this.dialogVisible = val;
     },
 
@@ -139,7 +120,7 @@ export default {
     },
 
     dialogVisible(val) {
-      if (!val) {        
+      if (!val) {
         this.setValue();
       }
 
@@ -218,8 +199,8 @@ export default {
       if (type === "ipv4") {
         let beginArr = beginAddress.split("."),
           endArr = endAddress.split(".");
-        
-        const res = beginArr.map((item,idx) => [parseInt(item), parseInt(endArr[idx])]);
+
+        const res = beginArr.map((item, idx) => [parseInt(item), parseInt(endArr[idx])]);
 
         for (let i = 0; i < res.length; i++) {
           let item = res[i];
@@ -236,10 +217,10 @@ export default {
     },
 
     validate() {
-      let { 
-        beginAddress, 
-        endAddress, 
-        validLifetime, 
+      let {
+        beginAddress,
+        endAddress,
+        validLifetime,
         maxValidLifetime,
         gateway,
         dnsServer
@@ -278,7 +259,7 @@ export default {
       if (maxValidLifetime.length > 12 || !isPosNumber(maxValidLifetime)) {
         return Promise.reject({ message: "请填写正确的最大租赁时间！" });
       }
-      
+
       if (parseInt(validLifetime) > parseInt(maxValidLifetime)) {
         return Promise.reject({ message: "最大租赁时间不能小于默认租赁时间！" });
       }
@@ -291,7 +272,7 @@ export default {
         if (!isIPv4Reg.test(beginAddress)) {
           return Promise.reject({ message: "请填写正确的开始地址！" });
         }
-        
+
         if (!isIPv4Reg.test(endAddress)) {
           return Promise.reject({ message: "请填写正确的结束地址！" });
         }
@@ -301,7 +282,7 @@ export default {
         if (!ipv6IsValid(beginAddress)) {
           return Promise.reject({ message: "请填写正确的开始地址！" });
         }
-        
+
         if (!ipv6IsValid(endAddress)) {
           return Promise.reject({ message: "请填写正确的结束地址！" });
         }
