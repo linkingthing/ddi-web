@@ -28,8 +28,7 @@
 
     <Create 
       :visible.sync="showCreate"
-      :prefix="prefix"
-      :mask-len="maskLen"
+      @completed="handleQuery"
     />
   </div>
 </template>
@@ -44,8 +43,6 @@ import Create from "./create";
 
 import { columns } from "./define";
 
-import { getAddressType } from "@/util/common";
-
 export default {
   components: {
     TablePagination,
@@ -53,17 +50,15 @@ export default {
   },
 
   data() {
-    const { prefix, maskLen } = this.$route.query;
-
     return {
-      prefix,
-      maskLen: parseInt(maskLen),
       loading: true,
       url: this.$getApiByRoute().url,
       tableData: [],
       columns: columns(this),
       selectedData: [],
-      showCreate: false
+      showCreate: false,
+      showPlanDetail: false,
+      currentData: null
     };
   },
 
@@ -81,11 +76,13 @@ export default {
         let res = await this.$get({ url: this.url });
         
         this.tableData = res.map(item => {
-          const segments = item.item.segmentWidth;
+          const segments = item.segmentWidths;
 
           item.segments = segments.join("-");
-          item.blocks = Math.pow(2, segments[segments.length - 1]);
+
+          return item;
         });
+        
       } catch (err) {
         console.error(err);
           
@@ -108,41 +105,61 @@ export default {
       this.showCreate = true;
     },
 
-    handleViewNetDetail() {},
+    handleViewNetDetail(res) {
+      this.$router.push({
+        name: "ipam-address-plan-subnet",
+        params: {
+          plansId: this.$route.params.plansId,
+          layoutsId: res.id
+        },
+        query: {
+          layoutName: res.name
+        }
+      });
+    },
 
-    handleSymbolManage() {},
-
-    handleEdit() {},
+    /**
+     * 查看规划详情
+     */
+    handleViewPlanDetail(res) {
+      this.showPlanDetail = true;
+      this.currentData = res;
+    },
 
     handleSaved() {
       this.handleQuery();
     },
 
-    async handleDelete(data) {
+    async handleDelete() {
       try {
+        if (!this.selectedData.length) {
+          this.$$warning("请选择要删除的项！");
+
+          return;
+        }
+
+        if (this.selectedData.length > 1) {
+          this.$$warning("只能删除一项！");
+
+          return;
+        }
+
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
-
-        // const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
         
-        // let { message, status } = await services[action](data.subnet_id);
+        await this.$delete({ url: this.url + "/" + this.selectedData[0].id });
+        
+        this.$$success("删除成功！");
 
-        // status = +status;
-
-        // if (status === 200 || status === 204) {
-        //   this.$$success("删除成功！");
-
-        //   this.handleQuery();
-        // }
-        // else {
-        //   Promise.reject({ message });
-        // }
+        this.handleQuery();
       }
       catch (err) {
         console.error(err);
 
-        this.$$error(err.message || "删除失败！");
+        if (err.message) {
+          this.$$error(err.message);
+        }
       }
       finally {
         this.loading = false;

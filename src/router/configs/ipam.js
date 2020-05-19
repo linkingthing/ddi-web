@@ -35,6 +35,16 @@ export default {
       }
     },
     {
+      name: 'ipam-address-plan-subnet',
+      path: '/address/ipam/plans/:plansId/layouts/:layoutsId/subnets',
+      component: () => import(/* webpackChuckName: "ipam-address-plan-subnet" */ '@/views/ipam-manage/address-plan-subnet'),
+      meta: {
+        notInMenu: true,
+        from: "ipam-address-layouts",
+        title: ":layoutName"
+      }
+    },
+    {
       name: 'ipam-address-manage',
       path: '/address/ipam/subnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),

@@ -62,7 +62,7 @@ export default {
   },
 
   mounted() {    
-    this.handleQuery();    
+    this.handleQuery();
   },
 
   methods: {
@@ -115,11 +115,17 @@ export default {
           return;
         }
 
+        if (this.selectedData.length > 1) {
+          this.$$warning("只能删除一项！");
+
+          return;
+        }
+
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
         
-        await this.$delete({ url: this.url + "/" + data.id });
+        await this.$delete({ url: this.url + "/" + this.selectedData[0].id });
         
         this.$$success("删除成功！");
 

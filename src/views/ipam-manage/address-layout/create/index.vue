@@ -22,24 +22,27 @@
     </div>
     
     <FirstStep 
+      ref="firstStep"
       v-if="step === 1" 
-      :mask="mask"
-      :ip-type="ipType"
-      @confirm="handleFirstConfirm"
+      :layout-id="layoutId"
+      :url="url"
     />
     
     <SecondStep 
+      ref="secondStep"
       v-if="step === 2" 
-      :mask="mask"
-      :ip-type="ipType"
-      @confirm="handleSecondConfirm"
+      :layout-id="layoutId"
+      :segment-widths="segmentWidths"
+      :url="url"
     />
     
     <ThirdStep
+      ref="thirdStep"
       v-if="step === 3" 
-      @confirm="handleThirdConfirm"
+      :layout-id="layoutId"
+      :url="url"
     />
-  </common-modal >
+  </common-modal>
 </template>
 
 <script>
@@ -69,6 +72,9 @@ export default {
       default: ""
     },
 
+    /**
+     * 规划所设置的该IP的掩码长度
+     */
     maskLen: {
       type: Number,
       default: 0
@@ -82,6 +88,7 @@ export default {
 
   data() {
     return {
+      url: this.$getApiByRoute().url,
       backImg,
       loading: false,
       dialogVisible: false,
@@ -101,6 +108,8 @@ export default {
         }
       ],
 
+      segmentWidths: [],
+
       ipType: "",
       layoutId: null,
       segmentId: null,
@@ -118,7 +127,7 @@ export default {
     },
 
     dialogVisible(val) {
-      this.setValue();
+      this.init();
 
       this.$emit("update:visible", val);
     },
@@ -141,6 +150,15 @@ export default {
   },
 
   methods: {
+    init(val) {
+      this.step = 1;
+      this.layoutData = {};
+      this.segmentData = {};
+      this.mask = 0;
+
+      this.setValue(val);
+    },
+
     setValue(val = {}) {
       this.layoutId = val.id || null;
       this.segmentId = val.segmentId || null;
@@ -150,13 +168,66 @@ export default {
       this.step--;
     },
 
-    handleNextStep() {
-      this.step++;
+    async handleNextStep() {
+      try {
+        if (this.step === 1) {
+          await this.handleFirstConfirm();
+        }
+        else if (this.step === 2) {
+          await this.handleSecondConfirm();
+        }
+        else if (this.step === 3) {
+          await this.handleThirdConfirm();
+        }
+
+        this.step++;
+      } catch (error) {
+        console.error(error);
+        
+        this.$$error(error.message);  
+      }
     },
 
-    handleFirstConfirm(res) {},
+    async handleFirstConfirm() {
+      let params = await this.$refs.firstStep.getData();
 
-    handleSecondConfirm(res) {},
+      this.loading = true;
+
+      try {
+        let { id, segmentWidths } = await this.$post({ url: this.url, params } );
+      
+        this.layoutId = id;
+        this.segmentWidths = segmentWidths;
+      } 
+      // eslint-disable-next-line no-empty
+      catch (error) {}
+      finally {
+        this.loading = false;
+      }
+    },
+
+    async handleSecondConfirm() {
+      let params = await this.$refs.secondStep.getData();
+
+      const len = params.length;
+
+      this.loading = true;
+
+      try {
+        for (let i = 0; i < len; i++) {
+          await this.saveSegment(params[i]);
+        }
+      } 
+      // eslint-disable-next-line no-empty
+      catch (error) {}
+      finally {
+        this.loading = false;
+      }
+    },
+
+    saveSegment(params) {
+      return this.$put({ url: `${this.url}/${this.layoutId}/segments/${params.id}`, params } );
+    },
 
     handleThirdConfirm(res) {},
 

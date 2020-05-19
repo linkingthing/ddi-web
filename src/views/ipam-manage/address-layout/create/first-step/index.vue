@@ -1,9 +1,10 @@
 <template>
   <div class="first-step">
-    <section class="info-row">
+    <section class="info-row-inline">
       <div class="info-row-label">网络名称：</div>
       <Input
         v-model="name"
+        max="50"
         placeholder="请填写网络名称"
         style="width:260px" />
     </section>
@@ -14,7 +15,7 @@
         <div class="item-label">可规划长度</div>
       </div>
       <div class="layout-info-item">
-        <div class="item-value">{{prefixPos}}-{{maxMask}}</div>
+        <div class="item-value">{{prefixPos}}-{{maskLen}}</div>
         <div class="item-label">当前缀位</div>
       </div>
     </section>
@@ -43,14 +44,22 @@
     <!-- 分段显示 -->
     <section class="segment-section">
       <div 
-        class="segment-section-item" 
-        v-for="(segment,idx) in segmentWidths"
-        :key="idx"
-        :style="{ width:segment.width, backgroundColor:segment.color }"
-        :class="{
-          'is-begin': segment.tag === 'forbidden',
-          'is-end': segment.tag === 'unuse'
-        }"
+        class="segment-section-item is-begin" 
+        key="begin-segement"
+        :style="{ flex:startSegment.value, backgroundColor:startSegment.color }"
+      />
+      <template v-if="endSegment.value >= 0">
+        <div
+          v-for="(segment,idx) in segmentWidths"
+          class="segment-section-item" 
+          :key="idx"
+          :style="{ flex:segment.value, backgroundColor:segment.color }"
+        />
+      </template>
+      <div 
+        class="segment-section-item is-end" 
+        key="end-segement"
+        :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
       />
 
       <div class="section-cursor" :style="{ left:cursorLeft }" />
@@ -58,7 +67,7 @@
 
     <section class="segment-list-top">
       <div class="detail-top-left">
-        剩余可分配前缀长度：<span>{{restLen}}</span>
+        剩余可分配前缀长度：<span>{{endSegment.value}}</span>
       </div>
 
       <Button
@@ -69,17 +78,17 @@
       </Button>
     </section>
 
-    <section class="segment-list" v-if="segmentWidths.length > 2">
+    <section class="segment-list" v-if="segmentWidths.length">
       <template v-for="(item, idx) in segmentWidths">
         <div
           class="segment-list-item"
           :key="idx"
-          v-if="idx > 0 && idx < segmentWidths.length - 1"
         >
           <div class="item-label">{{item.name}} <span>长度：</span></div>
           <Input 
             placeholder="请填写长度"
             v-model="item.value"
+            maxlength="2"
             @on-change="handleSegmentValueChange(item)"
           />
 
@@ -97,45 +106,52 @@
 
 <script>
 import deleteImg from "./../images/delete.png";
+import { isPosNumber } from "@/util/common";
 
 const colors = ["#8041FF", "#4586FE", "#47D6FF"];
 
 export default {
   props: {
-    mask: {
-      type: Number,
-      default: 0
-    },
-
-    maskLen: {
-      type: Number,
-      default: 0
-    },
-
-    ipType: {
+    layoutId: {
       type: String,
       default: ""
     },
-
-    data: {
-      type: Object,
-      default: () => ({})
+    
+    url: {
+      type: String,
+      default: ""
     }
   },
 
   data() {
+    const { prefix, maskLen } = this.$route.query;
+
+    const mask = parseInt(prefix.split("/")[1]);
+
     return {
+      // 已规划长度
+      mask,
+      // 最大规划长度
+      maskLen: parseInt(maskLen),
       deleteImg,
-      planId: this.$route.params.plansId,
       name: "",
-      maxMask: 0,
       sections: [],
       segmentWidths: [],
+      // 总可规划长度
       canPlanLength: 0,
+      // 可规划地址的起始长度
       prefixPos: 0,
       cursorLeft: 0,
       unit: 8,
-      restLen: 0
+      // 剩余可规划长度
+      startSegment: {
+        color: "#EDEDED",
+        value: mask
+      },
+      endSegment: {
+        color: "rgba(69,134,254, .2)",
+        value: 0
+      }
     };
   },
 
@@ -145,88 +161,47 @@ export default {
 
   methods: {
     init() {
-      const ipType = this.ipType;
-
-      this.maxMask = ipType === "ipv4" ? 32 : 64;
-
-      if (ipType === "ipv6") {
-        this.canPlanLength = this.maxMask - this.mask;
-      }
-      else {
-        this.canPlanLength = this.maskLen - this.mask;
-      }
-
-      this.restLen = this.canPlanLength;
+      // 总可规划长度
+      this.canPlanLength = this.maskLen - this.mask;
       
+      // 可规划地址的起始长度
       this.prefixPos = this.canPlanLength + 1;
 
       let count = 0;
 
-      this.sections = new Array(this.maxMask / 8).fill([]).map(() => new Array(this.unit).fill(0).map(() => ++count));
-      this.segmentWidths = [
-        {
-          width: this.calcSegmentItemWidth(this.mask),
-          color: "#EDEDED",
-          tag: "forbidden",
-          value: this.mask
-        },
-        {
-          width: this.calcSegmentItemWidth(this.canPlanLength),
-          color: "rgba(69,134,254, .2)",
-          tag: "unuse",
-          value: this.canPlanLength
-        }
-      ];
+      this.sections = new Array(this.maskLen / this.unit).fill([]).map(() => new Array(this.unit).fill(0).map(() => ++count));
+
+      this.endSegment.value = this.canPlanLength;
     },
 
     /**
      * 格式化段的名称与颜色
      */
     formatSegmentNameAndColor() {
-      const len = this.segmentWidths.length - 1;
-
-      let count = 0;
-
       this.segmentWidths.forEach((item, idx) => {
-        if (idx !== 0 && idx < len) {
-          count++;
-
-          item.name = `标识${count}`;
-          item.color = colors[idx % colors.length];
-        }
+        item.name = `标识${++idx}`;
+        item.color = colors[idx % colors.length];
       });
     },
 
     /**
-     * 计算剩余可分配前缀长度与段的宽度
+     * 计算剩余可分配前缀长度
      */
     calcRestLen() {
-      const len = this.segmentWidths.length - 1;
-
       let total = 0;
-
-      this.segmentWidths.forEach((item, idx) => {
-        if (idx !== 0 && idx < len) {
-          total += item.value || 0;
-          item.width = this.calcSegmentItemWidth(item.value);
-        }
+      
+      this.segmentWidths.forEach(item => {
+        total += parseInt(item.value) || 0;
       });
 
-      this.restLen = this.maxMask - this.mask - total;
-
-      let restItem = this.segmentWidths[len];
-
-      restItem.value = this.restLen;
-      restItem.width = this.calcSegmentItemWidth(this.restLen);
+      this.endSegment.value = this.maskLen - this.mask - total;
     },
 
     /**
      * 添加一个分段
      */
     handleAddSegment() {
-      this.segmentWidths.splice(1, 0, {
-        width: this.calcSegmentItemWidth()
-      });
+      this.segmentWidths.push({});
 
       this.formatSegmentNameAndColor();
     },
@@ -247,11 +222,35 @@ export default {
       this.formatSegmentNameAndColor();
     },
 
-    /**
-     * 计算段的宽度
-     */
-    calcSegmentItemWidth(value = 0) {
-      return isNaN(value) ? 0 : parseFloat(value * 100 / this.maxMask) + "%";
+    getData() {
+      let res = this.segmentWidths;
+
+      if (!this.name) {
+        this.$$warning("请输入网络名称！");
+
+        return Promise.reject();
+      }
+      
+      if (!res.some(item => this.validateItem(item))) {
+        this.$$warning("请输入正确的长度！");
+
+        return Promise.reject();
+      }
+
+      if (this.endSegment.value < 0) {
+        this.$$warning("长度之和不能大于可规划长度！");
+
+        return Promise.reject();
+      }
+
+      return {
+        name: this.name,
+        segmentWidths: this.segmentWidths.map(item => parseInt(item.value))
+      };
+    },
+
+    validateItem({ value }) {
+      return isPosNumber(value);
     }
   }
 };

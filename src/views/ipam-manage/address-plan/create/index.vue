@@ -115,7 +115,7 @@ export default {
 
       return {
         prefix: this.prefix.trim(),
-        maskLen: getAddressType(temp[0]) === "ipv4" ? 24 : 64,
+        maskLen: getAddressType(temp[0]) === "ipv4" ? this.maskLen : 64,
         description: this.description
       };
     }

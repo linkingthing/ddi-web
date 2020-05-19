@@ -31,9 +31,9 @@ async function netCall(request) {
 
   try {
     const response = await request;
-    let { data: resData, status } = await response;
+    let { data: resData, status, message } = await response;
     
-    let { message, data } = resData;
+    let { data } = resData;
 
     // 如果查询的是对象，则data的内容直接就是resData
     if (!resData.data) {

@@ -6,11 +6,11 @@
       :key="idx">
       <section class="item-top">
         <div class="item-title">
-          <div v-if="item.edit" @dblclick="item.edit = true">
+          <div v-if="!item.edit" @dblclick="item.edit = true">
             <span class="item-title-content">
               {{item.name}} 
             </span>
-            <span>双击修改</span>
+            <span class="item-title-desc">双击修改</span>
           </div>
 
           <Input
@@ -18,11 +18,13 @@
             placeholder="请输入标识名称"
             maxlength="255"
             v-model="item.name"
-            @blur="item.edit = false" />
+            @blur="item.edit = false"
+            @keyup.enter="item.edit = false" />
         </div>
 
         <Button
           type="default"
+          class="item-top-button"
           @click="handleAddItem(item)"
         >
           添加
@@ -31,23 +33,26 @@
 
       <template v-if="item.tags.length">
         <section
-          class="tag-item"
+          class="tag-child"
           v-for="(child, childIndex) in item.tags"
           :key="childIndex">
-          <div>
-            <div class="tag-item-child">
-              <label class="child-label">名称</label>
-            </div>
-            <Input placeholder="请填写名称" v-model="child.name" />
-            <div class="tag-item-child">
-              <label class="child-label">值</label>
-            </div>
-            <Input placeholder="请填写名称" v-model="child.value" />
+          <div class="tag-child-input">
+            <label class="child-label">名称：</label>
+            <Input
+              placeholder="请填写名称"
+              v-model="child.name"
+              maxlength="50" 
+            />
+            <label class="child-label">值：</label>
+            <Input
+              placeholder="请填写值"
+              v-model="child.value"
+              :maxlength="child.maxlength" />
           </div>
           
           <img
-            class="item-delete"
-            @click="handleDeleteTag(childIndex)"
+            class="child-delete"
+            @click="handleDeleteItem(item, childIndex)"
             :src="deleteImg">
         </section>
       </template>
@@ -61,6 +66,23 @@
 import deleteImg from "./../images/delete.png";
 
 export default {
+  props: {
+    layoutId: {
+      type: String,
+      default: ""
+    },
+    
+    url: {
+      type: String,
+      default: ""
+    },
+    
+    segmentWidths: {
+      type: Array,
+      default: () => []
+    }
+  },
+  
   data() {
     return {
       deleteImg,
@@ -68,12 +90,114 @@ export default {
     };
   },
 
+  mounted() {
+    this.init();
+  },
+
   methods: {
-    handleAddItem(segment) {
-      
+    async init() {
+      let res = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
+
+      this.list = res.sort((a,b) => a.index - b.index).map((item, i) => {
+        const max = this.segmentWidths[i];
+
+        return {
+          id: item.id,
+          name: item.name || `标识${i + 1}`,
+          tags: item.tags ? item.tags.map((tag, idx) => ({ 
+            name: tag, 
+            value: item.values[idx].toString(2),
+            maxlength: Math.pow(2, max) - 1 
+          })) : [],
+          value: max,
+          edit: false
+        };
+      });
     },
 
-    handleDeleteItem(idx) {}
+    async getData() {
+      try {
+        await this.validate();
+
+        return this.getResults();
+      } catch (error) {
+        this.$$error(error.message);
+
+        return Promise.reject();
+      }
+    },
+
+    getResults() {      
+      return this.list.map(item => {
+        let tags = [], values = [];
+
+        Object.values(item.tags).forEach(({ name,value }) => {
+          tags.push(name.trim());
+          values.push(parseInt(value.trim(), 2));
+        });
+
+        return {
+          id: item.id,
+          name: item.name.trim(),
+          tags,
+          values
+        };
+      });
+    },
+
+    handleAddItem(segment) {
+      segment.tags.push({
+        name: "",
+        value: "",
+        maxlength: Math.pow(2, segment.value) - 1 
+      });
+    },
+
+    handleDeleteItem(segment, idx) {
+      segment.tags.splice(idx, 1);
+    },
+
+    validate() {
+      const len = this.list.length;
+
+      if (Array.from(new Set(this.list.map(({ name }) => name.trim()))).length < len) {
+        return Promise.reject({ message: "各网段名称不能相同！" });
+      }
+
+      for (let i = 0; i < len; i++) {
+        let item = this.list[i];
+
+        if (!item.name.trim()) {
+          return Promise.reject({ message: "请输入网段名称！" });
+        }
+
+        const tagLen = item.tags.length;
+        
+        let value = null;
+
+        if (Array.from(new Set(item.tags.map(({ name }) => name.trim()))).length < tagLen) {
+          return Promise.reject({ message: "网段下各项名称不能相同！" });
+        }
+
+        for (let j = 0; j < tagLen; j++) {
+          let tag = item.tags[j];
+
+          if (value === parseInt(tag.value)) {
+            return Promise.reject({ message: "同一网段值不能相同" });
+          }
+
+          value = parseInt(tag.value);
+
+          if (!tag.name.trim()) {
+            return Promise.reject({ message: "请输入名称！" });
+          }
+
+          if (!/(1|0)/g.test(tag.value.toString().trim())) {
+            return Promise.reject({ message: "请输入正确的值！" });
+          }
+        }
+      }
+    }
   }
 };
 </script>

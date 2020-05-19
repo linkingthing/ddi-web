@@ -1,12 +1,11 @@
 <template>
-  <div class="third-step">
+  <div class="address-plan-subnet">
     <IviewLoading v-if="loading" />
 
     <table-page 
       :data="tableData"
       :pagination-enable="false"
       :columns="columns"  
-      @on-selection-change="handleSelecChange"
     > 
       <template slot="top-left">
         <Select
@@ -28,45 +27,26 @@
         <Button 
           type="primary" 
           @click="handleFilter" 
-          class="top-button button-add"
+          class="top-button"
         >
           筛选
         </Button>
       </template>
     </table-page>
-
-    <create-pool
-      :visible.sync="showCreatePool"
-      :data="currentSubnet"
-      @completed="handleJumpToPool"
-    />
   </div>
 </template>
 
 <script>
-import CreatePool from "./create-pool";
+import { columns } from "./define";
 
 export default {
-  components: {
-    "create-pool": CreatePool
-  },
-
-  props: {
-    layoutId: {
-      type: String,
-      default: ""
-    },
-    
-    url: {
-      type: String,
-      default: ""
-    }
-  },
-
   data() {
     return {
+      loading: false,
+      url: this.$getApiByRoute().url,
       options: [],
       tags: [],
+      columns: columns(this),
       tableData: [],
       source: [],
       showCreatePool: false,
@@ -91,7 +71,7 @@ export default {
 
     async getSegmentTags() {
       try {
-        let res = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
+        let res = await this.$get({ url: this.url.replace("subnets", "segments") });
 
         this.tags = res.sort((a,b) => a.index - b.index)
           .filter(item => item.tags && item.tags.length)
@@ -101,29 +81,27 @@ export default {
           })));
           
         this.tags.forEach(tag => {
-          tag.unshift({ label: "全部标识", value: null });
+          tag.unshift({ label: "全部标识", value: "all" });
 
-          this.options.push(null);
+          this.options.push("all");
         });
+
+        console.log(this.tags);
+        
       } 
       // eslint-disable-next-line no-empty
       catch (error) {}
     },
 
     async getData() {
-      let res = await this.$get({ url: `${this.url}/${this.layoutId}/subnets` });
+      let res = await this.$get({ url: this.url });
       
       this.source = [...res];
       this.tableData = res;
     },
 
-    handleJumpToPool() {
+    handleViewPool() {
       
-    },
-
-    handleCreatePool(res) {
-      this.showCreatePool = true;
-      this.currentSubnet = res;
     }
   }
 };
