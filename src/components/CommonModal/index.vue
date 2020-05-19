@@ -107,6 +107,15 @@ export default {
     width: {
       type: [String, Number],
       default: 520
+    },
+    
+    /**
+     * 是否在触发confirm事件后，异步关闭
+     * 若设置该值为true, 则在触发confirm事件后，需要返回promise
+     */
+    closeAsyncWhenConfirm: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -139,7 +148,14 @@ export default {
         this.dialogVisible = false;
       }
 
-      listener && listener();
+      if (this.closeAsyncWhenConfirm) {
+        if (event === "confirm" && listener) {
+          await listener();
+        }
+      }
+      else {
+        listener && listener();
+      }
     }
   }
 };

@@ -28,7 +28,14 @@
 
     <Create 
       :visible.sync="showCreate"
-      @completed="handleQuery"
+      @completed="handleConfirmed"
+    />
+
+    <Edit 
+      :visible.sync="showPlanDetail"
+      :segments="currentData.segmentWidths"
+      :layout-id="currentData.id"
+      @confirmed="handleConfirmed"
     />
   </div>
 </template>
@@ -40,13 +47,15 @@
 <script>
 import TablePagination from "@/components/TablePagination";
 import Create from "./create";
+import Edit from "./edit";
 
 import { columns } from "./define";
 
 export default {
   components: {
     TablePagination,
-    Create
+    Create,
+    Edit
   },
 
   data() {
@@ -58,7 +67,8 @@ export default {
       selectedData: [],
       showCreate: false,
       showPlanDetail: false,
-      currentData: null
+      segmentWidths: [],
+      currentData: {}
     };
   },
 
@@ -123,10 +133,13 @@ export default {
      */
     handleViewPlanDetail(res) {
       this.showPlanDetail = true;
-      this.currentData = res;
+      this.currentData = { ...res };
     },
 
-    handleSaved() {
+    handleConfirmed() {
+      this.showPlanDetail = false;
+      this.showCreate = false;
+
       this.handleQuery();
     },
 
