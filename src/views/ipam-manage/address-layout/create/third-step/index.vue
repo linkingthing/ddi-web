@@ -12,8 +12,7 @@
         <Select
           v-for="(tag, idx) in tags"
           :key="idx"
-          v-model="options[idx]"
-          @on-change="handleSelect">
+          v-model="options[idx]">
           <Option 
             v-for="item in tag" 
             :value="item.value" 
@@ -56,6 +55,11 @@ export default {
       type: String,
       default: ""
     },
+
+    reset: {
+      type: Boolean,
+      default: false
+    },
     
     url: {
       type: String,
@@ -74,6 +78,16 @@ export default {
     };
   },
 
+  watch: {
+    reset(val) {
+      if (!val) return;
+
+      this.doReset();
+
+      this.$emit("update:reset", false);
+    }
+  },
+
   async mounted() {
     await this.getSegmentTags();
 
@@ -81,17 +95,27 @@ export default {
   },
 
   methods: {
-    handleSelect() {
-
+    doReset() {
+      
     },
 
     handleFilter() {
+      this.tableData = this.source.filter(({ tagArr }) => {
+        let isFit = true;
 
+        this.options.forEach((item, i) => {
+          if (item !== "all" && item !== tagArr[i]) {
+            isFit = false;
+          }
+        });
+
+        return isFit;
+      });
     },
 
     async getSegmentTags() {
       try {
-        let res = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
+        let res = await this.$get({ url: this.url.replace("subnets", "segments") });
 
         this.tags = res.sort((a,b) => a.index - b.index)
           .filter(item => item.tags && item.tags.length)
@@ -101,10 +125,10 @@ export default {
           })));
           
         this.tags.forEach(tag => {
-          tag.unshift({ label: "全部标识", value: null });
+          tag.unshift({ label: "全部标识", value: "all" });
 
-          this.options.push(null);
-        });
+          this.options.push("all");
+        });  
       } 
       // eslint-disable-next-line no-empty
       catch (error) {}

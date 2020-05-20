@@ -42,11 +42,6 @@ export default {
       default: false
     },
 
-    prefix: {
-      type: String,
-      default: ""
-    },
-
     layoutId: {
       type: String,
       default: ""
@@ -55,14 +50,6 @@ export default {
     segments: {
       type: Array,
       default: () => []
-    },
-
-    /**
-     * 规划所设置的该IP的掩码长度
-     */
-    maskLen: {
-      type: Number,
-      default: 0
     }
   },
 
@@ -71,7 +58,6 @@ export default {
       url: this.$getApiByRoute().url,
       loading: false,
       dialogVisible: false,
-      mask: 0,
       segmentWidths: [],
       buttons: [
         {
@@ -97,6 +83,10 @@ export default {
     },
 
     dialogVisible(val) {
+      if (!val) {
+        this.$emit("update:layoutId", null);
+      }
+
       this.$emit("update:visible", val);
     },
 
@@ -106,17 +96,6 @@ export default {
       await this.$nextTick();
 
       this.segmentWidths = [...val];
-    },
-
-    prefix: {
-      immediate: true,
-      handler(val) {
-        if (!val) return;
-
-        let temp = val.split("/");
-    
-        this.mask = parseInt(temp[1]);
-      }
     }
   },
 
@@ -130,7 +109,7 @@ export default {
 
       try {
         for (let i = 0; i < len; i++) {
-          await this.saveSegment(params[i]);
+          await this.saveSegmentItem(params[i]);
         }
 
         this.$emit("confirmed");
@@ -142,7 +121,7 @@ export default {
       }
     },
 
-    saveSegment(params) {
+    saveSegmentItem(params) {
       return this.$put({ url: `${this.url}/${this.layoutId}/segments/${params.id}`, params } );
     }
   }

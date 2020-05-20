@@ -3,12 +3,8 @@
     :visible.sync="dialogVisible"
     :width="750"
     title="规划网络"
-    :buttons="buttons"
-    :close-immediately-when-confirm="true"
+    :buttons="[]"
     custom-class="create-layout"
-    @confirm="handleConfirm"
-    @save="handleSave"
-    @next-step="handleNextStep"
   >
     <IviewLoading v-if="loading" />
 
@@ -25,14 +21,18 @@
     <FirstStep 
       ref="firstStep"
       v-if="step === 1" 
+      :reset.sync="resetFirst"
       :layout-id="layoutId"
       :segments="segmentWidths"
+      :layout-name="layoutName"
       :url="url"
     />
     
     <SecondStep 
       ref="secondStep"
       v-if="step === 2" 
+      :reset.sync="resetSecond"
+      :layout-id="layoutId"
       :segment="segmentWidths"
       :url="url"
     />
@@ -40,9 +40,81 @@
     <ThirdStep
       ref="thirdStep"
       v-if="step === 3" 
+      :reset.sync="resetThird"
       :layout-id="layoutId"
       :url="url"
     />
+
+    <!-- 第一步 -->
+    <template
+      v-if="step === 1"
+      slot="footer-left">
+      <Button 
+        type="default"
+        class="button-cancel"
+        @click="handleCancel"
+      >
+        取消
+      </Button>
+
+      <Button 
+        type="primary"
+        class="button-next"
+        @click="handleNextStep"
+      >
+        下一步
+      </Button>
+    </template>
+
+    <!-- 第二步 -->
+    <div
+      class="footer-buttons"
+      v-if="step === 2"
+      slot="footer">
+      <Button 
+        type="default"
+        class="button-cancel"
+        @click="handleCancel"
+      >
+        取消
+      </Button>
+
+      <div>
+        <Button 
+          type="warning"
+          @click="handleSave"
+        >
+          保存
+        </Button>
+
+        <Button 
+          type="primary"
+          class="button-next"
+          @click="handleNextStep"
+        >
+          继续规划
+        </Button>
+      </div>
+    </div>
+
+    <!-- 第三步 -->
+    <template slot="footer-left" v-if="step === 3">
+      <Button 
+        type="default"
+        class="button-cancel"
+        @click="handleCancel"
+      >
+        取消
+      </Button>
+
+      <Button 
+        type="primary"
+        class="button-next"
+        @click="handleComplete"
+      >
+        完成
+      </Button>
+    </template>
   </common-modal>
 </template>
 
@@ -52,8 +124,6 @@ import SecondStep from "./second-step";
 import ThirdStep from "./third-step";
 
 import backImg from "@/assets/images/back.png";
-
-import { getAddressType } from "@/util/common";
 
 export default {
   components: {
@@ -66,24 +136,6 @@ export default {
     visible: {
       type: Boolean,
       default: false
-    },
-
-    prefix: {
-      type: String,
-      default: ""
-    },
-
-    /**
-     * 规划所设置的该IP的掩码长度
-     */
-    maskLen: {
-      type: Number,
-      default: 0
-    },
-
-    data: {
-      type: Object,
-      default: () => ({})
     }
   },
 
@@ -93,30 +145,14 @@ export default {
       backImg,
       loading: false,
       dialogVisible: false,
-      mask: 0,
       step: 1,
-      buttons: [
-        {
-          label: "取消",
-          type: "default",
-          class: "button-cancel",
-          event: "cancel"
-        },
-        {
-          label: "下一步",
-          type: "primary",
-          event: "nextStep"
-        }
-      ],
+      resetFirst: false,
+      resetSecond: false,
+      resetThird: false,
 
       segmentWidths: [],
-
-      ipType: "",
       layoutId: null,
-      segmentId: null,
-
-      layoutData: {},
-      segmentData: {}
+      layoutName: ""
     };
   },
 
@@ -128,76 +164,58 @@ export default {
     },
 
     dialogVisible(val) {
-      this.init();
+      this.init(val);
 
       this.$emit("update:visible", val);
-    },
-
-    prefix: {
-      immediate: true,
-      handler(val) {
-        if (!val) return;
-
-        let temp = val.split("/");
-    
-        this.mask = parseInt(temp[1]);
-        this.ipType = getAddressType(temp[0]);
-      }
     }
-
-    // data(val) {      
-    //   this.setValue(val);
-    // }
   },
 
   methods: {
     init(val) {
-      this.step = 1;
-      this.layoutData = {};
-      this.segmentData = {};
-      this.mask = 0;
-
-      this.setValue(val);
+      this.step = Number(val);
+      this.layoutId = null;
+      this.layoutName = "";
+      this.segmentWidths = [];
     },
 
-    setValue(val = {}) {
-      this.layoutId = val.id || null;
-      this.segmentId = val.segmentId || null;
-    },
+    async handlePrevStep() {
+      if (this.step === 2) {
+        this.resetSecond = true;
+      }
+      else if (this.step === 3) {
+        this.resetThird = true;
+      }
 
-    handlePrevStep() {
+      await this.$nextTick();
+
       this.step--;
+
+      if (this.step === 1) {
+        this.getLayout();
+      }
     },
 
     async handleNextStep() {
       try {
         if (this.step === 1) {
-          await this.handleFirstConfirm();
+          await this.saveLayout();
         }
         else if (this.step === 2) {
-          await this.handleSecondConfirm();
-        }
-        else if (this.step === 3) {
-          await this.handleThirdConfirm();
+          await this.saveSegments();
         }
 
         this.step++;
-      } catch (error) {
-        console.error(error);
-        
-        this.$$error(error.message);  
-      }
+      } 
+      // eslint-disable-next-line no-empty
+      catch (error) {}
     },
 
-    async handleFirstConfirm() {
-      let params = await this.$refs.firstStep.getData();
-
+    async getLayout() {
       this.loading = true;
 
       try {
-        let { id, segmentWidths } = await this.$post({ url: this.url, params } );
+        let { segmentWidths } = await this.$get({ url: this.url + "/" + this.layoutId } );
       
-        this.layoutId = id;
         this.segmentWidths = segmentWidths;
       } 
       // eslint-disable-next-line no-empty
@@ -207,7 +225,31 @@ export default {
       }
     },
 
-    async handleSecondConfirm() {
+    async saveLayout() {
+      let params = await this.$refs.firstStep.getData();
+
+      this.loading = true;
+
+      try {
+        let { id, name, segmentWidths } = await this.$post({ url: this.url, params } );
+      
+        this.layoutId = id;
+        this.segmentWidths = segmentWidths;
+        this.layoutName = name;
+      } 
+      // eslint-disable-next-line no-empty
+      catch (error) {
+        return Promise.reject();
+      }
+      finally {
+        this.loading = false;
+      }
+    },
+
+    /**
+     * 第二步 - 继续规划
+     */
+    async saveSegments() {
       let params = await this.$refs.secondStep.getData();
 
       const len = params.length;
@@ -216,25 +258,51 @@ export default {
 
       try {
         for (let i = 0; i < len; i++) {
-          await this.saveSegment(params[i]);
+          await this.saveSegmentItem(params[i]);
         }
       } 
       // eslint-disable-next-line no-empty
-      catch (error) {}
+      catch (error) {
+        return Promise.reject();
+      }
       finally {
         this.loading = false;
       }
     },
 
-    saveSegment(params) {
+    /**
+     * 保存每一个网段
+     */
+    saveSegmentItem(params) {
       return this.$put({ url: `${this.url}/${this.layoutId}/segments/${params.id}`, params } );
     },
 
-    handleThirdConfirm(res) {},
+    /**
+     * 第二步 - 保存
+     */
+    async handleSave() {
+      try {
+        await this.handleSecondConfirm();
 
-    handleSave(res) {},
+        this.handleCancel();
+      } 
+      // eslint-disable-next-line no-empty
+      catch (error) {}
+    },
 
-    handleConfirm(res) {}
+    /**
+     * 完成
+     */
+    handleComplete() {
+      this.dialogVisible = false;
+    },
+    
+    /**
+     * 取消
+     */
+    handleCancel() {
+      this.dialogVisible = false;
+    }
   }
 };
 </script>

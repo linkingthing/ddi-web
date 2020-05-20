@@ -22,7 +22,7 @@ export const columns = scope => [
             scope.handleViewPool(row);
           }
         }
-      }, "查看地址吃");
+      }, "查看地址池");
     },
     align: "center"
   }

@@ -34,7 +34,7 @@
     <Edit 
       :visible.sync="showPlanDetail"
       :segments="currentData.segmentWidths"
-      :layout-id="currentData.id"
+      :layout-id.sync="currentData.id"
       @confirmed="handleConfirmed"
     />
   </div>

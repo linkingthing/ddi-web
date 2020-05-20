@@ -125,9 +125,19 @@ const colors = ["#8041FF", "#4586FE", "#47D6FF"];
 
 export default {
   props: {
+    layoutId: {
+      type: String,
+      default: ""
+    },
+
     isEdit: {
       type: Boolean,
       default: false
+    },
+
+    layoutName: {
+      type: String,
+      default: ""
     },
     
     url: {
@@ -136,6 +146,11 @@ export default {
     },
 
     showSegmentName: {
+      type: Boolean,
+      default: false
+    },
+
+    reset: {
       type: Boolean,
       default: false
     },
@@ -179,13 +194,31 @@ export default {
   },
 
   watch: {
-    segments(val) {
+    async segments(val) {
+      let segments = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
+
       this.segmentWidths = val.map((value, idx) => ({
+        name: segments[idx].name || `标识${idx + 1}`,
         value,
         color: colors[idx % colors.length]
       }));
 
       this.calcRestLen();
+    },
+
+    layoutName: {
+      immediate: true,
+      handler(val) {
+        this.name = val;
+      }
+    },
+
+    reset(val) {
+      if (!val) return;
+
+      this.doReset();
+
+      this.$emit("update:reset", false);
     }
   },
 
@@ -206,6 +239,24 @@ export default {
       this.sections = new Array(this.maskLen / this.unit).fill([]).map(() => new Array(this.unit).fill(0).map(() => ++count));
 
       this.endSegment.value = this.canPlanLength;
+    },
+
+    doReset() {
+      this.name = "";
+      this.sections = [];
+      this.segmentWidths = [];
+      this.canPlanLength = 0;
+      this.prefixPos = 0;
+      this.cursorLeft = 0;
+      // 剩余可规划长度
+      this.startSegment = {
+        color: "#EDEDED",
+        value: this.mask
+      };
+      this.endSegment = {
+        color: "rgba(69,134,254, .2)",
+        value: 0
+      };
     },
 
     /**
