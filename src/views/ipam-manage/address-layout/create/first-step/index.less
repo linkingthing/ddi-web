@@ -1,7 +1,5 @@
 .first-step{
-    .info-row{
-
-    }
+    padding: 0 36px;
 
     .layout-info{
         display: flex;
@@ -41,18 +39,10 @@
             flex:1;
         }
     
-        .axis-unit-long{
-            height: 10px !important;
-        }
-    
-        .axis-unit-inuse{
-            background-color: rgba(155,155,155, .4);
-        }
-    
         .axis-unit{
             height: 6px;
             width: 1px;
-            background-color: rgba(155,155,155, .3);
+            background-color: rgba(155,155,155, .15);
             margin-right: 9px;
             display: flex;
             justify-content: center;
@@ -64,6 +54,18 @@
             margin-top: -20px;
             display: block;
         }
+    
+        .axis-unit-long{
+            height: 10px;
+        }
+    
+        .axis-unit-inuse{
+            background-color: rgba(155,155,155, .4);
+
+            .axis-label{
+                color: #333;
+            }
+        }
     }
 
     .segment-section{
@@ -73,6 +75,8 @@
         &-item{
             height: 10px;
             border-radius: 3px;
+            display: flex;
+            justify-content: center;
 
             &.is-begin{
                 border-radius: 3px 0 0 3px;
@@ -81,6 +85,14 @@
             &.is-end{
                 border-radius: 0 3px 3px 0;
             }
+        }
+
+        &-item-name{
+            color: #999;
+            font-size: 14px;
+            line-height: 1;
+            margin-top: 16px;
+            white-space: nowrap;
         }
 
         .section-cursor{

@@ -1,6 +1,6 @@
 <template>
   <div class="first-step">
-    <section class="info-row-inline">
+    <section class="info-row-inline" v-if="!isEdit">
       <div class="info-row-label">网络名称：</div>
       <Input
         v-model="name"
@@ -9,7 +9,7 @@
         style="width:260px" />
     </section>
 
-    <section class="layout-info">
+    <section class="layout-info" v-if="!isEdit">
       <div class="layout-info-item">
         <div class="item-value">{{canPlanLength}}</div>
         <div class="item-label">可规划长度</div>
@@ -47,25 +47,38 @@
         class="segment-section-item is-begin" 
         key="begin-segement"
         :style="{ flex:startSegment.value, backgroundColor:startSegment.color }"
-      />
+      >
+        <div class="segment-section-item-name" v-if="showSegmentName">
+          前缀
+        </div>
+      </div>
       <template v-if="endSegment.value >= 0">
         <div
           v-for="(segment,idx) in segmentWidths"
           class="segment-section-item" 
           :key="idx"
           :style="{ flex:segment.value, backgroundColor:segment.color }"
-        />
+        >
+          <div class="segment-section-item-name" v-if="showSegmentName">
+            {{segment.value}}位
+          </div>
+        </div>
       </template>
       <div 
+        v-if="endSegment.value"
         class="segment-section-item is-end" 
         key="end-segement"
         :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
-      />
+      >
+        <div class="segment-section-item-name" v-if="showSegmentName">
+          {{endSegment.value}}位
+        </div>
+      </div>
 
       <div class="section-cursor" :style="{ left:cursorLeft }" />
     </section>
 
-    <section class="segment-list-top">
+    <section class="segment-list-top" v-if="!isEdit">
       <div class="detail-top-left">
         剩余可分配前缀长度：<span>{{endSegment.value}}</span>
       </div>
@@ -78,7 +91,7 @@
       </Button>
     </section>
 
-    <section class="segment-list" v-if="segmentWidths.length">
+    <section class="segment-list" v-if="segmentWidths.length && !isEdit">
       <template v-for="(item, idx) in segmentWidths">
         <div
           class="segment-list-item"
@@ -100,7 +113,7 @@
       </template>
     </section>
 
-    <div class="segment-no-data" v-else>点击添加标识即可进行网络规划</div>
+    <div class="segment-no-data" v-else-if="!isEdit">点击添加标识即可进行网络规划</div>
   </div>
 </template>
 
@@ -112,14 +125,24 @@ const colors = ["#8041FF", "#4586FE", "#47D6FF"];
 
 export default {
   props: {
-    layoutId: {
-      type: String,
-      default: ""
+    isEdit: {
+      type: Boolean,
+      default: false
     },
     
     url: {
       type: String,
       default: ""
+    },
+
+    showSegmentName: {
+      type: Boolean,
+      default: false
+    },
+
+    segments: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -153,6 +176,17 @@ export default {
         value: 0
       }
     };
+  },
+
+  watch: {
+    segments(val) {
+      this.segmentWidths = val.map((value, idx) => ({
+        value,
+        color: colors[idx % colors.length]
+      }));
+
+      this.calcRestLen();
+    }
   },
 
   mounted() {

@@ -4,6 +4,7 @@
     :width="750"
     title="规划网络"
     :buttons="buttons"
+    :close-immediately-when-confirm="true"
     custom-class="create-layout"
     @confirm="handleConfirm"
     @save="handleSave"
@@ -25,14 +26,14 @@
       ref="firstStep"
       v-if="step === 1" 
       :layout-id="layoutId"
+      :segments="segmentWidths"
       :url="url"
     />
     
     <SecondStep 
       ref="secondStep"
       v-if="step === 2" 
-      :layout-id="layoutId"
-      :segment-widths="segmentWidths"
+      :segment="segmentWidths"
       :url="url"
     />
     

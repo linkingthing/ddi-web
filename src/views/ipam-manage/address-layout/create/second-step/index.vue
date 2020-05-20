@@ -6,20 +6,22 @@
       :key="idx">
       <section class="item-top">
         <div class="item-title">
-          <div v-if="!item.edit" @dblclick="item.edit = true">
+          <Input
+            v-if="currentItem && currentItem.id === item.id"
+            placeholder="请输入标识名称"
+            maxlength="255"
+            v-model="item.name"
+            :data-id="item.id"
+            @on-blur="handleItemNameBlur"
+            @on-enter="handleItemNameEnter" 
+          />
+
+          <div v-else @dblclick="handleItemDBClick(item, $event)">
             <span class="item-title-content">
               {{item.name}} 
             </span>
             <span class="item-title-desc">双击修改</span>
           </div>
-
-          <Input
-            v-else
-            placeholder="请输入标识名称"
-            maxlength="255"
-            v-model="item.name"
-            @blur="item.edit = false"
-            @keyup.enter="item.edit = false" />
         </div>
 
         <Button
@@ -77,7 +79,7 @@ export default {
       default: ""
     },
     
-    segmentWidths: {
+    segments: {
       type: Array,
       default: () => []
     }
@@ -86,8 +88,15 @@ export default {
   data() {
     return {
       deleteImg,
-      list: []
+      list: [],
+      currentItem: {}
     };
+  },
+  
+  watch: {
+    layoutId() {
+      this.init();
+    }
   },
 
   mounted() {
@@ -96,10 +105,12 @@ export default {
 
   methods: {
     async init() {
+      if (!this.layoutId) return;
+      
       let res = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
 
       this.list = res.sort((a,b) => a.index - b.index).map((item, i) => {
-        const max = this.segmentWidths[i];
+        const max = this.segments[i];
 
         return {
           id: item.id,
@@ -112,7 +123,27 @@ export default {
           value: max,
           edit: false
         };
-      });
+      });      
+    },
+
+    handleItemNameBlur() {
+      this.currentItem = null;
+    },
+
+    handleItemNameEnter() {
+      this.currentItem = null;
+    },
+
+    async handleItemDBClick(item) {
+      if (this.currentItem && item.id === this.currentItem.id) return;
+
+      this.currentItem = item;
+
+      await this.$nextTick();
+
+      let input = this.$el.querySelector(`.ivu-input-wrapper[data-id='${item.id}']`).querySelector(".ivu-input");
+
+      if (input) input.focus();
     },
 
     async getData() {
