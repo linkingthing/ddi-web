@@ -1,5 +1,5 @@
 <template>
-  <div class="table-pagination">
+  <div class="table-pagination" :class="{'is-padding-top': isPaddingTop}">
     <!-- <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3> -->
 
     <article class="table-pagination-top">
@@ -11,7 +11,9 @@
         <slot name="top-right" />
       </div>
     </article>
+
     <slot name="neck" />
+
     <Table
       v-if="showTable"
       :data="data"
@@ -78,6 +80,11 @@ export default {
     showTable: {
       type: Boolean,
       default: true
+    },
+
+    isPaddingTop: {
+      type: Boolean,
+      default: false
     }
   },
 

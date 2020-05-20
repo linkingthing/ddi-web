@@ -1,5 +1,8 @@
 .first-step{
-    padding: 0 36px;
+
+    &>*{
+        padding: 0 36px;
+    }
 
     .layout-info{
         display: flex;
@@ -123,14 +126,14 @@
         align-items: flex-start;
         flex-wrap: wrap;
         margin-top: 15px;
-        min-height: 237px;
+        height: 237px;
         overflow: auto;
 
         &-item{
             display: flex;
             align-items: center;
             margin-bottom: 18px;
-            margin-right: 60px;
+            margin-right: 48px;
 
             &:nth-child(2n){
                 margin-right: 0;
@@ -144,7 +147,7 @@
 
             span{
                 font-size: 14px;
-                margin-left: 22px;
+                margin-left: 15px;
                 font-weight: 400;
             }
         }

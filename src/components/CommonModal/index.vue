@@ -28,6 +28,8 @@
       v-if="showFooter"
       slot="footer"
     >
+      <slot name="footer" />
+
       <slot name="footer-left" />
 
       <Button

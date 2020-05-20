@@ -78,6 +78,11 @@ export default {
       type: String,
       default: ""
     },
+
+    reset: {
+      type: Boolean,
+      default: false
+    },
     
     segments: {
       type: Array,
@@ -94,13 +99,20 @@ export default {
   },
   
   watch: {
-    layoutId() {
-      this.init();
-    }
-  },
+    layoutId: {
+      immediate: true,
+      handler() {
+        this.init();
+      } 
+    },
 
-  mounted() {
-    this.init();
+    reset(val) {
+      if (!val) return;
+
+      this.doReset();
+
+      this.$emit("update:reset", false);
+    }
   },
 
   methods: {
@@ -124,6 +136,11 @@ export default {
           edit: false
         };
       });      
+    },
+
+    doReset() {
+      this.currentItem = null;
+      this.list = [];
     },
 
     handleItemNameBlur() {
