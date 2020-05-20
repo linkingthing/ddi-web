@@ -5,15 +5,10 @@ export const columns = scope => [
     align: "center"
   },
   {
-    title: "备注",
-    key: "remark",
-    align: "center"
-  },
-  {
-    title: "前缀",
+    title: "网络地址",
     render: (h, { row }) => {
       return h("a", {
-        class: "cell-prefix is-link",
+        class: "is-link",
         on: {
           click: () => {
             scope.handleViewLayouts(row);
@@ -21,21 +16,21 @@ export const columns = scope => [
         }
       }, row.prefix);
     },
+    align: "left"
+  },
+  {
+    title: "可规划前缀",
+    key: "maskLen",
     align: "center"
   },
   {
-    title: "布局数",
-    key: "total",
-    align: "center"
-  },
-  {
-    title: "已使用块数",
-    key: "usage",
+    title: "备注",
+    key: "remark",
     align: "center"
   },
   {
     title: "创建时间",
     key: "creationTimestamp",
-    align: "center"
+    align: "right"
   }
 ];

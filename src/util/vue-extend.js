@@ -104,7 +104,7 @@ function getApiByRoute() {
     url,
     child
   };
-};
+}
   
 
 Vue.prototype.$getApiByRoute = getApiByRoute;
@@ -126,5 +126,5 @@ Vue.prototype.$post = post;
 Vue.prototype.$delete = del;
 Vue.prototype.$axios = axios;
 Vue.prototype.$getData = () => get(getApiByRoute()); 
-Vue.prototype.$createEntity = (params) => post({...getApiByRoute(), params}); 
+Vue.prototype.$createEntity = params => post({ ...getApiByRoute(), params }); 
 

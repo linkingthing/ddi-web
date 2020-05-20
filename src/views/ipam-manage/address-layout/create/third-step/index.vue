@@ -6,7 +6,6 @@
       :data="tableData"
       :pagination-enable="false"
       :columns="columns"  
-      @on-selection-change="handleSelecChange"
     > 
       <template slot="top-left">
         <Select
@@ -37,6 +36,8 @@
     <create-pool
       :visible.sync="showCreatePool"
       :data="currentSubnet"
+      :subnet="currentSubnet.network"
+      :tags="currentSubnet.tags"
       @completed="handleJumpToPool"
     />
   </div>
@@ -44,6 +45,7 @@
 
 <script>
 import CreatePool from "./create-pool";
+import { columns } from "./define";
 
 export default {
   components: {
@@ -69,12 +71,14 @@ export default {
 
   data() {
     return {
+      loading: false,
       options: [],
       tags: [],
       tableData: [],
+      columns: columns(this),
       source: [],
       showCreatePool: false,
-      currentSubnet: null
+      currentSubnet: {}
     };
   },
 
@@ -96,7 +100,8 @@ export default {
 
   methods: {
     doReset() {
-      
+      this.options = [];
+      this.source = [];
     },
 
     handleFilter() {

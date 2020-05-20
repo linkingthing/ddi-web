@@ -7,7 +7,7 @@ export const columns = scope => [
   {
     title: "名称",
     key: "name",
-    align: "center"
+    align: "left"
   },
   {
     title: "规划",
@@ -47,6 +47,6 @@ export const columns = scope => [
         }, "查看规划")
       ];
     },
-    align: "center"
+    align: "right"
   }
 ];
