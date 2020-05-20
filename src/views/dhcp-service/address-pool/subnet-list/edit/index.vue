@@ -21,7 +21,9 @@
 </template>
 
 <script>
-import { getAddressType } from "@/util/common";
+import { ipv6IsValid, ipv4IsValid } from "@/util/common";
+import { resArrayToString, resStringToArray } from "@/util/parser";
+import ClientClassFormItem from "./ClientClassFormItem";
 
 export default {
   props: {
@@ -30,12 +32,7 @@ export default {
       default: false
     },
 
-    url: {
-      type: String,
-      default: ""
-    },
-
-    data: {
+    links: {
       type: Object,
       default: () => ({})
     }
@@ -45,81 +42,102 @@ export default {
     return {
       loading: false,
       dialogVisible: false,
-      formModel: {},
-      formItemList: [
-        {
-          label: "dns",
-          model: "dns",
-          type: "input",
-          placeholder: "请填写DNS，逗号隔开",
-        },
-        {
-          label: "默认网关",
-          model: "dns",
-          type: "input",
-          placeholder: "请填写默认网关"
-        },
-      ],
+      formModel: {}
+
     };
   },
 
+  computed: {
+    formItemList() {
+      if (!this.formModel.subnet) {
+        return [];
+      }
+      const ipv4FormList = [
+        {
+          label: "DNS",
+          model: "domainServers",
+          type: "input",
+          placeholder: "请填写DNS，逗号隔开"
+        },
+        {
+          label: "默认网关",
+          model: "routers",
+          type: "input",
+          placeholder: "请填写默认网关"
+        },
+        {
+          label: "自定义",
+          model: "clientClass",
+          type: "component",
+          component: ClientClassFormItem
+        },
+        {
+          label: "中继路由",
+          model: "relayAgentAddresses",
+          type: "input",
+          placeholder: "请填写默认网关"
+        }
+      ];
+
+      const ipv6FormList = [{
+        label: "DNS",
+        model: "domainServers",
+        type: "input",
+        placeholder: "请填写DNS，逗号隔开"
+      }
+      ];
+
+      if (ipv6IsValid(this.formModel.subnet)) {
+        return ipv6FormList;
+      }
+
+      if (ipv4IsValid(this.formModel.subnet)) {
+        return ipv4FormList;
+      }
+
+      return [];
+    }
+  },
   watch: {
     visible(val) {
       if (!val) return;
-
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
-      this.setValue();
-
+      if (!val) {
+        this.formModel = {};
+      } else {
+        this.getData(this.links);
+      }
       this.$emit("update:visible", val);
-    },
-
-    data(val) {
-      this.setValue(val);
     }
   },
 
   methods: {
-    setValue(val = {}) {
-      this.prefix = val.prefix || "";
+    getData({ self }) {
+      this.$get({ url: self }).then(res => {
+        resArrayToString(res, ["domainServers", "routers", "relayAgentAddresses"]);
+        this.formModel = res;
+      });
     },
 
-    async handleConfirm() {
-      try {
-        await this.validate();
+    handleConfirm() {
 
-        this.loading = true;
+      this.loading = true;
+      const params = { ...this.formModel };
 
-        await this.$post({ url: this.url, prarams: this.getParams() });
+      resStringToArray(params, ["domainServers", "routers", "relayAgentAddresses"]);
 
+      this.$put({ url: this.links.update, params }).then(res => {
         this.$$success("保存成功！");
-
         this.$emit("confirmed");
-      }
-      catch (err) {
-        this.$$error(err.message);
-
-        return Promise.reject();
-      }
-      finally {
+        this.dialogVisible = false;
+      }).catch(err => {
+        this.$$error(err.response.data.message);
+      }).finally(() => {
         this.loading = false;
-      }
-    },
-
-    validate() {
-      let { prefix } = this;
-
-      prefix = prefix.trim();
-
-      return Promise.resolve();
-    },
-
-    getParams() {
-      return {
-        prefix: this.prefix.trim()
-      };
+      });
     }
   }
 };

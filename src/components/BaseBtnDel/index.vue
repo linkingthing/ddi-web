@@ -13,7 +13,7 @@ export default {};
 <style lang="less" scoped>
 .btn-del {
   font-size: 15px;
-  margin: 0 8px;
+  margin-left: 16px;
   color: #fd8f64 !important;
   cursor: pointer;
 }

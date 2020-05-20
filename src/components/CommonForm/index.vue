@@ -6,6 +6,11 @@
       :key="item.name"
       :prop="item.model"
     >
+      <component
+        :is="item.component"
+        v-model="formModel[item.model]"
+        v-if="item.type === 'component'"
+      />
       <i-input
         v-if="item.type === 'input'"
         v-model="formModel[item.model]"
@@ -164,7 +169,7 @@ export default {
     };
   },
   computed: {},
-  created() { 
+  created() {
   },
   mounted() { },
   methods: {},

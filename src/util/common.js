@@ -1,4 +1,4 @@
-import { Address6 } from "ip-address";
+import { Address6, Address4 } from "ip-address";
 
 export const isIPv4Reg = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/;
 
@@ -345,6 +345,14 @@ export const ipv6IsValid = address => {
 
   return new Address6(address).isValid();
 };
+
+export const ipv4IsValid = address => {
+  if (address.indexOf("/")) {
+    address = address.split("/")[0];
+  }
+
+  return new Address4(address).isValid();
+}
 
 /**
  * 格式化日期

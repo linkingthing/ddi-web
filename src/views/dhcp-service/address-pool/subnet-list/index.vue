@@ -7,20 +7,10 @@
       :data="tableData"
       :pagination-enable="false"
       :columns="columns"
-    >
-      <template slot="top-right">
-        <Button
-          type="warning"
-          @click="handleDelete"
-          class="top-button"
-        >
-          删除
-        </Button>
-      </template>
-    </TablePagination>
+    />
     <Edit
       :visible.sync="showEdit"
-      @saved="handleSaved"
+      :links="links"
     />
   </div>
 </template>
@@ -34,7 +24,6 @@ import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
 
 import { columns } from "./define";
-import { getAddressType } from "@/util/common";
 
 export default {
   components: {
@@ -46,46 +35,50 @@ export default {
     return {
       loading: true,
       keywords: "",
-      tableData: [{
-        subnet: "10.0.0.2"
-      }],
+      tableData: [],
       columns: columns(this),
       showEdit: false,
+      links: {},
       editData: null,
     };
   },
 
   mounted() {
-
-    this.$getData().then(res => {
-      this.loading = false;
-    }).catch().finally(() => {
-      this.loading = false;
-    })
-
-
+    this.getDataList();
   },
 
   methods: {
-
-    async handleDelete(data) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
-
-      }
-      catch (err) {
-        this.$$error(err.message || "删除失败！");
-      }
-      finally {
+    getDataList() {
+      this.$getData().then(res => {
         this.loading = false;
-      }
+        this.tableData = res;
+      }).catch().finally(() => {
+        this.loading = false;
+      });
+
     },
-    handleEdit() {
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "您确定要删除当前数据吗？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.info("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$Message.error(err.message);
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
+        }
+      });
+
+    },
+    handleEdit({ links }) {
+      this.links = links;
       this.showEdit = true;
-    },
-    handleSaved(a) {
-      console.log(a);
     }
+   
   }
 };
 </script>

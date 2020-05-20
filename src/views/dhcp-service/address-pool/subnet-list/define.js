@@ -29,7 +29,7 @@ export const columns = scope => [
     render: (h, { row }) => {
       return h("common-process",{
         props: {
-          percent: 25
+          percent: +row.usedRatio 
         }
       });    
 
@@ -44,6 +44,13 @@ export const columns = scope => [
           on: {
             click: () => {
               scope.handleEdit(row);
+            }
+          }
+        }),
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
             }
           }
         })
