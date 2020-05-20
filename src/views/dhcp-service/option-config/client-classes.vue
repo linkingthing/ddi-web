@@ -44,7 +44,7 @@ export default {
         {
           title: "名称",
           key: "name",
-          align: "center"
+          align: "left"
         },
         {
           title: "匹配条件",
@@ -53,7 +53,7 @@ export default {
         },
         {
           title: "操作",
-          align: "center",
+          align: "right",
           render: (h, { row }) => {
             return h("div", [h("btn-edit", {
               on: {

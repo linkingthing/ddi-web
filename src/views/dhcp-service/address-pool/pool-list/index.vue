@@ -21,9 +21,7 @@
 
     <Edit
       :visible.sync="showEdit"
-      :data="editData"
-      :type="addressType"
-      :subnet-id="subnetId"
+      :links="links"
       @success="handleQuery"
     />
   </div>
@@ -38,8 +36,6 @@ import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
 import service from "@/services";
 
-import { getAddressType } from "@/util/common";
-
 export default {
   components: {
     TablePagination,
@@ -50,89 +46,60 @@ export default {
     return {
       loading: false,
       keywords: "",
-      tableData: [{
-
-      }],
+      tableData: [],
       columns: [
         {
           title: "开始地址",
-          key: "poolName",
+          key: "beginAddress",
           align: "center"
         },
         {
           title: "结束地址",
-          key: "total",
+          key: "endAddress",
           align: "center"
         },
         {
           title: "操作",
-          align: "center",
+          align: "right",
           render: (h, { row }) => {
             return h("div", [
-              h("label", {
-                class: "operate-label operate-edit",
+              h("btn-edit", {
                 on: {
                   click: () => {
                     this.handleEdit(row);
                   }
                 }
-              }, "编辑"),
-              h("label", {
-                class: "operate-label operate-delete",
+              }),
+              h("btn-del", {
                 on: {
                   click: () => {
                     this.handleDelete(row);
                   }
                 }
-              }, "删除")
+              })
             ]);
           }
         }
       ],
       showEdit: false,
-      editData: null,
-      subnetId: null,
-      addressType: ""
+      links: {}
     };
   },
   mounted() {
-    const { address, subnetId } = this.$route.query;
-
-    this.subnetId = subnetId;
-    this.address = address;
-
-
+    this.handleQuery();
   },
   methods: {
 
-    async handleQuery() {
+    handleQuery() {
       this.loading = true;
 
-      try {
-        const action = this.addressType === "ipv4" ? "getIPv4AddressPoolList" : "getIPv6AddressPoolList";
-
-        let { status, data, message } = await service[action](this.subnetId);
-
-        if (status === 200) {
-          this.tableData = data.data.map(item => {
-            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
-            item.usage = item.usage + "%";
-
-            return item;
-          });
-        }
-        else {
-          Promise.reject({ message: message || "查询失败！" });
-        }
-      }
-      catch (err) {
-        console.error(err);
-
-        this.$$error(err.message);
-      }
-      finally {
+      this.$axios.get(this.$getApiByRoute().url).then(({ data: { data, links } }) => {
+        this.tableData = data;
+        this.links = links;
+      }).catch().finally(() => {
         this.loading = false;
-      }
+      });
+
     },
 
     handleAdd() {

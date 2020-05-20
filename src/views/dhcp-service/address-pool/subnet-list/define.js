@@ -2,14 +2,14 @@ export const columns = scope => [
   {
     title: "子网地址",
     key: "subnet",
-    align: "center",
+    align: "left",
     render: (h, { row }) => {
       return h("div", [
         h("label", {
           class: "operate-label operate-link",
           on: {
             click: () => {
-              scope.$router.push({ path: "/address/dhcp/subnets/123/pools" });
+              scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools` });
             }
           }
         }, row.subnet)
@@ -25,7 +25,6 @@ export const columns = scope => [
     title: "DHCP使用率",
     key: "usedRatio",
     align: "center",
-    width: "130",
     render: (h, { row }) => {
       return h("common-process",{
         props: {
