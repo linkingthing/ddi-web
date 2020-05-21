@@ -12,14 +12,14 @@
         <Button 
           type="primary" 
           @click="handleCreate" 
-          class="top-button button-add"
+          class="top-button"
         >
           添加
         </Button>
         <Button 
-          type="primary" 
+          type="warning" 
           @click="handleDelete" 
-          class="top-button button-split"
+          class="top-button"
         >
           删除
         </Button>

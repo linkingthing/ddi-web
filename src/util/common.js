@@ -126,7 +126,9 @@ export const getAddressType = val => {
  * @param {String, Number} address IP地址或者掩码
  * @param {String, Number} ipType IP地址的类型  ipv4|ipv6
  */
-export const gatewayIsValid = (address, ipType) => {
+export const maskIsValid = (address, ipType) => {
+  if (!address) return false;
+
   let val = address.toString();
   let index = val.indexOf("/");
 
@@ -152,10 +154,10 @@ export const gatewayIsValid = (address, ipType) => {
   if (!isPosNumber(val)) return false;
 
   if (ipType === "ipv6") {
-    return val > 1 && val < 128;
+    return val > 1 && val <= 64;
   }
   else {
-    return val > 1 && val < 32;
+    return val > 1 && val <= 24;
   }
 };
 
@@ -352,7 +354,7 @@ export const ipv4IsValid = address => {
   }
 
   return new Address4(address).isValid();
-}
+};
 
 /**
  * 格式化日期

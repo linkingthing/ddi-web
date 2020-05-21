@@ -28,7 +28,6 @@
 
     <Create 
       :visible.sync="showCreate"
-      :url="url"
       @saved="handleSaved"
     />
   </div>
