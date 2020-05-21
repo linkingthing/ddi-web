@@ -33,7 +33,7 @@
       v-if="step === 2" 
       :reset.sync="resetSecond"
       :layout-id="layoutId"
-      :segment="segmentWidths"
+      :segments="segmentWidths"
       :url="url"
     />
     

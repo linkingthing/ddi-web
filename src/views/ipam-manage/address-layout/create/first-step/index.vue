@@ -194,14 +194,14 @@ export default {
   },
 
   watch: {
-    async segments(val) {
+    async segments(val) {      
       let segments = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
 
       this.segmentWidths = val.map((value, idx) => ({
         name: segments[idx].name || `标识${idx + 1}`,
         value,
         color: colors[idx % colors.length]
-      }));
+      }));      
 
       this.calcRestLen();
     },
