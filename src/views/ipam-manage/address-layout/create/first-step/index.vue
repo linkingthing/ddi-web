@@ -162,19 +162,23 @@ export default {
     segments: {
       type: Array,
       default: () => []
+    },
+
+    prefix: {
+      type: String,
+      default: ""
+    },
+
+    maskLen: {
+      type: [Number, String],
+      default: ""
     }
   },
 
   data() {
-    const { prefix, maskLen } = this.$route.query;
-
-    const mask = parseInt(prefix.split("/")[1]);
-
     return {
       // 已规划长度
-      mask,
-      // 最大规划长度
-      maskLen: parseInt(maskLen),
+      mask: 0,
       deleteImg,
       name: "",
       sections: [],
@@ -188,7 +192,7 @@ export default {
       // 剩余可规划长度
       startSegment: {
         color: "#EDEDED",
-        value: mask
+        value: 0
       },
       endSegment: {
         color: "rgba(69,134,254, .2)",
@@ -204,6 +208,19 @@ export default {
   },
 
   watch: {
+    prefix: {
+      immediate: true,
+      handler(val) {
+        if (!val) return;
+
+        this.mask = parseInt(val.split("/")[1]);
+        
+        this.init();
+
+        this.startSegment.value = this.mask;
+      }
+    },
+
     async segments(val) {      
       let segments = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
 
@@ -230,10 +247,6 @@ export default {
 
       this.$emit("update:reset", false);
     }
-  },
-
-  mounted() {
-    this.init();
   },
 
   methods: {

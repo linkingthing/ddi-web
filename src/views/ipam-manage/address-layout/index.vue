@@ -28,6 +28,8 @@
 
     <Create 
       :visible.sync="showCreate"
+      :prefix="prefix"
+      :mask-len="maskLen"
       @completed="handleConfirmed"
     />
 
@@ -35,6 +37,8 @@
       :visible.sync="showPlanDetail"
       :segments="segmentWidths"
       :layout-id.sync="layoutId"
+      :prefix="prefix"
+      :mask-len="maskLen"
       @confirmed="handleConfirmed"
     />
   </div>
@@ -69,15 +73,30 @@ export default {
       showPlanDetail: false,
       segmentWidths: [],
       layoutId: "",
+      prefix: "",
+      maskLen: "",
       currentData: {}
     };
   },
 
-  mounted() {    
+  async mounted() {
+    await this.getPlanDetail();
+
     this.handleQuery();    
   },
 
   methods: {
+    async getPlanDetail() {
+      let temp = this.url.split("/");
+
+      temp.splice(temp.length - 1, 1);
+
+      let { prefix, maskLen } = await this.$get({ url: temp.join("/") });
+
+      this.prefix = prefix;
+      this.maskLen = maskLen;
+    },
+
     async handleQuery() {
       this.loading = true;
 

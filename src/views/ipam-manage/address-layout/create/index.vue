@@ -26,6 +26,8 @@
       :segments="segmentWidths"
       :layout-name="layoutName"
       :url="url"
+      :prefix="prefix"
+      :mask-len="maskLen"
     />
     
     <SecondStep 
@@ -136,6 +138,16 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+
+    prefix: {
+      type: String,
+      default: ""
+    },
+
+    maskLen: {
+      type: [Number, String],
+      default: ""
     }
   },
 

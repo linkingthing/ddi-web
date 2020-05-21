@@ -17,6 +17,8 @@
       :segments="segments"
       :url="url"
       :show-segment-name="true"
+      :prefix="prefix"
+      :mask-len="maskLen"
     />
     
     <SecondStep 
@@ -52,6 +54,16 @@ export default {
     segments: {
       type: Array,
       default: () => []
+    },
+
+    prefix: {
+      type: String,
+      default: ""
+    },
+
+    maskLen: {
+      type: [Number, String],
+      default: ""
     }
   },
 
