@@ -20,16 +20,17 @@ export default {
       label: "地址池",
       route: "address-pool-list"
     }, {
-      name: "pdpools",
-      label: "固定地址",
-      route: "address-pdpool-list"
-    }, {
       name: "reservations",
-      label: "前缀委派",
+      label: "固定地址",
       route: "address-reservations-list"
+    }, {
+      name: "pdpools",
+      label: "前缀委派",
+      route: "address-pdpool-list"
     }];
     return {
-      tab: ""
+      tab: "",
+      addressType: ""
     };
   },
   computed: {},
@@ -37,15 +38,19 @@ export default {
     const { path } = this.$route;
     const pathSplit = path.split("/");
     this.tab = pathSplit.pop();
+
+    this.$get(this.$getApiByRoute(pathSplit.join("/"))).then(res => {
+      console.log(res)
+      this.addressType = res.subnet; // TODO: 等接口改造来判断ipv6，ipv6 可以 前缀委派
+    });
   },
-  mounted() { },
   methods: {
     handleTab(tab) {
+      const { params } = this.$route;
       this.tab = tab.name;
-      this.$router.push({ name: tab.route });
+      this.$router.push({ name: tab.route, params });
     }
-  },
-  watch: {},
+  }
 };
 </script>
 

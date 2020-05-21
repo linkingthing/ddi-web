@@ -25,6 +25,7 @@ export const columns = scope => [
     title: "DHCP使用率",
     key: "usedRatio",
     align: "center",
+    width: "180",
     render: (h, { row }) => {
       return h("common-process",{
         props: {

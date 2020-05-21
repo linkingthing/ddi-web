@@ -97,7 +97,7 @@ export default {
   created() {
     this.$getData().then(([formModel]) => {
       this.formModel = formModel;
-    })
+    });
   },
   mounted() { },
   methods: {
@@ -123,6 +123,7 @@ export default {
 
 <style lang="less" >
 .dhcp-config-dhcpconfigs {
+  width: 1200px;
   padding-top: 80px;
   padding-left: 26px;
 

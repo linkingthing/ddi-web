@@ -21,10 +21,8 @@
 
     <Edit
       :visible.sync="showEdit"
-      :data="editData"
-      :type="addressType"
-      :subnet-id="subnetId"
-      @success="handleQuery"
+      :links="links"
+      @success="getDataList"
     />
   </div>
 </template>
@@ -36,9 +34,6 @@
 <script>
 import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
-import service from "@/services";
-
-import { getAddressType } from "@/util/common";
 
 export default {
   components: {
@@ -48,92 +43,65 @@ export default {
 
   data() {
     return {
-      subnetChild: "pdpools",
       loading: false,
       keywords: "",
-      tableData: [{
-
-      }],
+      tableData: [],
       columns: [
         {
-          title: "IP地址",
-          key: "poolName",
-          align: "center"
+          title: "前缀",
+          key: "beginAddress",
+          align: "left",
+          render: (h, {row}) => {
+            return `${row.prefix}/${row.prefixLen}`;
+          }
         },
         {
-          title: "MAC",
-          key: "total",
+          title: "委派长度",
+          key: "delegatedLen",
           align: "center"
         },
         {
           title: "操作",
-          align: "center",
+          align: "right",
           render: (h, { row }) => {
             return h("div", [
-              h("label", {
-                class: "operate-label operate-edit",
+              h("btn-edit", {
                 on: {
                   click: () => {
                     this.handleEdit(row);
                   }
                 }
-              }, "编辑"),
-              h("label", {
-                class: "operate-label operate-delete",
+              }),
+              h("btn-del", {
                 on: {
                   click: () => {
                     this.handleDelete(row);
                   }
                 }
-              }, "删除")
+              })
             ]);
           }
         }
       ],
       showEdit: false,
-      editData: null,
-      subnetId: null,
-      addressType: ""
+      links: {}
     };
   },
   mounted() {
-    const { address, subnetId } = this.$route.query;
-
-    this.subnetId = subnetId;
-    this.address = address;
-
-    this.addressType = getAddressType(address);
-
+    this.getDataList();
   },
   methods: {
-    async handleQuery() {
+
+    getDataList() {
       this.loading = true;
 
-      try {
-        const action = this.addressType === "ipv4" ? "getIPv4AddressPoolList" : "getIPv6AddressPoolList";
-
-        let { status, data, message } = await service[action](this.subnetId);
-
-        if (status === 200) {
-          this.tableData = data.data.map(item => {
-            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace(/(T|Z)/g, " ") : "";
-            item.usage = item.usage + "%";
-
-            return item;
-          });
-        }
-        else {
-          Promise.reject({ message: message || "查询失败！" });
-        }
-      }
-      catch (err) {
-        console.error(err);
-
-        this.$$error(err.message);
-      }
-      finally {
+      this.$axios.get(this.$getApiByRoute().url).then(({ data: { data, links } }) => {
+        this.tableData = data;
+        this.links = links;
+      }).catch().finally(() => {
         this.loading = false;
-      }
+      });
+
     },
 
     handleAdd() {
@@ -141,40 +109,27 @@ export default {
       this.editData = null;
     },
 
-    handleEdit(data) {
+    handleEdit({ links }) {
       this.showEdit = true;
-      this.editData = { ...data };
+      this.links = links;
     },
 
-    async handleDelete(data) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
-
-        this.loading = true;
-
-        const action = this.addressType === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
-
-        let { status, message } = await service[action](this.subnetId, data.embedded.id);
-
-        status = +status;
-
-        if (status === 200 || status === 204) {
-          this.$$success("删除成功！");
-
-          this.handleQuery();
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "您确定要删除当前数据吗？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.info("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$Message.error(err.message);
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
         }
-        else {
-          Promise.reject({ message: message || "删除失败！" });
-        }
-      }
-      catch (err) {
-        console.error(err);
+      });
 
-        this.$$error(err.message);
-      }
-      finally {
-        this.loading = false;
-      }
     }
   }
 };

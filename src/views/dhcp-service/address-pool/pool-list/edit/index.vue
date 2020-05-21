@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import service from "@/services";
 
 import {
   ipv6IsValid,
@@ -64,14 +63,14 @@ export default {
         label: "启始地址",
         model: "beginAddress",
         type: "input",
-        placeholder: "请填写起始地址",
+        placeholder: "请填写起始地址"
       },
       {
         label: "结束地址",
         model: "endAddress",
         type: "input",
-        placeholder: "请填写结束地址",
-      },
+        placeholder: "请填写结束地址"
+      }
     ];
 
     this.rules = {};
@@ -85,42 +84,60 @@ export default {
   computed: {
     getTitle() {
       return (this.isEdit ? "编辑" : "新建") + "地址池";
+    },
+    isEdit() {
+      return !!this.links.update;
     }
   },
 
   watch: {
     visible(val) {
       if (!val) {
-        console.log(val)
-
         return;
+      }
 
+      if (this.links.update) {
+        this.$get({ url: this.links.self }).then(res => {
+          this.formModel = res;
+        }).catch();
       }
       this.dialogVisible = val;
     },
-
 
     dialogVisible(val) {
       if (!val) {
         // 关闭弹窗
         // console.log(val)
-
       }
 
       this.$emit("update:visible", val);
     }
   },
 
+  created() {
+    // console.log(this.links.update) // ranck？为什么呢会直接运行了 
+  },
+
   methods: {
 
     handleConfirm() {
-      this.$post({ url: this.links.self, params: this.formModel }).then(res => {
-        this.$$success("新建成功");
-        this.$emit("success");
-        this.dialogVisible = false;
-      }).catch(err => {
-        this.$$error(err.response.data.message);
-      });
+      if (this.isEdit) {
+        this.$put({ url: this.links.update, params: this.formModel }).then(res => {
+          this.$$success("编辑成功");
+          this.$emit("success");
+          this.dialogVisible = false;
+        }).catch(err => {
+          this.$$error(err.response.data.message);
+        });
+      } else {
+        this.$post({ url: this.links.self, params: this.formModel }).then(res => {
+          this.$$success("新建成功");
+          this.$emit("success");
+          this.dialogVisible = false;
+        }).catch(err => {
+          this.$$error(err.response.data.message);
+        });
+      }
 
     }
 

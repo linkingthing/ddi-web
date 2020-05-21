@@ -22,7 +22,7 @@
     <Edit
       :visible.sync="showEdit"
       :links="links"
-      @success="handleQuery"
+      @success="getDataList"
     />
   </div>
 </template>
@@ -34,7 +34,6 @@
 <script>
 import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
-import service from "@/services";
 
 export default {
   components: {
@@ -51,7 +50,7 @@ export default {
         {
           title: "开始地址",
           key: "beginAddress",
-          align: "center"
+          align: "left"
         },
         {
           title: "结束地址",
@@ -63,13 +62,13 @@ export default {
           align: "right",
           render: (h, { row }) => {
             return h("div", [
-              h("btn-edit", {
-                on: {
-                  click: () => {
-                    this.handleEdit(row);
-                  }
-                }
-              }),
+              // h("btn-edit", {
+              //   on: {
+              //     click: () => {
+              //       this.handleEdit(row);
+              //     }
+              //   }
+              // }),
               h("btn-del", {
                 on: {
                   click: () => {
@@ -86,11 +85,11 @@ export default {
     };
   },
   mounted() {
-    this.handleQuery();
+    this.getDataList();
   },
   methods: {
 
-    handleQuery() {
+    getDataList() {
       this.loading = true;
 
       this.$axios.get(this.$getApiByRoute().url).then(({ data: { data, links } }) => {
@@ -107,40 +106,27 @@ export default {
       this.editData = null;
     },
 
-    handleEdit(data) {
+    handleEdit({ links }) {
       this.showEdit = true;
-      this.editData = { ...data };
+      this.links = links;
     },
 
-    async handleDelete(data) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
-
-        this.loading = true;
-
-        const action = this.addressType === "ipv4" ? "deleteIPv4AddressPool" : "deleteIPv6AddressPool";
-
-        let { status, message } = await service[action](this.subnetId, data.embedded.id);
-
-        status = +status;
-
-        if (status === 200 || status === 204) {
-          this.$$success("删除成功！");
-
-          this.handleQuery();
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "您确定要删除当前数据吗？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.info("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$Message.error(err.message);
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
         }
-        else {
-          Promise.reject({ message: message || "删除失败！" });
-        }
-      }
-      catch (err) {
-        console.error(err);
+      });
 
-        this.$$error(err.message);
-      }
-      finally {
-        this.loading = false;
-      }
     }
   }
 };
