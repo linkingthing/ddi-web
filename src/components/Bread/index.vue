@@ -4,10 +4,10 @@
       <BreadcrumbItem
         v-for="(item, index) in breadcrumbList"
         :key="index"
-        :to="index === breadcrumbList.length - 1 ? '': item.path"
+        :to="item.path"
       >
         {{item.title}}
-        <template v-if="item.name">({{item.name}})</template>
+        <!-- <template v-if="item.name">({{item.name}})</template> -->
       </BreadcrumbItem>
     </Breadcrumb>
   </div>
@@ -15,8 +15,7 @@
 
 <script>
 import configs from "@/router/configs";
-
-let autoId = 0;
+import { baseUrl } from "@/util/axios";
 
 export default {
   name: "Bread",
@@ -32,136 +31,81 @@ export default {
   watch: {
     $route(route) {
       this.getBreadcrumbList(route);
-      
-      // this.excuteBreadcrumbList(currentRoute, prevRoute);
     }
   },
 
   mounted() {
-    
-    // this.excuteBreadcrumbList(this.$route, this.$route);
     this.getBreadcrumbList(this.$route);
   },
 
   methods: {
-    getBreadcrumbList(route) {
-      let result = [];
-      // console.log(route);
+    async getBreadcrumbList(route) {
+      let routes = this.getChildren(this.configs, []);
 
-      this.breadcrumbList = this.getChildren(route.name, this.configs, result); 
+      routes = routes.flat(Infinity).reduce((prev, next) => {
+        prev[next.name] = next;
+
+        return prev;
+      }, {});
       
-      // 将root菜单给去掉
-      this.breadcrumbList.splice(0,1);
+      let list = this.getListByName(routes, route.name, []);
+      
+      this.breadcrumbList = await this.formatList(list);      
     },
 
-    getChildren(name, routes, result, parent) {
-      let len = routes.length;
-      let found = false;
-      let i = 0;
+    getChildren(res, result) {
+      const len = res.length;
 
-      for (i = 0; i < len; i++) {
-        let item = routes[i];
-        
-        if (item.name === name) {
-          result.push({
-            name,
-            title: this.getTitle(item.meta.title)
-          });
-
-          found = true;
-
-          break;
+      for (let i = 0; i < len; i++) {
+        if (res[i].children) {
+          this.getChildren(res[i].children, result);
         }
         else {
-          if (item.children) {
-            this.getChildren(name, item.children, result, item);
-          }
+          result.push(res[i]);
         }
-      }
-
-      if (found && parent) {
-        this.setParent(parent, routes[i], result);
       }
 
       return result;
     },
 
-    setParent(parent, child, result) {
-      if (!child) return;
+    getListByName(routes, name, result) {
+      let ret = routes[name];
       
-      if (child.meta.from) {
-        let item = this.getItemByName(child.meta.from);
+      result.unshift(ret);
+
+      let from = ret.meta ? ret.meta.from : "";
+
+      if (from) {
+        this.getListByName(routes, from, result);
+      }
+
+      return result;
+    },
+
+    async formatList(list) {
+      let ret = list.map(item => ({
+        name: item.name,
+        title: this.getTitle(item.meta ? item.meta.title : ""),
+        path: this.getPath(item.path)
+      }));
+
+      await ret.forEach(async item => {
+        if (item.title.indexOf(":") === 0) {
+          let temp = item.path.split("/");
+          let len = temp.length - 1;
           
-        result.unshift({
-          name: item.name,
-          title: this.getTitle(item.meta.title)
-        });
+          // 由于前两级是块名称与节点名称，所以若路径的长度小于3，则不请求数据
+          if (len < 3) return;
 
-        if (item.meta.from) {
-          let grandParent = this.getParent(parent);
+          temp.splice(len, 1);
 
-          if (!grandParent) return;
+          let res = await this.$get(this.$getApiByRoute(temp.join("/")));
 
-          this.setParent(grandParent, parent, result);
+          item.title = res[item.title.slice(1)];
         }
-        else {
-          let title = this.getTitle(parent.meta.title);
+      });
 
-          if (title) {
-            result.unshift({
-              name: parent.name,
-              title
-            });
-          }
-        }
-      }
-      else {
-        let title = this.getTitle(parent.meta.title);
-
-        if (title) {
-          result.unshift({
-            name: parent.name,
-            title
-          });
-        }
-      }
-    },
-
-    getParent(item, res = this.configs) {
-      let result = res.find(item => item.name === item.name);
-
-      if (result) {
-        return result;
-      }
-      else if (result.children) {
-        let len = result.children.length;
-
-        for (let i = 0; i < len; i++) {
-          return this.getParent(item, result.children);
-        }
-      }
-      else {
-        return;
-      }
-    },
-
-    getItemByName(name, res = this.configs) {
-      let result = null;
-      
-      for (let i = 0; i < res.length; i++) {
-        if (res[i].name === name) {
-          result = res[i];
-
-          break;
-        }
-        else {
-          result = this.getItemByName(name, res[i].children || []);
-
-          if (result) break;
-        }
-      }
-
-      return result;
+      return ret;
     },
 
     getTitle(title = "") {
@@ -171,72 +115,17 @@ export default {
       if (arr.length > 1) {
         let key = arr[1];
 
-        return Object.keys(route.params).length ? route.params[key] : route.query[key];
+        return route.params[key] || route.query[key] || title;
       }
       else {
         return arr[0];
       }
     },
 
-    excuteBreadcrumbList(currentRoute, prevRoute) {
-      const {
-        fullPath: currentFullPath,
-        meta: { parent, title: currentTitle },
-        query: { name }
-      } = currentRoute;
-      const {
-        fullPath,
-        meta: { title }
-      } = prevRoute;
-      if (prevRoute.name === parent) {
-        this.breadcrumbList.pop();
-        this.breadcrumbList.push({
-          path: fullPath,
-          title,
-          name
-        });
-      } else if (
-        this.breadcrumbList.map(item => item.path).includes(currentFullPath)
-      ) {
-        // 面包屑回退
-        const index = this.breadcrumbList
-          .map(item => item.path)
-          .indexOf(currentFullPath);
-        this.breadcrumbList = this.breadcrumbList.slice(0, index);
-      } else {
-        const { path } = this.$route;
-        const [, , menu] = path.split("/");
-        const menuConfig = {
-          authority: "权威管理",
-          recursion: "递归管理",
-          forward: "转发管理",
-          accessControl: "访问控制"
-        };
-        this.showBread = menuConfig[menu];
-
-        this.breadcrumbList = [
-          {
-            title: menuConfig[menu]
-          }
-        ];
-      }
-
-      // TODO:临时方案：用于控制某些特定页面才显示面包屑
-      const { path } = this.$route;
-      const [, , menu] = path.split("/");
-      const menuConfig = {
-        authority: "权威管理",
-        recursion: "递归管理",
-        forward: "转发管理",
-        accessControl: "访问控制"
-      };
-      this.showBread = menuConfig[menu];
-
-      this.breadcrumbList.push({
-        id: autoId++,
-        path: currentFullPath,
-        title: currentTitle
-      });
+    getPath(path) {
+      let params = this.$route.params;
+      
+      return path.replace(/:\w+/g, word => params[word.slice(1)]);
     }
   }
 };
