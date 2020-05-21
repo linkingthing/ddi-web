@@ -5,9 +5,9 @@
     <table-page 
       :data="tableData"
       :columns="columns"  
+      :total="tableData.length"
       :table-outter-height="440"
     > 
-
       <template slot="top-right">
         <Select
           v-for="(tag, idx) in tags"

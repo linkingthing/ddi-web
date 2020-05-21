@@ -6,6 +6,7 @@
       :is-padding-top="true"
       :data="tableData"
       :columns="columns"  
+      :total="tableData.length"
     > 
       <template slot="top-right">
         <Select

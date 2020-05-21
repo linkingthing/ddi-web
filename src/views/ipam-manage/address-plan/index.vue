@@ -5,6 +5,7 @@
     <TablePagination 
       :data="tableData"
       :columns="columns"  
+      :total="tableData.length"
       @on-selection-change="handleSelecChange"
     > 
       <template slot="top-right">
