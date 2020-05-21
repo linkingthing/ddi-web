@@ -2,7 +2,7 @@ export const columns = scope => [
   {
     title: "名称",
     key: "tags",
-    align: "center"
+    align: "left"
   },
   {
     title: "前缀",
@@ -24,6 +24,6 @@ export const columns = scope => [
         }
       }, "查看地址池");
     },
-    align: "center"
+    align: "right"
   }
 ];
