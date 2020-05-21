@@ -13,14 +13,16 @@
     <FirstStep 
       ref="firstStep"
       :is-edit="true"
-      :segments="segmentWidths"
+      :layout-id="layoutId"
+      :segments="segments"
+      :url="url"
       :show-segment-name="true"
     />
     
     <SecondStep 
       ref="secondStep"
       :layout-id="layoutId"
-      :segment="segmentWidths"
+      :segments="segments"
       :url="url"
     />
   </common-modal>
@@ -88,14 +90,6 @@ export default {
       }
 
       this.$emit("update:visible", val);
-    },
-
-    async segments(val) {
-      if (!val || (val && !val.length)) return;
-
-      await this.$nextTick();
-
-      this.segmentWidths = [...val];
     }
   },
 
@@ -113,6 +107,8 @@ export default {
         }
 
         this.$emit("confirmed");
+
+        this.dialogVisible = false;
       } 
       // eslint-disable-next-line no-empty
       catch (error) {}

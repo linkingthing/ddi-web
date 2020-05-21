@@ -5,6 +5,7 @@
       <Input
         v-model="name"
         max="50"
+        :disabled="disabled"
         placeholder="请填写网络名称"
         style="width:260px" />
     </section>
@@ -85,6 +86,7 @@
 
       <Button
         type="default"
+        :disabled="disabled"
         @click="handleAddSegment"
       >
         添加标识
@@ -101,11 +103,13 @@
           <Input 
             placeholder="请填写长度"
             v-model="item.value"
+            :disabled="disabled"
             maxlength="2"
             @on-change="handleSegmentValueChange(item)"
           />
 
           <img
+            v-if="!disabled"
             class="item-delete"
             @click="handleDeleteSegment(idx)"
             :src="deleteImg">
@@ -193,15 +197,21 @@ export default {
     };
   },
 
+  computed: {
+    disabled() {
+      return !!this.layoutId;
+    }
+  },
+
   watch: {
-    async segments(val) {
+    async segments(val) {      
       let segments = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
 
       this.segmentWidths = val.map((value, idx) => ({
         name: segments[idx].name || `标识${idx + 1}`,
         value,
         color: colors[idx % colors.length]
-      }));
+      }));      
 
       this.calcRestLen();
     },

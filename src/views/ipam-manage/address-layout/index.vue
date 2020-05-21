@@ -12,14 +12,14 @@
         <Button 
           type="primary" 
           @click="handleCreate" 
-          class="top-button button-add"
+          class="top-button"
         >
           添加
         </Button>
         <Button 
-          type="primary" 
+          type="warning" 
           @click="handleDelete" 
-          class="top-button button-split"
+          class="top-button"
         >
           删除
         </Button>
@@ -33,8 +33,8 @@
 
     <Edit 
       :visible.sync="showPlanDetail"
-      :segments="currentData.segmentWidths"
-      :layout-id.sync="currentData.id"
+      :segments="segmentWidths"
+      :layout-id.sync="layoutId"
       @confirmed="handleConfirmed"
     />
   </div>
@@ -68,6 +68,7 @@ export default {
       showCreate: false,
       showPlanDetail: false,
       segmentWidths: [],
+      layoutId: "",
       currentData: {}
     };
   },
@@ -89,6 +90,7 @@ export default {
           const segments = item.segmentWidths;
 
           item.segments = segments.join("-");
+          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
 
           return item;
         });
@@ -131,9 +133,10 @@ export default {
     /**
      * 查看规划详情
      */
-    handleViewPlanDetail(res) {
+    handleViewPlanDetail({ id, segmentWidths }) {
       this.showPlanDetail = true;
-      this.currentData = { ...res };
+      this.segmentWidths = segmentWidths;
+      this.layoutId = id;
     },
 
     handleConfirmed() {
