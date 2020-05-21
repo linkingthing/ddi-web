@@ -34,9 +34,9 @@ module.exports = {
     proxyTable: {
       '/apis': {
         // target: 'http://10.0.0.101:8081/apis',
-        // target: 'http://10.0.0.19:8081/apis',
-        target: 'http://10.0.0.20:8081/apis',
-        // target: 'http://10.0.0.214:8081/apis',
+        target: 'http://10.0.0.19:8081/apis',
+        // target: 'http://10.0.0.20:8081/apis',
+        // target: 'http://10.0.0.170:8081/apis',
 
         changeOrigin: true,
         // ws: true,        //如果要代理 websockets，配置这个参数

@@ -4,25 +4,29 @@
       title="区域查询"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+      :pagination-enable="false"
+    >
       <template slot="top-right">
         <i-button
           type="success"
           size="large"
-          @click="handleOpenCreate(id)">新建</i-button>
+          @click="handleOpenCreate()"
+        >新建</i-button>
       </template>
     </table-page>
-    <area-app-config ref="areaRef" @onCreateSuccess="getArea"/>
+    <zone-modal
+      @success="getArea"
+    />
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import AreaAppConfig from "./AreaAppConfig";
+import ZoneModal from "./modules/zone-modal";
 export default {
   name: "zoneQuery",
   components: {
-    AreaAppConfig
+    "zone-modal": ZoneModal
   },
   data() {
     return {
@@ -76,7 +80,7 @@ export default {
     };
   },
   created() {
-    this.id = this.$route.query.id;
+    this.id = this.$route.params.id;
     this.viewId = this.$route.query.id;
   },
   mounted() {
@@ -94,8 +98,8 @@ export default {
         });
     },
     // 新建
-    handleOpenCreate(id2) {
-      this.$refs.areaRef.openConfig(id2);
+    handleOpenCreate() {
+      
     },
 
     // 删除
@@ -120,8 +124,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.table-box table a {
-  text-decoration: none;
-}
-</style>
+

@@ -3,7 +3,7 @@ import store from "@/store";
 import router from "@/router";
 import { LoadingBar, Message } from "view-design";
 
-const baseUrl = "/apis/linkingthing.com/example/v1";
+const baseUrl = "/apis/linkingthing.com/dns/v1";
 
 axios.interceptors.request.use(
   config => {
