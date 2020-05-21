@@ -1,6 +1,8 @@
 <template>
-  <div class="table-pagination" :class="{'is-padding-top': isPaddingTop}">
-    <!-- <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3> -->
+  <div
+    class="table-pagination"
+    :class="{'is-padding-top': isPaddingTop}"
+  >
 
     <article class="table-pagination-top">
       <div class="top-left">
@@ -16,7 +18,7 @@
 
     <Table
       v-if="showTable"
-      :data="data"
+      :data="dataFilter"
       :columns="columns"
       v-on="$listeners"
     />
@@ -24,12 +26,13 @@
     <slot />
 
     <article
-      v-if="paginationEnable"
+      v-if="showPage"
       class="table-pagination-footer"
     >
       <Page
-        :current="currentPage"
-        :total="totalPage"
+        :current="current"
+        :total="total"
+        :page-size="size"
         prev-text="上一页"
         next-text="下一页"
         @on-change="handlePageChange"
@@ -85,6 +88,21 @@ export default {
     isPaddingTop: {
       type: Boolean,
       default: false
+    },
+
+    total: {
+      type: Number,
+      default: 0
+    },
+
+    current: {
+      type: Number,
+      default: 1
+    },
+
+    size: {
+      type: Number,
+      default: 10
     }
   },
 
@@ -95,26 +113,29 @@ export default {
         .toString(36)
         .slice(2),
 
-      totalPage: 0,
-      currentPage: 0,
-
-      slotNames: []
+      slotNames: [],
+      innerCurrent: 1
     };
   },
 
   computed: {
-    // getTitle() {
-    //   let title = this.$route.meta.title;
-
-    //   if (!title || title.indexOf(":") === 0) {
-    //     title = this.title;
-    //   }
-
-    //   return title;
-    // }
+    dataFilter() {
+      if (this.data.length > this.size) {
+        const start = (this.innerCurrent - 1) * this.size;
+        return this.data.slice(start, start + this.size);
+      } else {
+        return this.data;
+      }
+    },
+    showPage() {
+      return this.paginationEnable && this.data.length > this.size;
+    }
   },
 
   watch: {
+    current(val) {
+      this.innerCurrent = val;
+    },
     calcHeight(val) {
       if (!val) return;
 
@@ -174,8 +195,9 @@ export default {
     },
 
     handlePageChange(val) {
+      this.innerCurrent = val;
       this.$emit("page-change", {
-        page: val,
+        current: val,
         size: this.size
       });
     }
