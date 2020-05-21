@@ -4,7 +4,6 @@
 
     <TablePagination 
       :data="tableData"
-      :pagination-enable="false"
       :columns="columns"  
       @on-selection-change="handleSelecChange"
     > 

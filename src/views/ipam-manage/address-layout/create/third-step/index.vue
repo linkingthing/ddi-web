@@ -4,7 +4,6 @@
 
     <table-page 
       :data="tableData"
-      :pagination-enable="false"
       :columns="columns"  
       :table-outter-height="440"
     > 

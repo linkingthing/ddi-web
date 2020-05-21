@@ -5,7 +5,6 @@
     <table-page 
       :is-padding-top="true"
       :data="tableData"
-      :pagination-enable="false"
       :columns="columns"  
     > 
       <template slot="top-right">
