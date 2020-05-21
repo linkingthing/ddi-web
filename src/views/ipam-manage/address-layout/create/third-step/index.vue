@@ -6,6 +6,7 @@
       :data="tableData"
       :pagination-enable="false"
       :columns="columns"  
+      :table-outter-height="440"
     > 
       <template slot="top-left">
         <Select
@@ -141,6 +142,15 @@ export default {
 
     async getData() {
       let res = await this.$get({ url: `${this.url}/${this.layoutId}/subnets` });
+
+      res.map(item => {
+        let tagArr = item.tags.split(",");
+
+        item.tags = tagArr.join("-");
+        item.tagArr = tagArr;
+
+        return item;
+      });
       
       this.source = [...res];
       this.tableData = res;

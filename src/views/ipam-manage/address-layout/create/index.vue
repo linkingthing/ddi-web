@@ -225,7 +225,12 @@ export default {
       }
     },
 
+    /**
+     * 第一步 - 保存规划
+     */
     async saveLayout() {
+      if (this.layoutId) return; 
+
       let params = await this.$refs.firstStep.getData();
 
       this.loading = true;
