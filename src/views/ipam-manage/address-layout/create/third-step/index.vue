@@ -7,6 +7,7 @@
       :columns="columns"  
       :total="tableData.length"
       :table-outter-height="440"
+      :current="currentPage"
     > 
       <template slot="top-right">
         <Select
@@ -77,7 +78,8 @@ export default {
       columns: columns(this),
       source: [],
       showCreatePool: false,
-      currentSubnet: {}
+      currentSubnet: {},
+      currentPage: 1
     };
   },
 
@@ -115,6 +117,8 @@ export default {
 
         return isFit;
       });
+
+      this.currentPage = 1;
     },
 
     async getSegmentTags() {
