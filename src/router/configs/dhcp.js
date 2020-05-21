@@ -45,12 +45,8 @@ export default {
 				{
 					name: 'address-pdpool-list',
 					path: '/address/dhcp/subnets/:id/pdpools',
-<<<<<<< HEAD
 					component: () =>
 						import(/* webpackChuckName: "address-pdpool-list" */ '@/views/dhcp-service/address-pool/pdpool-list'),
-=======
-					component: () => import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/pdpool-list'),
->>>>>>> ffaf0e0855cc073f773956d300b51a83f0b1945e
 					meta: {
 						notInMenu: true,
 						from: 'subnet-pool-subnet',
