@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import { ipv6IsValid, ipv4IsValid, getAddressType } from "@/util/common";
-import { resArrayToString, resStringToArray } from "@/util/parser";
+import { ipv6IsValid, ipv4IsValid } from "@/util/common";
+import { resStringToArray } from "@/util/parser";
 import ClientClassFormItem from "@/views/dhcp-service/address-pool/subnet-list/edit/ClientClassFormItem";
 
 const ipv4FormList = [

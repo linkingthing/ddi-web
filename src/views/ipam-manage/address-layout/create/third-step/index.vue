@@ -8,7 +8,8 @@
       :columns="columns"  
       :table-outter-height="440"
     > 
-      <template slot="top-left">
+
+      <template slot="top-right">
         <Select
           v-for="(tag, idx) in tags"
           :key="idx"
@@ -21,13 +22,11 @@
             {{ item.label }}
           </Option>
         </Select>
-      </template>
 
-      <template slot="top-right">
         <Button 
           type="primary" 
           @click="handleFilter" 
-          class="top-button button-add"
+          class="top-button button-filter"
         >
           筛选
         </Button>
@@ -121,11 +120,11 @@ export default {
 
     async getSegmentTags() {
       try {
-        let res = await this.$get({ url: this.url.replace("subnets", "segments") });
+        let res = await this.$get({ url: this.url + "/" + this.layoutId + "/segments" });
 
         this.tags = res.sort((a,b) => a.index - b.index)
-          .filter(item => item.tags && item.tags.length)
-          .map(item => item.tags.map(tag => ({ 
+          .filter(({ tags }) => tags && tags.length)
+          .map(({ tags }) => tags.map(tag => ({ 
             label: tag, 
             value: tag
           })));
@@ -134,7 +133,7 @@ export default {
           tag.unshift({ label: "全部标识", value: "all" });
 
           this.options.push("all");
-        });  
+        });   
       } 
       // eslint-disable-next-line no-empty
       catch (error) {}

@@ -8,7 +8,7 @@
       :pagination-enable="false"
       :columns="columns"  
     > 
-      <template slot="top-left">
+      <template slot="top-right">
         <Select
           v-for="(tag, idx) in tags"
           :key="idx"
@@ -21,13 +21,11 @@
             {{ item.label }}
           </Option>
         </Select>
-      </template>
 
-      <template slot="top-right">
         <Button 
           type="primary" 
           @click="handleFilter" 
-          class="top-button"
+          class="top-button button-filter"
         >
           筛选
         </Button>
