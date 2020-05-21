@@ -26,7 +26,7 @@
     <slot />
 
     <article
-      v-if="paginationEnable"
+      v-if="showPage"
       class="table-pagination-footer"
     >
       <Page
@@ -126,6 +126,9 @@ export default {
       } else {
         return this.data;
       }
+    },
+    showPage() {
+      return this.paginationEnable && this.data.length > this.size;
     }
   },
 
