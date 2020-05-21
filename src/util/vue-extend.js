@@ -81,8 +81,9 @@ const getStateByKey = async function (name, params = {}) {
 /**
  * 根据当前路由获取对应的url
  */
-function getApiByRoute() {
-  let paths = router.currentRoute.path.slice(1).split("/");
+function getApiByRoute(murl = null) {
+  const tpath = murl || router.currentRoute.path;
+  let paths = tpath.slice(1).split("/");
   
   const block = paths[1];
 

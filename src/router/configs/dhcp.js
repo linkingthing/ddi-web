@@ -48,7 +48,7 @@ export default {
 					name: 'address-pdpool-list',
 					path: '/address/dhcp/subnets/:id/pdpools',
 					component: () =>
-						import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/pdpool-list'),
+						import(/* webpackChuckName: "address-pdpool-list" */ '@/views/dhcp-service/address-pool/pdpool-list'),
 					meta: {
 						notInMenu: true,
 						from: 'subnet-pool-subnet',
@@ -59,7 +59,7 @@ export default {
 					name: 'address-reservations-list',
 					path: '/address/dhcp/subnets/:id/reservations',
 					component: () =>
-						import(/* webpackChuckName: "address-pool-list" */ '@/views/dhcp-service/address-pool/reservations-list'),
+						import(/* webpackChuckName: "address-reservations-list" */ '@/views/dhcp-service/address-pool/reservations-list'),
 					meta: {
 						notInMenu: true,
 						from: 'subnet-pool-subnet',
