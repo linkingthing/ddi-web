@@ -15,7 +15,7 @@ export default {
         {
           title: "视图",
           key: "name",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h(
               "router-link",
@@ -23,7 +23,7 @@ export default {
                 props: {
                   to: {
                     name: "redirect",
-                    query: { id: row.id, name: row.name }
+                    params: { id: row.id, name: row.name }
                   }
                 }
               },
@@ -40,6 +40,11 @@ export default {
           title: "NXDOMAIN重定向配置数量",
           key: "nxdomainsize",
           align: "center"
+        },
+        {
+          title: "创建时间",
+          key: "creationTimestamp",
+          align: "right"
         }
       ],
       list: [],

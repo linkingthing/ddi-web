@@ -1,5 +1,6 @@
 <template>
   <common-modal
+    class="zone-modal"
     :visible.sync="dialogVisible"
     :title="getTitle"
     :width="413"
@@ -42,28 +43,44 @@ export default {
   data() {
     this.formItemList = [
       {
-        label: "地址前缀",
-        model: "prefix",
+        label: "区名称",
+        model: "name",
         type: "input",
-        placeholder: "请填写地址前缀"
+        placeholder: "请填写区名称"
       },
       {
-        label: "前缀长度",
-        model: "prefixLen",
-        type: "input",
-        placeholder: "请填写前缀长度"
+        label: "区类型",
+        model: "isarpa",
+        type: "radio",
+        placeholder: "请填写前缀长度",
+        children: [{
+          label: "false",
+          text: "正向区"
+        },
+        {
+          label: "true",
+          text: "反向区"
+        }]
       },
       {
-        label: "委派长度",
-        model: "delegatedLen",
+        label: "TTL",
+        model: "ttl",
         type: "input",
-        placeholder: "请填写委派长度"
+        placeholder: "请填写TTL"
+      },
+      {
+        label: "备注",
+        model: "comment",
+        type: "input",
+        placeholder: "请填写备注"
       }
     ];
 
     this.rules = {};
     return {
-      formModel: {},
+      formModel: {
+        zonetype: "master"
+      },
       loading: false,
       dialogVisible: false
     };
@@ -71,7 +88,7 @@ export default {
 
   computed: {
     getTitle() {
-      return (this.isEdit ? "编辑" : "新建") + "前缀委派";
+      return (this.isEdit ? "编辑" : "新建") + "区";
     },
     isEdit() {
       return !!this.links.update;
@@ -81,36 +98,42 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
+        this.formModel = {};
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(res => {
-          this.formModel = res;
+        this.$get({ url: this.links.self }).then(({ name, isarpa, ttl, comment, zonetype }) => {
+          this.formModel = {
+            name,
+            ttl,
+            comment,
+            isarpa: `${isarpa}`,
+            zonetype
+          };
         }).catch();
       }
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
-      if (!val) {
-        // 关闭弹窗
-        // console.log(val)
-      }
-
       this.$emit("update:visible", val);
     }
   },
 
   created() {
-    // console.log(this.links.update) // ranck？为什么呢会直接运行了 
+
   },
 
   methods: {
 
     handleConfirm() {
+
+      const params = { ...this.formModel };
+      params.isarpa = params.isarpa === "true";
+
       if (this.isEdit) {
-        this.$put({ url: this.links.update, params: this.formModel }).then(res => {
+        this.$put({ url: this.links.update, params }).then(res => {
           this.$$success("编辑成功");
           this.$emit("success");
           this.dialogVisible = false;
@@ -118,7 +141,7 @@ export default {
           this.$$error(err.response.data.message);
         });
       } else {
-        this.$post({ url: this.links.self, params: this.formModel }).then(res => {
+        this.$post({ url: this.links.self, params }).then(res => {
           this.$$success("新建成功");
           this.$emit("success");
           this.dialogVisible = false;
@@ -134,5 +157,9 @@ export default {
 </script>
 
 <style lang="less">
-// @import "./index.less";
+.zone-modal {
+  .ivu-radio-wrapper {
+    margin-right: 34px;
+  }
+}
 </style>

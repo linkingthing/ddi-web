@@ -15,6 +15,8 @@
       </template>
     </table-page>
     <zone-modal
+      :links="paramsLinks"
+      :visible.sync="visible"
       @success="getArea"
     />
   </div>
@@ -34,20 +36,13 @@ export default {
         {
           title: "区名称",
           key: "name",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h(
               "router-link",
               {
                 props: {
-                  to: {
-                    name: "resource-record",
-                    query: {
-                      viewId: this.viewId,
-                      zoneId: row.id,
-                      name: row.name
-                    }
-                  }
+                  to: this.$getRouteByLink(row.links.rrs, "dns")
                 }
               },
               row.name
@@ -55,28 +50,57 @@ export default {
           }
         },
         {
-          title: "资源记录数量",
+          title: "区类型",
+          key: "zonetype",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", row.isarpa ? "反向区" : "正向区");
+          }
+        },
+        {
+          title: "TTL",
           key: "rrsize",
+          align: "center"
+        },
+
+        {
+          title: "记录数",
+          key: "rrsize",
+          align: "center"
+        },
+        {
+          title: "备注",
+          key: "comment",
           align: "center"
         },
         {
           title: "操作",
           key: "action",
-          width: 120,
-          align: "center",
+          width: 160,
+          align: "right",
           render: (h, { row }) => {
-            return h("btn-del", {
-              on: {
-                click: () => this.delect(row.id)
-              }
-            });
+            return h("div", [
+              h("btn-edit", {
+                on: {
+                  click: () => this.edit(row)
+                }
+              }),
+              h("btn-del", {
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
+            ]);
           }
         }
       ],
       id: "",
       viewId: "",
       name: "",
-      list: []
+      list: [],
+      visible: false,
+      links: {},
+      paramsLinks: {}
     };
   },
   created() {
@@ -91,7 +115,9 @@ export default {
       services
         .getZoneByViewId(this.id)
         .then(res => {
-          this.list = res.data.data;
+          const { links, data } = res.data;
+          this.list = data;
+          this.links = links;
         })
         .catch(err => {
           console.log(err);
@@ -99,9 +125,14 @@ export default {
     },
     // 新建
     handleOpenCreate() {
-      
+      this.paramsLinks = this.links;
+      this.visible = true;
     },
 
+    edit({ links }) {
+      this.paramsLinks = links;
+      this.visible = true;
+    },
     // 删除
     delect(zoneId) {
       this.$Modal.confirm({

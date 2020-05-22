@@ -1,13 +1,14 @@
 <template>
   <common-modal
+    :width="413"
     :visible.sync="linkModal"
     title="修改重定向列表"
     @confirm="handleSubmit"
   >
     <i-form
       :model="params"
-      label-position="right"
-      :label-width="500"
+      label-position="left"
+      :label-width="100"
       :rules="ruleValidate"
       ref="formValidate"
     >
@@ -19,7 +20,6 @@
           >
             <form-item
               label="域名"
-              :label-width="110"
               prop="name"
             >
               <i-input
@@ -31,7 +31,6 @@
             <form-item
               label="TTL"
               prop="ttl"
-              :label-width="110"
             >
               <i-input
                 type="number"
@@ -42,7 +41,6 @@
             <form-item
               label="重定向方式"
               prop="redirecttype"
-              :label-width="110"
             >
               <i-select v-model="params.redirecttype">
                 <i-option value="localzone">localzone</i-option>
@@ -71,8 +69,8 @@ export default {
       // 表单数据
       params: {
         name: "",
-        type: "",
-        value: "",
+        datatype: "",
+        rdata: "",
         ttl: 0,
         redirecttype: ""
       },

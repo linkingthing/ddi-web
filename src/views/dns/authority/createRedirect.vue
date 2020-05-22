@@ -1,13 +1,14 @@
 <template>
   <common-modal
+    :width="413"
     :visible.sync="ipModal"
     title="新建重定向列表"
     @confirm="handleSubmit"
   >
     <i-form
       :model="upgradeConfig"
-      label-position="right"
-      :label-width="500"
+      label-position="left"
+      :label-width="100"
       :rules="ruleValidate"
       ref="formValidate"
     >
@@ -19,7 +20,6 @@
           >
             <form-item
               label="域名"
-              :label-width="110"
               prop="name"
             >
               <i-input
@@ -31,7 +31,6 @@
             <form-item
               label="TTL"
               prop="ttl"
-              :label-width="110"
             >
               <i-input
                 type="number"
@@ -42,7 +41,6 @@
             <form-item
               label="重定向方式"
               prop="redirecttype"
-              :label-width="110"
             >
               <i-select v-model="upgradeConfig.redirecttype">
                 <i-option value="localzone">localzone</i-option>
@@ -71,8 +69,8 @@ export default {
       // 表单数据
       upgradeConfig: {
         name: "",
-        type: "A",
-        value: "",
+        datatype: "A",
+        rdata: "",
         ttl: 0,
         redirecttype: "localzone"
       },
@@ -89,7 +87,7 @@ export default {
           },
           nameValidate
         ],
-        type: [{ required: true, message: "请选择资源类型" }],
+        datatype: [{ required: true, message: "请选择资源类型" }],
         ttl: [
           { required: true, message: "请输入TTL" },
           positiveIntegerValidate
@@ -104,21 +102,18 @@ export default {
       this.ipModal = true;
     },
     update() {
+      const params = this.upgradeConfig;
+      params.ttl = +params.ttl;
       services
-        .createRedirect(this.viewId, {
-          name: this.upgradeConfig.name,
-          type: this.upgradeConfig.type,
-          value: this.upgradeConfig.value,
-          ttl: +this.upgradeConfig.ttl,
-          redirecttype: this.upgradeConfig.redirecttype
-        })
+        .createRedirect(this.viewId, params)
         .then(() => {
           this.$emit("onCreateSuccess");
           this.$Message.success("新建成功!");
           this.ipModal = false;
         })
-        .catch(() => {
-          this.$Message.error("新建失败");
+        .catch((err) => {
+          console.log(err)
+          this.$Message.error(err.message);
         });
     },
     // 应用

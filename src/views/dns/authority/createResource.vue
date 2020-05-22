@@ -1,13 +1,14 @@
 <template>
   <common-modal
     :visible.sync="configModal"
+    :width="413"
     title="新建资源记录"
     @confirm="handleSubmit"
   >
     <i-form
       :model="upgradeConfig"
-      label-position="right"
-      :label-width="500"
+      label-position="left"
+      :label-width="80"
       :rules="ruleValidate"
       ref="formValidate"
     >
@@ -18,20 +19,20 @@
             style="padding-bottom:0"
           >
             <form-item
-              label="名称"
-              :label-width="110"
+              label="记录名"
               prop="name"
             >
               <i-input
                 v-model="upgradeConfig.name"
                 placeholder="请填写资源名称"
-              />
+              >
+                <span slot="append">{{recordSuffix}}</span>
+              </i-input>
             </form-item>
             <TypeValue :params="upgradeConfig" />
             <form-item
               label="TTL"
               prop="ttl"
-              :label-width="110"
             >
               <i-input
                 type="text"
@@ -50,6 +51,7 @@
 <script>
 import services from "@/services";
 import { resourceDomainValidateFunc, positiveIntegerValidate } from "@/util/common";
+import { getParantData } from "@/util/request";
 import TypeValue from "@/components/TypeValue";
 
 export default {
@@ -59,14 +61,14 @@ export default {
   },
   data() {
     return {
+      recordSuffix: "",
       // 是否显示mode
       configModal: false,
       // 表单数据
       upgradeConfig: {
-        title: "",
         name: "",
-        type: "A",
-        value: "",
+        datatype: "A",
+        rdata: "",
         ttl: ""
       },
       viewId: "",
@@ -80,7 +82,7 @@ export default {
           }
         ],
         type: [{ message: "请选择资源类型" }],
-        value: [{ required: true, message: "请填写记录值" }],
+        rdata: [{ required: true, message: "请填写记录值" }],
         ttl: [{ required: true, message: "请填写ttl" }, positiveIntegerValidate]
       }
     };
@@ -90,24 +92,24 @@ export default {
       this.viewId = viewId;
       this.zoneId = zoneId;
       this.configModal = true;
+      this.getZoneInfo();
+    },
+    getZoneInfo() {
+      getParantData().then(({ name }) => {
+        this.recordSuffix = name;
+      });
     },
     update() {
       services
-        .createResourceRecord(this.viewId, this.zoneId, {
-          name: this.upgradeConfig.name,
-          type: this.upgradeConfig.type,
-          value: this.upgradeConfig.value,
-          ttl: this.upgradeConfig.ttl,
-          isused: this.upgradeConfig.isused
-        })
+        .createResourceRecord(this.viewId, this.zoneId, this.upgradeConfig)
         .then(() => {
           this.$Message.success("新建成功!");
           this.configModal = false;
           this.$refs.formValidate.resetFields();
           this.$emit("onCreateSuccess");
         })
-        .catch(() => {
-          this.$Message.error("新建失败");
+        .catch((err) => {
+          this.$Message.error(err.response.data.message);
         });
     },
     // 应用

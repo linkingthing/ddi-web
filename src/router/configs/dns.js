@@ -1,8 +1,5 @@
 import Layout from '@/views/layout';
 
-const A4ComposeView = (r) => require.ensure([], () => r(require('@/views/dns/recursion/A4ComposeView')), 'dnsLayout');
-const A4Compose = (r) => require.ensure([], () => r(require('@/views/dns/recursion/A4Compose')), 'dnsLayout');
-
 /**
  * meta.notInMenu：表示不在菜单中显示
  * meta.isRootMen：表示是根节点
@@ -23,7 +20,7 @@ export default {
 			// 配置组管理
 			name: 'config-group',
 			path: '/dns/dns/views_zones',
-			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/authority/config'),
+			component: () => import(/* webpackChunkName: "option-config" */ '@/views/dns/authority/config'),
 			meta: {
 				title: '区配置'
 			}
@@ -32,7 +29,7 @@ export default {
 			// 权威区域查询
 			name: 'authority-zone-query',
 			path: '/dns/dns/views/:id/zones',
-			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/authority/zoneQuery'),
+			component: () => import(/* webpackChunkName: "option-config" */ '@/views/dns/authority/zoneQuery'),
 			meta: {
 				title: '区域查询',
 				notInMenu: true,
@@ -42,7 +39,7 @@ export default {
 		{
 			// 资源记录
 			name: 'resource-record',
-			path: '/dns/authority/resourceRecord',
+			path: '/dns/dns/views/:viewId/zones/:zoneId/rrs',
 			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/authority/resourceRecord'),
 			meta: {
 				title: '资源记录',
@@ -53,7 +50,7 @@ export default {
 		{
 			// 重定向
 			name: 'redirect-view',
-			path: '/dns/authority/redirectView',
+			path: '/dns/dns/views_redirects',
 			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/authority/redirectView'),
 			meta: {
 				title: '重定向'
@@ -62,7 +59,7 @@ export default {
 		{
 			// 重定向
 			name: 'redirect',
-			path: '/dns/authority/redirect',
+			path: '/dns/dns/views/:id/redirects',
 			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/authority/redirect'),
 			meta: {
 				title: '重定向',
@@ -74,7 +71,7 @@ export default {
 		{
 			name: 'a4-compose-view',
 			path: '/dns/recursion/A4ComposeView',
-			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/recursion/A4ComposeView'),
+			component: () => import(/* webpackChunkName: "option-config" */ '@/views/dns/recursion/A4ComposeView'),
 			meta: {
 				notInMenu: true,
 				title: 'DNS64'

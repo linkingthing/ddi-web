@@ -1,8 +1,8 @@
 <template>
   <div class="common-process">
-    <div class="process-text">{{percent}}%</div>
+    <div class="process-text">{{percent*100}}%</div>
     <Progress
-      :percent="percent"
+      :percent="percent*100"
       hide-info
     />
 

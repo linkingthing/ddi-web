@@ -2,6 +2,7 @@ import Vue from "vue";
 import store from "@/store";
 import router from "@/router";
 import { del, post, put, get, axios, baseUrl } from "./axios";
+import { getApiByRoute, getRouteByLink} from "./request";
 
 function showMessage(type, msg, scope) {
   let options = {
@@ -78,37 +79,10 @@ const getStateByKey = async function (name, params = {}) {
   }
 };
 
-/**
- * 根据当前路由获取对应的url
- */
-function getApiByRoute(murl = null) {
-  const tpath = murl || router.currentRoute.path;
-  let paths = tpath.slice(1).split("/");
-  
-  const block = paths[1];
-
-  paths.splice(0,2);
-
-  let child = "";
-  
-  let url = baseUrl.replace("{block}", block) + "/" + paths.map(item => {
-    let temp = item.split("_");
-
-    if (temp.length > 1) {
-      child = item[1];
-    }
-
-    return temp[0];
-  }).join("/");
-
-  return {
-    url,
-    child
-  };
-}
-  
 
 Vue.prototype.$getApiByRoute = getApiByRoute;
+Vue.prototype.$getRouteByLink = getRouteByLink;
+
 /**
  * 获取视图列表
  */
