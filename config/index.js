@@ -34,7 +34,7 @@ module.exports = {
     proxyTable: {
       '/apis': {
         // target: 'http://10.0.0.101:8081/apis',
-        target: 'http://10.0.0.19:8081/apis',
+        target: 'http://10.0.0.191:8081/apis',
         // target: 'http://10.0.0.20:8081/apis',
         // target: 'http://10.0.0.170:8081/apis',
 

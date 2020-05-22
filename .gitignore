@@ -6,4 +6,4 @@ yarn-debug.log*
 yarn-error.log*
 .VSCodeCounter
 config/index.js
-/config
+config/
