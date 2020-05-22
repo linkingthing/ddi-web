@@ -40,13 +40,13 @@ export default {
 
   methods: {
     async getBreadcrumbList(route) {
-      let routes = this.getChildren(this.configs, []);
+      let routes = this.getChildren(this.configs, [])
+        .flat(Infinity)
+        .reduce((prev, next) => {
+          prev[next.name] = next;
 
-      routes = routes.flat(Infinity).reduce((prev, next) => {
-        prev[next.name] = next;
-
-        return prev;
-      }, {});
+          return prev;
+        }, {});
       
       let list = this.getListByName(routes, route.name, []);
       
@@ -94,8 +94,8 @@ export default {
           let temp = item.path.split("/");
           let len = temp.length - 1;
           
-          // 由于前两级是块名称与节点名称，所以若路径的长度小于3，则不请求数据
-          if (len < 3) return;
+          // 由于前两级是块名称与节点名称，加上前面的空字符串，所以若路径的长度小于4，则不请求数据
+          if (len < 4) return;
 
           temp.splice(len, 1);
 
