@@ -16,7 +16,6 @@
 
     <AclModal
       :visible.sync="visible"
-      ref="aclModalRef"
       :links="paramsLinks"
       @success="getManger"
     />
@@ -30,7 +29,7 @@ import AclModal from "./modules/acl-modal";
 export default {
   name: "accessControlList",
   components: {
-   
+
     AclModal
   },
   data() {
@@ -57,7 +56,16 @@ export default {
         {
           title: "状态",
           key: "status",
-          align: "center"
+          align: "center",
+          render: (h, { row }) => {
+            return h("span",
+              {
+                style: {
+                  color: row.status === "allow" ? "#40D366" : "#E54B4B"
+                }
+              },
+              row.status === "allow" ? "允许" : "禁止");
+          }
         },
         {
           title: "创建时间",
@@ -117,8 +125,8 @@ export default {
           this.list = res.data.data;
           this.links = res.data.links;
         })
-        .catch(function (err) {
-          console.log(err);
+        .catch(err => {
+          this.$Message.error(err.message);
         });
     },
     handleOpenCreate() {

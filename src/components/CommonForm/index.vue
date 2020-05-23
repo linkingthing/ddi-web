@@ -88,6 +88,7 @@
         :filterable="item.filterable"
         :size="item.size"
         :placeholder="item.placeholder"
+        :multiple="item.multiple"
       >
         <Option
           v-for="e in item.children"

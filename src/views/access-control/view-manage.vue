@@ -14,7 +14,7 @@
       </template>
     </table-page>
 
-    <createView
+    <!-- <createView
       ref="deviceRef"
       @onCreateSuccess="getView"
       :max-priority="list.length"
@@ -23,20 +23,27 @@
       ref="analysis2Ref"
       @onEditSuccess="getView"
       :max-priority="list.length"
+    /> -->
+
+    <ViewModal
+      :visible.sync="visible"
+      :links="paramsLinks"
+      @success="getView"
     />
   </div>
 </template>
 
 <script>
-import createView from "./createView";
-import editView from "./editView";
+
 import services from "@/services";
+
+import ViewModal from "./modules/view-modal";
 
 export default {
   name: "deviceMonitor",
   components: {
-    createView,
-    editView
+
+    ViewModal
   },
   data() {
     return {
@@ -59,7 +66,7 @@ export default {
           render: (h, { row }) => {
             return h("Tags", {
               props: {
-                list: row.ips
+                list: row.acls
               }
             });
           }
@@ -83,7 +90,7 @@ export default {
             return h("div", [
               h("btn-edit", {
                 on: {
-                  click: () => this.goConfig1(row.id, row)
+                  click: () => this.handleEdit(row)
                 }
               }),
               row.name !== "default" &&
@@ -97,6 +104,7 @@ export default {
         }
       ],
       list: [],
+      visible: false,
       links: {},
       paramsLinks: {}
     };
@@ -106,16 +114,19 @@ export default {
   },
   methods: {
     handleOpenCreate() {
-      this.$refs.deviceRef.openConfig();
+      this.visible = true;
+      this.paramsLinks = this.links;
     },
-    goConfig1(a, b) {
-      this.$refs.analysis2Ref.openConfig(a, b);
+    handleEdit({ links }) {
+      this.visible = true;
+      this.paramsLinks = links;
     },
     getView() {
       services
         .getViewList()
         .then(res => {
           this.list = res.data.data;
+          this.links = res.data.links;
         })
         .catch(function (err) {
           console.log(err);

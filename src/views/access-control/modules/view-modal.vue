@@ -1,6 +1,6 @@
 <template>
   <common-modal
-    class="acl-modal"
+    class="view-modal"
     :visible.sync="dialogVisible"
     :title="getTitle"
     :width="413"
@@ -43,49 +43,15 @@ export default {
   },
 
   data() {
-    this.formItemList = [
-      {
-        label: "状态",
-        model: "status",
-        type: "radio",
-        placeholder: "请填写前缀长度",
-        children: [{
-          label: "allow",
-          text: "允许"
-        },
-        {
-          label: "forbidden",
-          text: "禁止"
-        }]
-      },
-      {
-        label: "规则名称",
-        model: "name",
-        type: "input",
-        placeholder: "请填写规则名称"
-      },
 
-      {
-        label: "网络地址",
-        model: "ips",
-        type: "input",
-        placeholder: "请填写网络地址"
-      },
-      {
-        label: "备注",
-        model: "comment",
-        type: "input",
-        placeholder: "请填写备注"
-      }
-    ];
 
     this.rules = {
       name: [
-        { required: true, message: "请填访问控制名称" },
-        commonNameValidate,
+        { required: true, message: "请填视图名称" },
         {
-          pattern: /^.*[^\d].*$/,
-          message: "访问控制列表名称不能为纯数字"
+          type: "string",
+          max: 19,
+          message: "最多只能19个字符"
         }
       ]
 
@@ -95,17 +61,47 @@ export default {
         status: "allow"
       },
       loading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      acl: [],
+      formItemList: [
+        {
+          label: "视图名称",
+          model: "name",
+          type: "input",
+          placeholder: "请填写域名"
+        },
+        {
+          label: "ACL规则",
+          model: "acls",
+          type: "select",
+          multiple: true,
+          placeholder: "请选择ACL规则",
+          children: this.aclOptions
+        },
+        {
+          label: "DNS64",
+          model: "dns64",
+          type: "input",
+          placeholder: "请填写DNS64"
+        },
+        {
+          label: "备注",
+          model: "comment",
+          type: "input",
+          placeholder: "请填写备注信息"
+        }
+      ]
     };
   },
 
   computed: {
     getTitle() {
-      return (this.isEdit ? "编辑" : "新建") + "访问控制";
+      return (this.isEdit ? "编辑" : "新建") + "视图";
     },
     isEdit() {
       return !!this.links.update;
     }
+
   },
 
   watch: {
@@ -116,14 +112,14 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, status, ips, comment }) => {
+        this.$get({ url: this.links.self }).then(({ name, dns64, acls, comment, priority }) => {
           this.formModel = {
             name,
-            ips,
+            acls,
             comment,
-            status
+            dns64,
+            priority
           };
-          resArrayToString(this.formModel, ["ips"]);
         }).catch();
       }
       this.dialogVisible = val;
@@ -131,11 +127,30 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
+    },
+
+
+    acl(val) {
+
+      const aclOptions = val.map(item => {
+        return {
+          label: item.id,
+          text: item.name
+        };
+      });
+
+      this.formItemList.some(item => {
+        if (item.model === "acls") {
+          item.children = aclOptions;
+        }
+      })
     }
   },
 
   created() {
-
+    this.$get({ url: "/apis/linkingthing.com/dns/v1/acls" }).then(res => {
+      this.acl = res;
+    });
   },
 
   methods: {
@@ -144,8 +159,6 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
-
-          resStringToArray(params, ["ips"]);
 
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
@@ -156,6 +169,7 @@ export default {
               this.$$error(err.response.data.message);
             });
           } else {
+            params.priority = 1;
             this.$post({ url: this.links.self, params }).then(res => {
               this.$$success("新建成功");
               this.$emit("success");
@@ -173,7 +187,7 @@ export default {
 </script>
 
 <style lang="less">
-.acl-modal {
+.view-modal {
   .ivu-radio-wrapper {
     margin-right: 34px;
   }
