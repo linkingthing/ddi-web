@@ -10,7 +10,7 @@ export default {
     component: Layout,
     icon: "icon-access-control",
     meta:{
-        title: "访问控制",
+        title: "视图管理",
         range:"dns"
     },
     name:"access-control",
@@ -18,19 +18,19 @@ export default {
         {
             // 访问控制列表
             name: 'access-control-list',
-            path: '/dns/access-control/list',
+            path: '/dns/dns/acls',
             component: () => import(/* webpackChunkName: "access-control-list" */ "@/views/access-control/access-control-list"),
             meta: {
-                title: '访问控制列表'
+                title: 'ACL列表'
             }
         },
         {
             // 视图管理
             name: 'view-manage',
-            path: '/dns/access-control/view-manage',
+            path: '/dns/dns/views',
             component: () =>  import(/* webpackChunkName: "view-manage" */ "@/views/access-control/view-manage"),
             meta: {
-                title: '视图管理'
+                title: '视图配置'
             }
         },
         {

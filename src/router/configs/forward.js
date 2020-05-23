@@ -5,7 +5,7 @@ export default {
   component: Layout,
   icon: "icon-forward",
   meta: {
-    title: "转发管理",
+    title: "递归服务",
     range: "dns",
     // isSingle: true,
   },

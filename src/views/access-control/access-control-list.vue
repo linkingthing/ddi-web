@@ -1,63 +1,72 @@
 <template>
   <div class="acceccControlList">
     <table-page
-      title="访问控制列表"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+      :pagination-enable="false"
+    >
       <template slot="top-right">
         <i-button
           type="success"
           size="large"
-          @click="goConfig(0)">新建</i-button>
+          @click="handleOpenCreate"
+        >新建</i-button>
       </template>
     </table-page>
 
-    <createAccess
-      ref="configRef"
-      @onSuccess="createSuccess"
-      :access-list="list"/>
-    <editAccess
-      ref="eviceRef"
-      @onSuccess="getManger"
-      :access-list="list"/>
+    <AclModal
+      :visible.sync="visible"
+      ref="aclModalRef"
+      :links="paramsLinks"
+      @success="getManger"
+    />
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import createAccess from "./createAccess";
-import editAccess from "./editAccess";
+import AclModal from "./modules/acl-modal";
+
 export default {
   name: "accessControlList",
   components: {
-    createAccess,
-    editAccess
+   
+    AclModal
   },
   data() {
     return {
       columns: [
         {
-          title: "名称",
+          title: "规则名称",
           key: "name",
           align: "center"
         },
         {
-          title: "IP",
+          title: "网络地址",
           key: "",
           align: "center",
           render: (h, { row }) => {
             return h("Tags", {
               props: {
-                list: row.list,
+                list: row.ips,
                 field: row
               }
             });
           }
         },
         {
+          title: "状态",
+          key: "status",
+          align: "center"
+        },
+        {
           title: "创建时间",
           key: "creationTimestamp",
+          align: "center"
+        },
+        {
+          title: "备注",
+          key: "comment",
           align: "center"
         },
         {
@@ -68,27 +77,26 @@ export default {
           render: (h, { row }) => {
             return h("div", [
               !["any", "none"].includes(row.name) &&
-                h("btn-edit", {
-                  on: {
-                    click: () => this.goConfig1(row.id, row)
-                  }
-                }),
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEdit(row)
+                }
+              }),
               !["any", "none"].includes(row.name) &&
-                h("btn-del", {
-                  on: {
-                    click: () => this.delect(row.id)
-                  }
-                })
+              h("btn-del", {
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
             ]);
           }
         }
       ],
       list: [],
-      IP: [],
       id: "",
-      name: "",
-      remove: "",
-      modal1: false
+      visible: false,
+      links: {},
+      paramsLinks: {}
     };
   },
   watch: {},
@@ -103,27 +111,23 @@ export default {
     },
 
     getManger() {
-      let _self = this;
       services
         .getAccessList()
-        .then(function (res) {
-          _self.list = res.data.data;
+        .then(res => {
+          this.list = res.data.data;
+          this.links = res.data.links;
         })
         .catch(function (err) {
           console.log(err);
         });
     },
-    // 修改
-    goConfig(type) {
-      if (type == 0) {
-        this.$refs.configRef.openConfig();
-      }
+    handleOpenCreate() {
+      this.visible = true;
+      this.paramsLinks = this.links;
     },
-    goConfig1(data) {
-      this.$refs.eviceRef.openConfig({ data });
-    },
-    createSuccess() {
-      this.getManger();
+    handleOpenEdit({ links }) {
+      this.visible = true;
+      this.paramsLinks = links;
     },
     // 删除
     delect(data) {

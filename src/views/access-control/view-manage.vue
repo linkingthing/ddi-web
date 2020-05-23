@@ -1,26 +1,29 @@
 <template>
   <div class="viewManage">
     <table-page
-      title="视图管理"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+      :pagination-enable="false"
+    >
       <template slot="top-right">
         <i-button
           type="success"
           size="large"
-          @click="handleOpenCreate">新建</i-button>
+          @click="handleOpenCreate"
+        >新建</i-button>
       </template>
     </table-page>
 
     <createView
       ref="deviceRef"
       @onCreateSuccess="getView"
-      :max-priority="list.length"/>
+      :max-priority="list.length"
+    />
     <editView
       ref="analysis2Ref"
       @onEditSuccess="getView"
-      :max-priority="list.length"/>
+      :max-priority="list.length"
+    />
   </div>
 </template>
 
@@ -39,22 +42,9 @@ export default {
     return {
       columns: [
         {
-          title: "名称",
+          title: "视图名称",
           key: "name",
-          align: "center"
-        },
-        {
-          title: "访问控制列表",
-          key: "acls",
-          align: "center",
-
-          render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.acls
-              }
-            });
-          }
+          align: "left"
         },
         {
           title: "优先级",
@@ -62,9 +52,32 @@ export default {
           align: "center"
         },
         {
+          title: "访问控制",
+          key: "acls",
+          align: "center",
+
+          render: (h, { row }) => {
+            return h("Tags", {
+              props: {
+                list: row.ips
+              }
+            });
+          }
+        },
+        {
+          title: "DNS64",
+          key: "dns64",
+          align: "center"
+        },
+        {
+          title: "备注",
+          key: "comment",
+          align: "center"
+        },
+        {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           width: 160,
           render: (h, { row }) => {
             return h("div", [
@@ -74,22 +87,18 @@ export default {
                 }
               }),
               row.name !== "default" &&
-                h("btn-del", {
-                  on: {
-                    click: () => this.delect(row.id)
-                  }
-                })
+              h("btn-del", {
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
             ]);
           }
         }
       ],
       list: [],
-      id: "",
-      name: "",
-      remove: "",
-      modal1: false,
-      priority: "",
-      acls: []
+      links: {},
+      paramsLinks: {}
     };
   },
   mounted() {
@@ -103,17 +112,10 @@ export default {
       this.$refs.analysis2Ref.openConfig(a, b);
     },
     getView() {
-      let _self = this;
       services
         .getViewList()
-        .then(function (res) {
-          _self.list = res.data.data;
-          for (var key in _self.list) {
-            _self.id = _self.list[key].id;
-            _self.name = _self.list[key].name;
-            _self.priority = _self.list[key].priority;
-            _self.acls = _self.list[key].acls;
-          }
+        .then(res => {
+          this.list = res.data.data;
         })
         .catch(function (err) {
           console.log(err);
@@ -133,7 +135,7 @@ export default {
               this.getView();
             })
             .catch(err => {
-              this.$Message.success("删除失败");
+              this.$Message.success(err.message);
             });
         }
       });
