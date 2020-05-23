@@ -15,15 +15,7 @@ export default {
   },
   name: "system-safe",
   children: [
-    {
-      // 并发控制
-      name: "concurrency-control",
-      path: "/dns/system-safe/concurrency-control",
-      component: () => import(/* webpackChunkName: "concurrency-control" */ "@/views/system-safe/concurrency-control"),
-      meta: {
-        title: "并发控制"
-      }
-    },
+   
     {
       // 黑白名单(安全管理)
       name: "black-white-list-manage",
