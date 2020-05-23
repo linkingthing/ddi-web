@@ -1,5 +1,5 @@
 <template>
-  <div class="zoneForward">
+  <div class="ForwardView">
     <table-page
       title="转发视图"
       :data="list"
@@ -10,6 +10,7 @@
 
 <script>
 import services from "@/services";
+
 export default {
   name: "applicationFirewall",
   data() {
@@ -18,7 +19,7 @@ export default {
         {
           title: "视图",
           key: "name",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h(
               "router-link",
@@ -42,7 +43,7 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center"
+          align: "right"
         }
       ],
       list: []

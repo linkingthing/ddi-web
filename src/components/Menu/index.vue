@@ -89,7 +89,8 @@ export default {
       "access-control",
       "dhcp-service",
       "system-safe",
-      "dhcp-config"
+      "dhcp-config",
+      "forward"
     ];
     return {
       // eslint-disable-next-line no-undef

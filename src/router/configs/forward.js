@@ -9,37 +9,57 @@ export default {
 		range: 'dns'
 	},
 	name: 'forward',
+	redirect: { name: 'forward-layout' },
 	children: [
 		{
-			// 区域转发
-			name: 'zone-forward',
-			path: '/dns/forward/zoneForward',
-			component: () => import('@/views/dns/forward/zoneForward'),
+			name: 'forward-layout',
+			path: '/dns/dns/forward/layout',
+			redirect: { name: 'forward-view' },
+			component: () => import('@/views/dns/forward/layout'),
 			meta: {
-				// title: "转发视图"
 				title: '转发管理'
-			}
+			},
+			children: [
+				{
+					name: 'forward-view',
+					path: '/dns/dns/views_forwards',
+					component: () => import('@/views/dns/forward/ForwardView'),
+					meta: {
+						title: '转发配置'
+					}
+				},
+				{
+					name: 'forward-group',
+					path: '/dns/dns/forwards',
+					component: () => import('@/views/dns/forward/ForwardGroup'),
+					meta: {
+						title: '转发配置'
+					}
+				},
+				{
+					name: 'forward-list',
+					path: '/dns/forword/forwardList',
+					component: import('@/views/dns/forward/forwardList'),
+					meta: {
+						title: '区域转发列表',
+						notInMenu: true,
+						from: 'zone-query-forward'
+					}
+				},
+
+				{
+					name: 'zone-query-forward',
+					path: '/dns/forword/zoneQueryForward',
+					component: () => import('@/views/dns/forward/zoneQueryForward'),
+					meta: {
+						title: '转发区域',
+						notInMenu: true,
+						from: 'zone-forward'
+					}
+				}
+			]
 		},
-		{
-			name: 'zone-query-forward',
-			path: '/dns/forword/zoneQueryForward',
-			component: () => import('@/views/dns/forward/zoneQueryForward'),
-			meta: {
-				title: '转发区域',
-				notInMenu: true,
-				from: 'zone-forward'
-			}
-		},
-		{
-			name: 'forward-list',
-			path: '/dns/forword/forwardList',
-			component: import('@/views/dns/forward/forwardList'),
-			meta: {
-				title: '区域转发列表',
-				notInMenu: true,
-				from: 'zone-query-forward'
-			}
-		},
+
 		{
 			name: 'concurrency-control',
 			path: '/dns/forward/concurrency-control',

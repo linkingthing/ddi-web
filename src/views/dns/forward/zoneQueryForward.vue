@@ -91,7 +91,7 @@ export default {
     getManger() {
       services
         .getZoneByViewId(this.viewId, {
-          zoneType: "forward"
+          zonetype: "forward"
         })
         .then(res => {
           this.dsliteList = res.data.data;

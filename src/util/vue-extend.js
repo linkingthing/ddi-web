@@ -1,9 +1,11 @@
 import Vue from "vue";
 import store from "@/store";
-import router from "@/router";
-import { del, post, put, get, axios, baseUrl } from "./axios";
-import { getApiByRoute, getRouteByLink} from "./request";
+import { del, post, put, get, axios } from "./axios";
+import  * as requestMethods from "./request";
 
+const { getApiByRoute, getRouteByLink } = requestMethods;
+
+console.log(requestMethods)
 function showMessage(type, msg, scope) {
   let options = {
     content: msg,
@@ -103,3 +105,7 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$getData = () => get(getApiByRoute()); 
 Vue.prototype.$createEntity = params => post({ ...getApiByRoute(), params }); 
 
+
+for (const method in requestMethods) {
+  Vue.prototype[`$${method}`] = requestMethods[method];
+}

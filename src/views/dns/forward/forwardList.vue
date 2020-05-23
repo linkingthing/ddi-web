@@ -1,7 +1,15 @@
 <template>
   <div class="forwardList">
-    <table-page title="区域转发列表" :data="list" :columns="columns" :paginationEnable="false" />
-    <editForward ref="alarmRef" @onSuccess="getView"></editForward>
+    <table-page
+      title="区域转发列表"
+      :data="list"
+      :columns="columns"
+      :pagination-enable="false"
+    />
+    <editForward
+      ref="alarmRef"
+      @onSuccess="getView"
+    />
   </div>
 </template>
 
@@ -11,6 +19,9 @@ import services from "@/services";
 
 export default {
   name: "forwardList",
+  components: {
+    editForward
+  },
   data() {
     return {
       columns: [
@@ -73,9 +84,7 @@ export default {
     this.viewId = this.$route.query.viewId;
     this.zoneId = this.$route.query.zoneId;
   },
-  components: {
-    editForward
-  },
+
   mounted() {
     this.getView();
   },

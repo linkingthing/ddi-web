@@ -80,7 +80,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           width: 160,
           render: (h, { row }) => {
             return h("div", [
@@ -93,7 +93,7 @@ export default {
               !["any", "none"].includes(row.name) &&
               h("btn-del", {
                 on: {
-                  click: () => this.delect(row.id)
+                  click: () => this.delete(row.id)
                 }
               })
             ]);
@@ -138,7 +138,7 @@ export default {
       this.paramsLinks = links;
     },
     // 删除
-    delect(data) {
+    delete(data) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定删除？",

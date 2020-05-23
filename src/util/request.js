@@ -5,8 +5,8 @@
 import { axios, baseUrl } from "./axios";
 import router from "@/router";
 
-export function get() {
-  
+export function $get({ url, params }) {
+  return axios.get(url, { params }).then(({ data: { data, links } }) => ({ data,links }));
 }
 
 /**
@@ -60,6 +60,9 @@ export const popPath = () => {
   return [pathSplit.join("/"), lastResource];
 };
 
+/**
+ * 获取上一级父资源
+*/
 export const getParantData = () => {
   const [path] = popPath();
   return axios.get(getApiByRoute(path).url).then(({ data }) => {
@@ -67,3 +70,10 @@ export const getParantData = () => {
   });
 };
 
+/**
+ * 获取Data和Links，不限于列表单条
+*/
+export const getDataAndLinks = () => {
+  const { path } = router.currentRoute;
+  return $get(getApiByRoute(path));
+};
