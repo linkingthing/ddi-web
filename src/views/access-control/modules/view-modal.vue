@@ -148,8 +148,8 @@ export default {
   },
 
   created() {
-    this.$get({ url: "/apis/linkingthing.com/dns/v1/acls" }).then(res => {
-      this.acl = res;
+    this.$get({ url: "/apis/linkingthing.com/dns/v1/acls" }).then(({ data }) => {
+      this.acl = data;
     });
   },
 
