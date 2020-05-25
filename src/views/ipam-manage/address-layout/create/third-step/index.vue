@@ -123,9 +123,9 @@ export default {
 
     async getSegmentTags() {
       try {
-        let res = await this.$get({ url: this.url + "/" + this.layoutId + "/segments" });
+        let { data } = await this.$get({ url: this.url + "/" + this.layoutId + "/segments" });
 
-        this.tags = res.sort((a,b) => a.index - b.index)
+        this.tags = data.sort((a,b) => a.index - b.index)
           .filter(({ tags }) => tags && tags.length)
           .map(({ tags }) => tags.map(tag => ({ 
             label: tag, 
@@ -143,9 +143,9 @@ export default {
     },
 
     async getData() {
-      let res = await this.$get({ url: `${this.url}/${this.layoutId}/subnets` });
+      let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/subnets` });
 
-      res.map(item => {
+      data.map(item => {
         let tagArr = item.tags.split(",");
 
         item.tags = tagArr.join("-");
@@ -154,8 +154,8 @@ export default {
         return item;
       });
       
-      this.source = [...res];
-      this.tableData = res;
+      this.source = [...data];
+      this.tableData = data;
     },
 
     handleJumpToPool() {

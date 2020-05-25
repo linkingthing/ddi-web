@@ -79,9 +79,9 @@ export default {
 
     async getSegmentTags() {
       try {
-        let res = await this.$get({ url: this.url.replace("subnets", "segments") });
+        let { data } = await this.$get({ url: this.url.replace("subnets", "segments") });
 
-        this.tags = res.sort((a,b) => a.index - b.index)
+        this.tags = data.sort((a,b) => a.index - b.index)
           .filter(({ tags }) => tags && tags.length)
           .map(({ tags }) => tags.map(tag => ({ 
             label: tag, 
@@ -99,9 +99,9 @@ export default {
     },
 
     async getData() {
-      let res = await this.$get({ url: this.url });
+      let { data } = await this.$get({ url: this.url });
 
-      res.map(item => {
+      data.map(item => {
         let tagArr = item.tags.split(",");
 
         item.tags = tagArr.join("-");
@@ -110,8 +110,8 @@ export default {
         return item;
       });
       
-      this.source = [...res];
-      this.tableData = res;
+      this.source = [...data];
+      this.tableData = data;
     },
 
     handleViewPool() {

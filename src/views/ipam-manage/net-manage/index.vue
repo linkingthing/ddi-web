@@ -1,8 +1,6 @@
 <template>
   <div class="child-net-ip-manage">
     <IviewLoading v-if="loading" />
-
-    <div class="ip-manage-title">IP管理</div>
     
     <div class="condition-wrapper">
       <div class="condition-item">

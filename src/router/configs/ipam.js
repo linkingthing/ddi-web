@@ -46,7 +46,7 @@ export default {
     },
     {
       name: 'ipam-address-manage',
-      path: '/address/ipam/subnets',
+      path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
         title: "IP地址管理"
@@ -54,7 +54,7 @@ export default {
     },
     {
       name: 'ipam-net-manage',
-      path: '/address/ipam/subnets/:subnetsId/nets',
+      path: '/address/ipam/scannedsubnets/:scannedsubnetsId/networkinterfaces',
       component: () => import(/* webpackChuckName: "ipam-net-manage" */ "@/views/ipam-manage/net-manage"),
       meta: {
         notInMenu: true,

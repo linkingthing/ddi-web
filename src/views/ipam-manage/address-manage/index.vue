@@ -2,34 +2,10 @@
   <div class="child-net-manage">   
     <IviewLoading v-if="loading" />
 
-    <TablePagination 
+    <table-page 
       :data="tableData"
       :columns="columns"  
       @on-selection-change="handleSelecChange"
-    > 
-      <template slot="top-right">
-        <Button 
-          type="primary" 
-          @click="handleManualScan" 
-          class="top-button button-blue"
-        >
-          手动扫描
-        </Button>
-      </template>
-    </TablePagination>
-
-    <AutoScan 
-      :visible.sync="showAutoScan"
-      :data="selectedData"
-      :url="url"
-      @confirmed="handleQuery"
-    />
-
-    <ManualScan 
-      :visible.sync="showManualScan"
-      :data="currentData"
-      :url="url"
-      @confirmed="handleQuery"
     />
   </div>
 </template>
@@ -39,19 +15,9 @@
 </style>
 
 <script>
-import TablePagination from "@/components/TablePagination";
-import AutoScan from "./auto-scan";
-import ManualScan from "./manual-scan";
-
 import { columns } from "./define";
 
 export default {
-  components: {
-    TablePagination,
-    AutoScan,
-    ManualScan
-  },
-
   data() {
     return {
       loading: true,
@@ -81,7 +47,7 @@ export default {
         
         this.tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
-          item.subnet = item.subnet || "";
+          item.usedRatio = (1 - (item.unmanagedRatio || 0)) * 100;
 
           return item;
         });
@@ -98,17 +64,6 @@ export default {
 
     handleSelecChange(res) {
       this.selectedData = [...res];
-    },
-
-    handleAutoScan(data) {
-      this.showAutoScan = true;
-
-      this.editData = { ...data };
-    },
-
-    handleManualScan() {
-      this.showAutoScan = true;
-      // this.showManualScan = true;
     },
 
     handleViewNet(data) {

@@ -103,9 +103,9 @@ export default {
       this.selectedData = [];
 
       try {
-        let res = await this.$get({ url: this.url });
+        let { data } = await this.$get({ url: this.url });
         
-        this.tableData = res.map(item => {
+        this.tableData = data.map(item => {
           const segments = item.segmentWidths;
 
           item.segments = segments.join("-");

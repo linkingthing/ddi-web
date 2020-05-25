@@ -222,7 +222,7 @@ export default {
     },
 
     async segments(val) {      
-      let segments = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
+      let { data: segments } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
 
       this.segmentWidths = val.map((value, idx) => ({
         name: segments[idx].name || `标识${idx + 1}`,
@@ -259,7 +259,7 @@ export default {
 
       let count = 0;
 
-      this.sections = new Array(this.maskLen / this.unit).fill([]).map(() => new Array(this.unit).fill(0).map(() => ++count));
+      this.sections = new Array(Math.ceil(this.maskLen / this.unit)).fill([]).map(() => new Array(this.unit).fill(0).map(() => ++count));
 
       this.endSegment.value = this.canPlanLength;
     },
