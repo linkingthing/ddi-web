@@ -143,7 +143,7 @@ export default {
     },
 
     async getData() {
-      let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/subnets` });
+      let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/plannedsubnets` });
 
       data.map(item => {
         let tagArr = item.tags.split(",");

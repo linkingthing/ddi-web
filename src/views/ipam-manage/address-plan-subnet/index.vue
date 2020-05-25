@@ -79,7 +79,7 @@ export default {
 
     async getSegmentTags() {
       try {
-        let { data } = await this.$get({ url: this.url.replace("subnets", "segments") });
+        let { data } = await this.$get({ url: this.url.replace("plannedsubnets", "segments") });
 
         this.tags = data.sort((a,b) => a.index - b.index)
           .filter(({ tags }) => tags && tags.length)
