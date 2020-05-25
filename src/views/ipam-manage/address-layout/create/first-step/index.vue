@@ -27,57 +27,54 @@
         <div
           v-for="(item, idx) in sections"
           :key="idx"
-          class="axis-item">
-          <div
-            v-for="child in item"
-            :key="child"
-            :class="{
-              'axis-unit-long': !(child % 8),
-              'axis-unit-inuse': child > canPlanLength
-            }"
-            class="axis-unit">
-            <a class="axis-label" v-if="!(child % 8)">{{child}}</a>
-          </div>
+          class="axis-unit"
+          :class="{
+            'axis-unit-long': !(item % 8),
+            'axis-unit-inuse': item > canPlanLength
+          }">
+          <a class="axis-label" v-if="item && !(item % 8)">{{item}}</a>
         </div>
       </div>
     </section>
 
     <!-- 分段显示 -->
-    <section class="segment-section">
-      <div 
-        class="segment-section-item is-begin" 
-        key="begin-segement"
-        :style="{ flex:startSegment.value, backgroundColor:startSegment.color }"
-      >
-        <div class="segment-section-item-name" v-if="showSegmentName">
-          前缀
-        </div>
-      </div>
-      <template v-if="endSegment.value >= 0">
-        <div
-          v-for="(segment,idx) in segmentWidths"
-          class="segment-section-item" 
-          :key="idx"
-          :style="{ flex:segment.value, backgroundColor:segment.color }"
+    <div>
+      <section class="segment-section">
+        <div 
+          class="segment-section-item is-begin" 
+          key="begin-segement"
+          :style="{ flex:startSegment.value, backgroundColor:startSegment.color }"
         >
           <div class="segment-section-item-name" v-if="showSegmentName">
-            {{segment.value}}位
+            前缀
           </div>
         </div>
-      </template>
-      <div 
-        v-if="endSegment.value"
-        class="segment-section-item is-end" 
-        key="end-segement"
-        :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
-      >
-        <div class="segment-section-item-name" v-if="showSegmentName">
-          {{endSegment.value}}位
+        <template v-if="endSegment.value >= 0">
+          <div
+            v-for="(segment,idx) in segmentWidths"
+            class="segment-section-item" 
+            :key="idx"
+            :style="{ flex:segment.value, backgroundColor:segment.color }"
+          >
+            <div class="segment-section-item-name" v-if="showSegmentName">
+              {{segment.value}}位
+            </div>
+          </div>
+        </template>
+        <div 
+          v-if="endSegment.value"
+          class="segment-section-item is-end" 
+          key="end-segement"
+          :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
+        >
+          <div class="segment-section-item-name" v-if="showSegmentName">
+            {{endSegment.value}}位
+          </div>
         </div>
-      </div>
 
-      <div class="section-cursor" :style="{ left:cursorLeft }" />
-    </section>
+        <div class="section-cursor" :style="{ left:cursorLeft }" />
+      </section>
+    </div>
 
     <section class="segment-list-top" v-if="!isEdit">
       <div class="detail-top-left">
@@ -257,9 +254,9 @@ export default {
       // 可规划地址的起始长度
       this.prefixPos = this.canPlanLength + 1;
 
-      let count = 0;
+      let count = -1;
 
-      this.sections = new Array(Math.ceil(this.maskLen / this.unit)).fill([]).map(() => new Array(this.unit).fill(0).map(() => ++count));
+      this.sections = new Array(this.maskLen + 1).fill("").map(() => ++count);
 
       this.endSegment.value = this.canPlanLength;
     },
