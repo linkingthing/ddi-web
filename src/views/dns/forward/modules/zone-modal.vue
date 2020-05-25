@@ -102,13 +102,7 @@ export default {
   },
 
   watch: {
-    "formModel": {
-      deep: true,
-      handler(val) {
-        console.log(11, val);
 
-      }
-    },
     visible(val) {
       if (!val) {
         this.formModel = {
@@ -151,8 +145,8 @@ export default {
   },
 
   created() {
-    this.$getData("/dns/dns/forwards").then(forwardList => {
-      this.forwardList = forwardList;
+    this.$getData("/dns/dns/forwards").then(({ data }) => {
+      this.forwardList = data;
     }).catch();
   },
 

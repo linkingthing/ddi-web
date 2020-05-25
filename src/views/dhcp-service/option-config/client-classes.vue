@@ -84,8 +84,8 @@ export default {
   methods: {
 
     getDataList() {
-      this.$getData().then(res => {
-        this.tableData = res;
+      this.$getData().then(({ data }) => {
+        this.tableData = data;
       }).catch(err => err);
     },
 
