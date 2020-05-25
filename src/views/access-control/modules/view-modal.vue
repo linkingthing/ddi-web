@@ -76,7 +76,7 @@ export default {
           type: "select",
           multiple: true,
           placeholder: "请选择ACL规则",
-          children: this.aclOptions
+          children: []
         },
         {
           label: "DNS64",
@@ -143,7 +143,7 @@ export default {
         if (item.model === "acls") {
           item.children = aclOptions;
         }
-      })
+      });
     }
   },
 

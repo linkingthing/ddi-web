@@ -14,94 +14,108 @@
         >新建</i-button>
       </template>
     </table-page>
-    <createForwardZone
-      ref="creatRef"
-      @onCreateSuccess="getManger"
+    <zoneModal
+      :links="paramsLinks"
+      :visible.sync="visible"
+      @success="getDataList"
     />
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import createForwardZone from "./createForwardZone";
+import zoneModal from "./modules/zone-modal";
 
 export default {
-  components: { createForwardZone },
+  components: { zoneModal },
   data() {
     return {
       columns: [
         {
           title: "域名",
           key: "name",
+          align: "left"
+        },
+
+        {
+          title: "转发组",
+          key: "forwards",
           align: "center",
           render: (h, { row }) => {
-            return h(
-              "router-link",
-              {
-                props: {
-                  to: {
-                    name: "forward-list",
-                    query: {
-                      viewId: this.viewId,
-                      zoneId: row.id,
-                      name: row.name
-                    }
-                  }
-                }
-              },
-              row.name
-            );
+            return h("Tags", {
+              props: {
+                list: row.forwards
+              }
+            });
           }
         },
+
         {
-          title: "转发地址数量",
-          key: "forwardsize",
-          algin: "center"
+          title: "转发类型",
+          key: "name",
+          align: "center"
         },
+
         {
           title: "创建时间",
           key: "creationTimestamp",
           algin: "center"
         },
+
         {
           title: "操作",
           key: "action",
-          width: 120,
-          align: "center",
+          width: 160,
+          align: "right",
           render: (h, { row }) => {
-            return h("btn-del", {
-              on: {
-                click: () => this.delete(row.id)
-              }
-            });
+            return h("div", [
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleEdit(row)
+                }
+              }), h("btn-del", {
+                on: {
+                  click: () => this.delete(row.id)
+                }
+              })
+            ]);
           }
         }
       ],
       viewId: "",
-      dsliteList: []
+      dsliteList: [],
+      visible: false,
+      links: {},
+      paramsLinks: {}
     };
   },
   created() {
-    this.viewId = this.$route.query.id;
+    this.viewId = this.$route.params.viewsId;
   },
   mounted() {
-    this.getManger();
+    this.getDataList();
   },
   methods: {
-    getManger() {
+    getDataList() {
       services
         .getZoneByViewId(this.viewId, {
           zonetype: "forward"
         })
         .then(res => {
           this.dsliteList = res.data.data;
+          this.links = res.data.links;
         })
         .catch(err => {
-          console.log(err);
+          this.$Message.error(err.message);
         });
     },
     handleOpenCreate() {
-      this.$refs.creatRef.openConfig(this.viewId);
+      this.visible = true;
+      this.paramsLinks = this.links;
+    },
+    handleEdit({ links }) {
+      this.visible = true;
+      this.paramsLinks = links;
     },
     // 删除
     delete(zoneId) {
@@ -113,7 +127,7 @@ export default {
             .deleteZone(this.viewId, zoneId)
             .then(res => {
               this.$Message.success("删除成功");
-              this.getManger();
+              this.getDataList();
             })
             .catch(err => {
               this.$Message.error("删除失败");

@@ -27,7 +27,7 @@ export default {
                 props: {
                   to: {
                     name: "zone-query-forward",
-                    query: { id: row.id, name: row.name }
+                    params: { viewsId: row.id}
                   }
                 }
               },
@@ -37,7 +37,7 @@ export default {
         },
         {
           title: "域名数量",
-          key: "zonesize",
+          key: "forwardzonesize",
           align: "center"
         },
         {

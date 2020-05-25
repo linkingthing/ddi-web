@@ -5,7 +5,6 @@ import  * as requestMethods from "./request";
 
 const { getApiByRoute, getRouteByLink } = requestMethods;
 
-console.log(requestMethods)
 function showMessage(type, msg, scope) {
   let options = {
     content: msg,
@@ -102,7 +101,7 @@ Vue.prototype.$put = put;
 Vue.prototype.$post = post;
 Vue.prototype.$delete = del;
 Vue.prototype.$axios = axios;
-Vue.prototype.$getData = () => get(getApiByRoute()); 
+Vue.prototype.$getData = params => get(getApiByRoute(params)); 
 Vue.prototype.$createEntity = params => post({ ...getApiByRoute(), params }); 
 
 

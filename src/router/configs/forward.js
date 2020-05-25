@@ -36,25 +36,15 @@ export default {
 						title: '转发配置'
 					}
 				},
-				{
-					name: 'forward-list',
-					path: '/dns/forword/forwardList',
-					component: import('@/views/dns/forward/forwardList'),
-					meta: {
-						title: '区域转发列表',
-						notInMenu: true,
-						from: 'zone-query-forward'
-					}
-				},
-
+		
 				{
 					name: 'zone-query-forward',
-					path: '/dns/forword/zoneQueryForward',
-					component: () => import('@/views/dns/forward/zoneQueryForward'),
+					path: '/dns/dns/views_forwards/:viewsId/zones',
+					component: () => import('@/views/dns/forward/ForwardZone'),
 					meta: {
-						title: '转发区域',
+						title: '转发配置编辑',
 						notInMenu: true,
-						from: 'zone-forward'
+						from: 'forward-view'
 					}
 				}
 			]
