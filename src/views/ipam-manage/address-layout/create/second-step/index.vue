@@ -119,9 +119,9 @@ export default {
     async init() {
       if (!this.layoutId) return;
       
-      let res = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
+      let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
 
-      this.list = res.sort((a,b) => a.index - b.index).map((item, i) => {
+      this.list = data.sort((a,b) => a.index - b.index).map((item, i) => {
         const max = this.segments[i];
 
         return {

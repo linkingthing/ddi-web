@@ -15,7 +15,6 @@
 
 <script>
 import configs from "@/router/configs";
-import { baseUrl } from "@/util/axios";
 
 export default {
   name: "Bread",

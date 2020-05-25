@@ -50,15 +50,19 @@ Vue.prototype.$$error = function (msg) {
   showMessage("error", msg, this);
 };
   
-Vue.prototype.$$confirm = function ({ title = "消息", content }) {
+Vue.prototype.$$confirm = function ({ title = "消息", content, onOk, onCancel }) {
   return new Promise((resolve, reject) => {
     this.$Modal.confirm({
       title,
       content,
       onOk: () => {
+        onOk && onOk();
+
         resolve();
       },
       onCancel: () => {
+        onCancel && onCancel();
+
         reject();
       }
     });
