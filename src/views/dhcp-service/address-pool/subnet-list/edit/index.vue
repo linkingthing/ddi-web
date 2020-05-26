@@ -49,9 +49,6 @@ export default {
 
   computed: {
     formItemList() {
-      if (!this.formModel.subnet) {
-        return [];
-      }
       const ipv4FormList = [
         {
           label: "DNS",
@@ -87,11 +84,11 @@ export default {
       }
       ];
 
-      if (ipv6IsValid(this.formModel.subnet)) {
+      if (this.formModel.version === 6) {
         return ipv6FormList;
       }
 
-      if (ipv4IsValid(this.formModel.subnet)) {
+      if (this.formModel.version === 4) {
         return ipv4FormList;
       }
 
