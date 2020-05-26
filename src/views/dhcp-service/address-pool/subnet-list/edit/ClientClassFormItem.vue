@@ -40,8 +40,8 @@ export default {
     }
   },
   created() {
-    this.$get({ url: "/apis/linkingthing.com/dhcp/v1/clientclasses" }).then(res => {
-      this.clientClassList = res;
+    this.$get({ url: "/apis/linkingthing.com/dhcp/v1/clientclasses" }).then(({data}) => {
+      this.clientClassList = data;
       this.disabled = !!this.value;
     });
   },

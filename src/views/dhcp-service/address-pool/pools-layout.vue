@@ -15,33 +15,41 @@ export default {
   components: {},
   props: {},
   data() {
-    this.tabList = [{
-      name: "pools",
-      label: "地址池",
-      route: "address-pool-list"
-    }, {
-      name: "reservations",
-      label: "固定地址",
-      route: "address-reservations-list"
-    }, {
-      name: "pdpools",
-      label: "前缀委派",
-      route: "address-pdpool-list"
-    }];
+
     return {
+      tabList: [{
+        name: "pools",
+        label: "地址池",
+        route: "address-pool-list"
+      }, {
+        name: "reservations",
+        label: "固定地址",
+        route: "address-reservations-list"
+      }],
       tab: "",
       addressType: ""
     };
   },
   computed: {},
+  watch: {
+    addressType(value) {
+      if (value === 6) {
+        this.tabList.push({
+          name: "pdpools",
+          label: "前缀委派",
+          route: "address-pdpool-list"
+        });
+      }
+    }
+  },
   created() {
     const { path } = this.$route;
     const pathSplit = path.split("/");
     this.tab = pathSplit.pop();
 
-    this.$get(this.$getApiByRoute(pathSplit.join("/"))).then(res => {
-      console.log(res)
-      this.addressType = res.subnet; // TODO: 等接口改造来判断ipv6，ipv6 可以 前缀委派
+    this.$get(this.$getApiByRoute(pathSplit.join("/"))).then((data) => {
+      console.log(data)
+      this.addressType = data.version; // TODO: 等接口改造来判断ipv6，ipv6 可以 前缀委派
     });
   },
   methods: {

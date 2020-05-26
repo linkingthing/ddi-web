@@ -1,7 +1,7 @@
 export const columns = scope => [    
   {
     title: "子网地址",
-    key: "subnet",
+    key: "ipnet",
     align: "left",
     render: (h, { row }) => {
       return h("div", [
@@ -12,7 +12,7 @@ export const columns = scope => [
               scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools` });
             }
           }
-        }, row.subnet)
+        }, row.ipnet)
       ]);
     }
   },
