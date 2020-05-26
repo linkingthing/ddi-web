@@ -83,7 +83,6 @@ export default {
 
   data() {
     const route = this.$route;
-    console.log(route)
     this.openNames = [
       "ipam-manage",
       "dns-service",
@@ -121,10 +120,8 @@ export default {
       if (this.$route.meta.active) {
         this.tab = this.$route.meta.active;
       }
-    },
-    tab(val) {
-      console.log("tab", val)
     }
+
   },
 
   created() {
@@ -133,7 +130,6 @@ export default {
 
   methods: {
     handleJump(res) {
-      console.log(res)
       this.$router.push(res);
     },
 

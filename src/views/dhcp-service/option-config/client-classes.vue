@@ -3,7 +3,7 @@
     <table-page
       title="OPTION列表"
       :data="tableData"
-      :pagination-enable="false"
+      :total="tableData.length"
       :columns="columns"
     >
       <template slot="top-right">

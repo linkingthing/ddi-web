@@ -1,9 +1,9 @@
 <template>
   <div class="acceccControlList">
     <table-page
+      :total="list.length"
       :data="list"
       :columns="columns"
-      :pagination-enable="false"
     >
       <template slot="top-right">
         <i-button

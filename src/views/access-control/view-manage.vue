@@ -3,7 +3,7 @@
     <table-page
       :data="list"
       :columns="columns"
-      :pagination-enable="false"
+      :total="list.length"
     >
       <template slot="top-right">
         <i-button
@@ -13,17 +13,6 @@
         >新建</i-button>
       </template>
     </table-page>
-
-    <!-- <createView
-      ref="deviceRef"
-      @onCreateSuccess="getView"
-      :max-priority="list.length"
-    />
-    <editView
-      ref="analysis2Ref"
-      @onEditSuccess="getView"
-      :max-priority="list.length"
-    /> -->
 
     <ViewModal
       :visible.sync="visible"

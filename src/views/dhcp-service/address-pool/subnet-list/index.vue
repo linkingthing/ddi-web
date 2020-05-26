@@ -5,7 +5,7 @@
     <TablePagination
       title="地址池管理"
       :data="tableData"
-      :pagination-enable="false"
+      :total="tableData.length"
       :columns="columns"
     />
     <Edit
