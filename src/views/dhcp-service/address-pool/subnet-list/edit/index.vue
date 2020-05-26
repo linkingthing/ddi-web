@@ -64,13 +64,13 @@ export default {
           placeholder: "请填写默认网关"
         },
         {
-          label: "自定义",
+          label: "option 60",
           model: "clientClass",
           type: "component",
           component: ClientClassFormItem
         },
         {
-          label: "中继路由",
+          label: "option 82",
           model: "relayAgentAddresses",
           type: "input",
           placeholder: "请填写默认网关"

@@ -80,8 +80,10 @@ export default {
 					path: '/address/dhcp/dhcpconfigs',
 					component: () => import(/* webpackChuckName: "option-config" */ '@/views/dhcp-service/option-config/dhcp-configs'),
 					meta: {
-						notInMenu: true,
-						title: '基础配置'
+            notInMenu: true,
+            from: 'dhcp-config',
+            title: '基础配置',
+            active: 'dhcp-config',
 					}
 				},
 				{
@@ -89,7 +91,8 @@ export default {
 					path: '/address/dhcp/clientclasses',
 					component: () => import(/* webpackChuckName: "option-config" */ '@/views/dhcp-service/option-config/client-classes'),
 					meta: {
-						notInMenu: true,
+            notInMenu: true,
+            from: 'dhcp-config',
 						title: '基础配置'
 					}
 				}

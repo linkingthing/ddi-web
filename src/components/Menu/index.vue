@@ -83,6 +83,7 @@ export default {
 
   data() {
     const route = this.$route;
+    console.log(route)
     this.openNames = [
       "ipam-manage",
       "dns-service",
@@ -90,7 +91,8 @@ export default {
       "dhcp-service",
       "system-safe",
       "dhcp-config",
-      "forward"
+      "forward",
+      "dhcp-dhcp"
     ];
     return {
       // eslint-disable-next-line no-undef
@@ -104,17 +106,24 @@ export default {
         }
       },
       routes: [],
-      tab: route.params.tab || route.name // 路由tab
+      tab: route.meta.active || route.params.tab || route.name // 路由tab
     };
   },
 
   watch: {
     $route() {
+
       if (this.$route.params.tab) {
         this.tab = this.$route.params.tab;
       } else {
         this.tab = this.$route.name;
       }
+      if (this.$route.meta.active) {
+        this.tab = this.$route.meta.active;
+      }
+    },
+    tab(val) {
+      console.log("tab", val)
     }
   },
 
@@ -124,6 +133,7 @@ export default {
 
   methods: {
     handleJump(res) {
+      console.log(res)
       this.$router.push(res);
     },
 
