@@ -19,7 +19,7 @@
 
     <Edit
       :visible.sync="showEdit"
-      :links="links"
+      :links="paramsLinks"
       @confirmed="handleSaved"
     />
   </div>
@@ -72,7 +72,8 @@ export default {
         }
       ],
       showEdit: false,
-      links: null
+      links: {},
+      paramsLinks: {}
     };
   },
 
@@ -93,15 +94,30 @@ export default {
     handleAdd() {
       this.showEdit = true;
 
-      this.editData = null;
+      this.paramsLinks = {};
     },
 
 
     handleEdit({ links }) {
       this.showEdit = true;
-      this.links = links;
+      this.paramsLinks = links;
     },
-    handleDel() { },
+    handleDel({ links }) {
+      this.$Modal.confirm({
+        title: "您确定要删除当前数据吗？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.info("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$Message.error(err.message);
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
+        }
+      });
+    },
     handleSaved() {
       this.getDataList();
     }

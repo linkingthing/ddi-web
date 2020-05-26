@@ -84,8 +84,7 @@ export default {
         }
       ],
       formModel: {
-        name: "",
-        zonetype: "forward"
+        name: ""
       },
       loading: false,
       dialogVisible: false
@@ -105,18 +104,21 @@ export default {
 
     visible(val) {
       if (!val) {
-        this.formModel = {
-          zonetype: "forward"
-        };
+       
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, comment }) => {
+        this.$get({ url: this.links.self }).then(({ name, comment,forwardtype,forwards }) => {
           this.formModel = {
             name,
-            comment
+            comment,
+            forwardtype,
+            forwards,
+            forwardids: forwards.map(item => item.id)
           };
+
+          
         }).catch();
       }
       this.dialogVisible = val;
@@ -156,7 +158,6 @@ export default {
 
       const params = { ...this.formModel };
 
-      params.zonetype = "forward";
       if (this.isEdit) {
         this.$put({ url: this.links.update, params }).then(res => {
           this.$$success("编辑成功");

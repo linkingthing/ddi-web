@@ -89,8 +89,8 @@ export default {
           model: "domainServers",
           type: "input",
           placeholder: "请填写DNS，逗号隔开"
-        },
-      ],
+        }
+      ]
     };
   },
   computed: {},

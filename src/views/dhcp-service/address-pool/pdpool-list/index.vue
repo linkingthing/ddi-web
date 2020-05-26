@@ -21,7 +21,7 @@
 
     <Edit
       :visible.sync="showEdit"
-      :links="links"
+      :links="paramsLinks"
       @success="getDataList"
     />
   </div>
@@ -49,11 +49,8 @@ export default {
       columns: [
         {
           title: "前缀",
-          key: "beginAddress",
-          align: "left",
-          render: (h, {row}) => {
-            return `${row.prefix}/${row.prefixLen}`;
-          }
+          key: "prefix",
+          align: "left"
         },
         {
           title: "委派长度",
@@ -84,7 +81,8 @@ export default {
         }
       ],
       showEdit: false,
-      links: {}
+      links: {},
+      paramsLinks: {}
     };
   },
   mounted() {
@@ -106,12 +104,12 @@ export default {
 
     handleAdd() {
       this.showEdit = true;
-      this.editData = null;
+      this.paramsLinks = this.links;
     },
 
     handleEdit({ links }) {
       this.showEdit = true;
-      this.links = links;
+      this.paramsLinks = links;
     },
 
     handleDelete({ links }) {
