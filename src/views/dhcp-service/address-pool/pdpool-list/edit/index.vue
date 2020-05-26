@@ -68,20 +68,23 @@ export default {
       {
         label: "前缀长度",
         model: "prefixLen",
-        type: "input",
+        type: "number",
         placeholder: "请填写前缀长度"
       },
       {
         label: "委派长度",
         model: "delegatedLen",
-        type: "input",
+        type: "number",
         placeholder: "请填写委派长度"
       }
     ];
 
     this.rules = {};
     return {
-      formModel: {},
+      formModel: {
+        prefixLen: 0,
+        delegatedLen: 0
+      },
       loading: false,
       dialogVisible: false
     };
@@ -99,6 +102,10 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
+        this.formModel = {
+          prefixLen: 0,
+          delegatedLen: 0
+        };
         return;
       }
 
