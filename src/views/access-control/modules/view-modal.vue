@@ -156,7 +156,7 @@ export default {
   methods: {
 
     handleConfirm(name) {
-      this.$refs[name].validate((valid) => {
+      this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
 
