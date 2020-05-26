@@ -38,8 +38,7 @@ export default {
       tableData: [],
       columns: columns(this),
       showEdit: false,
-      links: {},
-      editData: null,
+      links: {}
     };
   },
 

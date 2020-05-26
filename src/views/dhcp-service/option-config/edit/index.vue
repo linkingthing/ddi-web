@@ -74,8 +74,11 @@ export default {
 
   watch: {
     visible(val) {
-      if (!val) return;
-      if (this.links) {
+      if (!val) {
+        this.formModel = {};
+        return;
+      }
+      if (this.links.update) {
         this.$axios(this.links.self).then(({ data }) => {
           this.formModel = data;
         });
@@ -90,8 +93,7 @@ export default {
   },
 
   created() {
-    console.log(11)
-
+    console.log("created")
   },
   methods: {
 
@@ -103,7 +105,7 @@ export default {
       this.$refs[name].validate((valid) => {
 
         if (valid) {
-          if (this.links) {
+          if (this.links.update) {
             this.$put({ url: this.links.update, params: this.formModel }).then(res => {
               this.$$success("更新成功");
               this.dialogVisible = false;

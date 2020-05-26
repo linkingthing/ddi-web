@@ -19,7 +19,7 @@
 
     <Edit
       :visible.sync="showEdit"
-      :links="links"
+      :links="paramsLinks"
       @confirmed="handleSaved"
     />
   </div>
@@ -72,7 +72,8 @@ export default {
         }
       ],
       showEdit: false,
-      links: null
+      links: {},
+      paramsLinks: {}
     };
   },
 
@@ -93,13 +94,13 @@ export default {
     handleAdd() {
       this.showEdit = true;
 
-      this.editData = null;
+      this.paramsLinks = {};
     },
 
 
     handleEdit({ links }) {
       this.showEdit = true;
-      this.links = links;
+      this.paramsLinks = links;
     },
     handleDel({ links }) {
       this.$Modal.confirm({

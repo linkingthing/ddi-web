@@ -10,6 +10,7 @@
       :label-width="80"
       label-position="left"
       :label-colon="true"
+      :model="formModel"
     >
       <common-form
         :form-model="formModel"
