@@ -84,8 +84,7 @@ export default {
         }
       ],
       formModel: {
-        name: "",
-        forwards: "forward"
+        name: ""
       },
       loading: false,
       dialogVisible: false
@@ -105,19 +104,21 @@ export default {
 
     visible(val) {
       if (!val) {
-        this.formModel = {
-          forwards: "forward"
-        };
+       
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, comment,forwardtype }) => {
+        this.$get({ url: this.links.self }).then(({ name, comment,forwardtype,forwards }) => {
           this.formModel = {
             name,
             comment,
-            forwardtype
+            forwardtype,
+            forwards,
+            forwardids: forwards.map(item => item.id)
           };
+
+          
         }).catch();
       }
       this.dialogVisible = val;
