@@ -39,7 +39,7 @@ export default {
 		
 				{
 					name: 'zone-query-forward',
-					path: '/dns/dns/views_forwards/:viewsId/zones',
+					path: '/dns/dns/views_forwards/:viewsId/forwardzones',
 					component: () => import('@/views/dns/forward/ForwardZone'),
 					meta: {
 						title: '转发配置编辑',

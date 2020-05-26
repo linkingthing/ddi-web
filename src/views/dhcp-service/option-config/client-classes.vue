@@ -101,7 +101,22 @@ export default {
       this.showEdit = true;
       this.links = links;
     },
-    handleDel() { },
+    handleDel({ links }) {
+      this.$Modal.confirm({
+        title: "您确定要删除当前数据吗？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.info("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$Message.error(err.message);
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
+        }
+      });
+    },
     handleSaved() {
       this.getDataList();
     }

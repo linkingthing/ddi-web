@@ -52,7 +52,7 @@ export default {
 
         {
           title: "转发类型",
-          key: "name",
+          key: "forwardtype",
           align: "center"
         },
 
@@ -97,17 +97,24 @@ export default {
   },
   methods: {
     getDataList() {
-      services
-        .getZoneByViewId(this.viewId, {
-          zonetype: "forward"
-        })
-        .then(res => {
-          this.dsliteList = res.data.data;
-          this.links = res.data.links;
-        })
-        .catch(err => {
-          this.$Message.error(err.message);
-        });
+      this.$getData().then(({ data, links }) => {
+        console.log(data, links)
+        this.dsliteList = data;
+        this.links = links;
+      }).catch(err => {
+        this.$Message.error(err.message);
+      });
+      // services
+      //   .getZoneByViewId(this.viewId, {
+      //     zonetype: "forward"
+      //   })
+      //   .then(res => {
+      //     this.dsliteList = res.data.data;
+      //     this.links = res.data.links;
+      //   })
+      //   .catch(err => {
+      //     this.$Message.error(err.message);
+      //   });
     },
     handleOpenCreate() {
       this.visible = true;
