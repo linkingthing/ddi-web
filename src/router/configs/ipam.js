@@ -61,6 +61,14 @@ export default {
         from: "ipam-address-manage",
         title: ":subnet"
       }
+    },
+    {
+      name: 'device-scan',
+      path: '/address/ipam/routers',
+      component: () => import(/* webpackChuckName: "device-scan" */ "@/views/ipam-manage/device-scan"),
+      meta: {
+        title: "设备探测"
+      }
     }
   ]
 }
