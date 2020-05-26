@@ -6,7 +6,7 @@ export const columns = scope => [
   },
   {
     title: "前缀",
-    key: "network",
+    key: "ipnet",
     align: "center"
   },
   {

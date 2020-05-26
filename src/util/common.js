@@ -18,6 +18,11 @@ export const domainReg = /^(?=^.{1,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z
 
 export const macReg = /^((([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2})|(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}))$/;
 
+/**
+ * 移动电话正则
+ */
+export const mobilePhoneReg = /^(\+86)?1[1-9]{1}[0-9]{9}$/g;
+
 export const urlValidate = {
   pattern: urlReg,
   message: "请正确输入url"

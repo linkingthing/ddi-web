@@ -53,13 +53,21 @@ export default {
       }
     },
     {
-      name: 'ipam-net-manage',
+      name: 'ipam-network-interface',
       path: '/address/ipam/scannedsubnets/:scannedsubnetsId/networkinterfaces',
-      component: () => import(/* webpackChuckName: "ipam-net-manage" */ "@/views/ipam-manage/net-manage"),
+      component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
       meta: {
         notInMenu: true,
         from: "ipam-address-manage",
         title: ":subnet"
+      }
+    },
+    {
+      name: 'ip-assets-manage',
+      path: '/address/ipam/assets',
+      component: () => import(/* webpackChuckName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
+      meta: {
+        title: "资产管理"
       }
     },
     {
