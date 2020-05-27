@@ -4,7 +4,7 @@
 
     <no-data-list
       v-if="!tableData.length"
-      @add="handleAdd" 
+      @add="handleCreate" 
       top="212" 
     />
 
