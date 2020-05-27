@@ -60,11 +60,13 @@ export default {
 
   mounted() {    
     this.handleQuery();
-
-    const { ip } = this.$router.query;
+    const { ip } = this.$route.query;
 
     this.currentData = { ip };
-    this.showEdit = true;
+
+    if (ip) {
+      this.showEdit = true;
+    }
   },
 
   methods: {

@@ -36,6 +36,8 @@ Vue.component("common-tab", CommonTab);
 import CommonForm from "@/components/CommonForm";
 Vue.component("common-form", CommonForm);
 
+import NoDataList from "@/components/NoDataList";
+Vue.component("no-data-list", NoDataList);
 
 import mixin from "./../mixin";
 Vue.mixin(mixin);

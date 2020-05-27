@@ -2,7 +2,14 @@
   <div class="plan-list">   
     <IviewLoading v-if="loading" />
 
+    <no-data-list
+      v-if="!tableData.length"
+      @add="handleAdd"
+      top="212" 
+    />
+
     <TablePagination 
+      v-else
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"

@@ -252,7 +252,7 @@ export default {
       this.canPlanLength = this.maskLen - this.mask;
       
       // 可规划地址的起始长度
-      this.prefixPos = this.canPlanLength + 1;
+      this.prefixPos = this.mask;
 
       let count = -1;
 
@@ -325,6 +325,7 @@ export default {
       this.segmentWidths.splice(idx, 1);
 
       this.formatSegmentNameAndColor();
+      this.calcRestLen();
     },
 
     getData() {

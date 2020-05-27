@@ -14,7 +14,7 @@
         @click="handlePrevStep"
       >
         <img :src="backImg" class="back-img">
-        上一页
+        上一步
       </Button>
     </div>
     
@@ -253,6 +253,8 @@ export default {
         this.layoutId = id;
         this.segmentWidths = segmentWidths;
         this.layoutName = name;
+
+        this.$emit("saved");
       } 
       // eslint-disable-next-line no-empty
       catch (error) {
@@ -299,7 +301,9 @@ export default {
      */
     async handleSave() {
       try {
-        await this.handleSecondConfirm();
+        await this.saveSegments();
+
+        this.$emit("saved");
 
         this.handleCancel();
       } 
@@ -312,6 +316,8 @@ export default {
      */
     handleComplete() {
       this.dialogVisible = false;
+
+      this.$emit("saved");
     },
     
     /**

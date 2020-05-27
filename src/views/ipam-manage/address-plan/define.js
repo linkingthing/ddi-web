@@ -25,7 +25,7 @@ export const columns = scope => [
   },
   {
     title: "备注",
-    key: "remark",
+    key: "description",
     align: "center"
   },
   {

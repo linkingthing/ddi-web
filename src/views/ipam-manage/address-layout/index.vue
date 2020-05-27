@@ -2,7 +2,14 @@
   <div class="layout-list">   
     <IviewLoading v-if="loading" />
 
+    <no-data-list
+      v-if="!tableData.length"
+      @add="handleCreate" 
+      top="212" 
+    />
+
     <TablePagination 
+      v-else
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"
@@ -30,7 +37,7 @@
       :visible.sync="showCreate"
       :prefix="prefix"
       :mask-len="maskLen"
-      @completed="handleConfirmed"
+      @saved="handleConfirmed"
     />
 
     <Edit 
@@ -39,7 +46,7 @@
       :layout-id.sync="layoutId"
       :prefix="prefix"
       :mask-len="maskLen"
-      @confirmed="handleConfirmed"
+      @saved="handleConfirmed"
     />
   </div>
 </template>

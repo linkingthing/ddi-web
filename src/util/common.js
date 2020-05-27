@@ -130,8 +130,9 @@ export const getAddressType = val => {
  * 掩码是否合法
  * @param {String, Number} address IP地址或者掩码
  * @param {String, Number} ipType IP地址的类型  ipv4|ipv6
+ * @param {Array} range 掩码的范围，可不传
  */
-export const maskIsValid = (address, ipType) => {
+export const maskIsValid = (address, ipType, range) => {
   if (!address) return false;
 
   let val = address.toString();
@@ -158,12 +159,11 @@ export const maskIsValid = (address, ipType) => {
 
   if (!isPosNumber(val)) return false;
 
-  if (ipType === "ipv6") {
-    return val > 1 && val <= 64;
+  if (!range) {
+    range = ipType === "ipv6" ? [2, 64] : [2, 24];
   }
-  else {
-    return val > 1 && val <= 24;
-  }
+
+  return val >= range[0] && val <= range[1];
 };
 
 // 是否是数字
