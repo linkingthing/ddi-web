@@ -65,14 +65,6 @@
             @on-enter="handleQuery" />
         </div>
         <div class="condition-item">
-          <label class="condition-item-label">主机名：</label>
-          <Input
-            v-model="condition.hostName"
-            placeholder="请输入主机名"
-            class="top-input"
-            @on-enter="handleQuery" />
-        </div>
-        <div class="condition-item">
           <label class="condition-item-label">MAC：</label>
           <Input
             v-model="condition.mac"

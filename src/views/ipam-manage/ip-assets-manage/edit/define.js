@@ -26,7 +26,7 @@ export const formItemList = [
   },
   {
     label: "业务名称",
-    model: "deployedservice",
+    model: "deployedService",
     type: "input",
     placeholder: "请输入业务名称"
   },

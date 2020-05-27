@@ -21,7 +21,7 @@ export const columns = scope => [
   },
   {
     title: "业务名称",
-    key: "deployedservice",
+    key: "deployedService",
     align: "center"
   },
   {

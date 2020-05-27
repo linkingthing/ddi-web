@@ -2,7 +2,7 @@
   <common-modal  
     :visible.sync="dialogVisible"
     :width="415"
-    title="新建"
+    :title="getTitle"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
@@ -52,7 +52,7 @@ export default {
         ip: "",
         name: "",
         type: "",
-        deployedservice: "",
+        deployedService: "",
         department: "",
         responsiblePerson: "",
         location: "",
@@ -62,6 +62,12 @@ export default {
       formItemList,
       rules
     };
+  },
+
+  computed: {
+    getTitle() {
+      return this.data && this.data.id ? "编辑" : "新建";
+    }
   },
 
   watch: {
@@ -98,9 +104,15 @@ export default {
 
         this.loading = true;
 
-        const action = this.data && this.data.id ? "$put" : "$post";
+        let url = this.url;
+        let action = "$post";
 
-        await this[action]({ url: this.url, params: this.formModel });
+        if (this.data && this.data.id) {
+          url += "/" + this.data.id;
+          action = "$put";
+        }
+
+        await this[action]({ url, params: this.formModel });
         
         this.$$success("保存成功！");
 
