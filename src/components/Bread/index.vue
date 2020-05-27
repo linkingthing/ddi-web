@@ -1,15 +1,22 @@
 <template>
-  <div class="bread-wrapper" v-show="showBread">
-    <Breadcrumb separator=">">
-      <BreadcrumbItem
+  <div class="bread-wrapper" v-show="show">
+    <div class="bread-list">
+      <div
+        class="bread-item" 
         v-for="(item, index) in breadcrumbList"
         :key="index"
-        :to="item.path"
       >
-        {{item.title}}
-        <!-- <template v-if="item.name">({{item.name}})</template> -->
-      </BreadcrumbItem>
-    </Breadcrumb>
+        <div
+          class="bread-item-link"
+          :class="{'is-current': item.name === currentName}"
+          @click="handleClickRoute(item)"
+        >
+          {{item.title}}
+        </div>
+
+        <div class="bread-arrow" v-if="index < breadcrumbList.length - 1"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -19,10 +26,18 @@ import configs from "@/router/configs";
 export default {
   name: "Bread",
 
+  props: {
+    show: {
+      type: Boolean,
+      default: true
+    }
+  },
+
   data() {
     return {
       showBread: true,
       breadcrumbList: [],
+      currentName: "",
       configs: [...configs]
     };
   },
@@ -38,7 +53,13 @@ export default {
   },
 
   methods: {
+    handleClickRoute(item) {
+      this.$router.push(item.path);
+    },
+
     async getBreadcrumbList(route) {
+      this.currentName = route.name;
+
       let routes = this.getChildren(this.configs, [])
         .flat(Infinity)
         .reduce((prev, next) => {
@@ -131,15 +152,5 @@ export default {
 </script>
 
 <style lang="less">
-.bread-wrapper {
-  position: absolute;
-  z-index: 1;
-  height: 60px;
-  line-height: 60px;
-  padding: 0 26px;
-
-  .ivu-breadcrumb-item-link{
-    font-size: 18px;
-  }
-}
+@import "./index.less";
 </style>
