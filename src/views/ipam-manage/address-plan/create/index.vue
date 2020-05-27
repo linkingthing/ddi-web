@@ -128,7 +128,7 @@ export default {
       let addrArr = prefix.split("/");
 
       if (ipType === "IPv4") {
-        if (!ipv4IsValid(addrArr[0]) || !maskIsValid(addrArr[1], "ipv4")) {
+        if (!ipv4IsValid(addrArr[0]) || !maskIsValid(addrArr[1], "ipv4", [1, 23])) {
           return Promise.reject({ message: "请输入正确的IP地址！" });
         }
 
