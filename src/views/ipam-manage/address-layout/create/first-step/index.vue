@@ -325,6 +325,7 @@ export default {
       this.segmentWidths.splice(idx, 1);
 
       this.formatSegmentNameAndColor();
+      this.calcRestLen();
     },
 
     getData() {
