@@ -2,7 +2,7 @@
   <common-modal  
     :visible.sync="dialogVisible"
     :width="415"
-    title="新建"
+    :title="getTitle"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
@@ -49,10 +49,17 @@ export default {
     return {
       loading: false,
       dialogVisible: false,
+      isEdit: false,
       url: this.$getApiByRoute().url,
       address: "",
       community: "public"
     };
+  },
+
+  computed: {
+    getTitle() {
+      return this.isEdit ? "编辑" : "新建";
+    }
   },
 
   watch: {
@@ -71,6 +78,8 @@ export default {
     data: {
       immediate: true,
       handler(val) {
+        this.isEdit = val && Object.keys(val).length;
+
         this.setValue(val);
       }
     }
@@ -90,7 +99,15 @@ export default {
 
         this.loading = true;
 
-        await this.$post({ url: this.url, params: this.getParams() });
+        let url = this.url;
+        let action = "$post";
+
+        if (this.isEdit) {
+          url += "/" + this.data.id;
+          action = "$put";
+        }
+
+        await this[action]({ url, params: this.getParams() });
         
         this.$$success("保存成功！");
 
