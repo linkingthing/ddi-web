@@ -1,6 +1,6 @@
 <template>
   <div class="bread-wrapper" v-show="showBread">
-    <Breadcrumb>
+    <Breadcrumb separator=">">
       <BreadcrumbItem
         v-for="(item, index) in breadcrumbList"
         :key="index"

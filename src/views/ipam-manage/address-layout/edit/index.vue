@@ -118,7 +118,7 @@ export default {
           await this.saveSegmentItem(params[i]);
         }
 
-        this.$emit("confirmed");
+        this.$emit("saved");
 
         this.dialogVisible = false;
       } 
