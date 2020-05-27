@@ -65,7 +65,7 @@ export default {
       {
         label: "TTL",
         model: "ttl",
-        type: "input",
+        type: "number",
         placeholder: "请填写TTL"
       },
       {

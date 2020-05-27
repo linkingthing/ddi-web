@@ -48,9 +48,12 @@ export default {
       tableData: [],
       columns: [
         {
-          title: "前缀",
+          title: "网络前缀",
           key: "prefix",
-          align: "left"
+          align: "left",
+          render: (h, { row }) => {
+            return h("div", `${row.prefix}/${row.prefixLen}`);
+          }
         },
         {
           title: "委派长度",

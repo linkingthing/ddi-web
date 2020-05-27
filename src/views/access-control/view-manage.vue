@@ -7,7 +7,7 @@
     >
       <template slot="top-right">
         <i-button
-          type="success"
+          type="primary"
           size="large"
           @click="handleOpenCreate"
         >新建</i-button>
@@ -74,7 +74,7 @@ export default {
           title: "操作",
           key: "action",
           align: "right",
-          width: 160,
+          width: 220,
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {
@@ -86,6 +86,24 @@ export default {
               h("btn-del", {
                 on: {
                   click: () => this.delect(row.id)
+                }
+              }),
+              h("btn-move", {
+                props: {
+                  type: "up",
+                  disabled: row.name === "default"
+                },
+                on: {
+                  click: () => this.handleMove(row, "up")
+                }
+              }),
+              h("btn-move", {
+                props: {
+                  type: "down",
+                  disabled: row.name === "default"
+                },
+                on: {
+                  click: () => this.handleMove(row, "down")
                 }
               })
             ]);
@@ -138,6 +156,23 @@ export default {
               this.$Message.success(err.message);
             });
         }
+      });
+    },
+    handleMove({ priority, links, ...rest }, type) {
+      let count = priority;
+      if (type === "up") {
+        count += 1;
+      } else {
+        count -= 1;
+      }
+      this.$put({
+        url: links.update,
+        params: { priority: count, ...rest }
+      }).then(() => {
+        this.$Message.success("更新成功");
+        this.getView();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
     }
   }

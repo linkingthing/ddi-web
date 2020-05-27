@@ -45,14 +45,14 @@ export default {
         label: "名称",
         model: "name",
         type: "input",
-        placeholder: "请填写名称",
+        placeholder: "请填写名称"
       },
       {
-        label: "配置条件",
+        label: "匹配条件",
         model: "regexp",
         type: "input",
-        placeholder: "请填写配置条件",
-      },
+        placeholder: "请填写匹配条件"
+      }
     ];
 
     this.rules = {};
