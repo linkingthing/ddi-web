@@ -1,8 +1,11 @@
 <template>
-  <div class="bread-wrapper" v-show="show">
+  <div
+    class="bread-wrapper"
+    v-show="show"
+  >
     <div class="bread-list">
       <div
-        class="bread-item" 
+        class="bread-item"
         v-for="(item, index) in breadcrumbList"
         :key="index"
       >
@@ -14,7 +17,10 @@
           {{item.title}}
         </div>
 
-        <div class="bread-arrow" v-if="index < breadcrumbList.length - 1"/>
+        <div
+          class="bread-arrow"
+          v-if="index < breadcrumbList.length - 1"
+        />
       </div>
     </div>
   </div>
@@ -67,10 +73,10 @@ export default {
 
           return prev;
         }, {});
-      
+
       let list = this.getListByName(routes, route.name, []);
-      
-      this.breadcrumbList = await this.formatList(list);      
+
+      this.breadcrumbList = await this.formatList(list);
     },
 
     getChildren(res, result) {
@@ -90,7 +96,7 @@ export default {
 
     getListByName(routes, name, result) {
       let ret = routes[name];
-      
+
       result.unshift(ret);
 
       let from = ret.meta ? ret.meta.from : "";
@@ -113,7 +119,7 @@ export default {
         if (item.title.indexOf(":") === 0) {
           let temp = item.path.split("/");
           let len = temp.length - 1;
-          
+
           // 由于前两级是块名称与节点名称，加上前面的空字符串，所以若路径的长度小于4，则不请求数据
           if (len < 4) return;
 
@@ -144,7 +150,7 @@ export default {
 
     getPath(path) {
       let params = this.$route.params;
-      
+
       return path.replace(/:\w+/g, word => params[word.slice(1)]);
     }
   }

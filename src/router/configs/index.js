@@ -3,7 +3,6 @@ import dhcp from "./dhcp";
 import dns from "./dns";
 import ipam from "./ipam";
 import node from "./node";
-import systemSafe from "./system-safe";
 import forword from "./forward";
 
 let res = [
@@ -13,7 +12,6 @@ let res = [
   forword,
   accessControl,
   dhcp,
-  systemSafe
 ];
 
 res.forEach(item => {

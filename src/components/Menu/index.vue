@@ -105,7 +105,7 @@ export default {
         }
       },
       routes: [],
-      tab: route.meta.active || route.params.tab || route.name // 路由tab
+      tab: route.meta && route.meta.active || route.params.tab || route.name // 路由tab
     };
   },
 
@@ -117,7 +117,7 @@ export default {
       } else {
         this.tab = this.$route.name;
       }
-      if (this.$route.meta.active) {
+      if (this.$route.meta && this.$route.meta.active) {
         this.tab = this.$route.meta.active;
       }
     }

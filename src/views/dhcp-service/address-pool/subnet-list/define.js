@@ -19,7 +19,10 @@ export const columns = scope => [
   {
     title: "地址总量",
     key: "capacity",
-    align: "center"
+    align: "center",
+    render: (h, {row}) => {
+      return row.version === 4 && h("div", row.capacity);
+    }
   },
   {
     title: "DHCP使用率",
@@ -27,7 +30,7 @@ export const columns = scope => [
     align: "center",
     width: "180",
     render: (h, { row }) => {
-      return h("common-process",{
+      return row.version === 4 && h("common-process",{
         props: {
           percent: +row.usedRatio 
         }

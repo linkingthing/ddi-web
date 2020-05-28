@@ -8,6 +8,7 @@
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
+        <i-option value="HINFO">HINFO</i-option>
         <i-option value="MX">MX</i-option>
         <i-option value="NS">NS</i-option>
         <i-option value="NAPTR">NAPTR</i-option>

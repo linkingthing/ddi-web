@@ -95,7 +95,7 @@ export default {
   },
   computed: {},
   created() {
-    this.$getData().then(([formModel]) => {
+    this.$getData().then(({ data: [formModel] }) => {
       this.formModel = formModel;
     });
   },
