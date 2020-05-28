@@ -56,6 +56,7 @@ export default {
       ]
 
     };
+
     return {
       formModel: {
         status: "allow"
@@ -99,7 +100,22 @@ export default {
       return (this.isEdit ? "编辑" : "新建") + "视图";
     },
     isEdit() {
-      return !!this.links.update;
+      const isEdit = !!this.links.update;
+
+      this.formItemList.some(item => {
+        if (item.model === "name") {
+          if (isEdit) {
+            item.type = "text";
+          } else {
+            item.type = "input";
+          }
+          return true;
+        }
+        return false;
+      });
+      // 目前是采用调节判断，修改formitemlist来处理
+      // 第二种思路；将edit field作为参数传入commonform 中处理这个问题？
+      return isEdit;
     }
 
   },

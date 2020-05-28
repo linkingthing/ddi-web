@@ -102,7 +102,7 @@
         v-if="item.type === 'text'"
         :size="item.size"
       >
-        {{ item.text }}
+        {{ formModel[item.model ]}}
         <slot
           v-if="item.slot"
           :name="item.slot"
