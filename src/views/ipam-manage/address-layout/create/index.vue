@@ -230,8 +230,9 @@ export default {
       
         this.segmentWidths = segmentWidths;
       } 
-      // eslint-disable-next-line no-empty
-      catch (error) {}
+      catch (err) {
+        this.$handleError(err);
+      }
       finally {
         this.loading = false;
       }
@@ -256,8 +257,9 @@ export default {
 
         this.$emit("saved");
       } 
-      // eslint-disable-next-line no-empty
-      catch (error) {
+      catch (err) {
+        this.$handleError(err);
+
         return Promise.reject();
       }
       finally {
@@ -280,8 +282,9 @@ export default {
           await this.saveSegmentItem(params[i]);
         }
       } 
-      // eslint-disable-next-line no-empty
-      catch (error) {
+      catch (err) {
+        this.$handleError(err);
+
         return Promise.reject();
       }
       finally {
