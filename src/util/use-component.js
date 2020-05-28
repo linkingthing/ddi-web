@@ -15,6 +15,9 @@ Vue.component("btn-edit", BaseBtnEdit);
 import BaseBtnDel from "@/components/BaseBtnDel";
 Vue.component("btn-del", BaseBtnDel);
 
+import BaseBtnMove from "@/components/BaseBtnMove";
+Vue.component("btn-move", BaseBtnMove);
+
 import TablePagination from "@/components/TablePagination";
 Vue.component("table-page", TablePagination);
 
