@@ -82,9 +82,7 @@ export default {
         
         this.tableData = res.data;
       } catch (err) {
-        console.error(err);
-          
-        this.$$error(err.message);
+        this.$handleError(err);
       }
       finally {        
         this.loading = false;
@@ -134,11 +132,7 @@ export default {
         this.handleQuery();
       }
       catch (err) {
-        console.error(err);
-
-        if (err.message) {
-          this.$$error(err.message);
-        }
+        this.$handleError(err);
       }
       finally {
         this.loading = false;

@@ -138,24 +138,29 @@ export default {
           this.options.push("all");
         });   
       } 
-      // eslint-disable-next-line no-empty
-      catch (error) {}
+      catch (err) {
+        this.$handleError(err);
+      }
     },
 
     async getData() {
-      let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/plannedsubnets` });
+      try {
+        let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/plannedsubnets` });
 
-      data.map(item => {
-        let tagArr = item.tags.split(",");
+        data.map(item => {
+          let tagArr = item.tags.split(",");
 
-        item.tags = tagArr.join("-");
-        item.tagArr = tagArr;
+          item.tags = tagArr.join("-");
+          item.tagArr = tagArr;
 
-        return item;
-      });
+          return item;
+        });
       
-      this.source = [...data];
-      this.tableData = data;
+        this.source = [...data];
+        this.tableData = data;
+      } catch (err) {
+        this.$handleError(err);
+      }
     },
 
     handleJumpToPool() {

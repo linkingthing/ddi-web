@@ -119,23 +119,27 @@ export default {
     async init() {
       if (!this.layoutId) return;
       
-      let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
+      try {
+        let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
 
-      this.list = data.sort((a,b) => a.index - b.index).map((item, i) => {
-        const max = this.segments[i];
+        this.list = data.sort((a,b) => a.index - b.index).map((item, i) => {
+          const max = this.segments[i];
 
-        return {
-          id: item.id,
-          name: item.name || `标识${i + 1}`,
-          tags: item.tags ? item.tags.map((tag, idx) => ({ 
-            name: tag, 
-            value: item.values[idx].toString(2),
-            maxlength: Math.pow(2, max) - 1 
-          })) : [],
-          value: max,
-          edit: false
-        };
-      });      
+          return {
+            id: item.id,
+            name: item.name || `标识${i + 1}`,
+            tags: item.tags ? item.tags.map((tag, idx) => ({ 
+              name: tag, 
+              value: item.values[idx].toString(2),
+              maxlength: Math.pow(2, max) - 1 
+            })) : [],
+            value: max,
+            edit: false
+          };
+        }); 
+      } catch (err) {
+        this.$handleError(err);
+      }     
     },
 
     doReset() {
@@ -168,8 +172,8 @@ export default {
         await this.validate();
 
         return this.getResults();
-      } catch (error) {
-        this.$$error(error.message);
+      } catch (err) {
+        this.$handleError(err);
 
         return Promise.reject();
       }

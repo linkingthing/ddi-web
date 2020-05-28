@@ -53,9 +53,7 @@ export default {
         });
         
       } catch (err) {
-        console.error(err);
-          
-        this.$$error(err.message || "数据请求错误！");
+        this.$handleError(err);
       }
       finally {        
         this.loading = false;

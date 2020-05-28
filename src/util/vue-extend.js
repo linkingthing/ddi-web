@@ -68,6 +68,23 @@ Vue.prototype.$$confirm = function ({ title = "消息", content, onOk, onCancel 
     });
   });
 };  
+
+/**
+ * 处理请求错误
+ */
+Vue.prototype.$handleError = function (err, callback) {
+  if (err.response) {
+    showMessage("error", err.response.data.message, this);
+  }
+  else if (err.message) {
+    showMessage("error", err.message, this);
+  }
+  else {
+    console.error(err);
+  }
+
+  return callback && callback();
+};
   
 const getStateByKey = async function (name, params = {}) {
   try {   

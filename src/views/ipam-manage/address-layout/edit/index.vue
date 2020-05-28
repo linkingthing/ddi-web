@@ -122,8 +122,9 @@ export default {
 
         this.dialogVisible = false;
       } 
-      // eslint-disable-next-line no-empty
-      catch (error) {}
+      catch (err) {
+        this.$handleError(err);
+      }
       finally {
         this.loading = false;
       }

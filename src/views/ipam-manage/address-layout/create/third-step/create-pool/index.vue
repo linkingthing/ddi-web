@@ -129,7 +129,7 @@ export default {
 
         this.dialogVisible = false;
       }).catch(err => {
-        this.$$error(err.response.data.message);
+        this.$handleError(err);
       }).finally(() => {
         this.loading = false;
       });

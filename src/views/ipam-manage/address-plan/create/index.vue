@@ -112,7 +112,7 @@ export default {
         this.dialogVisible = false;
       } 
       catch (err) {
-        this.$$error(err.message);
+        this.$handleError(err);
       }
       finally {
         this.loading = false;
