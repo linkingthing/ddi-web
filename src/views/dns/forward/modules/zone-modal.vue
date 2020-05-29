@@ -19,6 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
+        :show-fields="isEdit ? ['name'] : []"
       />
 
     </Form>
@@ -104,12 +105,12 @@ export default {
 
     visible(val) {
       if (!val) {
-       
+
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, comment,forwardtype,forwards }) => {
+        this.$get({ url: this.links.self }).then(({ name, comment, forwardtype, forwards }) => {
           this.formModel = {
             name,
             comment,
@@ -118,7 +119,7 @@ export default {
             forwardids: forwards.map(item => item.id)
           };
 
-          
+
         }).catch();
       }
       this.dialogVisible = val;

@@ -2,7 +2,7 @@
   <div class="common-form">
     <FormItem
       :label="item.label"
-      v-for="(item) in formItemList"
+      v-for="(item) in formItemListParser"
       :key="item.name"
       :prop="item.model"
     >
@@ -163,18 +163,32 @@ export default {
     formItemList: {
       type: Array,
       default: () => ([])
+    },
+    showFields: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
     };
   },
-  computed: {},
+  computed: {
+    formItemListParser() {
+      const formItemList = [];
+      this.formItemList.forEach(({ ...item }) => {
+        if (this.showFields.includes(item.model)) {
+          item.type = "text";
+        }
+        formItemList.push(item);
+      });
+      return formItemList;
+    }
+  },
   created() {
   },
   mounted() { },
   methods: {},
-  watch: {},
 };
 </script>
 

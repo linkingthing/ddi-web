@@ -22,10 +22,7 @@
               label="域名"
               prop="name"
             >
-              <i-input
-                v-model="params.name"
-                placeholder="请填写正确域名"
-              />
+              <span>{{params.name}}</span>
             </form-item>
             <TypeValue :params="params" />
             <form-item
