@@ -72,7 +72,7 @@ Vue.prototype.$$confirm = function ({ title = "消息", content, onOk, onCancel 
 /**
  * 处理请求错误
  */
-Vue.prototype.$handleError = function (err, callback) {
+Vue.prototype.$handleError = function (err = {}, callback) {
   if (err.response) {
     showMessage("error", err.response.data.message, this);
   }

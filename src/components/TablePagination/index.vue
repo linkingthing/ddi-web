@@ -30,7 +30,7 @@
       class="table-pagination-footer"
     >
       <Page
-        :current="current"
+        :current="innerCurrent"
         :total="total"
         :page-size="size"
         prev-text="上一页"
@@ -127,6 +127,7 @@ export default {
         return this.data;
       }
     },
+    
     showPage() {
       return this.paginationEnable && this.data.length > this.size;
     }
@@ -136,6 +137,7 @@ export default {
     current(val) {
       this.innerCurrent = val;
     },
+
     calcHeight(val) {
       if (!val) return;
 
