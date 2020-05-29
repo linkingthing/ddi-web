@@ -6,8 +6,35 @@
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"
+      :is-padding-top="true"
       @on-selection-change="handleSelecChange"
     > 
+      <template slot="top-left">
+        <div class="condition-item">
+          <label class="condition-item-label">IP地址：</label>
+          <Input
+            v-model="condition.ipAddress"
+            placeholder="请输入IP地址"
+            class="top-input"
+            @on-enter="handleFilter" />
+        </div>
+        <div class="condition-item">
+          <label class="condition-item-label">主机名：</label>
+          <Input
+            v-model="condition.hostName"
+            placeholder="请输入IP地址"
+            class="top-input"
+            @on-enter="handleFilter" />
+        </div>
+
+        <Button 
+          type="primary" 
+          @click="handleFilter" 
+        >
+          搜索
+        </Button>
+      </template>
+
       <template slot="top-right">
         <Button 
           type="primary" 
@@ -34,6 +61,10 @@
   </div>
 </template>
 
+<style lang="less">
+@import "index.less";
+</style>
+
 <script>
 import Edit from "./edit";
 
@@ -50,6 +81,11 @@ export default {
       loading: true,
       ip: "",
       name: "",
+      condition: {
+        ipAddress: "",
+        hostName: ""
+      },
+      sourceData: [],
       tableData: [],
       columns: columns(this),
       selectedData: [],
@@ -78,15 +114,25 @@ export default {
       try {
         const { url, ip, name } = this;
 
-        let res = await this.$get({ url: `${url}?ip=${ip}&name=${name}` });
+        let { data } = await this.$get({ url: `${url}?ip=${ip}&name=${name}` });
         
-        this.tableData = res.data;
+        this.sourceData = [...data];
+        this.tableData = data;
       } catch (err) {
         this.$handleError(err);
       }
       finally {        
         this.loading = false;
       }
+    },
+
+    handleFilter() {
+      let { ipAddress, hostName } = this.condition;
+
+      ipAddress = ipAddress.trim();
+      hostName = hostName.trim();
+
+      this.tableData = this.sourceData.filter(item => item.name.indexOf(hostName) >= 0 && item.ip.indexOf(ipAddress) >= 0);
     },
 
     handleSelecChange(res) {
