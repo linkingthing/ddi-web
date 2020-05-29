@@ -120,11 +120,18 @@ export default {
 
   computed: {
     dataFilter() {
-      if (this.data.length > this.size) {
-        const start = (this.innerCurrent - 1) * this.size;
-        return this.data.slice(start, start + this.size);
+      const { data, size, innerCurrent } = this;
+
+      if (data.length > size) {
+        let start = (innerCurrent - 1) * size;
+
+        if (start >= data.length && data.length > size) {
+          start -= size;
+        }
+
+        return data.slice(start, start + size);
       } else {
-        return this.data;
+        return data;
       }
     },
     
@@ -198,6 +205,7 @@ export default {
 
     handlePageChange(val) {
       this.innerCurrent = val;
+
       this.$emit("page-change", {
         current: val,
         size: this.size
