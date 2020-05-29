@@ -160,7 +160,7 @@ export default {
         typeLegends[0].percent = +assignedRatio * 100;
         typeLegends[1].percent = +unassignedRatio * 100;
         typeLegends[2].percent = +reservationRatio * 100;
-        typeLegends[3].percent = +unmanagedRatio * 100;
+        // typeLegends[3].percent = +unmanagedRatio * 100;
         
         statusLegends[0].percent = +activeRatio * 100;
         statusLegends[1].percent = +inactiveRatio * 100;
@@ -215,8 +215,8 @@ export default {
       const [
         { percent: percent1 },
         { percent: percent2 },
-        { percent: percent3 },
-        { percent: percent4 }
+        { percent: percent3 }
+        // { percent: percent4 }
       ] = this.typeLegends;
 
       this.typeChart.setOption(generatePieOption({ 
@@ -234,11 +234,11 @@ export default {
           {
             name: "固定地址",
             value: percent3
-          },
-          {
-            name: "未管理地址",
-            value: percent4
           }
+          // {
+          //   name: "未管理地址",
+          //   value: percent4
+          // }
         ]
       }));
     },

@@ -52,8 +52,8 @@ export const columns = scope => [
   }
 ];
 
-export const typeColors = ["#4586FE", "#F2A16B", "#63D58B", "#76DCEB"];
-export const statusColors = ["#4586FE","", "#F2A16B", "#CBCBCB"];
+export const typeColors = ["#4586FE", "#f9904a", "#63D58B", "#76DCEB"];
+export const statusColors = ["#4586FE", "#f9904a", "#e84141", "#CBCBCB"];
 
 export const typeLegends = [
   {
@@ -73,13 +73,13 @@ export const typeLegends = [
     label: "固定地址",
     color: typeColors[2],
     type: "unmanagered"
-  },
-  {
-    percent: 0,
-    label: "未管理地址",
-    color: typeColors[3],
-    type: "reservation"
   }
+  // {
+  //   percent: 0,
+  //   label: "未管理地址",
+  //   color: typeColors[3],
+  //   type: "reservation"
+  // }
 ];
 
 export const statusLegends = [
@@ -113,7 +113,7 @@ export const generatePieOption = ({ data, title, color }) => {
   return {
     tooltip: {
       trigger: "item",
-      formatter: "{a} <br/>{b}: {c} | {d}%"
+      formatter: "{a} <br/>{b}: {c}%"
     },
     legend: {
       show: false
