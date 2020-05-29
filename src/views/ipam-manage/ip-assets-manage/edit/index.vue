@@ -80,6 +80,10 @@ export default {
     dialogVisible(val) {
       this.setValue();
 
+      if (!val) {
+        this.$refs.form.resetFields();
+      }
+
       this.$emit("update:visible", val);
     },
 

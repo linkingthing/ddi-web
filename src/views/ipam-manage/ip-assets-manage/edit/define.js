@@ -84,6 +84,6 @@ export const rules = {
   }],
   telephone: [{
     pattern: mobilePhoneReg,
-    message: "请输入设备类型"
+    message: "请输入正确的联系电话"
   }]
 };
