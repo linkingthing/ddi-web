@@ -69,6 +69,9 @@ export default {
         name: "ipam-network-interface",
         params: {
           scannedsubnetsId: data.id
+        },
+        query: {
+          subnet: data.ipnet
         }
       });
     }
