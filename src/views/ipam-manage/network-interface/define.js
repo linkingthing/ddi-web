@@ -24,7 +24,7 @@ export const columns = scope => [
     align: "center"
   },
   {
-    title: "租赁时间",
+    title: "租赁时间(s)",
     key: "validLifetime",
     minWidth: 120,
     align: "center"
