@@ -65,9 +65,8 @@ export const popPath = () => {
 */
 export const getParantData = () => {
   const [path] = popPath();
-  return axios.get(getApiByRoute(path).url).then(({ data }) => {
-    return data;
-  });
+  
+  return axios.get(getApiByRoute(path).url);
 };
 
 /**

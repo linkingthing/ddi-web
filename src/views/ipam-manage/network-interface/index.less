@@ -45,24 +45,48 @@
         font-size: 24px;
         font-weight: 600;
         margin-right: 35px;
+        margin-bottom: 11px;
     }
 
     &-item-info{
         display: flex;
         align-items: center;
+
+        &.is-clickable{
+          .chart-legend-item-color{
+            cursor: pointer;
+          }
+
+          .chart-legend-item-label{
+            cursor: pointer;
+
+            &:after{
+              position: absolute;
+              content: " ";
+              width: 0;
+              height: 0;
+              right: -20px;
+              top: 3px;
+              border-top: 4px solid transparent;
+              border-bottom: 4px solid transparent;
+              border-left: 8px solid #888;
+            }
+          }
+        }
     }
 
     &-item-color{
       width: 22px;
       height: 11px;
       margin-right: 11px;
-      cursor: pointer;
+      border-radius: 2px;
     }
 
     &-item-label{
         font-size: 14px;
         color: #666;
-        cursor: pointer;
+        line-height: 1;
+        position: relative;
     }
   }
 
