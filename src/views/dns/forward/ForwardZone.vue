@@ -8,7 +8,7 @@
     >
       <template slot="top-right">
         <i-button
-          type="success"
+          type="primary"
           size="large"
           @click="handleOpenCreate"
         >新建</i-button>
@@ -34,7 +34,10 @@ export default {
         {
           title: "域名",
           key: "name",
-          align: "left"
+          align: "left",
+          render: (h, { row }) => {
+            return h("div", row.name === "." ? "根区" : row.name)
+          }
         },
 
         {

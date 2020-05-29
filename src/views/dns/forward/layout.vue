@@ -50,6 +50,7 @@ export default {
   .tab-box {
     position: absolute;
     padding: 20px 26px;
+    z-index: 10;
   }
 }
 </style>
