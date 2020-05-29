@@ -96,6 +96,7 @@ export default {
 
   mounted() {    
     this.handleQuery();
+
     const { ip } = this.$route.query;
 
     this.currentData = { ip };
@@ -117,7 +118,8 @@ export default {
         let { data } = await this.$get({ url: `${url}?ip=${ip}&name=${name}` });
         
         this.sourceData = [...data];
-        this.tableData = data;
+
+        this.handleFilter();
       } catch (err) {
         this.$handleError(err);
       }

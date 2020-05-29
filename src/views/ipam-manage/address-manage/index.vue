@@ -65,7 +65,12 @@ export default {
     },
 
     handleViewNet(data) {
-      this.$router.push(`/address/ipam/subnets/${data.id}/nets`);
+      this.$router.push({
+        name: "ipam-network-interface",
+        params: {
+          scannedsubnetsId: data.id
+        }
+      });
     }
   }
 };
