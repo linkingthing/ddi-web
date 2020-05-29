@@ -47,38 +47,42 @@
       </div>
     </section>
     
-    <table-page
-      :columns="columns"
-      :data="tableData"
-      :total="tableData.length"
-    >
-      <template slot="top-left">
-        <div class="table-title">{{tableTitle}}</div>
+    <div>
+      <IviewLoading v-if="tableLoading" />
+    
+      <table-page
+        :columns="columns"
+        :data="tableData"
+        :total="tableData.length"
+      >
+        <template slot="top-left">
+          <div class="table-title">{{tableTitle}}</div>
 
-        <div class="condition-item">
-          <label class="condition-item-label">IP地址：</label>
-          <Input
-            v-model="condition.ipAddress"
-            placeholder="请输入IP地址"
-            class="top-input"
-            @on-enter="getList" />
-        </div>
-        <div class="condition-item">
-          <label class="condition-item-label">MAC：</label>
-          <Input
-            v-model="condition.mac"
-            placeholder="请输入MAC"
-            class="top-input"
-            @on-enter="getList" />
-        </div>
+          <div class="condition-item">
+            <label class="condition-item-label">IP地址：</label>
+            <Input
+              v-model="condition.ipAddress"
+              placeholder="请输入IP地址"
+              class="top-input"
+              @on-enter="getList" />
+          </div>
+          <div class="condition-item">
+            <label class="condition-item-label">MAC：</label>
+            <Input
+              v-model="condition.mac"
+              placeholder="请输入MAC"
+              class="top-input"
+              @on-enter="getList" />
+          </div>
 
-        <Button
-          type="primary"
-          icon="ios-search"
-          @click="getList"
-          class="top-button">查询</Button>
-      </template>
-    </table-page>
+          <Button
+            type="primary"
+            icon="ios-search"
+            @click="getList"
+            class="top-button">查询</Button>
+        </template>
+      </table-page>
+    </div>
   </div>
 </template>
 
@@ -101,6 +105,7 @@ export default {
   data() {
     return {
       loading: false,
+      tableLoading: false,
       typeLegends,
       statusLegends,
       typeChart: null,
@@ -128,6 +133,8 @@ export default {
 
     async getData() {
       try {
+        this.loading = true;
+
         await Promise.all([
           this.getPieData(),
           this.getList()
@@ -137,6 +144,9 @@ export default {
         this.renderStatusChart();
       } catch (err) {
         this.$handleError(err);
+      }
+      finally {
+        this.loading = false;
       }
     },
 
@@ -175,6 +185,8 @@ export default {
     },
 
     async getList(status) {
+      this.tableLoading = true;
+
       try {
         let url = this.$getApiByRoute().url;
 
@@ -187,6 +199,9 @@ export default {
         this.handleFilter(data);      
       } catch (err) {
         return Promise.reject(err);
+      }
+      finally {
+        this.tableLoading = false;
       }
     },
 
