@@ -215,6 +215,7 @@ export default {
         .map(item => {
           item.ipTypeText = this.getAttributeByArrayAndKeyValue({ array: this.typeLegends, key: "type", value: item.ipType, attr: "label" });
           item.ipStateText = this.getAttributeByArrayAndKeyValue({ array: this.statusLegends, key: "type", value: item.ipState, attr: "label" });
+          item.expire = this.$trimDate(item.expire);
 
           return item;
         });        

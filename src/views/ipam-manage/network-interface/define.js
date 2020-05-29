@@ -30,6 +30,12 @@ export const columns = scope => [
     align: "center"
   },
   {
+    title: "租赁过期时间",
+    key: "expire",
+    minWidth: 120,
+    align: "center"
+  },
+  {
     title: "操作",
     align: "center",  
     minWidth: 120,    
