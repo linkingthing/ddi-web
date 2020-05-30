@@ -2,8 +2,8 @@ import Layout from '@/views/layout';
 
 /**
  * meta.notInMenu：表示不在菜单中显示
- * meta.isRootMen：表示是根节点
- * meta.isSingle：表示这个菜单是单节点
+ * meta.isRootMen：表示是根节点（暂未使用）
+ * meta.hideTitle: 表示是否将标题在面包屑上展示
  */
 
 export default {

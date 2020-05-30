@@ -119,6 +119,34 @@ export default {
       }
     },
 
+    async handleDHCP(row) {
+      try {        
+        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?ipnet=${row.ipnet}`));
+
+        if (data.length) {
+          this.$router.push({
+            name: "address-pool-list",
+            params: {
+              id: row.id
+            },
+            query: {
+              ipnet: row.ipnet
+            }
+          });
+        }
+        else {
+          this.$router.push({
+            name: "subnet-pool-subnet",
+            query: {
+              ipnet: row.ipnet
+            }
+          });
+        }
+      } catch (err) {
+        this.$handleError(err);
+      }
+    },
+
     handleViewPool() {
       this.$router.push({
         name: "subnet-pool-subnet"

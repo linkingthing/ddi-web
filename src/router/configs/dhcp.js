@@ -2,7 +2,8 @@ import Layout from '@/views/layout';
 
 /**
  * meta.notInMenu：表示不在菜单中显示
- * meta.isRootMen：表示是根节点
+ * meta.isRootMen：表示是根节点（暂未使用）
+ * meta.hideTitle: 表示是否将标题在面包屑上展示
  */
 
 export default {
@@ -71,7 +72,8 @@ export default {
 			path: '/address/dhcp/config',
 			redirect: '/address/dhcp/dhcpconfigs',
 			meta: {
-				title: '基础配置'
+				title: '基础配置',
+				hideTitle: true
 			},
 			component: () => import('@/views/dhcp-service/option-config/layout'),
 			children: [
@@ -80,10 +82,10 @@ export default {
 					path: '/address/dhcp/dhcpconfigs',
 					component: () => import(/* webpackChuckName: "option-config" */ '@/views/dhcp-service/option-config/dhcp-configs'),
 					meta: {
-            notInMenu: true,
-            from: 'dhcp-config',
-            title: '基础配置',
-            active: 'dhcp-config',
+						notInMenu: true,
+						from: 'dhcp-config',
+						title: '基础配置',
+						active: 'dhcp-config',
 					}
 				},
 				{
@@ -91,8 +93,8 @@ export default {
 					path: '/address/dhcp/clientclasses',
 					component: () => import(/* webpackChuckName: "option-config" */ '@/views/dhcp-service/option-config/client-classes'),
 					meta: {
-            notInMenu: true,
-            from: 'dhcp-config',
+						notInMenu: true,
+						from: 'dhcp-config',
 						title: '基础配置'
 					}
 				}

@@ -81,13 +81,12 @@ export default {
 
     getChildren(res, result) {
       const len = res.length;
-
+      
       for (let i = 0; i < len; i++) {
+        result.push(res[i]);
+          
         if (res[i].children) {
           this.getChildren(res[i].children, result);
-        }
-        else {
-          result.push(res[i]);
         }
       }
 
@@ -109,11 +108,12 @@ export default {
     },
 
     async formatList(list) {
-      let ret = list.map(item => ({
-        name: item.name,
-        title: this.getTitle(item.meta ? item.meta.title : ""),
-        path: this.getPath(item.path)
-      }));
+      let ret = list.filter(item => item.meta && !item.meta.hideTitle)
+        .map(item => ({
+          name: item.name,
+          title: this.getTitle(item.meta.title),
+          path: this.getPath(item.path)
+        }));
 
       await ret.forEach(async item => {
         if (item.title.indexOf(":") === 0) {

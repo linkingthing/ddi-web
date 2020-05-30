@@ -19,7 +19,7 @@ export const columns = scope => [
         },
         on: {
           click: () => {
-            scope.handleCreatePool(row);
+            scope.handleDHCP(row);
           }
         }
       }, "DHCP");

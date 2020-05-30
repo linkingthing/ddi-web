@@ -15,14 +15,15 @@ export const columns = scope => [
       return h("Button", {
         class: "table-row-button",
         props: {
-          type: "default"
+          type: "default",
+          loading: row.loading
         },
         on: {
           click: () => {
-            scope.handleViewPool(row);
+            scope.handleDHCP(row);
           }
         }
-      }, "查看地址池");
+      }, "DHCP");
     },
     align: "right"
   }

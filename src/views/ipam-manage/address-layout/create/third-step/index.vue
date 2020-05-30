@@ -33,23 +33,23 @@
       </template>
     </table-page>
 
-    <create-pool
+    <!-- <create-pool
       :visible.sync="showCreatePool"
       :data="currentSubnet"
       :subnet="currentSubnet.network"
       :tags="currentSubnet.tags"
       @completed="handleJumpToPool"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
-import CreatePool from "./create-pool";
+// import CreatePool from "./create-pool";
 import { columns } from "./define";
 
 export default {
   components: {
-    "create-pool": CreatePool
+    // "create-pool": CreatePool
   },
 
   props: {
@@ -163,13 +163,37 @@ export default {
       }
     },
 
-    handleJumpToPool() {
-      
+    async handleDHCP(row) {
+      try {        
+        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?ipnet=${row.ipnet}`));
+
+        if (data.length) {
+          this.$router.push({
+            name: "address-pool-list",
+            params: {
+              id: row.id
+            },
+            query: {
+              ipnet: row.ipnet
+            }
+          });
+        }
+        else {
+          this.$router.push({
+            name: "subnet-pool-subnet",
+            query: {
+              ipnet: row.ipnet
+            }
+          });
+        }
+      } catch (err) {
+        this.$handleError(err);
+      }
     },
 
     handleCreatePool(res) {
-      this.showCreatePool = true;
-      this.currentSubnet = res;
+      // this.showCreatePool = true;
+      // this.currentSubnet = res;
     }
   }
 };
