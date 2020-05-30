@@ -1,11 +1,29 @@
 <template>
-  <div class="Card">
-    <h3>
-      {{title}}
-      <!-- <span v-for="item in infos" :key="item">{{item}}</span> -->
-    </h3>
+  <div class="Card card-item">
+    <header>
+      <h3>
+        {{title}}
+      </h3>
+      <div>
+        <slot name="right"/>
+        <Button
+          type="primary"
+          size="small"
+        >导出PDF</Button>
+        <Select
+          style="width: 110px; margin-left: 20px"
+          v-model="value"
+        >
+          <Option
+            v-for="(item) in dateList"
+            :key="item.hours"
+            :value="item.hours"
+          >{{item.label}}</Option>
+        </Select>
+      </div>
+    </header>
 
-    <slot/>
+    <slot />
   </div>
 </template>
 
@@ -15,28 +33,66 @@ export default {
     title: {
       type: String,
       default: ""
-    },
-    infos: {
-      type: Array,
-      default: () => []
     }
+
+
   },
   data() {
-    return {};
+    this.dateList = [
+      {
+        label: "6小时",
+        hours: 6 // from
+      },
+      {
+        label: "12小时",
+        hours: 12
+      },
+      {
+        label: "1天",
+        hours: 24
+      },
+      {
+        label: "7天",
+        hours: 168
+      },
+      {
+        label: "1个月",
+        hours: 720
+      },
+      {
+        label: "3个月",
+        hours: 148
+      }
+    ];
+    return {
+      value: 6
+    };
   },
   computed: {},
-  created() {},
-  mounted() {},
-  methods: {},
-  watch: {}
+  watch: {
+    value(val) {
+      this.$emit("input", val);
+    }
+  },
+  created() { },
+  mounted() { },
+  methods: {}
 };
 </script>
 
 <style lang="less" scoped>
 .Card {
+  padding: 28px 25px;
+  background: #fff;
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
   h3 {
-    font-size: 18px;
-    color: #777777;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+    line-height: 32px;
     span {
       font-size: 16px;
       color: #929292;

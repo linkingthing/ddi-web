@@ -1,64 +1,54 @@
 <template>
   <div class="ControllerDashboard dashboard">
     <h1 class="d-title">Controller服务器</h1>
+    <div class="card-list">
+      <Card title="CPU利用率">
+        <line-bar
+          is-percent
+          :labels="cpuLabels"
+          :values="cpuValues"
+        />
+      </Card>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <HostInfo :ip="node" />
-      </i-col>
-      <i-col span="11">
-        <Card title="CPU利用率">
-          <line-bar
-            is-percent
-            :labels="cpuLabels"
-            :values="cpuValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+      <Card title="内存利用率">
+        <line-bar
+          is-percent
+          line-theme="purple"
+          :labels="memoLabels"
+          :values="memoValues"
+        />
+      </Card>
 
-    <Row
-      type="flex"
-      justify="space-between"
-    >
-      <i-col span="11">
-        <Card title="内存利用率">
-          <line-bar
-            is-percent
-            line-theme="purple"
-            :labels="memoLabels"
-            :values="memoValues"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="磁盘利用率">
-          <line-bar
-            is-percent
-            line-theme="brown"
-            :labels="diskLabels"
-            :values="diskValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+      <Card title="磁盘利用率">
+        <line-bar
+          is-percent
+          line-theme="brown"
+          :labels="diskLabels"
+          :values="diskValues"
+        />
+      </Card>
+
+      <Card title="网络流量">
+        <line-bar
+          is-percent
+          line-theme="brown"
+          :labels="diskLabels"
+          :values="diskValues"
+        />
+      </Card>
+    </div>
+
   </div>
 </template>
 
 <script>
 import Card from "./Card";
-import HostInfo from "./HostInfo";
 import Line from "./Line";
 import { getDeviceHistoryInfo } from "./tools";
-import services from "@/services";
 
 export default {
   name: "ControllerDashboard",
-  components: { Card, HostInfo, "line-bar": Line },
+  components: { Card, "line-bar": Line },
   props: {},
   data() {
     return {
@@ -75,68 +65,25 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.getList();
+    this.getNodeInfo()
   },
   mounted() {
-    const node = this.$route.query.ip;
-    this.batchExecute(node);
-    // this.timer = setInterval(() => {
-    // this.batchExecute(node);
-    // }, 3000);
+
+
   },
   beforeDestroy() {
-    clearInterval(this.timer);
   },
   methods: {
-    getList() {
-      services
-        .getServerList()
-        .then(res => {
-          this.node = res.data.data.find(item => item.role === "controller").ip;
-          this.batchExecute(this.node);
-        })
-        .catch(err => err);
+    getNodeInfo() {
+      this.$get(this.$getApiByRoute("/omonitor/metric/nodes")).then(res => {
+        console.log(res)
+      })
     },
-    batchExecute(node) {
-      const batch = [
-        {
-          type: "cpu",
-          labelsField: "cpuLabels",
-          valuesField: "cpuValues"
-        },
-        {
-          type: "mem",
-          labelsField: "memoLabels",
-          valuesField: "memoValues"
-        },
-        {
-          type: "disk",
-          labelsField: "diskLabels",
-          valuesField: "diskValues"
-        }
-      ];
 
-      batch.forEach(({ type, labelsField, valuesField }) => {
-        getDeviceHistoryInfo({
-          node,
-          type
-        }).then(([labels, values]) => {
-          this[labelsField] = labels || [];
-          this[valuesField] = Array.isArray(values) ? values.map(item => Number(item).toFixed(2) / 100) : [];
-        });
-      });
-    }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.dashboard {
-  padding: 30px;
-}
-.d-title {
-  font-size: 22px;
-  color: #252422;
-  margin-bottom: 50px;
-}
+@import url("./index.less");
 </style>

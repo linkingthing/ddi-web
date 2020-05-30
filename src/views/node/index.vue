@@ -1,5 +1,5 @@
 <template>
-  <div class="monitor">
+  <div class="monitor dashboard">
     <h1>概览</h1>
     <div class="count-card-list">
       <div class="count-card-item">
@@ -122,6 +122,7 @@ export default {
 
 </script>
 <style lang="less" scoped>
+@import url("./index.less");
 .monitor {
   position: absolute;
   display: flex;
