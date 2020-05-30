@@ -21,7 +21,7 @@ export default {
         {
           title: "视图名称",
           key: "name",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h(
               "router-link",

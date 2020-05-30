@@ -163,10 +163,10 @@ export default {
   },
   created() { },
   mounted() {
-    this.initDataRequest();
-    this.timer = setInterval(() => {
-      this.initDataRequest();
-    }, 3000);
+    // this.initDataRequest();
+    // this.timer = setInterval(() => {
+    //   this.initDataRequest();
+    // }, 3000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -340,12 +340,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.dashboard {
-  padding: 30px;
-}
-.d-title {
-  font-size: 22px;
-  color: #252422;
-  margin-bottom: 50px;
-}
+@import url("./index.less");
 </style>

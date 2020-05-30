@@ -38,7 +38,7 @@ export default {
         {
           title: "规则名称",
           key: "name",
-          align: "center"
+          align: "left"
         },
         {
           title: "网络地址",

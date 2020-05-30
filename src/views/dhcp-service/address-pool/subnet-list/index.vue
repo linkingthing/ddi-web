@@ -11,6 +11,7 @@
     <Edit
       :visible.sync="showEdit"
       :links="links"
+      @success="getDataList"
     />
   </div>
 </template>
@@ -44,9 +45,20 @@ export default {
 
   mounted() {
     this.getDataList();
+    this.openToCreate();
   },
 
   methods: {
+    openToCreate() {
+      const { ipnet } = this.$route.query;
+      if (ipnet) {
+        this.showEdit = true;
+        this.links = {
+          create: "/apis/linkingthing.com/dhcp/v1/subnets"
+        };
+      }
+    },
+
     getDataList() {
       this.$getData().then(({ data }) => {
         this.loading = false;
