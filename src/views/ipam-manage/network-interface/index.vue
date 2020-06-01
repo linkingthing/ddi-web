@@ -112,7 +112,7 @@ export default {
       statusChart: null,
       tableData: [],
       columns: columns(this),
-      tableTitle: "未分配地址",
+      tableTitle: "活跃地址",
       condition: {
         ipAddress: "",
         mac: ""
@@ -291,7 +291,11 @@ export default {
       }));
     },
 
-    handleLegendClick({ type }) {
+    handleLegendClick(item) {
+      const { label, type } = item;
+
+      this.tableTitle = label;
+      
       this.getList(type);
     },
 

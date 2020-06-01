@@ -78,13 +78,13 @@ export const typeLegends = [
     percent: 0,
     label: "固定地址",
     color: typeColors[2],
-    type: "unmanagered"
+    type: "reservation"
   }
   // {
   //   percent: 0,
   //   label: "未管理地址",
   //   color: typeColors[3],
-  //   type: "reservation"
+  //   type: "unmanagered"
   // }
 ];
 
