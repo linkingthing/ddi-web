@@ -212,6 +212,11 @@ export default {
     validate() {
       const len = this.list.length;
 
+      console.log(this.segments);
+      console.log(this.list);
+      
+      return Promise.reject({ message: "11111" });
+
       if (Array.from(new Set(this.list.map(({ name }) => name.trim()))).length < len) {
         return Promise.reject({ message: "各网段名称不能相同！" });
       }

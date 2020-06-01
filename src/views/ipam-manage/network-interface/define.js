@@ -61,6 +61,8 @@ export const columns = scope => [
 export const typeColors = ["#4586FE", "#f9904a", "#63D58B", "#76DCEB"];
 export const statusColors = ["#4586FE", "#f9904a", "#e84141", "#CBCBCB"];
 
+const noDataColors = ["#ebebeb"];
+
 export const typeLegends = [
   {
     percent: 0,
@@ -115,9 +117,15 @@ export const statusLegends = [
   }
 ];
 
-export const generatePieOption = ({ data, title, color }) => {
+const labelOption = {
+  fontSize: "18",
+  fontWeight: "bold"
+};
+
+export const generatePieOption = ({ data, title, color, noData }) => {
   return {
     tooltip: {
+      show: !noData,
       trigger: "item",
       formatter: "{a} <br/>{b}: {c}%"
     },
@@ -129,28 +137,30 @@ export const generatePieOption = ({ data, title, color }) => {
     },
     series: [
       {
+        silent: noData,
         selectedMode: "single",
-        color,
+        color: noData ? noDataColors : color,
         name: title,
         type: "pie",
         center: [110,170],
         radius: [60, 90],
+        hoverAnimation: !noData,
         avoidLabelOverlap: false,
         label: {
-          show: false,
-          position: "center"
+          show: noData,
+          position: "center",
+          ...labelOption
         },
         emphasis: {
           label: {
             show: true,
-            fontSize: "18",
-            fontWeight: "bold"
+            ...labelOption
           }
         },
         labelLine: {
           show: false
         },
-        data
+        data: noData ? [{ value: 100, name: "暂无数据" }] : data
       }
     ]
   };

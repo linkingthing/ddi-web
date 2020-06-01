@@ -12,7 +12,12 @@
               class="chart-legend-item"
               v-for="item in typeLegends"
               :key="item.label">
-              <div class="chart-legend-item-percent">{{item.percent}}%</div>
+              <div 
+                class="chart-legend-item-percent" 
+                :class="{'percent-no-data': typePieNoData}"
+              >
+                {{typePieNoData ? "暂无数据" : `${item.percent}%`}}
+              </div>
               <div class="chart-legend-item-info">
                 <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
                 <div class="chart-legend-item-label">{{item.label}}</div>
@@ -21,7 +26,7 @@
           </div>
         </div>
 
-        <div class="chart-container-type"/>
+        <div class="chart-container-type" />
       </div>
 
       <div class="chart-item">
@@ -34,7 +39,12 @@
               class="chart-legend-item"
               v-for="item in statusLegends"
               :key="item.label">
-              <div class="chart-legend-item-percent">{{item.percent}}%</div>
+              <div 
+                class="chart-legend-item-percent" 
+                :class="{'percent-no-data': statusPieNoData}"
+              >
+                {{statusPieNoData ? "暂无数据" : `${item.percent}%`}}
+              </div>
               <div class="chart-legend-item-info is-clickable">
                 <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
                 <div class="chart-legend-item-label">{{item.label}}</div>
@@ -43,7 +53,7 @@
           </div>
         </div>
 
-        <div class="chart-container-status"/>
+        <div class="chart-container-status" />
       </div>
     </section>
     
@@ -110,6 +120,8 @@ export default {
       statusLegends,
       typeChart: null,
       statusChart: null,
+      typePieNoData: false,
+      statusPieNoData: false,
       tableData: [],
       columns: columns(this),
       tableTitle: "活跃地址",
@@ -132,7 +144,9 @@ export default {
     },
 
     bindPieEvent() {
-      this.statusChart.on("click", res => {        
+      this.statusChart.on("click", res => {  
+        if (this.statusPieNoData) return;
+        
         this.handleLegendClick({
           type: this.getAttributeByArrayAndKeyValue({ array: this.statusLegends, key: "label", value: res.name, attr: "type" }),
           label: res.name
@@ -199,6 +213,9 @@ export default {
 
         this.typeLegends = [...typeLegends];
         this.statusLegends = [...statusLegends];
+
+        this.typePieNoData = typeLegends.every(({ percent }) => !parseFloat(percent));
+        this.statusPieNoData = statusLegends.every(({ percent }) => !parseFloat(percent));        
       } catch (err) {
         return Promise.reject(err);
       }
@@ -258,6 +275,7 @@ export default {
       this.typeChart.setOption(generatePieOption({ 
         title: "地址类型分类",
         color: typeColors,
+        noData: this.typePieNoData,
         data: [
           {
             name: "已分配地址",
@@ -290,6 +308,7 @@ export default {
       this.statusChart.setOption(generatePieOption({ 
         title: "地址类型分类",
         color: statusColors,
+        noData: this.statusPieNoData,
         data: [
           {
             name: "活跃地址",
