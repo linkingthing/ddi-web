@@ -143,7 +143,7 @@ export const generatePieOption = ({ data, title, color, noData }) => {
         name: title,
         type: "pie",
         center: [110,170],
-        radius: [60, 90],
+        radius: [60, 86],
         hoverAnimation: !noData,
         avoidLabelOverlap: false,
         label: {
