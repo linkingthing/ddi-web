@@ -29,7 +29,7 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-            {{item.title}}
+              {{item.title}}
             </MenuItem>
           </Menu>
         </div>
@@ -140,7 +140,7 @@ export default {
       setToken: "SET_TOKEN"
     }),
 
-    handleClickMainMenu(menu) {
+    handleClickMainMenu(menu) {      
       this.$router.push({ path: menu });
     },
 

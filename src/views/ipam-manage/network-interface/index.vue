@@ -47,7 +47,7 @@
       </div>
     </section>
     
-    <div>
+    <div style="position:relative">
       <IviewLoading v-if="tableLoading" />
     
       <table-page
@@ -131,6 +131,23 @@ export default {
       this.statusChart = echarts.init(this.$el.querySelector(".chart-container-status"));
     },
 
+    bindPieEvent() {
+      this.statusChart.on("click", res => {        
+        this.handleLegendClick({
+          type: this.getAttributeByArrayAndKeyValue({ array: this.statusLegends, key: "label", value: res.name, attr: "type" }),
+          label: res.name
+        });
+      });
+    },
+
+    dispatchPieAction() {
+      this.statusChart.dispatchAction({
+        type: "pieSelect",
+        seriesName: "地址类型分类",
+        name: "活跃地址"
+      });
+    },
+
     async getData() {
       try {
         this.loading = true;
@@ -142,6 +159,9 @@ export default {
         
         this.renderTypeChart();
         this.renderStatusChart();
+
+        this.bindPieEvent();
+        this.dispatchPieAction();
       } catch (err) {
         this.$handleError(err);
       }

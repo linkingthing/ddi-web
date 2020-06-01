@@ -129,3 +129,5 @@ Vue.prototype.$createEntity = params => post({ ...getApiByRoute(), params });
 for (const method in requestMethods) {
   Vue.prototype[`$${method}`] = requestMethods[method];
 }
+
+Vue.prototype.$wait = time => new Promise(r => setTimeout(() => r(), time));

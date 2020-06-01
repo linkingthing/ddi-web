@@ -129,6 +129,7 @@ export const generatePieOption = ({ data, title, color }) => {
     },
     series: [
       {
+        selectedMode: "single",
         color,
         name: title,
         type: "pie",
