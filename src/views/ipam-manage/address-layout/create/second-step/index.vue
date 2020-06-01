@@ -172,14 +172,6 @@ export default {
       });
     },
 
-    handleSearch(item, value) {
-      item.options = item.sourceOptions.filter(item => item.indexOf(value) >= 0);
-    },
-
-    handleFocus(item, value) {
-      item.options = item.sourceOptions.filter(item => item.indexOf(value) >= 0);
-    },
-
     doReset() {
       this.currentItem = null;
       this.list = [];

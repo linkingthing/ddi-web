@@ -97,11 +97,11 @@ export default {
   mounted() {    
     this.handleQuery();
 
-    const { ip } = this.$route.query;
+    const query = this.$route.query;
 
-    this.currentData = { ip };
+    this.currentData = query;
 
-    if (ip) {
+    if (query.ip) {
       this.showEdit = true;
     }
   },
@@ -134,7 +134,8 @@ export default {
       ipAddress = ipAddress.trim();
       hostName = hostName.trim();
 
-      this.tableData = this.sourceData.filter(item => item.name.indexOf(hostName) >= 0 && item.ip.indexOf(ipAddress) >= 0);
+      // this.tableData = this.sourceData.filter(item => item.name.indexOf(hostName) >= 0 && item.ip.indexOf(ipAddress) >= 0);
+      this.tableData = this.sourceData;
     },
 
     handleSelecChange(res) {
