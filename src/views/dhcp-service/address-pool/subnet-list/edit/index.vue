@@ -7,7 +7,7 @@
   >
     <IviewLoading v-if="loading" />
     <Form
-      :label-width="80"
+      :label-width="100"
       label-position="left"
       :label-colon="true"
       :model="formModel"
@@ -52,6 +52,12 @@ export default {
     formItemList() {
       const ipv4FormList = [
         {
+          label: "子网地址",
+          model: "ipnet",
+          type: "input",
+          placeholder: "请填写子网地址"
+        },
+        {
           label: "DNS",
           model: "domainServers",
           type: "input",
@@ -94,11 +100,17 @@ export default {
       }
 
       return [];
+    },
+
+    isCreate() {
+      const { create } = this.links;
+      return !!create;
     }
   },
   watch: {
     visible(val) {
       if (!val) return;
+
       this.dialogVisible = val;
     },
 
@@ -106,7 +118,23 @@ export default {
       if (!val) {
         this.formModel = {};
       } else {
-        this.getData(this.links);
+        console.log(11, this.links)
+        if (this.isCreate) {
+          const { ipnet } = this.$route.query;
+          let version;
+          if (ipv6IsValid(ipnet)) {
+            version = 6;
+          }
+          if (ipv4IsValid(ipnet)) {
+            version = 4;
+          }
+          this.formModel = {
+            version,
+            ipnet
+          };
+        } else {
+          this.getData(this.links);
+        }
       }
       this.$emit("update:visible", val);
     }
@@ -126,16 +154,28 @@ export default {
       const params = { ...this.formModel };
 
       resStringToArray(params, ["domainServers", "routers", "relayAgentAddresses"]);
+      if (this.isCreate) {
+        this.$post({ url: this.links.create, params }).then(res => {
+          this.$$success("保存成功！");
+          this.$emit("success");
+          this.dialogVisible = false;
+        }).catch(err => {
+          this.$$error(err.response.data.message);
+        }).finally(() => {
+          this.loading = false;
+        });
+      } else {
+        this.$put({ url: this.links.update, params }).then(res => {
+          this.$$success("保存成功！");
+          this.$emit("success");
+          this.dialogVisible = false;
+        }).catch(err => {
+          this.$$error(err.response.data.message);
+        }).finally(() => {
+          this.loading = false;
+        });
+      }
 
-      this.$put({ url: this.links.update, params }).then(res => {
-        this.$$success("保存成功！");
-        this.$emit("confirmed");
-        this.dialogVisible = false;
-      }).catch(err => {
-        this.$$error(err.response.data.message);
-      }).finally(() => {
-        this.loading = false;
-      });
     }
   }
 };

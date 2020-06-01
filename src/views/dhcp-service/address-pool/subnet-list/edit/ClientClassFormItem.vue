@@ -4,7 +4,7 @@
     <Select
       :disabled="!disabled"
       :value="value"
-      style="width:200px"
+      style="width:180px"
       @on-change="handleChange"
     >
       <Option

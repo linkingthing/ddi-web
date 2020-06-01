@@ -1,89 +1,55 @@
 <template>
   <div class="DNSDashboard dashboard">
-    <h1 class="d-title">DNS服务器</h1>
+    <h1 class="d-title">DNS服务器
+      <NodeSelect type="dns"/>
+    </h1>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <HostInfo :ip="ip" />
-      </i-col>
-      <i-col span="11">
-        <Card title="QPS">
-          <line-bar
-            :labels="qpsLabels"
-            :values="qpsValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+    <div class="card-list">
+      <Card title="QPS">
+        <line-bar
+          :labels="qpsLabels"
+          :values="qpsValues"
+        />
+      </Card>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="解析状态">
-          <Pie :values="status" />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="解析类型">
-          <Pie :values="types" />
-        </Card>
-      </i-col>
-    </Row>
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="解析成功率">
-          <line-bar
-            is-percent
-            :labels="successRateLabels"
-            :values="successRateValues"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="缓存命中率">
-          <line-bar
-            is-percent
-            :labels="memoHitRateLabels"
-            :values="memoHitRateValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="TOP请求域名">
-          <Table
-            :data="domains"
-            :columns="topDomainColumns"
-            style="padding-top: 30px"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="TOP请求IP">
-          <Table
-            :data="ips"
-            :columns="topIPColumns"
-            style="padding-top: 30px"
-          />
-        </Card>
-      </i-col>
-    </Row>
+      <Card title="缓存命中率">
+        <line-bar
+          is-percent
+          :labels="memoHitRateLabels"
+          :values="memoHitRateValues"
+        />
+      </Card>
+
+      <Card title="解析类型">
+        <Pie :values="types" />
+      </Card>
+
+      <Card title="解析成功率">
+        <line-bar
+          is-percent
+          :labels="successRateLabels"
+          :values="successRateValues"
+        />
+      </Card>
+
+      <Card title="TOP请求域名">
+        <Table
+          :data="domains"
+          :columns="topDomainColumns"
+          style="padding-top: 30px"
+        />
+      </Card>
+
+      <Card title="TOP请求IP">
+        <Table
+          :data="ips"
+          :columns="topIPColumns"
+          style="padding-top: 30px"
+        />
+      </Card>
+
+    </div>
+
   </div>
 </template>
 
@@ -96,10 +62,16 @@ import services from "@/services";
 import moment from "moment";
 moment.locale("zh-cn");
 import { getDeviceHistoryInfo } from "./tools";
+import NodeSelect from "./modules/node-select";
 
 export default {
   name: "DNSDashboard",
-  components: { Card, HostInfo, "line-bar": Line, Pie },
+  components: {
+    Card,
+    "line-bar": Line,
+    Pie,
+    NodeSelect
+  },
   props: {
     ip: {
       type: String,
@@ -163,10 +135,10 @@ export default {
   },
   created() { },
   mounted() {
-    this.initDataRequest();
-    this.timer = setInterval(() => {
-      this.initDataRequest();
-    }, 3000);
+    // this.initDataRequest();
+    // this.timer = setInterval(() => {
+    //   this.initDataRequest();
+    // }, 3000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -340,12 +312,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.dashboard {
-  padding: 30px;
-}
-.d-title {
-  font-size: 22px;
-  color: #252422;
-  margin-bottom: 50px;
-}
+@import url("./index.less");
 </style>
