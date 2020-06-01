@@ -46,10 +46,18 @@
               maxlength="50" 
             />
             <label class="child-label">值：</label>
+            
             <Input
+              v-if="item.value > 4"
               placeholder="请填写值"
               v-model="child.value"
               :maxlength="child.maxlength" />
+            <select-input
+              v-else
+              v-model="child.value"
+              :options="item.options"
+              :maxlength="child.maxlength"
+              placeholder="请填写值"/>
           </div>
           
           <img
@@ -66,8 +74,13 @@
 
 <script>
 import deleteImg from "./../images/delete.png";
+import SelectInput from "@/components/SelectInput";
 
 export default {
+  components: {
+    "select-input": SelectInput
+  },
+
   props: {
     layoutId: {
       type: String,
@@ -123,7 +136,9 @@ export default {
         let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
 
         this.list = data.sort((a,b) => a.index - b.index).map((item, i) => {
-          const max = this.segments[i];
+          const max = this.segments[i];    
+          
+          let options = max <= 4 ? this.generateOptions(max) : undefined;
 
           return {
             id: item.id,
@@ -131,8 +146,10 @@ export default {
             tags: item.tags ? item.tags.map((tag, idx) => ({ 
               name: tag, 
               value: item.values[idx].toString(2),
-              maxlength: Math.pow(2, max) - 1 
+              maxlength: max
             })) : [],
+            sourceOptions: options ? [...options] : [],
+            options,
             value: max,
             edit: false
           };
@@ -140,6 +157,27 @@ export default {
       } catch (err) {
         this.$handleError(err);
       }     
+    },
+
+    generateOptions(value) {
+      const res = Math.pow(2, value);
+
+      return new Array(res).fill(0).map((i, idx) => {
+        const val = idx.toString(2);
+
+        return {
+          label: val,
+          value: val
+        };
+      });
+    },
+
+    handleSearch(item, value) {
+      item.options = item.sourceOptions.filter(item => item.indexOf(value) >= 0);
+    },
+
+    handleFocus(item, value) {
+      item.options = item.sourceOptions.filter(item => item.indexOf(value) >= 0);
     },
 
     doReset() {
@@ -198,10 +236,16 @@ export default {
     },
 
     handleAddItem(segment) {
+      if (segment.tags.length === Math.pow(2, segment.value)) {
+        this.$$warning("超出标识范围！");
+
+        return;
+      }
+
       segment.tags.push({
         name: "",
         value: "",
-        maxlength: Math.pow(2, segment.value) - 1 
+        maxlength: segment.value
       });
     },
 
@@ -211,11 +255,6 @@ export default {
 
     validate() {
       const len = this.list.length;
-
-      // console.log(this.segments);
-      // console.log(this.list);
-      
-      // return Promise.reject({ message: "11111" });
 
       if (Array.from(new Set(this.list.map(({ name }) => name.trim()))).length < len) {
         return Promise.reject({ message: "各网段名称不能相同！" });
