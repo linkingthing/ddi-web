@@ -1,14 +1,17 @@
 <template>
-  <div class="server-info">
+  <div
+    class="server-info"
+    v-if="visible"
+  >
     <div class="server-info-header">
       <h3>备份服务器</h3>
       <div class="useage">
         <dl>
-          <dt class="error">89%</dt>
+          <dt class="error">{{server.cpuUsage && 100*Number(server.cpuUsage[0].ratio).toFixed(2)}}%</dt>
           <dd>cpu使用率</dd>
         </dl>
         <dl>
-          <dt class="warn">56.3%</dt>
+          <dt class="warn">{{server.memoryUsage && 100*Number(server.memoryUsage[0].ratio)}}%</dt>
           <dd>内存占用率</dd>
         </dl>
       </div>
@@ -20,7 +23,7 @@
             服务器名称
           </label>
           <span>
-            Nubility
+            {{server.hostName}}
           </span>
         </li>
         <li>
@@ -28,15 +31,15 @@
             服务器IP
           </label>
           <span>
-            192.168.12.1
+            {{server.ip}}
           </span>
         </li>
         <li>
           <label>
             状态
           </label>
-          <span class="success">
-            在线
+          <span :class="serverStatus">
+            {{server.nodeIsAlive ? "在线" : "离线"}}
           </span>
         </li>
       </ul>
@@ -47,12 +50,25 @@
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    server: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
     };
   },
-  computed: {},
+  computed: {
+    serverStatus() {
+      return this.server.nodeIsAlive ? "success" : "error";
+    }
+  },
   watch: {},
   created() { },
   mounted() { },
@@ -84,10 +100,10 @@ export default {
         font-size: 24px;
         font-weight: bold;
         &.error {
-          color: #DC463E;
+          color: #dc463e;
         }
         &.warn {
-          color: #FE9936;
+          color: #fe9936;
         }
       }
       dd {
@@ -114,7 +130,10 @@ export default {
       flex: 1;
       word-break: break-word;
       &.success {
-        color: #51D650;
+        color: #51d650;
+      }
+      &.error {
+        color: #f15e5e;
       }
     }
   }

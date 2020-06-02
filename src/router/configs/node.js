@@ -52,7 +52,7 @@ export default {
 			icon: 'icon-controller',
 			meta: {
 				range: 'nodeManage',
-				title: '监测'
+				title: '节点监控'
 			}
 		}
 	]

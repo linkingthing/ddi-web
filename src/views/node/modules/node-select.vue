@@ -42,9 +42,14 @@ export default {
   },
   created() {
     this.$get(this.$getApiByRoute("/monitor/metric/nodes")).then(({ data }) => {
-      this.nodeList = data.filter(item => {
-        return item.roles.includes(this.type);
-      });
+      if (this.type === "controller") {
+        this.nodeList = data;
+      } else {
+        this.nodeList = data.filter(item => {
+          return item.roles.includes(this.type);
+        });
+      }
+
       if (this.nodeList.length) {
         this.selectValue = this.nodeList[0].id;
       }

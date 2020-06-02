@@ -3,7 +3,7 @@
     <h1>概览</h1>
     <div class="count-card-list">
       <div class="count-card-item">
-        <strong>2,892,302</strong>
+        <strong>{{totalQps}}</strong>
         <span>QPS（个）</span>
         <img
           class="count-card-item-img"
@@ -12,8 +12,8 @@
         >
       </div>
       <div class="count-card-item">
-        <strong>2,892,302</strong>
-        <span>QPS（个）</span>
+        <strong>{{totalLps}}</strong>
+        <span>LPS（个）</span>
         <img
           class="count-card-item-img"
           src="../../assets/images/monitor-line.png"
@@ -21,8 +21,8 @@
         >
       </div>
       <div class="count-card-item">
-        <strong>2,892,302</strong>
-        <span>QPS（个）</span>
+        <strong>{{bootTime}}</strong>
+        <span>系统启动时间</span>
         <img
           class="count-card-item-img"
           src="../../assets/images/monitor-time.png"
@@ -30,8 +30,13 @@
         >
       </div>
       <div class="count-card-item">
-        <strong>2,892,302</strong>
-        <span>QPS（个）</span>
+        <strong>
+          {{parserRunTime.days || 0}} <span>天</span>
+          {{parserRunTime.hours || 0}} <span>时</span>
+          {{parserRunTime.minutes || 0}} <span>分</span>
+          {{parserRunTime.seconds || 0}} <span>秒</span>
+        </strong>
+        <span>系统运行总时长</span>
         <img
           class="count-card-item-img"
           src="../../assets/images/monitor-live.png"
@@ -60,25 +65,29 @@
 
         <div class="node-map-inner">
           <div
+            v-for="item in nodeList"
+            :key="item.ip"
             class="node-map-server"
             :style="`background-image: url(${require('../../assets/images/monitor-group.png')})`"
+            @mouseenter="handleMouseenter(item)"
+            @mouseleave="handleMouseleave(item)"
           >
             <i class="success" />
             <ul class="">
-              <li>
-                controller
-              </li>
-              <li>
-                DNS
-              </li>
-              <li>
-                DHCP
+              <li
+                v-for="item in item.roles"
+                :key="item"
+              >
+                {{item}}
               </li>
             </ul>
           </div>
         </div>
 
-        <server-info />
+        <server-info
+          :visible="visible"
+          :server="server"
+        />
       </section>
 
     </section>
@@ -86,7 +95,6 @@
 </template>
 
 <script>
-import services from "@/services";
 
 import moment from "moment";
 moment.locale("zh-cn");
@@ -105,17 +113,106 @@ export default {
   props: {},
   data() {
     return {
+      timer: null,
+      parserRunTime: {},
 
+      nodeList: [{}, {}],
+      totalQps: 0,
+      totalLps: 0,
+      bootTimestamp: "",
+      bootTime: "0000.00.00",
+      runTime: "",
+
+      visible: false,
+      server: {}
     };
+  },
+  computed: {
+
   },
   watch: {
 
   },
 
   mounted() {
+    this.getNodeInfo();
+
+    this.timer = setInterval(() => {
+      this.parserRunTime = this.excuteRunTime();
+    }, 1000);
+  },
+  destroyed() {
+    clearInterval(this.timer);
   },
 
   methods: {
+    async getNodeInfo() {
+      let totalQps = 0;
+      let totalLps = 0;
+
+      const { data } = await this.$get(this.$getApiByRoute("/monitor/metric/nodes"));
+
+      this.nodeList = data;
+
+      Array.isArray(data) && data.forEach(async ({ creationTimestamp, roles, links }) => {
+        if (roles.includes("controller")) {
+
+          this.bootTime = moment(creationTimestamp).format("YYYY.MM.DD HH:mm");
+          this.bootTimestamp = creationTimestamp;
+
+        }
+
+        const { data: dnsData } = await this.$get({ url: links.dnses });
+        Array.isArray(dnsData) && dnsData.forEach(async ({ links }) => {
+          let time = 0;
+          const { data: qpsData } = await this.$get({ url: links.qpses });
+          if (Array.isArray(qpsData) && qpsData.length) {
+            if (Array.isArray(qpsData[0].values) && qpsData[0].values.length) {
+              totalQps += qpsData.values[0].value;
+              time++;
+            }
+
+          }
+          this.totalQps = totalQps / time || 0;
+        });
+
+        const { data: dhcpData } = await this.$get({ url: links.dhcps });
+        Array.isArray(dhcpData) && dhcpData.forEach(async ({ links }) => {
+          let time = 0;
+          const { data: lpsData } = await this.$get({ url: links.lpses });
+          if (Array.isArray(lpsData) && lpsData.length) {
+            if (Array.isArray(lpsData[0].values) && lpsData[0].values.length) {
+              totalLps += lpsData[0].values[0].value;
+              time++;
+            }
+          }
+
+          this.totalLps = totalLps / time;
+        });
+      });
+
+    },
+
+    excuteRunTime() {
+      const createMoment = moment(this.bootTime);
+      const secondCount = moment().unix() - createMoment.unix();
+
+      const days = parseInt(secondCount / (3600 * 24));
+      const hours = parseInt((secondCount - days * 3600 * 24) / 3600);
+      const minutes = parseInt((secondCount - days * 3600 * 24 - hours * 3600) / 60);
+      const seconds = parseInt((secondCount - hours * 3600) % 60);
+
+      return { days, hours, minutes, seconds }; // 2*3600*24+17*3600+55*60+44 237344
+    },
+
+    handleMouseenter(server) {
+      this.visible = true;
+      this.server = server;
+    },
+
+    handleMouseleave() {
+      this.visible = false;
+    }
 
   }
 };
@@ -123,6 +220,7 @@ export default {
 </script>
 <style lang="less" scoped>
 @import url("./index.less");
+
 .monitor {
   position: absolute;
   display: flex;
@@ -132,6 +230,7 @@ export default {
   min-height: 100%;
   background: #f6f6f6;
   z-index: 10;
+  padding-right: 0;
   h1 {
     font-size: 20px;
     color: #333;
@@ -148,6 +247,9 @@ export default {
   .count-card-item {
     position: relative;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     height: 138px;
     border-radius: 4px;
     padding: 20px;
@@ -285,6 +387,16 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1800px) {
+  .count-card-list {
+    .count-card-item {
+      strong {
+        font-size: 24px;
       }
     }
   }

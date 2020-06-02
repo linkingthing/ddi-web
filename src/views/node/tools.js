@@ -30,17 +30,22 @@ export async function getMatrixInfo({ node, type }) {
 }
 
 
+/**
+ * values 折线图数据处理
+ * @param {Array} values
+ * @returns {Array} [labels, values]
+*/
 export function valuesParser(values) {
-  const data = values && values.map(({timestamp, value, usedRatio}) => {
+  const data = values && values.map(({ timestamp, value, ratio }) => {
     return {
       timestamp,
       time: moment(timestamp).format("YYYY-MM-DD hh:mm:ss"),
       count: +value,
-      usedRatio
+      ratio
     };
   });
   const labels = data && data.map(item => item.time);
-  const counts = data && data.map(item => item.count || item.usedRatio);
-  // TODO: 这里不算好，usedRatio 应该考虑传参
+  const counts = data && data.map(item => item.count || item.ratio);
+  // TODO: 这里不算好，ratio 应该考虑传参
   return [labels, counts];
 }

@@ -133,7 +133,7 @@ export default {
     },
 
     useageIpnet(ipnet) {
-      const [{ usedRatios }] = this.usageList.filter(item => item.ipnet === ipnet)
+      const [{ usedRatios }] = this.usageList.filter(item => item.ipnet === ipnet);
       const [labels, value] = valuesParser(usedRatios);
       this.dhcpUsageLabels = labels;
       this.dhcpUsageValues = value;
