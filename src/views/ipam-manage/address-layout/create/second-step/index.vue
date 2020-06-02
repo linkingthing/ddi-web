@@ -267,8 +267,18 @@ export default {
           return Promise.reject({ message: "网段下各项名称不能相同！" });
         }
 
+        let prevValue = null;
+
         for (let j = 0; j < tagLen; j++) {
           let tag = item.tags[j];
+
+          if (prevValue !== null && prevValue > tag.value) {
+            return Promise.reject({ message: "请按从小到大的顺序填写网段" });
+          }
+
+          if (prevValue === null) {
+            prevValue = tag.value;
+          }
 
           if (value === parseInt(tag.value)) {
             return Promise.reject({ message: "同一网段值不能相同" });
