@@ -13,23 +13,23 @@
         <div class="condition-item">
           <label class="condition-item-label">IP地址：</label>
           <Input
-            v-model="condition.ipAddress"
+            v-model="condition.ip"
             placeholder="请输入IP地址"
             class="top-input"
-            @on-enter="handleFilter" />
+            @on-enter="handleQuery" />
         </div>
         <div class="condition-item">
           <label class="condition-item-label">主机名：</label>
           <Input
-            v-model="condition.hostName"
+            v-model="condition.name"
             placeholder="请输入IP地址"
             class="top-input"
-            @on-enter="handleFilter" />
+            @on-enter="handleQuery" />
         </div>
 
         <Button 
           type="primary" 
-          @click="handleFilter" 
+          @click="handleQuery" 
         >
           搜索
         </Button>
@@ -82,10 +82,9 @@ export default {
       ip: "",
       name: "",
       condition: {
-        ipAddress: "",
-        hostName: ""
+        ip: "",
+        name: ""
       },
-      sourceData: [],
       tableData: [],
       columns: columns(this),
       selectedData: [],
@@ -94,14 +93,25 @@ export default {
     };
   },
 
-  mounted() {    
+  async mounted() {    
     this.handleQuery();
 
-    const query = this.$route.query;
+    const { id, ip } = this.$route.query;
 
-    this.currentData = query;
+    if (id) {
+      try {
+        let { data } = await this.$get({ url: this.url + "/" + id });
 
-    if (query.ip) {
+        this.currentData = data;
+      } catch (err) {
+        this.$handleError(err);
+      }
+    }
+    else {
+      this.currentData = { ip };
+    }
+
+    if (ip) {
       this.showEdit = true;
     }
   },
@@ -113,29 +123,18 @@ export default {
       this.selectedData = [];
 
       try {
-        const { url, ip, name } = this;
+        const { url, condition } = this;
+        const { ip, name } = condition;
 
         let { data } = await this.$get({ url: `${url}?ip=${ip}&name=${name}` });
         
-        this.sourceData = [...data];
-
-        this.handleFilter();
+        this.tableData = data;
       } catch (err) {
         this.$handleError(err);
       }
       finally {        
         this.loading = false;
       }
-    },
-
-    handleFilter() {
-      let { ipAddress, hostName } = this.condition;
-
-      ipAddress = ipAddress.trim();
-      hostName = hostName.trim();
-
-      // this.tableData = this.sourceData.filter(item => item.name.indexOf(hostName) >= 0 && item.ip.indexOf(ipAddress) >= 0);
-      this.tableData = this.sourceData;
     },
 
     handleSelecChange(res) {

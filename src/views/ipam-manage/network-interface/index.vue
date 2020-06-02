@@ -349,7 +349,7 @@ export default {
         this.$router.push({
           name: "ip-assets-manage",
           query: {
-            ...res,
+            id: res.id,
             ip: row.ip
           }
         });
