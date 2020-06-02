@@ -7,11 +7,11 @@
       <h3>备份服务器</h3>
       <div class="useage">
         <dl>
-          <dt class="error">{{server.cpuUsage&&Number(server.cpuUsage[0].value).toFixed(2)}}%</dt>
+          <dt class="error">{{server.cpuUsage && 100*Number(server.cpuUsage[0].ratio).toFixed(2)}}%</dt>
           <dd>cpu使用率</dd>
         </dl>
         <dl>
-          <dt class="warn">{{server.memoryUsage&& parseInt(server.memoryUsage[0].ratio)}}%</dt>
+          <dt class="warn">{{server.memoryUsage && 100*Number(server.memoryUsage[0].ratio)}}%</dt>
           <dd>内存占用率</dd>
         </dl>
       </div>

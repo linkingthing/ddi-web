@@ -116,7 +116,7 @@ export default {
       timer: null,
       parserRunTime: {},
 
-      nodeList: [{},{}],
+      nodeList: [{}, {}],
       totalQps: 0,
       totalLps: 0,
       bootTimestamp: "",
@@ -146,12 +146,12 @@ export default {
   },
 
   methods: {
-    async  getNodeInfo() {
+    async getNodeInfo() {
       let totalQps = 0;
       let totalLps = 0;
 
       const { data } = await this.$get(this.$getApiByRoute("/monitor/metric/nodes"));
-      console.log(data)
+
       this.nodeList = data;
 
       Array.isArray(data) && data.forEach(async ({ creationTimestamp, roles, links }) => {
@@ -164,32 +164,32 @@ export default {
 
         const { data: dnsData } = await this.$get({ url: links.dnses });
         Array.isArray(dnsData) && dnsData.forEach(async ({ links }) => {
+          let time = 0;
+          const { data: qpsData } = await this.$get({ url: links.qpses });
+          if (Array.isArray(qpsData) && qpsData.length) {
+            if (Array.isArray(qpsData[0].values) && qpsData[0].values.length) {
+              totalQps += qpsData.values[0].value;
+              time++;
+            }
 
-          const { data } = await this.$get({ url: links.qpses });
-          if (Array.isArray(data.values)) {
-            totalQps += data.values.reduce((result, item) => {
-              return result + item.value;
-            }, 0);
           }
-
+          this.totalQps = totalQps / time || 0;
         });
 
         const { data: dhcpData } = await this.$get({ url: links.dhcps });
-        dhcpData.forEach(async ({ links }) => {
-
+        Array.isArray(dhcpData) && dhcpData.forEach(async ({ links }) => {
+          let time = 0;
           const { data: lpsData } = await this.$get({ url: links.lpses });
-          if (Array.isArray(lpsData.values)) {
-            totalLps += lpsData.values.reduce((result, item) => {
-              return result + item.value;
-            }, 0);
+          if (Array.isArray(lpsData) && lpsData.length) {
+            if (Array.isArray(lpsData[0].values) && lpsData[0].values.length) {
+              totalLps += lpsData[0].values[0].value;
+              time++;
+            }
           }
 
+          this.totalLps = totalLps / time;
         });
-
       });
-
-      this.totalQps = totalQps;
-      this.totalLps = totalLps;
 
     },
 
@@ -206,7 +206,6 @@ export default {
     },
 
     handleMouseenter(server) {
-      console.log(server)
       this.visible = true;
       this.server = server;
     },

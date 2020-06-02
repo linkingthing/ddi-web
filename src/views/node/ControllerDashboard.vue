@@ -85,14 +85,14 @@ export default {
   methods: {
     init() {
       this.getNodeInfo();
-      // this.timer = setInterval(() => {
-      //   this.getNodeInfo();
-      // }, 3000);
+      this.timer = setInterval(() => {
+        this.getNodeInfo();
+      }, 3000);
     },
     getNodeInfo() {
       if (this.node.length) {
         this.$get(this.$getApiByRoute(`/monitor/metric/nodes/${this.node}`)).then(({ cpuUsage, discUsage, memoryUsage, network }) => {
-          console.log(cpuUsage, discUsage, memoryUsage, network)
+
           const [cpuLabels, cpuValues] = valuesParser(cpuUsage);
           this.cpuLabels = cpuLabels;
           this.cpuValues = cpuValues;
@@ -111,7 +111,7 @@ export default {
 
         });
       }
-    },
+    }
 
   }
 };
