@@ -82,6 +82,10 @@ export default {
 
       if (!val) {
         this.$refs.form.resetFields();
+        
+        if (this.$route.query.ip) {
+          this.$refresh();
+        }
       }
 
       this.$emit("update:visible", val);
