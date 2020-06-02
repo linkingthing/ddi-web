@@ -1,6 +1,13 @@
 <template>
   <div class="ControllerDashboard dashboard">
-    <h1 class="d-title">Controller服务器</h1>
+    <h1 class="d-title">
+      Controller服务器
+      <NodeSelect
+        type="controller"
+        v-model="node"
+      />
+
+    </h1>
     <div class="card-list">
       <Card title="CPU利用率">
         <line-bar
@@ -30,10 +37,9 @@
 
       <Card title="网络流量">
         <line-bar
-          is-percent
           line-theme="brown"
-          :labels="diskLabels"
-          :values="diskValues"
+          :labels="networkLabels"
+          :values="networkValues"
         />
       </Card>
     </div>
@@ -44,40 +50,67 @@
 <script>
 import Card from "./Card";
 import Line from "./Line";
-import { getDeviceHistoryInfo } from "./tools";
+import NodeSelect from "./modules/node-select";
+
+import { valuesParser } from "./tools";
 
 export default {
   name: "ControllerDashboard",
-  components: { Card, "line-bar": Line },
+  components: { Card, "line-bar": Line, NodeSelect },
   props: {},
   data() {
     return {
       node: "",
       timer: null,
+
       cpuLabels: [],
       cpuValues: [],
       memoLabels: [],
       memoValues: [],
       diskLabels: [],
-      diskValues: []
+      diskValues: [],
+      networkLabels: [],
+      networkValues: []
     };
   },
   computed: {},
-  watch: {},
-  created() {
-    this.getNodeInfo()
+  watch: {
+    node() {
+      this.init();
+    }
   },
-  mounted() {
-
-
-  },
-  beforeDestroy() {
+  destroyed() {
+    clearInterval(this.timer);
   },
   methods: {
+    init() {
+      this.getNodeInfo();
+      // this.timer = setInterval(() => {
+      //   this.getNodeInfo();
+      // }, 3000);
+    },
     getNodeInfo() {
-      this.$get(this.$getApiByRoute("/omonitor/metric/nodes")).then(res => {
-        console.log(res)
-      })
+      if (this.node.length) {
+        this.$get(this.$getApiByRoute(`/monitor/metric/nodes/${this.node}`)).then(({ cpuUsage, discUsage, memoryUsage, network }) => {
+          console.log(cpuUsage, discUsage, memoryUsage, network)
+          const [cpuLabels, cpuValues] = valuesParser(cpuUsage);
+          this.cpuLabels = cpuLabels;
+          this.cpuValues = cpuValues;
+
+          const [memoLabels, memoValues] = valuesParser(memoryUsage);
+          this.memoLabels = memoLabels;
+          this.memoValues = memoValues;
+
+          const [diskLabels, diskValues] = valuesParser(discUsage);
+          this.diskLabels = diskLabels;
+          this.diskValues = diskValues;
+
+          const [networkLabels, networkValues] = valuesParser(network);
+          this.networkLabels = networkLabels;
+          this.networkValues = networkValues;
+
+        });
+      }
     },
 
   }

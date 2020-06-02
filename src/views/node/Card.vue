@@ -5,12 +5,14 @@
         {{title}}
       </h3>
       <div>
-        <slot name="right"/>
+        <slot name="right" />
         <Button
+          v-if="hasPdf"
           type="primary"
           size="small"
         >导出PDF</Button>
         <Select
+          v-if="hasTimeFilter"
           style="width: 110px; margin-left: 20px"
           v-model="value"
         >
@@ -33,9 +35,15 @@ export default {
     title: {
       type: String,
       default: ""
+    },
+    hasPdf: {
+      type: Boolean,
+      default: false
+    },
+    hasTimeFilter: {
+      type: Boolean,
+      default: false
     }
-
-
   },
   data() {
     this.dateList = [

@@ -1,7 +1,10 @@
 <template>
   <div class="DNSDashboard dashboard">
     <h1 class="d-title">DNS服务器
-      <NodeSelect type="dns"/>
+      <NodeSelect
+        type="dns"
+        v-model="node"
+      />
     </h1>
 
     <div class="card-list">
@@ -20,16 +23,16 @@
         />
       </Card>
 
-      <Card title="解析类型">
-        <Pie :values="types" />
-      </Card>
-
       <Card title="解析成功率">
         <line-bar
           is-percent
           :labels="successRateLabels"
           :values="successRateValues"
         />
+      </Card>
+
+      <Card title="解析类型">
+        <Pie :values="types" />
       </Card>
 
       <Card title="TOP请求域名">
@@ -61,7 +64,7 @@ import Pie from "./Pie";
 import services from "@/services";
 import moment from "moment";
 moment.locale("zh-cn");
-import { getDeviceHistoryInfo } from "./tools";
+import { getDeviceHistoryInfo, valuesParser } from "./tools";
 import NodeSelect from "./modules/node-select";
 
 export default {
@@ -80,6 +83,7 @@ export default {
   },
   data() {
     return {
+      node: "",
       topDomainColumns: [
         {
           title: "排名",
@@ -129,13 +133,13 @@ export default {
   },
   computed: {},
   watch: {
-    ip() {
+    node() {
       this.initDataRequest();
     }
   },
   created() { },
   mounted() {
-    // this.initDataRequest();
+    this.initDataRequest();
     // this.timer = setInterval(() => {
     //   this.initDataRequest();
     // }, 3000);
@@ -146,24 +150,34 @@ export default {
 
   methods: {
     initDataRequest() {
-      const node = this.ip || this.$route.query.ip;
-      this.getDNSTop(node);
-      this.getQpsList(node);
-      this.getDNSAnalysisStateData(node);
-      this.getDNSAnalysisStateSuccessRecode(node);
-      this.getMemoHitRateData(node);
+      // this.getDNSTop();
+      this.getQpsList();
+      // this.getDNSAnalysisStateData();
+      this.getDNSAnalysisStateSuccessRecode();
+      this.getMemoHitRateData();
     },
-    getQpsList(node) {
-      const params = {
-        node,
-        type: "qps"
-      };
-      getDeviceHistoryInfo(params)
-        .then(([labels, values]) => {
-          this.qpsLabels = labels || [];
-          this.qpsValues = values || [];
-        })
-        .catch(err => err);
+
+    intercept(resource, labels, value) { // TODO: 这钟封装
+      const hasNode = !!this.node;
+      return new Promise(resolve => {
+        if (hasNode) {
+          resolve();
+        }
+      });
+    },
+
+    baseGet(resource, params, labelField, valueField) {
+      this.intercept().then(_ => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then(({ data: [{ values }] }) => {
+          const [labels, value] = valuesParser(values);
+          this[labelField] = labels;
+          this[valueField] = value;
+        });
+      });
+    },
+
+    getQpsList(params) {
+      this.baseGet("qpses", params, "dhcpLpsLabels", "dhcpLpsValues");
     },
     getDNSTop() {
       services
@@ -197,42 +211,8 @@ export default {
         })
         .catch(err => err);
     },
-    getDNSAnalysisStateSuccessRecode(node) {
-      services
-        .getDNSAnalysisState({
-          node,
-          start: parseInt(new Date().getTime() / 1000 - 5 * 24 * 60 * 60),
-          end: parseInt(new Date().getTime() / 1000)
-        })
-        .then(res => {
-          const result = this.analysisMatrix(res.data.data.result);
-          const data = Object.values(result).map(timeGroup => {
-            let successCount = 0;
-            let time;
-            const total = timeGroup
-              .map(item => {
-                if (item.type === "NOERROR") {
-                  successCount = item.count;
-                  time = item.time;
-                }
-                return item.count;
-              })
-              .reduce((result, current) => {
-                return result + current;
-              }, 0);
-            const successRate = successCount / total || 0;
-            return {
-              total,
-              time,
-              successCount,
-              successRate
-            };
-          });
-
-          this.successRateLabels = data.map(item => item.time);
-          this.successRateValues = data.map(item => item.successRate.toFixed(4));
-        })
-        .catch(err => err);
+    getDNSAnalysisStateSuccessRecode(params) {
+      this.baseGet("resolvedratios", params, "successRateLabels", "successRateValues");
     },
 
     /**
@@ -291,21 +271,15 @@ export default {
         };
       });
     },
-    getMemoHitRateData(node) {
-      const params = {
-        node,
-        start: moment().unix() - 5 * 24 * 60 * 60,
-        end: moment().unix()
-      };
-      services
-        .getMemoHitRate(params)
-        .then(res => {
-          const result = this.analysisMatrix(res.data.data.result);
-          const data = this.executeRate(result);
-          this.memoHitRateLabels = data.map(item => item.time);
-          this.memoHitRateValues = data.map(item => item.rate);
-        })
-        .catch(err => err);
+    getMemoHitRateData(params) {
+      this.intercept().then(_ => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/cachehits`) }).then(({ data: [{ values }] }) => {
+          const [labels, value] = valuesParser(values);
+          this.memoHitRateLabels = labels;
+          this.memoHitRateValues = value;
+        });
+      });
+
     }
   }
 };
