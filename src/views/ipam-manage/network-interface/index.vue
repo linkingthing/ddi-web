@@ -8,20 +8,27 @@
           <div class="chart-item-title">地址类型分类</div>
         
           <div class="chart-legend">
-            <div
-              class="chart-legend-item"
-              v-for="item in typeLegends"
-              :key="item.label">
-              <div class="chart-legend-item-percent">{{item.percent}}%</div>
-              <div class="chart-legend-item-info">
-                <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
-                <div class="chart-legend-item-label">{{item.label}}</div>
+            <template v-for="(item, idx) in typeLegends">
+              <div
+                class="chart-legend-item"
+                v-if="idx < 3"
+                :key="item.label">
+                <div 
+                  class="chart-legend-item-percent" 
+                  :class="{'percent-no-data': typePieNoData}"
+                >
+                  {{typePieNoData ? "暂无数据" : `${item.percent}%`}}
+                </div>
+                <div class="chart-legend-item-info">
+                  <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
+                  <div class="chart-legend-item-label">{{item.label}}</div>
+                </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
 
-        <div class="chart-container-type"/>
+        <div class="chart-container-type" />
       </div>
 
       <div class="chart-item">
@@ -34,7 +41,12 @@
               class="chart-legend-item"
               v-for="item in statusLegends"
               :key="item.label">
-              <div class="chart-legend-item-percent">{{item.percent}}%</div>
+              <div 
+                class="chart-legend-item-percent" 
+                :class="{'percent-no-data': statusPieNoData}"
+              >
+                {{statusPieNoData ? "暂无数据" : `${item.percent}%`}}
+              </div>
               <div class="chart-legend-item-info is-clickable">
                 <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
                 <div class="chart-legend-item-label">{{item.label}}</div>
@@ -43,11 +55,11 @@
           </div>
         </div>
 
-        <div class="chart-container-status"/>
+        <div class="chart-container-status" />
       </div>
     </section>
     
-    <div>
+    <div style="position:relative">
       <IviewLoading v-if="tableLoading" />
     
       <table-page
@@ -110,9 +122,11 @@ export default {
       statusLegends,
       typeChart: null,
       statusChart: null,
+      typePieNoData: false,
+      statusPieNoData: false,
       tableData: [],
       columns: columns(this),
-      tableTitle: "未分配地址",
+      tableTitle: "活跃地址",
       condition: {
         ipAddress: "",
         mac: ""
@@ -131,6 +145,25 @@ export default {
       this.statusChart = echarts.init(this.$el.querySelector(".chart-container-status"));
     },
 
+    bindPieEvent() {
+      this.statusChart.on("click", res => {  
+        if (this.statusPieNoData) return;
+        
+        this.handleLegendClick({
+          type: this.getAttributeByArrayAndKeyValue({ array: this.statusLegends, key: "label", value: res.name, attr: "type" }),
+          label: res.name
+        });
+      });
+    },
+
+    dispatchPieAction() {
+      this.statusChart.dispatchAction({
+        type: "pieSelect",
+        seriesName: "地址类型分类",
+        name: "活跃地址"
+      });
+    },
+
     async getData() {
       try {
         this.loading = true;
@@ -142,6 +175,9 @@ export default {
         
         this.renderTypeChart();
         this.renderStatusChart();
+
+        this.bindPieEvent();
+        this.dispatchPieAction();
       } catch (err) {
         this.$handleError(err);
       }
@@ -167,18 +203,21 @@ export default {
         let typeLegends = [...this.typeLegends];
         let statusLegends = [...this.statusLegends];
         
-        typeLegends[0].percent = +assignedRatio * 100;
-        typeLegends[1].percent = +unassignedRatio * 100;
-        typeLegends[2].percent = +reservationRatio * 100;
-        // typeLegends[3].percent = +unmanagedRatio * 100;
+        typeLegends[0].percent = parseFloat(parseFloat(+assignedRatio * 100).toFixed(2));
+        typeLegends[1].percent = parseFloat(parseFloat(+unassignedRatio * 100).toFixed(2));
+        typeLegends[2].percent = parseFloat(parseFloat(+reservationRatio * 100).toFixed(2));
+        // typeLegends[3].percent = parseFloat(parseFloat(+unmanagedRatio * 100).toFixed(2));
         
-        statusLegends[0].percent = +activeRatio * 100;
-        statusLegends[1].percent = +inactiveRatio * 100;
-        statusLegends[2].percent = +conflictRatio * 100;
-        statusLegends[3].percent = +zombieRatio * 100;
+        statusLegends[0].percent = parseFloat(parseFloat(+activeRatio * 100).toFixed(2));
+        statusLegends[1].percent = parseFloat(parseFloat(+inactiveRatio * 100).toFixed(2));
+        statusLegends[2].percent = parseFloat(parseFloat(+conflictRatio * 100).toFixed(2));
+        statusLegends[3].percent = parseFloat(parseFloat(+zombieRatio * 100).toFixed(2));
 
         this.typeLegends = [...typeLegends];
         this.statusLegends = [...statusLegends];
+
+        this.typePieNoData = typeLegends.every(({ percent }) => !parseFloat(percent));
+        this.statusPieNoData = statusLegends.every(({ percent }) => !parseFloat(percent));        
       } catch (err) {
         return Promise.reject(err);
       }
@@ -238,6 +277,7 @@ export default {
       this.typeChart.setOption(generatePieOption({ 
         title: "地址类型分类",
         color: typeColors,
+        noData: this.typePieNoData,
         data: [
           {
             name: "已分配地址",
@@ -270,6 +310,7 @@ export default {
       this.statusChart.setOption(generatePieOption({ 
         title: "地址类型分类",
         color: statusColors,
+        noData: this.statusPieNoData,
         data: [
           {
             name: "活跃地址",
@@ -291,17 +332,30 @@ export default {
       }));
     },
 
-    handleLegendClick({ type }) {
+    handleLegendClick(item) {
+      const { label, type } = item;
+
+      this.tableTitle = label;
+      
       this.getList(type);
     },
 
-    handleEdit(row) {
-      this.$router.push({
-        name: "ip-assets-manage",
-        query: {
-          ip: row.ip
-        }
-      });
+    async handleEdit(row) {
+      try {
+        let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?ip=${row.ip}`));
+        
+        let res = data[0] || {};
+        
+        this.$router.push({
+          name: "ip-assets-manage",
+          query: {
+            id: res.id,
+            ip: row.ip
+          }
+        });
+      } catch (err) {
+        this.$handleError(err);
+      }
     }
   }
 };

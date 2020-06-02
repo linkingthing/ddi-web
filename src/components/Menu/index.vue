@@ -2,6 +2,7 @@
   <div class="menu">
     <vue-scroll :ops="ops">
       <Menu
+        ref="menu"
         :theme="theme"
         :active-name="tab"
         :open-names="openNames"
@@ -16,11 +17,11 @@
                 @click.native="handleJump(child.path)"
                 class="sigle-menu"
               >
-              <i
-                class="menu-icon"
-                :class="child.icon"
-              />
-              {{ child.meta.title }}
+                <i
+                  class="menu-icon"
+                  :class="child.icon"
+                />
+                {{ child.meta.title }}
               </MenuItem>
             </template>
           </template>
@@ -33,12 +34,12 @@
               @click.native="handleJump(item.path)"
               class="single-node"
             >
-            <i
-              v-if="item.icon"
-              class="menu-icon"
-              :class="item.icon"
-            />
-            {{ item.meta.title }}
+              <i
+                v-if="item.icon"
+                class="menu-icon"
+                :class="item.icon"
+              />
+              {{ item.meta.title }}
             </MenuItem>
 
             <Submenu
@@ -63,7 +64,7 @@
                   :name="child.name"
                   @click.native="handleJump(child.path)"
                 >
-                {{ child.meta.title }}
+                  {{ child.meta.title }}
                 </MenuItem>
               </template>
             </Submenu>
@@ -82,17 +83,17 @@ export default {
   name: "menuNav",
 
   data() {
-    const route = this.$route;
-    this.openNames = [
-      "ipam-manage",
-      "dns-service",
-      "access-control",
-      "dhcp-service",
-      "system-safe",
-      "dhcp-config",
-      "forward",
-      "dhcp-dhcp"
-    ];
+    // this.openNames = [
+    //   "ipam-manage",
+    //   "dns-service",
+    //   "access-control",
+    //   "dhcp-service",
+    //   "system-safe",
+    //   "dhcp-config",
+    //   "forward",
+    //   "dhcp-dhcp"
+    // ];
+    
     return {
       // eslint-disable-next-line no-undef
       PACK_SYSTEM,
@@ -104,28 +105,49 @@ export default {
           detectResize: true
         }
       },
+      openNames: [
+        "ipam-manage",
+        "dns-service",
+        "access-control",
+        "dhcp-service",
+        "system-safe",
+        "dhcp-config",
+        "forward",
+        "dhcp-dhcp"
+      ],
       routes: [],
-      tab: route.meta && route.meta.active || route.params.tab || route.name // 路由tab
+      tab: "" // 路由tab
     };
   },
 
   watch: {
-    $route() {
+    $route: {
+      immediate: true,
+      async handler(val) {
+        if (!val) return; 
 
-      if (this.$route.params.tab) {
-        this.tab = this.$route.params.tab;
-      } else {
-        this.tab = this.$route.name;
-      }
-      if (this.$route.meta && this.$route.meta.active) {
-        this.tab = this.$route.meta.active;
+        await this.$nextTick();
+
+        if (val.params.tab) {
+          this.tab = val.params.tab;
+        } else {
+          this.tab = val.name;
+        }
+        
+        if (val.meta && val.meta.active) {
+          this.tab = val.meta.active;
+        }
+
+        await this.$nextTick();
+        
+        this.$refs.menu.updateOpened();        
       }
     }
-
   },
 
   created() {
-    this.formatMenus();
+    this.formatMenus(); 
+       
   },
 
   methods: {
@@ -146,10 +168,13 @@ export default {
           return item;
         }
       });
+      
+      // this.openNames = this.routes.map(item => item.name);      
     },
 
     hasShowMenu(range) {
       const [, moduleName] = this.$route.path.split("/");
+
       return moduleName === range;
     }
 

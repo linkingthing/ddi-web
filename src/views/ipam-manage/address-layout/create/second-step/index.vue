@@ -46,10 +46,18 @@
               maxlength="50" 
             />
             <label class="child-label">值：</label>
+            
             <Input
+              v-if="item.value > 4"
               placeholder="请填写值"
               v-model="child.value"
               :maxlength="child.maxlength" />
+            <select-input
+              v-else
+              v-model="child.value"
+              :options="item.options"
+              :maxlength="child.maxlength"
+              placeholder="请填写值"/>
           </div>
           
           <img
@@ -66,8 +74,13 @@
 
 <script>
 import deleteImg from "./../images/delete.png";
+import SelectInput from "@/components/SelectInput";
 
 export default {
+  components: {
+    "select-input": SelectInput
+  },
+
   props: {
     layoutId: {
       type: String,
@@ -123,7 +136,9 @@ export default {
         let { data } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` });
 
         this.list = data.sort((a,b) => a.index - b.index).map((item, i) => {
-          const max = this.segments[i];
+          const max = this.segments[i];    
+          
+          let options = max <= 4 ? this.generateOptions(max) : undefined;
 
           return {
             id: item.id,
@@ -131,8 +146,10 @@ export default {
             tags: item.tags ? item.tags.map((tag, idx) => ({ 
               name: tag, 
               value: item.values[idx].toString(2),
-              maxlength: Math.pow(2, max) - 1 
+              maxlength: max
             })) : [],
+            sourceOptions: options ? [...options] : [],
+            options,
             value: max,
             edit: false
           };
@@ -140,6 +157,19 @@ export default {
       } catch (err) {
         this.$handleError(err);
       }     
+    },
+
+    generateOptions(value) {
+      const res = Math.pow(2, value);
+
+      return new Array(res).fill(0).map((i, idx) => {
+        const val = idx.toString(2);
+
+        return {
+          label: val,
+          value: val
+        };
+      });
     },
 
     doReset() {
@@ -198,10 +228,16 @@ export default {
     },
 
     handleAddItem(segment) {
+      if (segment.tags.length === Math.pow(2, segment.value)) {
+        this.$$warning("超出标识范围！");
+
+        return;
+      }
+
       segment.tags.push({
         name: "",
         value: "",
-        maxlength: Math.pow(2, segment.value) - 1 
+        maxlength: segment.value
       });
     },
 
@@ -231,8 +267,18 @@ export default {
           return Promise.reject({ message: "网段下各项名称不能相同！" });
         }
 
+        let prevValue = null;
+
         for (let j = 0; j < tagLen; j++) {
           let tag = item.tags[j];
+
+          if (prevValue !== null && prevValue > tag.value) {
+            return Promise.reject({ message: "请按从小到大的顺序填写网段" });
+          }
+
+          if (prevValue === null) {
+            prevValue = tag.value;
+          }
 
           if (value === parseInt(tag.value)) {
             return Promise.reject({ message: "同一网段值不能相同" });
