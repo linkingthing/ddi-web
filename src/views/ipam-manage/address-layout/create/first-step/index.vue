@@ -42,7 +42,7 @@
       <section class="segment-section">
         <div 
           class="segment-section-item is-begin" 
-          key="begin-segement"
+          key="begin-segment"
           :style="{ flex:startSegment.value, backgroundColor:startSegment.color }"
         >
           <div class="segment-section-item-name" v-if="showSegmentName">
@@ -51,12 +51,15 @@
         </div>
         <template v-if="endSegment.value >= 0">
           <div
-            v-for="(segment,idx) in segmentWidths"
+            v-for="segment in segmentWidths"
             class="segment-section-item" 
-            :key="idx"
+            :key="segment.flag"
             :style="{ flex:segment.value, backgroundColor:segment.color }"
           >
-            <div class="segment-section-item-name" v-if="showSegmentName">
+            <div
+              class="segment-section-item-name"
+              v-if="showSegmentName"
+            >
               {{segment.value}}位
             </div>
           </div>
@@ -64,7 +67,7 @@
         <div 
           v-if="endSegment.value"
           class="segment-section-item is-end" 
-          key="end-segement"
+          key="end-segment"
           :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
         >
           <div class="segment-section-item-name" v-if="showSegmentName">
@@ -221,13 +224,26 @@ export default {
     async segments(val) {      
       let { data: segments } = await this.$get({ url: `${this.url}/${this.layoutId}/segments` } );
 
-      this.segmentWidths = val.map((value, idx) => ({
+      let temps = val.map((value, idx) => ({
         name: segments[idx].name || `标识${idx + 1}`,
         value,
-        color: colors[idx % colors.length]
-      }));      
+        color: colors[idx % colors.length],
+        flag: Math.random().toString().slice(2)
+      }));
 
-      this.calcRestLen();
+      // const len = temps.length;
+      
+      // for (let i = 0; i < len; i++) {
+      //   let prev = temps[i - 1];
+
+      //   if (prev && parseInt(prev.value) === 1 && !prev.isStaggered) {
+      //     temps[i].isStaggered = true;
+      //   }
+      // }
+
+      this.segmentWidths = temps;
+
+      this.calcRestLen();      
     },
 
     layoutName: {
