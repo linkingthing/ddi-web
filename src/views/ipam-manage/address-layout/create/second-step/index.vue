@@ -272,7 +272,7 @@ export default {
         for (let j = 0; j < tagLen; j++) {
           let tag = item.tags[j];
 
-          if (prevValue !== null && prevValue > tag.value) {
+          if (prevValue !== null && parseInt(prevValue) > parseInt(tag.value)) {
             return Promise.reject({ message: "请按从小到大的顺序填写网段" });
           }
 
