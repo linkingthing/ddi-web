@@ -48,6 +48,7 @@
         v-model="dhcpTime"
       >
         <line-bar
+          multiple
           :labels="dhcpLabels"
           :values="dhcpValues"
         />
@@ -198,10 +199,13 @@ export default {
 
     getPacketList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/packets`) }).then(({ data: [{ values }] }) => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/packets`) }).then(({ data }) => {
+          const [{ values }] = data;
           const [labels, value] = valuesParser(values);
           this.dhcpLabels = labels;
-          this.dhcpValues = value;
+
+          this.dhcpValues = data;
+
         });
       });
     }
