@@ -9,7 +9,7 @@ export const columns = scope => [
           class: "operate-label operate-link",
           on: {
             click: () => {
-              scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools` });
+              scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools?address=${row.ipnet}` });
             }
           }
         }, row.ipnet)
@@ -20,7 +20,7 @@ export const columns = scope => [
     title: "地址总量",
     key: "capacity",
     align: "center",
-    render: (h, {row}) => {
+    render: (h, { row }) => {
       return row.version === 4 && h("div", row.capacity);
     }
   },

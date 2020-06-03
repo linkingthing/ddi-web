@@ -123,10 +123,9 @@ export default {
       this.selectedData = [];
 
       try {
-        const { url, condition } = this;
-        const { ip, name } = condition;
+        let { url, condition } = this;
 
-        let { data } = await this.$get({ url: `${url}?ip=${ip}&name=${name}` });
+        let { data } = await this.$get({ url: this.$formatQuerys(condition, url) });
         
         this.tableData = data;
       } catch (err) {

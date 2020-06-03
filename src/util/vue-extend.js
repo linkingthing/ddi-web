@@ -2,6 +2,7 @@ import Vue from "vue";
 import store from "@/store";
 import { del, post, put, get, axios } from "./axios";
 import  * as requestMethods from "./request";
+import router from "@/router";
 
 const { getApiByRoute, getRouteByLink } = requestMethods;
 
@@ -143,3 +144,38 @@ Vue.directive("scroll", {
     });
   }
 });
+
+Vue.prototype.$refresh = ({ keeps = [] } = {}) => {  
+  let { query = {}, path } = router.currentRoute;
+  const temp = {};
+
+  keeps.forEach(item => {
+    if (query[item]) {
+      temp[item] = query[item];
+    }
+  });
+
+  let querys = "";
+  const res = Object.entries(temp);
+
+  if (res.length) {
+    querys = res.map(([key, value]) => `${key}=${value}`).join("&");
+  }
+
+  if (querys) {
+    path += `?${querys}`;
+  }
+
+  router.replace(path);
+};
+
+/**
+ * 将对象格式化为url的query字符串
+ */
+Vue.prototype.$formatQuerys = (params = {}, url) => {
+  let query = Object.entries(params).filter(([,value]) => value !== "").map(([key,value]) => `${key}=${value}`).join("&");
+
+  if (url) return query ? `${url}?${query}` : url;
+
+  return query;
+};
