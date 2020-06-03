@@ -58,30 +58,35 @@
           <span>离线</span>
         </div>
       </header>
-      <section class="node-map-content">
-        <!-- <VueDragResize>
-          <div class="node-map-inner"></div>
-        </VueDragResize> -->
+      <section
+        class="node-map-content"
+        v-scroll="handleScroll"
+      >
 
         <div class="node-map-inner">
-          <div
-            v-for="item in nodeList"
-            :key="item.ip"
-            class="node-map-server"
-            :style="`background-image: url(${require('../../assets/images/monitor-group.png')})`"
-            @mouseenter="handleMouseenter(item)"
-            @mouseleave="handleMouseleave(item)"
-          >
-            <i class="success" />
-            <ul class="">
-              <li
-                v-for="item in item.roles"
-                :key="item"
+          <VueDragResize :is-resizable="false">
+            <div class="node-group">
+              <div
+                v-for="item in nodeList"
+                :key="item.ip"
+                class="node-map-server"
+                :style="`background-image: url(${require('../../assets/images/monitor-group.png')})`"
+                @mouseenter="handleMouseenter(item)"
+                @mouseleave="handleMouseleave(item)"
               >
-                {{item}}
-              </li>
-            </ul>
-          </div>
+                <i class="success" />
+                <ul class="">
+                  <li
+                    v-for="item in item.roles"
+                    :key="item"
+                  >
+                    {{item}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </VueDragResize>
+
         </div>
 
         <server-info
@@ -187,7 +192,7 @@ export default {
             }
           }
 
-          this.totalLps = totalLps / time;
+          this.totalLps = totalLps / time || 0;
         });
       });
 
@@ -212,8 +217,23 @@ export default {
 
     handleMouseleave() {
       this.visible = false;
-    }
+    },
 
+    handleScroll(direction, el, e) {
+      console.log(direction, e, el)
+      const zoom = el.dataset.zoom || 1;
+      if (direction === "down") {
+        if (zoom > 0.4) {
+          el.style.zoom = Number(zoom) - 0.2;
+          el.dataset.zoom = Number(zoom) - 0.2;
+        }
+
+      } else {
+        el.style.zoom = Number(zoom) + 0.2;
+        el.dataset.zoom = Number(zoom) + 0.2;
+
+      }
+    }
   }
 };
 
@@ -336,6 +356,7 @@ export default {
   .node-map-content {
     position: relative;
     flex: 1;
+    overflow: hidden;
 
     .node-map-inner {
       position: absolute;

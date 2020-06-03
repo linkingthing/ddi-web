@@ -133,6 +133,18 @@ for (const method in requestMethods) {
 
 Vue.prototype.$wait = time => new Promise(r => setTimeout(() => r(), time));
 
+
+Vue.directive("scroll", {
+  // 当绑定元素插入到 DOM 中
+  inserted: function (el,binding) {
+    var cb = binding.value;
+    el.addEventListener("mousewheel",function (e) {
+      var direction = e.deltaY > 0 ? "down" : "up";
+      cb(direction, el, e);
+    });
+  }
+});
+
 Vue.prototype.$refresh = ({ keeps = [] } = {}) => {  
   let { query = {}, path } = router.currentRoute;
   const temp = {};

@@ -48,6 +48,7 @@
         v-model="dhcpTime"
       >
         <line-bar
+          multiple
           :labels="dhcpLabels"
           :values="dhcpValues"
         />
@@ -182,7 +183,7 @@ export default {
           const [labels, value] = valuesParser(values);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
-        });
+        }).catch(err => err);
       });
     },
 
@@ -192,17 +193,20 @@ export default {
           const [labels, value] = valuesParser(values);
           this.dhcpLeaseLabels = labels;
           this.dhcpLeaseValues = value;
-        });
+        }).catch(err => err);
       });
     },
 
     getPacketList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/packets`) }).then(({ data: [{ values }] }) => {
-          const [labels, value] = valuesParser(values);
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/packets`) }).then(({ data }) => {
+          const [{ values }] = data;
+          const [labels] = valuesParser(values);
           this.dhcpLabels = labels;
-          this.dhcpValues = value;
-        });
+
+          this.dhcpValues = data;
+
+        }).catch(err => err);
       });
     }
 

@@ -31,6 +31,7 @@ const ThemeConfig = {
 };
 export default {
   name: "ChartLine",
+  components: { Chart, NoDataFigure },
   props: {
     isPercent: {
       type: Boolean,
@@ -51,16 +52,91 @@ export default {
     lineTheme: {
       type: String,
       default: "blue"
+    },
+    multiple: {
+      type: Boolean,
+      default: false
     }
   },
-  components: { Chart, NoDataFigure },
   computed: {
     options() {
       const { primaryColor, gradualColor } =
         ThemeConfig[this.lineTheme] || ThemeConfig.blue;
       const self = this;
+
+      let series = [
+        {
+          data: this.values,
+          type: "line",
+          smooth: true,
+          lineStyle: { color: primaryColor, width: 2 },
+          itemStyle: {
+            // borderWidth: 4,
+            borderColor: primaryColor
+          },
+          areaStyle: {
+            color: {
+              type: "linear",
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: primaryColor // 0% 处的颜色
+                },
+                {
+                  offset: 0.1,
+                  color: gradualColor // 100% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: "#fff"
+                }
+              ]
+            }
+          }
+        }
+      ];
+
+      if (this.multiple) {
+        series = this.values.map(item => {
+          return {
+            name: item.packetType,
+            data: item.values.map(item => item.value),
+            type: "line",
+            smooth: true,
+            // lineStyle: { color: primaryColor, width: 2 },
+            // itemStyle: {
+            //   // borderWidth: 4,
+            //   borderColor: primaryColor
+            // },
+            // areaStyle: {
+            //   color: {
+            //     type: "linear",
+            //     x2: 0,
+            //     y2: 1,
+            //     colorStops: [
+            //       {
+            //         offset: 0,
+            //         color: primaryColor // 0% 处的颜色
+            //       },
+            //       {
+            //         offset: 0.1,
+            //         color: gradualColor // 100% 处的颜色
+            //       },
+            //       {
+            //         offset: 1,
+            //         color: "#fff"
+            //       }
+            //     ]
+            //   }
+            // }
+          };
+        });
+      }
+
       return {
-        color: "#f80",
+        color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"],
         grid: {
           left: "50px",
           right: "50px",
@@ -116,16 +192,23 @@ export default {
             }
           }
         },
+
         tooltip: {
-          // show: true,
           trigger: "axis",
-          formatter: function ([data]) {
-            if (self.isPercent) {
-              return (Number(data.data) * 100).toFixed(2) + "%";
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985"
             }
-            return Number(data.data);
+          },
+          formatter: function (value) {
+            let title = value.length && value[0].name;
+            return `<p>${title}</p>` + value.map(item => {
+              return `<p>${item.marker}${item.seriesName}:${self.isPercent ? (Number(item.value) * 100).toFixed(2) + "%" : item.value}</p>`;
+            }).join("");
           }
         },
+
         dataZoom: [
           //   {
           //     show: true,
@@ -141,39 +224,7 @@ export default {
           // }
         ],
 
-        series: [
-          {
-            data: this.values,
-            type: "line",
-            smooth: true,
-            lineStyle: { color: primaryColor, width: 2 },
-            itemStyle: {
-              // borderWidth: 4,
-              borderColor: primaryColor
-            },
-            areaStyle: {
-              color: {
-                type: "linear",
-                x2: 0,
-                y2: 1,
-                colorStops: [
-                  {
-                    offset: 0,
-                    color: primaryColor // 0% 处的颜色
-                  },
-                  {
-                    offset: 0.1,
-                    color: gradualColor // 100% 处的颜色
-                  },
-                  {
-                    offset: 1,
-                    color: "#fff"
-                  }
-                ]
-              }
-            }
-          }
-        ]
+        series
       };
     }
   }
