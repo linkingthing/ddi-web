@@ -200,11 +200,15 @@ export default {
             label: {
               backgroundColor: "#6a7985"
             }
+          },
+          formatter: function (value) {
+            let title = value.length && value[0].name;
+            return `<p>${title}</p>` + value.map(item => {
+              return `<p>${item.marker}${item.seriesName}:${self.isPercent ? (Number(item.value) * 100).toFixed(2) + "%" : item.value}</p>`;
+            }).join("");
           }
-          // formatter: function (value) {
-          //   console.log(value)
-          // }
         },
+
         dataZoom: [
           //   {
           //     show: true,
