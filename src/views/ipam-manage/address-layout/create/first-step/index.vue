@@ -346,6 +346,12 @@ export default {
 
         return Promise.reject();
       }
+
+      if (this.endSegment.value > 0) {
+        this.$$warning("剩余可分配标识长度未使用完，须继续分配！");
+
+        return Promise.reject();
+      }
       
       if (!res.some(item => this.validateItem(item))) {
         this.$$warning("标识长度只能为正整数！");
@@ -355,12 +361,6 @@ export default {
 
       if (this.endSegment.value < 0) {
         this.$$warning("剩余可分配标识长度小于0，请重新输入！");
-
-        return Promise.reject();
-      }
-
-      if (this.endSegment.value > 0) {
-        this.$$warning("剩余可分配标识长度未使用完，须继续分配！");
 
         return Promise.reject();
       }

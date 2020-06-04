@@ -257,10 +257,6 @@ export default {
       const len = this.list.length;
       const refs = this.$refs;
 
-      if (Array.from(new Set(this.list.map(({ name }) => name.trim()))).length < len) {
-        return Promise.reject({ message: "标识名称不能相同！" });
-      }
-
       for (let i = 0; i < len; i++) {
         let item = this.list[i];
 
@@ -279,10 +275,6 @@ export default {
         for (let j = 0; j < tagLen; j++) {
           let tag = item.tags[j];
 
-          if (value === parseInt(tag.value)) {
-            return Promise.reject({ message: "同一标识下，标识值不能相同" });
-          }
-
           value = parseInt(tag.value);
 
           if (!tag.name.trim()) {            
@@ -296,7 +288,15 @@ export default {
 
             return Promise.reject({ message: "请输入正确的标识值！" });
           }
+
+          if (value === parseInt(tag.value)) {
+            return Promise.reject({ message: "同一标识下，标识值不能相同" });
+          }
         }
+      }
+
+      if (Array.from(new Set(this.list.map(({ name }) => name.trim()))).length < len) {
+        return Promise.reject({ message: "标识名称不能相同！" });
       }
     }
   }
