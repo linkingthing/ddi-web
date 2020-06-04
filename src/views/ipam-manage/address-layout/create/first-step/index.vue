@@ -1,23 +1,24 @@
 <template>
   <div class="first-step">
     <section class="info-row-inline" v-if="!isEdit">
-      <div class="info-row-label">网络名称：</div>
+      <div class="info-row-label">规划名称：</div>
       <Input
+        ref="name"
         v-model="name"
         max="50"
         :disabled="disabled"
-        placeholder="请填写网络名称"
+        placeholder="请填写规划名称"
         style="width:260px" />
     </section>
 
     <section class="layout-info" v-if="!isEdit">
       <div class="layout-info-item">
         <div class="item-value">{{canPlanLength}}</div>
-        <div class="item-label">可规划长度</div>
+        <div class="item-label">可规划标识长度</div>
       </div>
       <div class="layout-info-item">
         <div class="item-value">{{prefixPos}}-{{maskLen}}</div>
-        <div class="item-label">当前缀位</div>
+        <div class="item-label">前缀范围</div>
       </div>
     </section>
 
@@ -81,7 +82,7 @@
 
     <section class="segment-list-top" v-if="!isEdit">
       <div class="detail-top-left">
-        剩余可分配前缀长度：<span>{{endSegment.value}}</span>
+        剩余可分配标识长度：<span>{{endSegment.value}}</span>
       </div>
 
       <Button
@@ -101,6 +102,7 @@
         >
           <div class="item-label">{{item.name}} <span>长度：</span></div>
           <Input 
+            :ref="`value${idx}`"
             placeholder="请填写长度"
             v-model="item.value"
             :disabled="disabled"
@@ -231,16 +233,6 @@ export default {
         flag: Math.random().toString().slice(2)
       }));
 
-      // const len = temps.length;
-      
-      // for (let i = 0; i < len; i++) {
-      //   let prev = temps[i - 1];
-
-      //   if (prev && parseInt(prev.value) === 1 && !prev.isStaggered) {
-      //     temps[i].isStaggered = true;
-      //   }
-      // }
-
       this.segmentWidths = temps;
 
       this.calcRestLen();      
@@ -348,19 +340,27 @@ export default {
       let res = this.segmentWidths;
 
       if (!this.name) {
-        this.$$warning("请输入网络名称！");
+        this.$$warning("请输入规划名称！");
+
+        this.$refs.name.focus();
 
         return Promise.reject();
       }
       
       if (!res.some(item => this.validateItem(item))) {
-        this.$$warning("请输入正确的长度！");
+        this.$$warning("标识长度只能为正整数！");
 
         return Promise.reject();
       }
 
       if (this.endSegment.value < 0) {
-        this.$$warning("长度之和不能大于可规划长度！");
+        this.$$warning("剩余可分配标识长度小于0，请重新输入！");
+
+        return Promise.reject();
+      }
+
+      if (this.endSegment.value > 0) {
+        this.$$warning("剩余可分配标识长度未使用完，须继续分配！");
 
         return Promise.reject();
       }

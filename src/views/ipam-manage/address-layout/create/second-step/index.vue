@@ -7,6 +7,7 @@
       <section class="item-top">
         <div class="item-title">
           <Input
+            :ref="`name${idx}`"
             v-if="currentItem && currentItem.id === item.id"
             placeholder="请输入标识名称"
             maxlength="255"
@@ -22,6 +23,8 @@
             </span>
             <span class="item-title-desc">双击修改</span>
           </div>
+
+          <div class="tag-info">标识位：{{item.value}}</div>
         </div>
 
         <Button
@@ -29,7 +32,7 @@
           class="item-top-button"
           @click="handleAddItem(item)"
         >
-          添加
+          添加标识值
         </Button>
       </section>
 
@@ -41,6 +44,7 @@
           <div class="tag-child-input">
             <label class="child-label">名称：</label>
             <Input
+              :ref="`tagName${childIndex}`"
               placeholder="请填写名称"
               v-model="child.name"
               maxlength="50" 
@@ -51,9 +55,11 @@
               v-if="item.value > 4"
               placeholder="请填写值"
               v-model="child.value"
+              :ref="`tagValue${childIndex}`"
               :maxlength="child.maxlength" />
             <select-input
               v-else
+              :ref="`tagValue${childIndex}`"
               v-model="child.value"
               :options="item.options"
               :maxlength="child.maxlength"
@@ -213,7 +219,9 @@ export default {
       return this.list.map(item => {
         let tags = [], values = [];
 
-        Object.values(item.tags).forEach(({ name,value }) => {
+        let res = [...item.tags].sort((a,b) => parseInt(a.value) - parseInt(b.value));
+
+        Object.values(res).forEach(({ name,value }) => {
           tags.push(name.trim());
           values.push(parseInt(value.trim(), 2));
         });
@@ -229,7 +237,7 @@ export default {
 
     handleAddItem(segment) {
       if (segment.tags.length === Math.pow(2, segment.value)) {
-        this.$$warning("超出标识范围！");
+        this.$$warning("标志值已用完！");
 
         return;
       }
@@ -247,16 +255,17 @@ export default {
 
     validate() {
       const len = this.list.length;
+      const refs = this.$refs;
 
       if (Array.from(new Set(this.list.map(({ name }) => name.trim()))).length < len) {
-        return Promise.reject({ message: "各网段名称不能相同！" });
+        return Promise.reject({ message: "标识名称不能相同！" });
       }
 
       for (let i = 0; i < len; i++) {
         let item = this.list[i];
 
         if (!item.name.trim()) {
-          return Promise.reject({ message: "请输入网段名称！" });
+          return Promise.reject({ message: "请输入标识名称！" });
         }
 
         const tagLen = item.tags.length;
@@ -264,34 +273,28 @@ export default {
         let value = null;
 
         if (Array.from(new Set(item.tags.map(({ name }) => name.trim()))).length < tagLen) {
-          return Promise.reject({ message: "网段下各项名称不能相同！" });
+          return Promise.reject({ message: "标识下各项名称不能重复！" });
         }
-
-        let prevValue = null;
 
         for (let j = 0; j < tagLen; j++) {
           let tag = item.tags[j];
 
-          if (prevValue !== null && parseInt(prevValue) > parseInt(tag.value)) {
-            return Promise.reject({ message: "请按从小到大的顺序填写网段" });
-          }
-
-          if (prevValue === null) {
-            prevValue = tag.value;
-          }
-
           if (value === parseInt(tag.value)) {
-            return Promise.reject({ message: "同一网段值不能相同" });
+            return Promise.reject({ message: "同一标识下，标识值不能相同" });
           }
 
           value = parseInt(tag.value);
 
-          if (!tag.name.trim()) {
+          if (!tag.name.trim()) {            
+            refs[`tagName${j}`][0].focus();
+
             return Promise.reject({ message: "请输入名称！" });
           }
 
           if (!/(1|0)/g.test(tag.value.toString().trim())) {
-            return Promise.reject({ message: "请输入正确的值！" });
+            refs[`tagValue${j}`][0].focus();
+
+            return Promise.reject({ message: "请输入正确的标识值！" });
           }
         }
       }

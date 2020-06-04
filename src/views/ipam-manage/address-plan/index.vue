@@ -13,7 +13,6 @@
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"
-      @on-selection-change="handleSelecChange"
     > 
       <template slot="top-right">
         <Button 
@@ -21,14 +20,7 @@
           @click="handleAdd" 
           class="top-button"
         >
-          添加
-        </Button>
-        <Button 
-          type="warning" 
-          @click="handleDelete" 
-          class="top-button"
-        >
-          删除
+          新建网络
         </Button>
       </template>
     </TablePagination>
@@ -62,7 +54,6 @@ export default {
       loading: true,
       tableData: [],
       columns: columns(this),
-      selectedData: [],
       showCreate: false
     };
   },
@@ -74,8 +65,6 @@ export default {
   methods: {
     async handleQuery() {
       this.loading = true;
-
-      this.selectedData = [];
 
       try {
         let { data } = await this.$get({ url: this.url });
@@ -93,10 +82,6 @@ export default {
       }
     },
 
-    handleSelecChange(res) {
-      this.selectedData = [...res];
-    },
-
     handleViewLayouts(data) {
       this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}&maskLen=${data.maskLen}`);
     },
@@ -111,25 +96,13 @@ export default {
       this.handleQuery();
     },
 
-    async handleDelete() {
+    async handleDelete({ id }) {
       try {
-        if (!this.selectedData.length) {
-          this.$$warning("请选择要删除的项！");
-
-          return;
-        }
-
-        if (this.selectedData.length > 1) {
-          this.$$warning("只能删除一项！");
-
-          return;
-        }
-
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
         
-        await this.$delete({ url: this.url + "/" + this.selectedData[0].id });
+        await this.$delete({ url: this.url + "/" + id });
         
         this.$$success("删除成功！");
 

@@ -2,7 +2,7 @@
   <common-modal  
     :visible.sync="dialogVisible"
     :width="415"
-    title="添加地址"
+    title="新建网络"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
@@ -16,8 +16,9 @@
       </div>
 
       <div class="info-row-inline">
-        <div class="info-row-label">网络地址</div>
+        <div class="info-row-label"><i class="is-required">*</i>网络地址</div>
         <Input
+          ref="prefix"
           maxlength="50"
           v-model="prefix"
           placeholder="请填写网络地址"
@@ -25,11 +26,12 @@
       </div>
 
       <div class="info-row-inline" v-if="ipType === 'IPv4'">
-        <div class="info-row-label">网络范围</div>
+        <div class="info-row-label"><i class="is-required">*</i>子网规划范围</div>
         <Input
+          ref="maskLen"
           maxlength="2"
           v-model="maskLen"
-          placeholder="请填写网络地址"
+          placeholder="请填写子网规划范围"
           class="info-row-input" />
       </div>
 
@@ -120,7 +122,7 @@ export default {
     },
 
     validate() {
-      let { ipType, prefix, maskLen, description } = this;
+      let { ipType, prefix, maskLen } = this;
 
       prefix = prefix.trim();
       maskLen = maskLen.trim();
@@ -129,25 +131,29 @@ export default {
 
       if (ipType === "IPv4") {
         if (!ipv4IsValid(addrArr[0]) || !maskIsValid(addrArr[1], "ipv4", [1, 23])) {
-          return Promise.reject({ message: "请输入正确的IP地址！" });
+          this.$refs.prefix.focus();          
+
+          return Promise.reject({ message: "请输入正确的网络地址！" });
         }
 
         if (!maskIsValid(maskLen, "ipv4")) {
-          return Promise.reject({ message: "请输入正确的网络范围！" });
+          this.$refs.maskLen.focus();          
+
+          return Promise.reject({ message: "子网可规划范围须大于网络前缀，不超过24位！" });
         }
       }
       else if (ipType === "IPv6") {
         if (!ipv6IsValid(addrArr[0]) || !maskIsValid(addrArr[1], "ipv6")) {
-          return Promise.reject({ message: "请输入正确的IP地址！" });
+          this.$refs.prefix.focus();          
+
+          return Promise.reject({ message: "请输入正确的网络地址！" });
         }
       }
 
       if (parseInt(maskLen) <= addrArr[1]) {
-        return Promise.reject({ message: "网络 地址掩码必须小于网络范围！" });
-      }
-
-      if (!description.trim()) {
-        return Promise.reject({ message: "请输入备注！" });
+        this.$refs.maskLen.focus();   
+          
+        return Promise.reject({ message: "子网可规划范围必须大于网络前缀！" });
       }
 
       return Promise.resolve();
