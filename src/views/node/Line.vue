@@ -160,7 +160,7 @@ export default {
           axisLabel: {
             formatter: function (params) {
               if (self.isPercent) {
-                return Number(params) * 100 + "%";
+                return (Number(params) * 100).toFixed(2) + "%";
               }
               return params;
             }

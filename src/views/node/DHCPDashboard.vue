@@ -179,7 +179,7 @@ export default {
 
     getLpsList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/leases`) }).then(({ data: [{ values }] }) => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/lpses`) }).then(({ data: [{ values }] }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
