@@ -314,6 +314,12 @@ export default {
      * 添加一个分段
      */
     handleAddSegment() {
+      if (this.endSegment.value < 0) {
+        this.$$warning("剩余可分配标识长度小于0，请重新输入！");
+
+        return Promise.reject();
+      }
+
       this.segmentWidths.push({});
 
       this.formatSegmentNameAndColor();

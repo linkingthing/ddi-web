@@ -30,7 +30,7 @@
       class="table-pagination-footer"
     >
       <Page
-        :current="innerCurrent"
+        :current.sync="innerCurrent"
         :total="total"
         :page-size="size"
         prev-text="上一页"
@@ -204,7 +204,7 @@ export default {
     },
 
     handlePageChange(val) {
-      this.innerCurrent = val;
+      this.$emit("update:current", val);
 
       this.$emit("page-change", {
         current: val,
