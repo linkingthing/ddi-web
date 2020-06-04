@@ -64,6 +64,7 @@ export default {
         ThemeConfig[this.lineTheme] || ThemeConfig.blue;
       const self = this;
 
+console.log(this.values)
       let series = [
         {
           data: this.values,
@@ -101,7 +102,7 @@ export default {
       if (this.multiple) {
         series = this.values.map(item => {
           return {
-            name: item.packetType || item.rcode,
+            name: item.packetType || item.rcode || item.type,
             data: (item.values && item.values.map(item => item.value)) || (item.ratios && item.ratios.map(item => item.ratio)),
             type: "line",
             smooth: true
