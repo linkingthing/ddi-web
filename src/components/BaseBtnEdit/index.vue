@@ -9,7 +9,7 @@
 export default {};
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .btn-edit {
   font-size: 18px;
   margin-left: 16px;
@@ -18,6 +18,7 @@ export default {};
 }
 .icon-edit {
   display: inline-block;
+  vertical-align: middle;
   width: 20px;
   height: 20px;
   background-image: url(./icon-edit.png);

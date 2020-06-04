@@ -7,7 +7,7 @@
       :columns="columns"  
       :total="tableData.length"
       :table-outter-height="440"
-      :current="currentPage"
+      :current.sync="currentPage"
     > 
       <template slot="top-right">
         <Select
@@ -106,6 +106,8 @@ export default {
     },
 
     handleFilter() {
+      this.currentPage = 1;
+
       this.tableData = this.source.filter(({ tagArr }) => {
         let isFit = true;
 
@@ -117,8 +119,6 @@ export default {
 
         return isFit;
       });
-
-      this.currentPage = 1;
     },
 
     async getSegmentTags() {

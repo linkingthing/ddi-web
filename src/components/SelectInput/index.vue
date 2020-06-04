@@ -7,6 +7,7 @@
     popper-class="select-input-custom">
       
     <Input
+      ref="input"
       :placeholder="placeholder"
       v-model="inputValue"
       :maxlength="maxlength"
@@ -115,6 +116,14 @@ export default {
 
     handleBlur() {        
       this.visible = false;
+    },
+
+    focus() {
+      this.$refs.input.focus();
+    },
+
+    blur() {
+      this.$refs.input.blur();
     }
   }
 };

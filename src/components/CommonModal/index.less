@@ -31,6 +31,7 @@
         &-label {
             color: #575757;
             font-size: 14px;
+            position: relative;
         }
 
         .ivu-input {
@@ -44,6 +45,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 24px;
+        position: relative;
 
         &:last-child{
             margin-bottom: 0;
@@ -57,6 +59,15 @@
             flex: none;
             text-align: right;
         }
+    }
+
+    .info-row-label .is-required{
+        position: absolute;
+        z-index: 1;
+        color: red;
+        font-size: 12px;
+        top: 5px;
+        margin-left: -12px;
     }
 
     .ivu-modal-footer {

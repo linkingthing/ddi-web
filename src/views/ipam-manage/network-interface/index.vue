@@ -156,11 +156,16 @@ export default {
       });
     },
 
-    dispatchPieAction() {
+    dispatchPieAction(name) {
       this.statusChart.dispatchAction({
-        type: "pieSelect",
+        type: "pieUnSelect",
+        seriesName: "地址类型分类"
+      });
+
+      this.statusChart.dispatchAction({
+        type: "pieToggleSelect",
         seriesName: "地址类型分类",
-        name: "活跃地址"
+        name
       });
     },
 
@@ -170,14 +175,14 @@ export default {
 
         await Promise.all([
           this.getPieData(),
-          this.getList()
+          this.getList("active")
         ]);
         
         this.renderTypeChart();
         this.renderStatusChart();
 
         this.bindPieEvent();
-        this.dispatchPieAction();
+        this.dispatchPieAction("活跃地址");
       } catch (err) {
         this.$handleError(err);
       }
@@ -336,6 +341,8 @@ export default {
       const { label, type } = item;
 
       this.tableTitle = label;
+      
+      this.dispatchPieAction(label);
       
       this.getList(type);
     },

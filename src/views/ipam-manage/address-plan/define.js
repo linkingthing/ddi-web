@@ -1,10 +1,5 @@
 export const columns = scope => [  
   {
-    type: "selection",
-    width: 60,
-    align: "center"
-  },
-  {
     title: "网络地址",
     render: (h, { row }) => {
       return h("a", {
@@ -31,6 +26,21 @@ export const columns = scope => [
   {
     title: "创建时间",
     key: "creationTimestamp",
+    align: "right"
+  },
+  {
+    title: "操作",
+    width: 100,
+    render: (h, { row }) => 
+      h("div", [
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
+            }
+          }
+        })
+      ]),
     align: "right"
   }
 ];

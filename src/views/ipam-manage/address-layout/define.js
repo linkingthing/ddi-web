@@ -1,10 +1,5 @@
 export const columns = scope => [  
   {
-    type: "selection",
-    width: 60,
-    align: "center"
-  },
-  {
     title: "名称",
     key: "name",
     align: "left"
@@ -22,7 +17,7 @@ export const columns = scope => [
   {
     title: "操作",    
     render: (h, { row }) => {
-      return [
+      return h("div",[
         h("Button", {
           class: "table-row-button",
           props: {
@@ -44,8 +39,15 @@ export const columns = scope => [
               scope.handleViewPlanDetail(row);
             }
           }
-        }, "查看规划")
-      ];
+        }, "查看规划"),
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
+            }
+          }
+        })
+      ]);
     },
     align: "right"
   }

@@ -20,7 +20,15 @@
         }
 
         .item-title{
+            display: flex;
+            align-items: center;
 
+            .tag-info{
+                font-size: 12px;
+                color: #999;
+                margin-left: 50px;
+                white-space: nowrap;
+            }
         }
 
         .item-title-content{
@@ -61,6 +69,10 @@
 
         .ivu-input-wrapper{
             margin-right: 36px;
+
+            &:last-child{
+                margin-right: 0;
+            }
         }
 
         .ivu-poptip{
