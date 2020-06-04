@@ -100,14 +100,14 @@ export default {
 
     if (id) {
       try {
-        let { data } = await this.$get({ url: this.url + "/" + id });
+        let data = await this.$get({ url: this.url + "/" + id });        
 
         this.currentData = data;
       } catch (err) {
         this.$handleError(err);
       }
     }
-    else {
+    else if (ip) {
       this.currentData = { ip };
     }
 
