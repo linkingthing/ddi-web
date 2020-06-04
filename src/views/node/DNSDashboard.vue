@@ -12,6 +12,7 @@
         <line-bar
           :labels="qpsLabels"
           :values="qpsValues"
+          series-name="qps"
         />
       </Card>
 
@@ -20,6 +21,7 @@
           is-percent
           :labels="memoHitRateLabels"
           :values="memoHitRateValues"
+          series-name="缓存命中率"
         />
       </Card>
 
@@ -91,12 +93,12 @@ export default {
         },
         {
           title: "域名",
-          key: "key",
+          key: "domain",
           align: "center"
         },
         {
           title: "统计次数",
-          key: "doc_count",
+          key: "count",
           align: "center"
         }
       ],
@@ -108,12 +110,12 @@ export default {
         },
         {
           title: "IP地址",
-          key: "key",
+          key: "ip",
           align: "center"
         },
         {
           title: "统计次数",
-          key: "doc_count",
+          key: "count",
           align: "center"
         }
       ],
@@ -150,7 +152,7 @@ export default {
   methods: {
     initDataRequest() {
       this.getQpsList();
-      this.getDNSAnalysisStateData();
+      this.getDNSQueryTypeRatio();
       this.getDNSAnalysisStateSuccessRecode();
       this.getMemoHitRateData();
       this.getDNSTop();
@@ -180,11 +182,16 @@ export default {
     },
 
     baseGet(resource, params, labelField, valueField) {
-      this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then(({ data: [{ ratios }] }) => {
-          const [labels, value] = valuesParser(ratios);
-          this[labelField] = labels;
-          this[valueField] = value;
+      return new Promise((resolve) => {
+        this.intercept().then(_ => {
+          this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then((data) => {
+            const { data: [{ ratios, values }] } = data;
+            const [labels, value] = valuesParser(ratios || values);
+            this[labelField] = labels;
+            this[valueField] = value;
+            resolve(data);
+          });
+
         }).catch(err => err);
 
 
@@ -200,11 +207,14 @@ export default {
     },
 
     getQpsList(params) {
-      this.baseGet("qpses", params, "dhcpLpsLabels", "dhcpLpsValues");
+      this.baseGet("qpses", params, "qpsLabels", "qpsValues");
     },
 
-    getDNSAnalysisStateData(params) {
-      this.baseGet("querytyperatios", params, "successRateLabels", "successRateValues");
+    getDNSQueryTypeRatio(params) {
+
+      this.baseGet("querytyperatios", params).then(res => {
+        console.log(res)
+      })
 
     },
 

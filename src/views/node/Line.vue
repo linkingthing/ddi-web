@@ -56,6 +56,10 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+    seriesName: {
+      type: String,
+      default: ""
     }
   },
   computed: {
@@ -64,9 +68,10 @@ export default {
         ThemeConfig[this.lineTheme] || ThemeConfig.blue;
       const self = this;
 
-console.log(this.values)
       let series = [
         {
+          name: self.seriesName || (self.isPercent ? "百分比" : "值"),
+
           data: this.values,
           type: "line",
           smooth: true,
@@ -102,7 +107,7 @@ console.log(this.values)
       if (this.multiple) {
         series = this.values.map(item => {
           return {
-            name: item.packetType || item.rcode || item.type,
+            name: self.seriesName || item.packetType || item.rcode || item.type || "值",
             data: (item.values && item.values.map(item => item.value)) || (item.ratios && item.ratios.map(item => item.ratio)),
             type: "line",
             smooth: true

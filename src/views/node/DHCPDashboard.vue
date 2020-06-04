@@ -40,6 +40,7 @@
         <line-bar
           :labels="dhcpLpsLabels"
           :values="dhcpLpsValues"
+          series-name="LPS统计"
         />
       </Card>
 
@@ -62,6 +63,7 @@
           line-theme="golden"
           :labels="dhcpLeaseLabels"
           :values="dhcpLeaseValues"
+          series-name="Leases总量"
         />
       </Card>
     </div>

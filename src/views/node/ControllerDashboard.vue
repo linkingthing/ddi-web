@@ -14,6 +14,7 @@
           is-percent
           :labels="cpuLabels"
           :values="cpuValues"
+          series-name="CPU利用率"
         />
       </Card>
 
@@ -23,6 +24,7 @@
           line-theme="purple"
           :labels="memoLabels"
           :values="memoValues"
+          series-name="内存利用率"
         />
       </Card>
 
@@ -32,6 +34,7 @@
           line-theme="brown"
           :labels="diskLabels"
           :values="diskValues"
+          series-name="磁盘利用率"
         />
       </Card>
 
@@ -40,6 +43,7 @@
           line-theme="brown"
           :labels="networkLabels"
           :values="networkValues"
+          series-name="网络流量"
         />
       </Card>
     </div>
