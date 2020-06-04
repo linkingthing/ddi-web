@@ -101,36 +101,10 @@ export default {
       if (this.multiple) {
         series = this.values.map(item => {
           return {
-            name: item.packetType,
-            data: item.values.map(item => item.value),
+            name: item.packetType || item.rcode,
+            data: (item.values && item.values.map(item => item.value)) || (item.ratios && item.ratios.map(item => item.ratio)),
             type: "line",
-            smooth: true,
-            // lineStyle: { color: primaryColor, width: 2 },
-            // itemStyle: {
-            //   // borderWidth: 4,
-            //   borderColor: primaryColor
-            // },
-            // areaStyle: {
-            //   color: {
-            //     type: "linear",
-            //     x2: 0,
-            //     y2: 1,
-            //     colorStops: [
-            //       {
-            //         offset: 0,
-            //         color: primaryColor // 0% 处的颜色
-            //       },
-            //       {
-            //         offset: 0.1,
-            //         color: gradualColor // 100% 处的颜色
-            //       },
-            //       {
-            //         offset: 1,
-            //         color: "#fff"
-            //       }
-            //     ]
-            //   }
-            // }
+            smooth: true
           };
         });
       }

@@ -26,6 +26,7 @@
       <Card title="解析成功率">
         <line-bar
           is-percent
+          multiple
           :labels="successRateLabels"
           :values="successRateValues"
         />
@@ -165,6 +166,19 @@ export default {
       });
     },
 
+    baseGetNotParser(resource, params, labelField, valueField) {
+      this.intercept().then(_ => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then(({ data }) => {
+          const [{ ratios }] = data;
+
+          const [labels] = valuesParser(ratios);
+
+          this[labelField] = labels;
+          this[valueField] = data;
+        }).catch(err => err);
+      });
+    },
+
     baseGet(resource, params, labelField, valueField) {
       this.intercept().then(_ => {
         this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then(({ data: [{ ratios }] }) => {
@@ -172,6 +186,8 @@ export default {
           this[labelField] = labels;
           this[valueField] = value;
         }).catch(err => err);
+
+
       });
     },
 
@@ -191,8 +207,9 @@ export default {
       this.baseGet("querytyperatios", params, "successRateLabels", "successRateValues");
 
     },
+
     getDNSAnalysisStateSuccessRecode(params) {
-      this.baseGet("resolvedratios", params, "successRateLabels", "successRateValues");
+      this.baseGetNotParser("resolvedratios", params, "successRateLabels", "successRateValues");
     },
 
     getMemoHitRateData(params) {

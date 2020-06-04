@@ -145,6 +145,20 @@ Vue.directive("scroll", {
   }
 });
 
+Vue.directive("position", {
+
+  // 当绑定元素插入到 DOM 中
+  inserted: function (el, binding) {
+    const { ip, master, getPosition } = binding.value;
+
+    const { offsetTop, offsetLeft ,offsetHeight, offsetWidth } = el;
+
+    getPosition({ ip, master, offsetTop, offsetLeft ,offsetHeight, offsetWidth });
+
+  }
+
+});
+
 Vue.prototype.$refresh = ({ keeps = [] } = {}) => {  
   let { query = {}, path } = router.currentRoute;
   const temp = {};

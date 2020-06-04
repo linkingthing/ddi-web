@@ -58,34 +58,69 @@
           <span>离线</span>
         </div>
       </header>
-      <section
-        class="node-map-content"
-        v-scroll="handleScroll"
-      >
+      <section class="node-map-content">
 
-        <div class="node-map-inner">
-          <VueDragResize :is-resizable="false">
-            <div class="node-group">
+        <div
+          class="node-map-inner"
+          v-scroll="handleScroll"
+        >
+          <!-- <VueDragResize :is-resizable="false"> -->
+          <svg ref="nodeMapRef">
+            <path
+              v-for="(item, index) in svgPathGroup"
+              :key="index"
+              :d="`M${item.startX} ${item.startY} Q${item.endX-30} ${item.endY} ${item.endX-10} ${item.endY} T${item.endX} ${item.endY}`"
+              stroke="#7BAFFD"
+              stroke-dasharray="10,10"
+              fill="none"
+              style="stroke-width: 2px;"
+            />
+          </svg>
+          <div class="node-group">
+            <div class="controller-box">
               <div
-                v-for="item in nodeList"
+                class="controller-item "
+                v-for="item in controllerList"
                 :key="item.ip"
-                class="node-map-server"
-                :style="`background-image: url(${require('../../assets/images/monitor-group.png')})`"
-                @mouseenter="handleMouseenter(item)"
-                @mouseleave="handleMouseleave(item)"
               >
-                <i class="success" />
-                <ul class="">
-                  <li
-                    v-for="item in item.roles"
-                    :key="item"
-                  >
-                    {{item}}
-                  </li>
-                </ul>
+                <div class="controller-master node-item">
+                  <map-node-item
+                    v-position="{ip: item.ip, end:item.controllerIP, getPosition}"
+                    :value="item"
+                    :key="item.ip"
+                    @mouseenter="handleMouseenter"
+                    @mouseleave="handleMouseleave"
+                  />
+                </div>
+                <div class="controller-slave node-item">
+                  <div class="slave-node"></div>
+
+                </div>
               </div>
             </div>
-          </VueDragResize>
+            <div class="common-node-box">
+              <div
+                class="common-node-item "
+                v-for="item in commonNodeList"
+                :key="item.ip"
+              >
+                <div class="node-item">
+                  <map-node-item
+                    :value="item"
+                    v-position="{ip: item.ip, master: item.controllerIP, getPosition}"
+                    :key="item.ip"
+                    @mouseenter="handleMouseenter"
+                    @mouseleave="handleMouseleave"
+                  />
+                </div>
+                <div class="common-node-item-slave node-item">
+                  <div class="slave-node"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- </VueDragResize> -->
 
         </div>
 
@@ -104,16 +139,18 @@
 import moment from "moment";
 moment.locale("zh-cn");
 
-import { getDeviceHistoryInfo } from "./tools";
 import VueDragResize from "vue-drag-resize";
 
 import ServerInfo from "./modules/server-info";
+import MapNodeItem from "./modules/map-node-item";
+
 
 
 export default {
   components: {
     VueDragResize,
-    "server-info": ServerInfo
+    "server-info": ServerInfo,
+    "map-node-item": MapNodeItem
   },
   props: {},
   data() {
@@ -121,7 +158,48 @@ export default {
       timer: null,
       parserRunTime: {},
 
-      nodeList: [{}, {}],
+      nodeList: [
+        // {
+        //   ip: "10.0.0.20",
+        //   roles: ["controller"]
+        // },
+        // {
+        //   roles: ["dns"]
+        // },
+        // {
+        //   roles: ["dhcp"]
+        // },
+        // {
+        //   roles: ["dns"]
+        // },
+        // {
+        //   roles: ["dhcp"]
+        // },
+        // {
+        //   roles: ["dns"]
+        // },
+        // {
+        //   ip: "10.0.0.1",
+        //   controllerIP: "10.0.0.20",
+        //   roles: ["dhcp"]
+        // },
+        // {
+        //   ip: "10.0.0.10",
+        //   controllerIP: "10.0.0.20",
+
+        //   roles: ["dns"]
+        // },
+        // {
+        //   ip: "10.0.0.12",
+        //   controllerIP: "10.0.0.20",
+        //   roles: ["dhcp"]
+        // },
+        // {
+        //   roles: ["controller"]
+        // }, {
+        //   roles: ["controller"]
+        // }
+      ],
       totalQps: 0,
       totalLps: 0,
       bootTimestamp: "",
@@ -129,19 +207,58 @@ export default {
       runTime: "",
 
       visible: false,
-      server: {}
+      server: {},
+
+      nodeMapRef: null,
+
+      svgPathGroup: [],
+
+      positionMap: []
     };
   },
   computed: {
 
+    controllerList() {
+      const result = this.nodeList.filter(item => item.roles.includes("controller"));
+      return result;
+    },
+    commonNodeList() {
+      const result = this.nodeList.filter(item => !item.roles.includes("controller"));
+      return result;
+    }
+
   },
   watch: {
+    positionMap: {
+      deep: true,
+      handler(value) {
+        // 杯子算法
+        let startXPointMap = {};
+        let lineGroup = [];
+
+        console.log(value)
+        value.forEach(item => {
+          if (!item.master) {
+            startXPointMap[item.ip] = item;
+          } else {
+            const endPoint = item;
+            const startPoint = startXPointMap[item.master];
+            lineGroup.push({ startPoint, endPoint });
+          }
+        });
+
+        console.log(lineGroup)
+        this.svgPathGroup = this.point2Path(lineGroup)
+
+      }
+    }
 
   },
 
   mounted() {
-    this.getNodeInfo();
 
+
+    this.getNodeInfo();
     this.timer = setInterval(() => {
       this.parserRunTime = this.excuteRunTime();
     }, 1000);
@@ -220,19 +337,38 @@ export default {
     },
 
     handleScroll(direction, el, e) {
-      console.log(direction, e, el)
-      const zoom = el.dataset.zoom || 1;
+      const zoom = el.dataset.transform || 1;
       if (direction === "down") {
         if (zoom > 0.4) {
-          el.style.zoom = Number(zoom) - 0.2;
-          el.dataset.zoom = Number(zoom) - 0.2;
+          el.style.transform = `scale(${Number(zoom) - 0.2})`;
+          el.dataset.transform = Number(zoom) - 0.2;
         }
 
       } else {
-        el.style.zoom = Number(zoom) + 0.2;
-        el.dataset.zoom = Number(zoom) + 0.2;
-
+        el.style.transform = `scale(${Number(zoom) + 0.2})`;
+        el.dataset.transform = Number(zoom) + 0.2;
       }
+    },
+
+    getPosition(position) {
+      this.positionMap.push(position);
+      // 下一步要不要排个序
+    },
+
+    point2Path(pointList) {
+      const pathList = pointList.map(({ startPoint, endPoint }) => {
+        console.log(startPoint)
+
+        return {
+          startX: startPoint.offsetLeft + startPoint.offsetWidth,
+          startY: startPoint.offsetTop + startPoint.offsetHeight / 2,
+          endX: endPoint.offsetLeft,
+          endY: endPoint.offsetTop + endPoint.offsetHeight / 2
+        };
+      });
+
+      console.log(pathList)
+      return pathList;
     }
   }
 };
@@ -362,54 +498,64 @@ export default {
       position: absolute;
       width: 100%;
       height: 100%;
-      background: #ddd;
+      // background: #ddd;
 
-      .node-map-server {
-        position: relative;
-        width: 300px;
-        height: 104px;
-        border-radius: 6px;
-        background-size: cover;
-
-        i {
-          position: absolute;
-          right: 24px;
-          top: 18px;
-          display: block;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          &.success {
-            background: #3eec3d;
-          }
-          &.error {
-            background: #f15e5e;
-          }
-        }
-
-        ul {
-          display: inline-flex;
-          color: #fff;
-          font-size: 14px;
-          margin: 18px 24px;
-          li {
-            position: relative;
-
-            & + li {
-              margin-left: 30px;
-              &::before {
-                position: absolute;
-                top: -3px;
-                left: -20px;
-                content: ".";
-                font-size: 40px;
-                line-height: 0;
-              }
-            }
-          }
-        }
+      svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
       }
     }
+  }
+}
+
+.node-group {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .node-item {
+    padding: 40px;
+  }
+  .controller-box,
+  .common-node-box {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .controller-item {
+    flex: 1;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+    // margin: 40px;
+    & > .controller-master,
+    & > .controller-slave {
+      // padding: 40px;
+    }
+  }
+  .controller-master {
+    // flex: 1;
+  }
+  .controller-slave,
+  .common-node-item-slave {
+    // flex: 1;
+
+    width: 300px;
+  }
+
+  .common-node-item {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .slave-node {
+    height: 104px;
+    // background: #f20;
   }
 }
 
