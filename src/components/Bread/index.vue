@@ -12,7 +12,7 @@
         <div
           class="bread-item-link"
           :class="{'is-current': item.name === currentName}"
-          @click="handleClickRoute(item)"
+          @click="handleClickRoute(item, index)"
         >
           {{item.title}}
         </div>
@@ -59,7 +59,9 @@ export default {
   },
 
   methods: {
-    handleClickRoute(item) {
+    handleClickRoute(item, index) {
+      if (index === this.breadcrumbList.length - 1) return;
+
       this.$router.push(item.path);
     },
 

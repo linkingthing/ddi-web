@@ -12,20 +12,16 @@ export const columns = scope => [
   {
     title: "操作",
     width: 120,
-    render: (h, { row }) => {
-      return h("Button", {
-        class: "table-row-button",
-        style: { width: "60px" },
-        props: {
-          type: "default"
-        },
-        on: {
-          click: () => {
-            scope.handleEdit(row);
+    render: (h, { row }) => 
+      h("div", [
+        h("btn-edit", {
+          on: {
+            click: () => {
+              scope.handleEdit(row);
+            }
           }
-        }
-      }, "编辑");
-    },
+        })
+      ]),
     align: "center"
   }
 ];

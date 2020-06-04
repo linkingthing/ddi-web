@@ -32,17 +32,15 @@ export const columns = scope => [
     title: "操作",
     width: 100,
     render: (h, { row }) => 
-      h("Button", {
-        class: "table-row-button",
-        props: {
-          type: "default"
-        },
-        on: {
-          click: () => {
-            scope.handleDelete(row);
+      h("div", [
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
+            }
           }
-        }
-      }, "删除"),
+        })
+      ]),
     align: "right"
   }
 ];

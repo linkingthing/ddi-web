@@ -17,7 +17,7 @@ export const columns = scope => [
   {
     title: "操作",    
     render: (h, { row }) => {
-      return [
+      return h("div",[
         h("Button", {
           class: "table-row-button",
           props: {
@@ -40,18 +40,14 @@ export const columns = scope => [
             }
           }
         }, "查看规划"),
-        h("Button", {
-          class: "table-row-button",
-          props: {
-            type: "default"
-          },
+        h("btn-del", {
           on: {
             click: () => {
               scope.handleDelete(row);
             }
           }
-        }, "删除")
-      ];
+        })
+      ]);
     },
     align: "right"
   }
