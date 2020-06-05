@@ -36,7 +36,7 @@ export default {
       rules: {
         validLifetime: [{
           pattern: positiveIntegerReg,
-          message: "请输入正整数",
+          message: "请输入正整数"
         },
         {
           validator: function (rule, value, callback) {
@@ -126,9 +126,9 @@ export default {
 
         if (valid) {
           const params = this.formModel;
-          params.domainServers = params.domainServers.split(",");
-          this.$axios.put(this.formModel.links.update, this.formModel).then(res => {
-            this.$Message.success("Success!");
+          params.domainServers = typeof params.domainServers === "string" ? params.domainServers.split(",") : [];
+          this.$axios.put(this.formModel.links.update, params).then(res => {
+            this.$Message.success("保存成功!");
 
           }).catch(err => {
             this.$$error(err.message);

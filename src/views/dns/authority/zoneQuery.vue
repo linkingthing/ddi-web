@@ -59,7 +59,7 @@ export default {
         },
         {
           title: "TTL",
-          key: "rrsize",
+          key: "ttl",
           align: "center"
         },
 
