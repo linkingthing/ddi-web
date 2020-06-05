@@ -10,7 +10,7 @@
     <Form
       ref="formInline"
       label-position="left"
-      :label-width="80"
+      :label-width="100"
       :label-colon="true"
       :rules="rules"
       :model="formModel"
@@ -44,7 +44,17 @@ export default {
 
   data() {
 
-    this.rules = {};
+    this.rules = {
+      name: [
+        { required: true, message: "请填写区名称" }
+      ],
+      forwardids: [
+        { required: true, message: "请选择转发分组" }
+      ],
+      forwardtype: [
+        { required: true, message: "请选择转发方式" }
+      ]
+    };
     return {
       forwardList: [],
       formItemList: [
@@ -116,7 +126,7 @@ export default {
             comment,
             forwardtype,
             forwards,
-            forwardids: forwards.map(item => item.id)
+            forwardids: Array.isArray(forwards) ? forwards.map(item => item.id) : []
           };
 
 

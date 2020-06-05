@@ -39,7 +39,7 @@ export default {
         },
         {
           title: "区数量",
-          key: "zonesize",
+          key: "masterzonesize",
           align: "center"
         },
         {

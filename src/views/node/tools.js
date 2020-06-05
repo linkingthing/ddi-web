@@ -40,12 +40,12 @@ export function valuesParser(values) {
     return {
       timestamp,
       time: moment(timestamp).format("YYYY-MM-DD hh:mm:ss"),
-      count: +value,
+      count: value,
       ratio
     };
   });
   const labels = data && data.map(item => item.time);
-  const counts = data && data.map(item => item.count || item.ratio);
+  const counts = data && data.map(item => typeof (item.count) === "undefined"  ? item.ratio : item.count);
   // TODO: 这里不算好，ratio 应该考虑传参
   return [labels, counts];
 }

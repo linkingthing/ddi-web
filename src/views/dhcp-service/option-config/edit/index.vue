@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import service from "@/services";
 
 export default {
   props: {
@@ -55,7 +54,28 @@ export default {
       }
     ];
 
-    this.rules = {};
+    this.rules = {
+      name: [
+        {
+          validator: function (rule, value, callback) {
+            if (value.length > 128) {
+              callback("名称最长128个字符");
+            }
+            callback();
+          }
+        }
+      ],
+      regexp: [
+        {
+          validator: function (rule, value, callback) {
+            if (value.length > 128) {
+              callback("匹配条件最长128个字符");
+            }
+            callback();
+          }
+        }
+      ]
+    };
     return {
       formModel: {},
       dialogVisible: false,

@@ -8,7 +8,7 @@
     >
       <template slot="top-right">
         <i-button
-          type="success"
+          type="primary"
           @click="handleOpenCreate"
         >新建</i-button>
       </template>
@@ -67,7 +67,7 @@ export default {
         {
           title: "备注",
           key: "comment",
-          align: "right"
+          align: "center"
         },
         {
           title: "操作",

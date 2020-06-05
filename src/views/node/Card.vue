@@ -6,11 +6,13 @@
       </h3>
       <div>
         <slot name="right" />
-        <Button
-          v-if="hasPdf"
+        <router-link
+          :to="download.url"
+          v-if="download.url"
           type="primary"
           size="small"
-        >导出PDF</Button>
+          @click="handleDownload"
+        >导出PDF</router-link>
         <Select
           v-if="hasTimeFilter"
           style="width: 110px; margin-left: 20px"
@@ -36,9 +38,9 @@ export default {
       type: String,
       default: ""
     },
-    hasPdf: {
-      type: Boolean,
-      default: false
+    download: {
+      type: Object,
+      default: () => ({})
     },
     hasTimeFilter: {
       type: Boolean,
@@ -84,7 +86,11 @@ export default {
   },
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    handleDownload() {
+
+    }
+  }
 };
 </script>
 

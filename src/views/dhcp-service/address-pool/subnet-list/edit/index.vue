@@ -1,7 +1,7 @@
 <template>
   <common-modal
     :visible.sync="dialogVisible"
-    title="子网地址编辑"
+    :title="getTitle"
     @confirm="handleConfirm"
     width="413"
   >
@@ -49,12 +49,16 @@ export default {
   },
 
   computed: {
+    getTitle() {
+      return this.isCreate ? "新增子网地址" : "编辑子网地址";
+    },
     formItemList() {
+      let formListResult = [];
       const ipv4FormList = [
         {
           label: "子网地址",
           model: "ipnet",
-          type: "input",
+          type: this.isCreate ? "input" : "text",
           placeholder: "请填写子网地址"
         },
         {
@@ -83,28 +87,59 @@ export default {
         }
       ];
 
-      const ipv6FormList = [{
-        label: "DNS",
-        model: "domainServers",
-        type: "input",
-        placeholder: "请填写DNS，逗号隔开"
-      }
+      const ipv6FormList = [
+        {
+          label: "子网地址",
+          model: "ipnet",
+          type: this.isCreate ? "input" : "text",
+          placeholder: "请填写子网地址"
+        },
+        {
+          label: "DNS",
+          model: "domainServers",
+          type: "input",
+          placeholder: "请填写DNS，逗号隔开"
+        }
       ];
 
       if (this.formModel.version === 6) {
-        return ipv6FormList;
+        formListResult = ipv6FormList;
       }
 
       if (this.formModel.version === 4) {
-        return ipv4FormList;
+        formListResult = ipv4FormList;
       }
 
-      return [];
+      if (this.isManualCreate) {
+        const typeChange = {
+          label: "Ip类型",
+          model: "version",
+          type: "radio",
+          placeholder: "请填写默认网关",
+          children: [{
+            label: 4,
+            text: "ipv4"
+          },
+          {
+            label: 6,
+            text: "ipv6"
+          }]
+        };
+
+        formListResult.unshift(typeChange);
+      }
+      return formListResult;
     },
 
     isCreate() {
       const { create } = this.links;
       return !!create;
+    },
+
+    isManualCreate() {
+      const { ipnet } = this.$route.query;
+
+      return this.isCreate && !ipnet;
     }
   },
   watch: {
@@ -118,7 +153,6 @@ export default {
       if (!val) {
         this.formModel = {};
       } else {
-        console.log(11, this.links)
         if (this.isCreate) {
           const { ipnet } = this.$route.query;
           let version;

@@ -11,6 +11,7 @@
       <Card
         title="DHCP使用率"
         v-model="usageTime"
+        :download="$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/lpses?action=exportcsv`)"
       >
         <template v-slot:right>
           <Select
@@ -40,6 +41,7 @@
         <line-bar
           :labels="dhcpLpsLabels"
           :values="dhcpLpsValues"
+          series-name="LPS统计"
         />
       </Card>
 
@@ -62,6 +64,7 @@
           line-theme="golden"
           :labels="dhcpLeaseLabels"
           :values="dhcpLeaseValues"
+          series-name="Leases总量"
         />
       </Card>
     </div>
@@ -73,7 +76,7 @@
 import Card from "./Card";
 import Line from "./Line";
 import NodeSelect from "./modules/node-select";
-import { getDeviceHistoryInfo, valuesParser } from "./tools";
+import { valuesParser } from "./tools";
 
 export default {
   name: "DHCPDashboard",
@@ -179,7 +182,7 @@ export default {
 
     getLpsList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/leases`) }).then(({ data: [{ values }] }) => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/lpses`) }).then(({ data: [{ values }] }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;

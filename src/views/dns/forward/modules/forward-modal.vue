@@ -65,7 +65,11 @@ export default {
       }
     ];
 
-    this.rules = {};
+    this.rules = {
+      name: [
+        { required: true, message: "请填写组名称" }
+      ]
+    };
     return {
       formModel: {
         zonetype: "master"

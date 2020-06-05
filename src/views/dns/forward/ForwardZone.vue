@@ -36,7 +36,7 @@ export default {
           key: "name",
           align: "left",
           render: (h, { row }) => {
-            return h("div", row.name === "." ? "根区" : row.name)
+            return h("div", row.name === "." ? "根区" : row.name);
           }
         },
 
@@ -64,7 +64,11 @@ export default {
           key: "creationTimestamp",
           algin: "center"
         },
-
+        {
+          title: "备注",
+          key: "comment",
+          align: "center"
+        },
         {
           title: "操作",
           key: "action",
@@ -78,7 +82,7 @@ export default {
                 }
               }), h("btn-del", {
                 on: {
-                  click: () => this.delete(row.id)
+                  click: () => this.delete(row)
                 }
               })
             ]);
@@ -128,20 +132,18 @@ export default {
       this.paramsLinks = links;
     },
     // 删除
-    delete(zoneId) {
+    delete({ links }) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          services
-            .deleteZone(this.viewId, zoneId)
-            .then(res => {
-              this.$Message.success("删除成功");
-              this.getDataList();
-            })
-            .catch(err => {
-              this.$Message.error("删除失败");
-            });
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.success("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$$error(err.response.data.message);
+          });
+
         }
       });
     }

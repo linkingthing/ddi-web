@@ -7,7 +7,7 @@
       :pagination-enable="false">
       <template slot="top-right">
         <i-button
-          type="success"
+          type="primary"
           size="large"
           @click="handleOpenCreate">新建</i-button>
       </template>
