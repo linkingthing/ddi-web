@@ -82,7 +82,7 @@ export default {
                 }
               }), h("btn-del", {
                 on: {
-                  click: () => this.delete(row.id)
+                  click: () => this.delete(row)
                 }
               })
             ]);
@@ -132,20 +132,18 @@ export default {
       this.paramsLinks = links;
     },
     // 删除
-    delete(zoneId) {
+    delete({ links }) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定删除？",
         onOk: () => {
-          services
-            .deleteZone(this.viewId, zoneId)
-            .then(res => {
-              this.$Message.success("删除成功");
-              this.getDataList();
-            })
-            .catch(err => {
-              this.$Message.error("删除失败");
-            });
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.success("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$$error(err.response.data.message);
+          });
+
         }
       });
     }
