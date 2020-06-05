@@ -71,8 +71,8 @@ export default {
           },
           {
             validator: function (rule, value, callback) {
-              if (value < 300) {
-                callback("最短租约时长不能小于300");
+              if (value < 3600) {
+                callback("最短租约时长不能小于3600");
               }
               callback();
             }

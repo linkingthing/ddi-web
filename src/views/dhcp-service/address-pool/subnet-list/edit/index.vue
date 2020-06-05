@@ -1,7 +1,7 @@
 <template>
   <common-modal
     :visible.sync="dialogVisible"
-    title="子网地址编辑"
+    :title="getTitle"
     @confirm="handleConfirm"
     width="413"
   >
@@ -49,6 +49,9 @@ export default {
   },
 
   computed: {
+    getTitle() {
+      return this.isCreate ? "新增子网地址" : "编辑子网地址";
+    },
     formItemList() {
       const ipv4FormList = [
         {

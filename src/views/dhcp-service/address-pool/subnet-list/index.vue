@@ -7,7 +7,17 @@
       :data="tableData"
       :total="tableData.length"
       :columns="columns"
-    />
+    >
+      <template slot="top-right">
+        <Button
+          type="primary"
+          @click="handleAdd"
+          class="top-button button-add"
+        >
+          新建
+        </Button>
+      </template>
+    </TablePagination>
     <Edit
       :visible.sync="showEdit"
       :links="links"
@@ -57,6 +67,12 @@ export default {
           create: "/apis/linkingthing.com/dhcp/v1/subnets"
         };
       }
+    },
+    handleAdd() {
+      this.showEdit = true;
+      this.links = {
+        create: "/apis/linkingthing.com/dhcp/v1/subnets"
+      };
     },
 
     getDataList() {
