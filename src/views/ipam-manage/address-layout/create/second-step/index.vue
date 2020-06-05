@@ -267,8 +267,8 @@ export default {
           value = value.toString().trim();
         }
         else if (type === "Number") {
-          itemValue = Number(itemValue);
-          value = Number(value);
+          itemValue = itemValue === "" ? "" : Number(itemValue);
+          value = value === "" ? "" : Number(value);
         }
 
         if (itemValue === value) {

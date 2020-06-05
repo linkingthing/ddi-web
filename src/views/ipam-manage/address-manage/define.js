@@ -1,6 +1,6 @@
 export const columns = scope => [
   {
-    title: "网络",
+    title: "子网",
     render: (h, { row }) => {
       return h("a", {
         class: "is-link",
@@ -14,7 +14,7 @@ export const columns = scope => [
     align: "left"
   },
   {
-    title: "备注",
+    title: "名称",
     key: "tags",
     align: "center"
   },
@@ -30,10 +30,5 @@ export const columns = scope => [
         }
       });
     }
-  },
-  {
-    title: "创建时间",
-    key: "creationTimestamp",
-    align: "center"
   }
 ];
