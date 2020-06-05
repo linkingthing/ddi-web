@@ -154,7 +154,7 @@ export default {
         this.formModel = {};
       } else {
         if (this.isCreate) {
-          const { ipnet } = this.$route.query;
+          const { ipnet,tags } = this.$route.query;
           let version;
           if (ipv6IsValid(ipnet)) {
             version = 6;
@@ -164,7 +164,8 @@ export default {
           }
           this.formModel = {
             version,
-            ipnet
+            ipnet,
+            tags
           };
         } else {
           this.getData(this.links);

@@ -20,6 +20,7 @@
         >
           <InputNumber
             v-model="formItem.recursiveclients"
+            :max="150000"
             style="width:300px;"
           />
           <span>pps</span>
@@ -33,6 +34,7 @@
           <InputNumber
             v-model="formItem.fetchesperzone"
             style="width:300px;"
+            :max="50000"
           />
           <span>pps</span>
 
