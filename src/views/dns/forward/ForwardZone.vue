@@ -36,7 +36,7 @@ export default {
           key: "name",
           align: "left",
           render: (h, { row }) => {
-            return h("div", row.name === "." ? "根区" : row.name)
+            return h("div", row.name === "." ? "根区" : row.name);
           }
         },
 

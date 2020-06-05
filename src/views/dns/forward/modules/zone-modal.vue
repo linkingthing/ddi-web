@@ -126,7 +126,7 @@ export default {
             comment,
             forwardtype,
             forwards,
-            forwardids: forwards.map(item => item.id)
+            forwardids: Array.isArray(forwards) ? forwards.map(item => item.id) : []
           };
 
 
