@@ -161,9 +161,9 @@ export default {
     handleMove({ priority, links, ...rest }, type) {
       let count = priority;
       if (type === "up") {
-        count += 1;
-      } else {
         count -= 1;
+      } else {
+        count += 1;
       }
       this.$put({
         url: links.update,

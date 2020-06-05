@@ -22,10 +22,7 @@
               label="记录名"
               prop="name"
             >
-              <i-input
-                v-model="params.name"
-                placeholder="请填写资源名称"
-              />
+              {{`${params.name}.${recordSuffix}`}}
             </form-item>
             <TypeValue :params="params" />
             <form-item
@@ -53,12 +50,14 @@ import {
   resourceDomainValidateFunc,
   positiveIntegerValidate
 } from "@/util/common";
+import { getParantData } from "@/util/request";
 
 export default {
   name: "WebsiteUpConfig",
   components: { TypeValue },
   data() {
     return {
+      recordSuffix: "",
       // 是否显示mode
       analysisModal: false,
       // 表单数据
@@ -86,6 +85,9 @@ export default {
       }
     };
   },
+  created() {
+    this.getZoneInfo();
+  },
   methods: {
     openModel(viewId, zoneId, id) {
       this.viewId = viewId;
@@ -93,6 +95,11 @@ export default {
       this.id = id;
       this.getResourceRecord(viewId, zoneId, id);
       this.analysisModal = true;
+    },
+    getZoneInfo() {
+      getParantData().then(({ data: { name } }) => {
+        this.recordSuffix = name;
+      });
     },
     getResourceRecord(viewId, zoneId, id) {
       services.getResourceRecordById(viewId, zoneId, id).then(res => {

@@ -81,9 +81,9 @@ export default {
             validator: resourceDomainValidateFunc
           }
         ],
-        type: [{ message: "请选择资源类型" }],
+        type: [{ required: true, message: "请选择资源类型" }],
         rdata: [{ required: true, message: "请填写记录值" }],
-        ttl: [{ required: true, message: "请填写ttl" }, positiveIntegerValidate]
+        ttl: [positiveIntegerValidate]
       }
     };
   },
@@ -95,7 +95,7 @@ export default {
       this.getZoneInfo();
     },
     getZoneInfo() {
-      getParantData().then(({ name }) => {
+      getParantData().then(({ data: { name } }) => {
         this.recordSuffix = name;
       });
     },
