@@ -110,6 +110,7 @@ export default {
           this.$emit("onCreateSuccess");
           this.$Message.success("新建成功!");
           this.ipModal = false;
+          this.$refs["formValidate"].resetFields();
         })
         .catch((err) => {
           console.log(err)
