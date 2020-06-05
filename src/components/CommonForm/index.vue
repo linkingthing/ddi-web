@@ -13,7 +13,7 @@
       />
       <i-input
         v-if="item.type === 'input'"
-        v-model="formModel[item.model]"
+        v-model.trim="formModel[item.model]"
         :type="item.inputType"
         :disabled="item.disabled"
         :placeholder="item.placeholder"
