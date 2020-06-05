@@ -6,7 +6,7 @@
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"
-      :table-outter-height="440"
+      :table-inner-height="440"
       :current.sync="currentPage"
     > 
       <template slot="top-right">
@@ -174,7 +174,9 @@ export default {
               id: row.id
             },
             query: {
-              ipnet: row.ipnet
+              ipnet: row.ipnet,
+              address: row.ipnet,
+              tags: row.tags
             }
           });
         }
@@ -182,7 +184,8 @@ export default {
           this.$router.push({
             name: "subnet-pool-subnet",
             query: {
-              ipnet: row.ipnet
+              ipnet: row.ipnet,
+              tags: row.tags
             }
           });
         }
