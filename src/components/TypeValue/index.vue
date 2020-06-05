@@ -29,6 +29,7 @@
       ]"
     >
       <i-input
+        type="textarea"
         v-model="params.rdata"
         placeholder="可以添加多个记录值，多个记录值必须用 换行符分隔，每次最多填写20条"
       />
