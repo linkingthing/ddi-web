@@ -4,14 +4,13 @@
     v-if="visible"
   >
     <div class="server-info-header">
-      <h3>备份服务器</h3>
       <div class="useage">
         <dl>
-          <dt class="error">{{server.cpuUsage && 100*Number(server.cpuUsage[0].ratio).toFixed(2)}}%</dt>
+          <dt class="error">{{server.cpuUsage && 100*Number(server.cpuUsage[0].ratio).toFixed(2)}} <span>%</span> </dt>
           <dd>cpu使用率</dd>
         </dl>
         <dl>
-          <dt class="warn">{{server.memoryUsage && 100*Number(server.memoryUsage[0].ratio)}}%</dt>
+          <dt class="warn">{{server.memoryUsage && 100*Number(server.memoryUsage[0].ratio)}} <span>%</span></dt>
           <dd>内存占用率</dd>
         </dl>
       </div>
@@ -78,15 +77,14 @@ export default {
 
 <style lang="less" scoped>
 .server-info {
-  margin-left: 500px;
+  position: absolute;
   width: 256px;
   background: rgba(0, 0, 0, 0.7);
-  opacity: 0.7;
   border-radius: 4px;
   color: #fff;
 
   .server-info-header {
-    padding: 20px 24px;
+    padding: 12px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 
     h3 {
@@ -109,11 +107,15 @@ export default {
       dd {
         opacity: 0.5;
       }
+      span {
+        font-weight: normal;
+        font-size: 14px;
+      }
     }
   }
 
   .server-info-base {
-    padding: 20px 24px;
+    padding: 12px 24px;
     li {
       display: flex;
       line-height: 20px;

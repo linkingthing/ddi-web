@@ -133,7 +133,7 @@
 
       <div
         v-if="item.type === 'inputSlot'"
-        style="postion:relative;"
+        style="postion: relative;"
       >
         <i-input
           v-model="formModel[item.model]"
@@ -148,6 +148,8 @@
           :params="item.params"
         />
       </div>
+
+      <span>{{item.extra}}</span>
     </FormItem>
   </div>
 </template>

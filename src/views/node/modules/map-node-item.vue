@@ -3,8 +3,8 @@
     :key="value.ip"
     class="node-map-server"
     :style="`background-image: url(${require('../../../assets/images/monitor-group.png')})`"
-    @mouseenter="$emit('mouseenter', value)"
-    @mouseleave="$emit('mouseleave', value)"
+    @mouseenter="(e) => $emit('mouseenter', value, e)"
+    @mouseleave="(e) => $emit('mouseleave', value, e)"
   >
     <i class="success" />
     <ul class="">

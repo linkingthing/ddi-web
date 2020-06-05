@@ -127,6 +127,7 @@
         <server-info
           :visible="visible"
           :server="server"
+          :style="`left:${serverInfoLeft}px;top: ${serverInfoTop}px`"
         />
       </section>
 
@@ -206,7 +207,9 @@ export default {
       bootTime: "0000.00.00",
       runTime: "",
 
-      visible: false,
+      visible: true,
+      serverInfoLeft: 0,
+      serverInfoTop: 0,
       server: {},
 
       nodeMapRef: null,
@@ -327,9 +330,12 @@ export default {
       return { days, hours, minutes, seconds }; // 2*3600*24+17*3600+55*60+44 237344
     },
 
-    handleMouseenter(server) {
+    handleMouseenter(server, e) {
       this.visible = true;
       this.server = server;
+      const { clientWidth, offsetLeft, offsetTop } = e.target;
+      this.serverInfoLeft = offsetLeft + clientWidth + 24;
+      this.serverInfoTop = offsetTop - 24;
     },
 
     handleMouseleave() {

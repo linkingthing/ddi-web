@@ -91,6 +91,7 @@ export default {
           model: "validLifetime",
           type: "number",
           placeholder: "请填写租约时长",
+          extra: "秒"
         },
         {
           label: "最长租约时长",
