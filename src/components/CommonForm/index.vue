@@ -149,7 +149,10 @@
         />
       </div>
 
-      <span>{{item.extra}}</span>
+      <div
+        class="extra"
+        v-if="item.extra"
+      >{{item.extra}}</div>
     </FormItem>
   </div>
 </template>
@@ -194,11 +197,18 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .common-form {
   .ivu-form-item {
     &:last-child {
       margin-bottom: 0;
+    }
+  }
+  .ivu-form-item-content {
+    display: flex;
+    .extra {
+      display: inline-block;
+      padding: 0 10px;
     }
   }
 }

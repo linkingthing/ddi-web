@@ -1,24 +1,60 @@
 <template>
   <div class="priority">
-    <table-page title="解析优先级" :data="list" :columns="columns" :paginationEnable="false">
+    <table-page
+      title="解析优先级"
+      :data="list"
+      :columns="columns"
+      :paginationEnable="false"
+    >
       <template slot="top-right">
-        <i-button type="success" size="large" @click="handleOpenCreate">级别调整</i-button>
+        <i-button
+          type="success"
+          size="large"
+          @click="handleOpenCreate"
+        >级别调整</i-button>
       </template>
     </table-page>
 
-    <common-modal :visible.sync="visible" title="编辑优先级" @confirm="handleSubmit">
+    <common-modal
+      :visible.sync="visible"
+      title="编辑优先级"
+      @confirm="handleSubmit"
+    >
       <Form>
-        <FormItem label="访问控制列表" :label-width="120">
-          <AccessControlSelect :value="currentAccess.id" @change="handleSelectAccessControl" />
-          <Button type="success" @click="handleAddAccess">添加</Button>
+        <FormItem
+          label="访问控制列表"
+          :label-width="120"
+        >
+          <AccessControlSelect
+            :value="currentAccess.id"
+            @change="handleSelectAccessControl"
+          />
+          <Button
+            type="success"
+            @click="handleAddAccess"
+          >添加</Button>
         </FormItem>
-        <FormItem label="（拖拽）优先级" :label-width="120">
-          <draggable class="listContent" v-model="dragList">
+        <FormItem
+          label="（拖拽）优先级"
+          :label-width="120"
+        >
+          <draggable
+            class="listContent"
+            v-model="dragList"
+          >
             <transition-group>
-              <div v-for="item in dragList" :key="item.id" class="listItem">
+              <div
+                v-for="item in dragList"
+                :key="item.id"
+                class="listItem"
+              >
                 <p>
                   {{item.name}}
-                  <Icon type="ios-close" style="float:right;margin-top: 8px" @click="handleRemove(item.id)" />
+                  <Icon
+                    type="ios-close"
+                    style="float:right;margin-top: 8px"
+                    @click="handleRemove(item.id)"
+                  />
                 </p>
               </div>
             </transition-group>
@@ -84,7 +120,10 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center"
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", this.$trimDate(row.creationTimestamp))
+          }
         },
         {
           title: "操作",
@@ -94,11 +133,11 @@ export default {
           render: (h, { row }) => {
             return h("div", [
               row.name !== "default" &&
-                h("btn-del", {
-                  on: {
-                    click: () => this.handleDelete(row.id)
-                  }
-                })
+              h("btn-del", {
+                on: {
+                  click: () => this.handleDelete(row.id)
+                }
+              })
             ]);
           }
         }

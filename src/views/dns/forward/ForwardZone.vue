@@ -62,7 +62,10 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          algin: "center"
+          algin: "center",
+          render: (h, { row }) => {
+            return h("div", this.$trimDate(row.creationTimestamp));
+          }
         },
         {
           title: "备注",

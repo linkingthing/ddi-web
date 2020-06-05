@@ -207,7 +207,7 @@ export default {
       bootTime: "0000.00.00",
       runTime: "",
 
-      visible: true,
+      visible: false,
       serverInfoLeft: 0,
       serverInfoTop: 0,
       server: {},

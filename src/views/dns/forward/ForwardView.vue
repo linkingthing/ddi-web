@@ -4,7 +4,8 @@
       title="转发视图"
       :data="list"
       :columns="columns"
-      :pagination-enable="false" />
+      :pagination-enable="false"
+    />
   </div>
 </template>
 
@@ -27,7 +28,7 @@ export default {
                 props: {
                   to: {
                     name: "zone-query-forward",
-                    params: { viewsId: row.id}
+                    params: { viewsId: row.id }
                   }
                 }
               },
@@ -43,7 +44,10 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "right"
+          align: "right",
+          render: (h, { row }) => {
+            return h("div", this.$trimDate(row.creationTimestamp))
+          }
         }
       ],
       list: []

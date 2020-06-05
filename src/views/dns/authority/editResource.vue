@@ -65,7 +65,7 @@ export default {
         name: "",
         datatype: "",
         value: "A",
-        ttl: ""
+        ttl: 3600
       },
       viewId: "",
       zoneId: "",
@@ -81,7 +81,7 @@ export default {
         ],
         datatype: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
-        ttl: [{ required: true }, positiveIntegerValidate]
+        ttl: [positiveIntegerValidate]
       }
     };
   },

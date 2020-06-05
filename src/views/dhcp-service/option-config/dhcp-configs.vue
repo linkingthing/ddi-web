@@ -97,13 +97,15 @@ export default {
           label: "最长租约时长",
           model: "maxValidLifetime",
           type: "number",
-          placeholder: "请填写最长租约时长"
+          placeholder: "请填写最长租约时长",
+          extra: "秒"
         },
         {
           label: "最短租约时长",
           model: "minValidLifetime",
           type: "number",
-          placeholder: "请填写最短租约时长"
+          placeholder: "请填写最短租约时长",
+          extra: "秒"
         },
         {
           label: "DNS",

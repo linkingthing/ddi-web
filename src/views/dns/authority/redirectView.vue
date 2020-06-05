@@ -1,6 +1,11 @@
 <template>
   <div class>
-    <table-page title="重定向视图" :data="list" :columns="columns" :paginationEnable="false" />
+    <table-page
+      title="重定向视图"
+      :data="list"
+      :columns="columns"
+      :paginationEnable="false"
+    />
   </div>
 </template>
 
@@ -44,7 +49,10 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "right"
+          align: "right",
+          render: (h, { row }) => {
+            return h("div", this.$trimDate(row.creationTimestamp))
+          }
         }
       ],
       list: [],
