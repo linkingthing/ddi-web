@@ -131,7 +131,8 @@ export default {
             },
             query: {
               ipnet: row.ipnet,
-              address: row.ipnet
+              address: row.ipnet,
+              tags: row.tags
             }
           });
         }
@@ -139,7 +140,8 @@ export default {
           this.$router.push({
             name: "subnet-pool-subnet",
             query: {
-              ipnet: row.ipnet
+              ipnet: row.ipnet,
+              tags: row.tags
             }
           });
         }
