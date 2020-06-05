@@ -151,12 +151,7 @@ export default {
 
   methods: {
     initDataRequest() {
-      this.getQpsList();
-      this.getDNSQueryTypeRatio();
-      this.getDNSAnalysisStateSuccessRecode();
-      this.getMemoHitRateData();
-      this.getDNSTop();
-      this.getIPTop();
+      this.getNodeInfo();
     },
 
     intercept() {
@@ -168,23 +163,11 @@ export default {
       });
     },
 
-    baseGetNotParser(resource, params, labelField, valueField) {
-      this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then(({ data }) => {
-          const [{ ratios }] = data;
 
-          const [labels] = valuesParser(ratios);
-
-          this[labelField] = labels;
-          this[valueField] = data;
-        }).catch(err => err);
-      });
-    },
-
-    baseGet(resource, params, labelField, valueField) {
-      return new Promise((resolve) => {
+    baseGet(params, labelField, valueField) {
+      return new Promise(resolve => {
         this.intercept().then(_ => {
-          this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then((data) => {
+          this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses`) }).then((data) => {
             const { data: [{ ratios, values }] } = data;
             const [labels, value] = valuesParser(ratios || values);
             this[labelField] = labels;
@@ -197,43 +180,13 @@ export default {
 
       });
     },
-
-    baseGetList(resource, params, field) {
-      this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses/${this.node}/${resource}`) }).then(({ data }) => {
-          this[field] = data;
-        }).catch(err => err);
-      });
-    },
-
-    getQpsList(params) {
-      this.baseGet("qpses", params, "qpsLabels", "qpsValues");
-    },
-
-    getDNSQueryTypeRatio(params) {
-
-      this.baseGet("querytyperatios", params).then(res => {
-        console.log(res)
-      })
-
-    },
-
-    getDNSAnalysisStateSuccessRecode(params) {
-      this.baseGetNotParser("resolvedratios", params, "successRateLabels", "successRateValues");
-    },
-
-    getMemoHitRateData(params) {
-      this.baseGet("cachehits", params, "memoHitRateLabels", "memoHitRateValues");
-    },
-
-    getDNSTop(params) {
-      this.baseGetList("topdomains", params, "domains");
-
-    },
-
-    getIPTop(params) {
-      this.baseGetList("topips", params, "ips");
+    getNodeInfo() {
+      this.baseGet();
     }
+
+
+
+
   }
 };
 </script>

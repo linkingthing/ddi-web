@@ -1,7 +1,7 @@
 <template>
   <div class="ControllerDashboard dashboard">
     <h1 class="d-title">
-      Controller服务器
+      节点
       <NodeSelect
         type="controller"
         v-model="node"
