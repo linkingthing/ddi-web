@@ -11,6 +11,7 @@
       <Card
         title="DHCP使用率"
         v-model="usageTime"
+        :download="$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/lpses?action=exportcsv`)"
       >
         <template v-slot:right>
           <Select
@@ -75,7 +76,7 @@
 import Card from "./Card";
 import Line from "./Line";
 import NodeSelect from "./modules/node-select";
-import { getDeviceHistoryInfo, valuesParser } from "./tools";
+import { valuesParser } from "./tools";
 
 export default {
   name: "DHCPDashboard",

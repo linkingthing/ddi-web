@@ -5,8 +5,8 @@ export const columns = scope => [
     align: "left",
     render: (h, { row }) => {
       return h("div", [
-        h("label", {
-          class: "operate-label operate-link",
+        h("a", {
+          class: "is-link",
           on: {
             click: () => {
               scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools?address=${row.ipnet}` });
