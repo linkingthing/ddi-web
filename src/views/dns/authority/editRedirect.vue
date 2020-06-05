@@ -85,7 +85,7 @@ export default {
           },
           nameValidate
         ],
-        type: [
+        datatype: [
           { required: true, message: "请选择资源类型", trigger: "change" }
         ],
         value: [{ required: true, message: "请填写记录值", trigger: "change" }],

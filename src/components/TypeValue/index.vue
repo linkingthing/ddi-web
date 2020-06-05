@@ -2,7 +2,7 @@
   <div class="typeValue">
     <form-item
       label="类型"
-      prop="type"
+      prop="datatype"
     >
       <i-select v-model="params.datatype">
         <i-option value="A">A</i-option>

@@ -8,7 +8,7 @@
     >
       <template slot="top-right">
         <i-button
-          type="success"
+          type="primary"
           @click="handleOpenCreate"
         >新建</i-button>
       </template>

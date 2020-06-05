@@ -91,7 +91,8 @@ export default {
     return {
       formModel: {
         zonetype: "master",
-        ttl: 3600
+        ttl: 3600,
+        isarpa: "false"
       },
       loading: false,
       dialogVisible: false
@@ -110,7 +111,11 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {};
+        this.formModel = {
+          zonetype: "master",
+          ttl: 3600,
+          isarpa: false
+        };
         return;
       }
 
