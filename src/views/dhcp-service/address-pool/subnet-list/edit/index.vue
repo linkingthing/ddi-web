@@ -58,7 +58,7 @@ export default {
         {
           label: "子网地址",
           model: "ipnet",
-          type: "input",
+          type: this.isCreate ? "input" : "text",
           placeholder: "请填写子网地址"
         },
         {
@@ -91,7 +91,7 @@ export default {
         {
           label: "子网地址",
           model: "ipnet",
-          type: "input",
+          type: this.isCreate ? "input" : "text",
           placeholder: "请填写子网地址"
         },
         {
