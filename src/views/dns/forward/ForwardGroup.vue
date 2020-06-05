@@ -67,7 +67,7 @@ export default {
         {
           title: "备注",
           key: "comment",
-          align: "right"
+          align: "center"
         },
         {
           title: "操作",
