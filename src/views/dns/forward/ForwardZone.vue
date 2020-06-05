@@ -64,7 +64,11 @@ export default {
           key: "creationTimestamp",
           algin: "center"
         },
-
+        {
+          title: "备注",
+          key: "comment",
+          align: "center"
+        },
         {
           title: "操作",
           key: "action",
