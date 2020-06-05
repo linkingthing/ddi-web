@@ -10,7 +10,7 @@
     <div class="ip-assets-manage-edit">
       <Form
         ref="form"
-        label-position="right"
+        label-position="left"
         :label-width="100"
         :label-colon="true"
         :rules="rules"

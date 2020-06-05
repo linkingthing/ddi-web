@@ -2,6 +2,7 @@
   <div
     class="table-pagination"
     :class="{'is-padding-top': isPaddingTop}"
+    :style="getOuterStyle"
   >
 
     <article class="table-pagination-top">
@@ -16,12 +17,21 @@
 
     <slot name="neck" />
 
-    <Table
-      v-if="showTable"
-      :data="dataFilter"
-      :columns="columns"
-      v-on="$listeners"
-    />
+    <template v-if="showTable">
+      <Table
+        v-if="tableInnerHeight"
+        :data="dataFilter"
+        :columns="columns"
+        :max-height="tableInnerHeight"
+        v-on="$listeners"
+      />
+      <Table
+        v-else
+        :data="dataFilter"
+        :columns="columns"
+        v-on="$listeners"
+      />
+    </template>
 
     <slot />
 
@@ -65,24 +75,19 @@ export default {
       default: () => []
     },
 
-    calcHeight: {
-      type: Boolean,
-      default: false
-    },
-
     paginationEnable: {
       type: Boolean,
       default: true
     },
 
-    tableAutoInnerHeight: {
-      type: Boolean,
-      default: false
-    },
-
     showTable: {
       type: Boolean,
       default: true
+    },
+
+    tableInnerHeight: {
+      type: [String, Number],
+      default: null
     },
 
     isPaddingTop: {
@@ -145,14 +150,6 @@ export default {
       this.innerCurrent = val;
     },
 
-    calcHeight(val) {
-      if (!val) return;
-
-      this.setTableHeight();
-
-      this.$emit("update:calc-height", false);
-    },
-
     columns(val) {
       if (val.length) {
         let names = [];
@@ -165,37 +162,10 @@ export default {
 
         this.slotNames = names;
       }
-    },
-
-    data: {
-      immediate: true,
-      async handler(newVal, oldVal) {
-        if (JSON.stringify(newVal) === JSON.stringify(oldVal)) return;
-
-        this.setTableHeight();
-      }
     }
   },
 
   methods: {
-    async setTableHeight() {
-      if (this.tableAutoInnerHeight) return;
-
-      await this.$nextTick();
-
-      const el = this.$el;
-      const height = el.clientHeight;
-
-      let titleEl = el.querySelector(".table-pagination-title"),
-        topEl = el.querySelector(".table-pagination-top"),
-        footerEl = el.querySelector(".table-pagination-footer");
-
-      this.tableHeight = height
-        - (titleEl ? titleEl.clientHeight : 0)
-        - (topEl ? topEl.clientHeight : 0)
-        - (footerEl ? footerEl.clientHeight : 0);
-    },
-
     handlePageSizeChange(val) {
       this.$emit("size-change", {
         size: val,
