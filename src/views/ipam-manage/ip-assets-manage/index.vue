@@ -7,7 +7,6 @@
       :columns="columns"  
       :total="tableData.length"
       :is-padding-top="true"
-      @on-selection-change="handleSelecChange"
     > 
       <template slot="top-left">
         <div class="condition-item">
@@ -42,13 +41,6 @@
           class="top-button"
         >
           新建
-        </Button>
-        <Button 
-          type="warning" 
-          @click="handleDelete" 
-          class="top-button"
-        >
-          删除
         </Button>
       </template>
     </table-page>
@@ -87,7 +79,6 @@ export default {
       },
       tableData: [],
       columns: columns(this),
-      selectedData: [],
       showEdit: false,
       currentData: null
     };
@@ -120,8 +111,6 @@ export default {
     async handleQuery() {
       this.loading = true;
 
-      this.selectedData = [];
-
       try {
         let { url, condition } = this;
 
@@ -134,10 +123,6 @@ export default {
       finally {        
         this.loading = false;
       }
-    },
-
-    handleSelecChange(res) {
-      this.selectedData = [...res];
     },
 
     handleAdd() {
@@ -154,25 +139,14 @@ export default {
       this.handleQuery();
     },
 
-    async handleDelete() {
+    async handleDelete({ id }) {
       try {
-        if (!this.selectedData.length) {
-          this.$$warning("请选择要删除的项！");
-
-          return;
-        }
-
-        if (this.selectedData.length > 1) {
-          this.$$warning("只能删除一项！");
-
-          return;
-        }
 
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
         
-        await this.$delete({ url: this.url + "/" + this.selectedData[0].id });
+        await this.$delete({ url: this.url + "/" + id });
         
         this.$$success("删除成功！");
 

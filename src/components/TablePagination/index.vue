@@ -2,7 +2,6 @@
   <div
     class="table-pagination"
     :class="{'is-padding-top': isPaddingTop}"
-    :style="getOuterStyle"
   >
 
     <article class="table-pagination-top">

@@ -1,10 +1,5 @@
 export const columns = scope => [  
   {
-    type: "selection",
-    width: 60,
-    align: "center"
-  },
-  {
     title: "探测设备IP",
     key: "address",
     align: "left"
@@ -18,6 +13,13 @@ export const columns = scope => [
           on: {
             click: () => {
               scope.handleEdit(row);
+            }
+          }
+        }),
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
             }
           }
         })

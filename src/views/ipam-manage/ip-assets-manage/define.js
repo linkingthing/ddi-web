@@ -2,11 +2,6 @@ const tooltip = true;
 
 export const columns = scope => [  
   {
-    type: "selection",
-    width: 60,
-    align: "center"
-  },
-  {
     title: "IP地址",
     key: "ip",
     align: "left",
@@ -57,6 +52,13 @@ export const columns = scope => [
           on: {
             click: () => {
               scope.handleEdit(row);
+            }
+          }
+        }),
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
             }
           }
         })

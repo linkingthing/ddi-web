@@ -40,7 +40,7 @@ export default {
 					meta: {
 						notInMenu: true,
 						from: 'subnet-pool-subnet',
-						title: ':address'
+						title: ':ipnet'
 					}
 				},
 				{
@@ -51,7 +51,7 @@ export default {
 					meta: {
 						notInMenu: true,
 						from: 'subnet-pool-subnet',
-						title: ':address'
+						title: ':ipnet'
 					}
 				},
 				{
@@ -62,7 +62,7 @@ export default {
 					meta: {
 						notInMenu: true,
 						from: 'subnet-pool-subnet',
-						title: ':address'
+						title: ':ipnet'
 					}
 				}
 			]
