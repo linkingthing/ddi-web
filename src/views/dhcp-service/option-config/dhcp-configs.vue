@@ -50,14 +50,34 @@ export default {
           }
         }
         ],
-        maxValidLifetime: [{
-          pattern: positiveIntegerReg,
-          message: "请输入正整数"
-        }],
-        minValidLifetime: [{
-          pattern: positiveIntegerReg,
-          message: "请输入正整数"
-        }]
+        maxValidLifetime: [
+          {
+            pattern: positiveIntegerReg,
+            message: "请输入正整数"
+          },
+          {
+            validator: function (rule, value, callback) {
+              if (value > 604800) {
+                callback("最大租约时长不能大于604800");
+              }
+              callback();
+            }
+          }
+        ],
+        minValidLifetime: [
+          {
+            pattern: positiveIntegerReg,
+            message: "请输入正整数"
+          },
+          {
+            validator: function (rule, value, callback) {
+              if (value < 300) {
+                callback("最短租约时长不能小于300");
+              }
+              callback();
+            }
+          }
+        ]
       },
       formModel: {
         validLifetime: 0,
