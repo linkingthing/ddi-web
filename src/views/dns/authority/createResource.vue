@@ -81,7 +81,7 @@ export default {
             validator: resourceDomainValidateFunc
           }
         ],
-        type: [{ required: true, message: "请选择资源类型" }],
+        datatype: [{ required: true, message: "请选择资源类型" }],
         rdata: [{ required: true, message: "请填写记录值" }],
         ttl: [positiveIntegerValidate]
       }

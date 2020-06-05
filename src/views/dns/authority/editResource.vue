@@ -63,7 +63,7 @@ export default {
       // 表单数据
       params: {
         name: "",
-        type: "",
+        datatype: "",
         value: "A",
         ttl: ""
       },
@@ -79,7 +79,7 @@ export default {
             validator: resourceDomainValidateFunc
           }
         ],
-        type: [{ required: true, message: "请选择资源类型" }],
+        datatype: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
         ttl: [{ required: true }, positiveIntegerValidate]
       }
