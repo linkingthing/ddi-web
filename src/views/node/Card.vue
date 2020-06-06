@@ -6,13 +6,11 @@
       </h3>
       <div>
         <slot name="right" />
-        <router-link
-          :to="download.url"
+        <Button
           v-if="download.url"
           type="primary"
-          size="small"
           @click="handleDownload"
-        >导出PDF</router-link>
+        >导出CSV</Button>
         <Select
           v-if="hasTimeFilter"
           style="width: 110px; margin-left: 20px"
@@ -88,7 +86,28 @@ export default {
   mounted() { },
   methods: {
     handleDownload() {
+      console.log(this.download)
+      const url = `${this.download.self}?action=exportcsv`;
+      const params = {
+        period: this.value
+      };
 
+      this.$post({ url, params }).then(res => {
+        const downloadPath = this.pathParser(res);
+      });
+
+    },
+    pathParser({ path }) {
+      const realPath = "/opt/website";
+      const staticPath = "/public";
+      return staticPath.concat(path.slice(realPath.length));
+    },
+
+    downloadFile(path) {
+      let a = document.createElement("a");
+      a.href = path;
+      a.download = "csv file";
+      a.click();
     }
   }
 };

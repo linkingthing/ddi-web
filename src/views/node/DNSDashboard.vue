@@ -167,11 +167,8 @@ export default {
     baseGet(params, labelField, valueField) {
       return new Promise(resolve => {
         this.intercept().then(_ => {
-          this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses`) }).then((data) => {
-            const { data: [{ ratios, values }] } = data;
-            const [labels, value] = valuesParser(ratios || values);
-            this[labelField] = labels;
-            this[valueField] = value;
+          this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses`) }).then(data => {
+
             resolve(data);
           });
 
@@ -181,7 +178,51 @@ export default {
       });
     },
     getNodeInfo() {
-      this.baseGet();
+      this.baseGet().then(({ data }) => {
+
+        console.log(data)
+        data.forEach(item => {
+
+          if (item.id === "toptenips") {
+            this.ips = item.toptenips;
+          }
+
+          if (item.id === "toptendomains") {
+            this.domains = item.toptendomains;
+          }
+
+          if (item.id === "qps") {
+            const [labels, values] = valuesParser(item.qps.values || []);
+            this.qpsLabels = labels;
+            this.qpsValues = values;
+          }
+
+          if (item.id === "cachehit") {
+            const [labels, values] = valuesParser(item.cachehit.values || []);
+            this.memoHitRateLabels = labels;
+            this.memoHitRateValues = values;
+
+          }
+
+          if (item.id === "querytyperatios") {
+            // TODO: 略显尴尬
+            this.types = item.querytyperatios.map(item => {
+              return {
+                name: item.type,
+                value: item.ratios[0].ratio || 0
+              };
+            });
+          }
+
+          if (item.id === "resolvedratios") {
+            const [labels] = valuesParser(item.resolvedratios[0].ratios || []);
+            this.successRateLabels = labels;
+            this.successRateValues = item.resolvedratios;
+          }
+
+
+        });
+      });
     }
 
 

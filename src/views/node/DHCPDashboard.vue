@@ -11,7 +11,7 @@
       <Card
         title="DHCP使用率"
         v-model="usageTime"
-        :download="$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/lpses?action=exportcsv`)"
+        :download="useageLinks"
       >
         <template v-slot:right>
           <Select
@@ -37,6 +37,7 @@
       <Card
         title="LPS统计"
         v-model="lpsTime"
+        :download="lpsLinks"
       >
         <line-bar
           :labels="dhcpLpsLabels"
@@ -48,6 +49,7 @@
       <Card
         title="DHCP报文统计"
         v-model="dhcpTime"
+        :download="packetsLinks"
       >
         <line-bar
           multiple
@@ -59,6 +61,7 @@
       <Card
         title="Leases总量统计"
         v-model="leaseTime"
+        :download="leaseLinks"
       >
         <line-bar
           line-theme="golden"
@@ -88,28 +91,35 @@ export default {
     }
   },
   data() {
+
+
+
     return {
       node: "",
 
       lpsTime: 6,
+      lpsLinks: {},
       dhcpLpsLabels: [],
       dhcpLpsValues: [],
 
       dhcpTime: 6,
+      packetsLinks: {},
       dhcpLabels: [],
       dhcpValues: [],
 
       usageTime: 6,
+      useageLinks: {},
       dhcpUsageLabels: [],
       dhcpUsageValues: [],
 
+      leaseTime: 6,
+      leaseLinks: {},
       dhcpLeaseLabels: [],
       dhcpLeaseValues: [],
 
       timer: null,
       assignList: [],
 
-      leaseTime: 6,
 
       usageList: [],
       useageIpnet: ""
@@ -149,10 +159,11 @@ export default {
   },
   methods: {
     init() {
-      this.getLeaseList();
-      this.getLpsList();
-      this.getPacketList();
-      this.getSubnetUsedRatioList();
+      this.getNodeInfo();
+      // this.getLeaseList();
+      // this.getLpsList();
+      // this.getPacketList();
+      // this.getSubnetUsedRatioList();
     },
 
     intercept() {
@@ -162,6 +173,61 @@ export default {
           resolve();
         }
       });
+    },
+    baseGet(params) {
+      return new Promise((resolve) => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps`) })
+          .then(({ data }) => {
+
+          });
+      });
+    },
+    getNodeInfo(params) {
+      this.intercept().then(_ => {
+        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps`) }).then(({ data }) => {
+          console.log(data)
+          data.forEach(item => {
+
+            if (item.id === "lps") {
+
+              const [labels, value] = valuesParser(item.lps.values);
+              this.dhcpLpsLabels = labels;
+              this.dhcpLpsValues = value;
+              this.lpsLinks = item.links;
+            }
+
+            if (item.id === "lease") {
+              const [labels, value] = valuesParser(item.lease.values);
+              this.dhcpLeaseLabels = labels;
+              this.dhcpLeaseValues = value;
+            }
+
+            if (item.id === "packets") {
+              const [labels] = valuesParser(item.packets[0].values);
+              this.dhcpLabels = labels;
+              this.dhcpValues = item.packets;
+            }
+
+            if (item.id === "subnetusedratios") {
+              console.log(item.subnetusedratios)
+              this.usageList = item.subnetusedratios.map(({ ipnet, usedRatios }) => {
+                return {
+                  ipnet,
+                  usedRatios
+                };
+              });
+              if (this.usageList.length) {
+                this.useageIpnet = this.usageList[0].ipnet;
+              }
+
+            }
+
+
+          });
+
+
+        });
+      }).catch(err => err);
     },
 
     getSubnetUsedRatioList(params) {

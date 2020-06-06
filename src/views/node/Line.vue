@@ -118,7 +118,7 @@ export default {
       return {
         color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"],
         grid: {
-          left: "50px",
+          left: "55px",
           right: "50px",
           top: "20px",
           bottom: "40px"

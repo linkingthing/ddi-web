@@ -40,7 +40,7 @@ export default {
         },
         series: [
           {
-            name: "访问来源",
+            name: "解析类型",
             type: "pie",
             center: [130, "center"],
 
