@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { commonNameValidate } from "@/util/common";
+import { commonNameValidate, isIp } from "@/util/common";
 import { resStringToArray, resArrayToString } from "@/util/parser";
 
 export default {
@@ -88,6 +88,21 @@ export default {
           pattern: /^.*[^\d].*$/,
           message: "访问控制列表名称不能为纯数字"
         }
+      ],
+      ips: [
+        { required: true, message: "请填写网络地址" },
+        {
+          validator: function (rule, value, callback) {
+            if (isIp(value)) {
+
+              callback();
+            }
+            callback("请正确填写网络地址");
+
+          }
+
+        }
+
       ]
 
     };

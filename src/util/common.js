@@ -346,20 +346,17 @@ export const subnetValidateFunc = (rule, value, callback) => {
  * 判断是否是合法的ipv6，不校验掩码
  */
 export const ipv6IsValid = address => {
-  if (address.indexOf("/")) {
-    address = address.split("/")[0];
-  }
-
   return new Address6(address).isValid();
 };
 
 export const ipv4IsValid = address => {
-  if (address.indexOf("/")) {
-    address = address.split("/")[0];
-  }
-
   return new Address4(address).isValid();
 };
+
+export const isIp = address => {
+  return ipv6IsValid(address) || ipv4IsValid(address);
+}
+
 
 /**
  * 格式化日期

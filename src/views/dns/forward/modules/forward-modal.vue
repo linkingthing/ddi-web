@@ -124,7 +124,7 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
-          params.ips = typeof params.ips === "string" ? params.ips.split(",") : [];
+          params.ips = typeof params.ips === "string" ? (params.ips.length && params.ips.split(",")) : [];
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
               this.$$success("编辑成功");
