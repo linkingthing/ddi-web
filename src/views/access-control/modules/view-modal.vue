@@ -124,7 +124,7 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {};
+        this.$refs.formInline.resetFields();
         return;
       }
 
