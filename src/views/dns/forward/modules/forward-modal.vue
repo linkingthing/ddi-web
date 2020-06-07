@@ -4,7 +4,7 @@
     :visible.sync="dialogVisible"
     :title="getTitle"
     :width="413"
-    @confirm="handleConfirm"
+    @confirm="handleConfirm('formInline')"
   >
     <IviewLoading v-if="loading" />
     <Form
@@ -72,7 +72,9 @@ export default {
     };
     return {
       formModel: {
-        zonetype: "master"
+        zonetype: "master",
+        ips: "",
+        name: ""
       },
       loading: false,
       dialogVisible: false
@@ -118,27 +120,31 @@ export default {
 
   methods: {
 
-    handleConfirm() {
+    handleConfirm(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const params = { ...this.formModel };
+          params.ips = typeof params.ips === "string" ? params.ips.split(",") : [];
+          if (this.isEdit) {
+            this.$put({ url: this.links.update, params }).then(res => {
+              this.$$success("编辑成功");
+              this.$emit("success");
+              this.dialogVisible = false;
+            }).catch(err => {
+              this.$$error(err.response.data.message);
+            });
+          } else {
+            this.$post({ url: this.links.self, params }).then(res => {
+              this.$$success("新建成功");
+              this.$emit("success");
+              this.dialogVisible = false;
+            }).catch(err => {
+              this.$$error(err.response.data.message);
+            });
+          }
+        }
+      });
 
-      const params = { ...this.formModel };
-      params.ips = params.ips.split(",");
-      if (this.isEdit) {
-        this.$put({ url: this.links.update, params }).then(res => {
-          this.$$success("编辑成功");
-          this.$emit("success");
-          this.dialogVisible = false;
-        }).catch(err => {
-          this.$$error(err.response.data.message);
-        });
-      } else {
-        this.$post({ url: this.links.self, params }).then(res => {
-          this.$$success("新建成功");
-          this.$emit("success");
-          this.dialogVisible = false;
-        }).catch(err => {
-          this.$$error(err.response.data.message);
-        });
-      }
 
     }
 

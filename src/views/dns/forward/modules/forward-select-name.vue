@@ -1,15 +1,16 @@
 <template>
   <div class="forward-select-name">
-    <i-select
+    <Select
       :value="selectValue"
+      style="width: 240px"
       @on-change="handleSelectChange"
     >
-      <i-option
+      <Option
         v-for="item in nameList"
         :value="item.value"
         :key="item.value"
-      >{{ item.label }}</i-option>
-    </i-select>
+      >{{ item.label }}</Option>
+    </Select>
     <i-input
       v-model="name"
       v-if="showInput"
@@ -81,7 +82,7 @@ export default {
     },
     handleInputChange(event) {
       console.log('handleInputChange', event);
-     
+
       // this.$emit("input", data);
       // todo: 没搞懂为什么通过事件抛出 name 始终不会变，但是通过watch解决了这个问题
     }
