@@ -18,7 +18,7 @@ export default {
     return {
       columns: [
         {
-          title: "视图",
+          title: "视图名称",
           key: "name",
           align: "left",
           render: (h, { row }) => {
@@ -37,7 +37,7 @@ export default {
           }
         },
         {
-          title: "本地区配置数量",
+          title: "重定向配置数量",
           key: "localzonesize",
           align: "center"
         },
