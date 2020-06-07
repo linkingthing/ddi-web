@@ -59,10 +59,10 @@
         v-model="toptendomainsTime"
         :download="toptendomainsLinks"
       >
-        <Table
+        <TopList
           :data="domains"
           :columns="topDomainColumns"
-          style="padding-top: 30px"
+          style="padding-top: 20px"
         />
       </Card>
 
@@ -71,10 +71,10 @@
         v-model="toptenipsTime"
         :download="toptenipsLinks"
       >
-        <Table
+        <TopList
           :data="ips"
           :columns="topIPColumns"
-          style="padding-top: 30px"
+          style="padding-top: 20px"
         />
       </Card>
 
@@ -91,6 +91,7 @@ import moment from "moment";
 moment.locale("zh-cn");
 import { valuesParser } from "./tools";
 import NodeSelect from "./modules/node-select";
+import TopList from "./modules/top-list";
 
 export default {
   name: "DNSDashboard",
@@ -98,7 +99,8 @@ export default {
     Card,
     "line-bar": Line,
     Pie,
-    NodeSelect
+    NodeSelect,
+    TopList
   },
   props: {
     ip: {
@@ -113,34 +115,32 @@ export default {
         {
           title: "排名",
           type: "index",
-          align: "center"
+          width: 40
         },
         {
           title: "域名",
-          key: "domain",
-          align: "center"
+          key: "domain"
         },
         {
           title: "统计次数",
           key: "count",
-          align: "center"
+          align: "right"
         }
       ],
       topIPColumns: [
         {
           title: "排名",
           type: "index",
-          align: "center"
+          width: 40
         },
         {
           title: "IP地址",
-          key: "ip",
-          align: "center"
+          key: "ip"
         },
         {
           title: "统计次数",
           key: "count",
-          align: "center"
+          align: "right"
         }
       ],
       timer: null,
