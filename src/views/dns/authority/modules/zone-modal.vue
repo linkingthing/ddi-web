@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { isIp } from "@/util/common";
 
 export default {
   props: {
@@ -79,7 +80,26 @@ export default {
 
     this.rules = {
       name: [
-        { required: true, message: "请填写区名称" }
+        { required: true, message: "请填写区名称" },
+        {
+          validator: (rule, value, callback) => {
+            if (this.formModel.isarpa === "true") {
+              const [ip, len] = value.split("/");
+              const arr = [8, 16, 24];
+              if (isIp(ip)) {
+                if (arr.includes(Number(len))) {
+                  callback();
+                } else {
+                  callback("子网范围只能是8/16/24三种之一");
+                }
+              } else {
+                callback("请正确填写区名称");
+              }
+
+            }
+            callback();
+          }
+        }
       ],
       isarpa: [
         { required: true, message: "请选择区类型" }
