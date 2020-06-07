@@ -62,7 +62,10 @@ export default {
         {
           title: "重定向方式",
           key: "redirecttype",
-          align: "center"
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", row.redirecttype === "localzone" ? "强制重定向" : row.redirecttype)
+          }
         },
         {
           title: "操作",

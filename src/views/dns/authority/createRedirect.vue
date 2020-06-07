@@ -43,7 +43,7 @@
               prop="redirecttype"
             >
               <i-select v-model="upgradeConfig.redirecttype">
-                <i-option value="localzone">localzone</i-option>
+                <i-option value="localzone">强制重定向</i-option>
                 <i-option value="nxdomain">nxdomain</i-option>
               </i-select>
             </form-item>
