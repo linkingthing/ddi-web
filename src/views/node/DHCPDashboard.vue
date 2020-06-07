@@ -160,10 +160,6 @@ export default {
   methods: {
     init() {
       this.getNodeInfo();
-      // this.getLeaseList();
-      // this.getLpsList();
-      // this.getPacketList();
-      // this.getSubnetUsedRatioList();
     },
 
     intercept() {
@@ -174,22 +170,13 @@ export default {
         }
       });
     },
-    baseGet(params) {
-      return new Promise((resolve) => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps`) })
-          .then(({ data }) => {
 
-          });
-      });
-    },
     getNodeInfo(params) {
       this.intercept().then(_ => {
         this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps`) }).then(({ data }) => {
-          console.log(data)
           data.forEach(item => {
 
             if (item.id === "lps") {
-
               const [labels, value] = valuesParser(item.lps.values);
               this.dhcpLpsLabels = labels;
               this.dhcpLpsValues = value;
@@ -200,39 +187,39 @@ export default {
               const [labels, value] = valuesParser(item.lease.values);
               this.dhcpLeaseLabels = labels;
               this.dhcpLeaseValues = value;
+              this.leaseLinks = item.links;
             }
 
             if (item.id === "packets") {
               const [labels] = valuesParser(item.packets[0].values);
               this.dhcpLabels = labels;
               this.dhcpValues = item.packets;
+              this.packetsLinks = item.links;
             }
 
             if (item.id === "subnetusedratios") {
-              console.log(item.subnetusedratios)
+              this.useageLinks = item.links;
               this.usageList = item.subnetusedratios.map(({ ipnet, usedRatios }) => {
                 return {
                   ipnet,
                   usedRatios
                 };
               });
+
               if (this.usageList.length) {
                 this.useageIpnet = this.usageList[0].ipnet;
               }
 
             }
 
-
           });
-
-
         });
       }).catch(err => err);
     },
 
     getSubnetUsedRatioList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/subnetusedratios`) }).then(({ data }) => {
+        this.$get({ params, url: this.useageLinks.self }).then(({ data }) => {
           this.usageList = data.map(({ ipnet, usedRatios }) => {
             return {
               ipnet,
@@ -248,7 +235,7 @@ export default {
 
     getLpsList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/lpses`) }).then(({ data: [{ values }] }) => {
+        this.$get({ params, url: this.lpsLinks.self }).then(({ data: [{ values }] }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
@@ -258,7 +245,7 @@ export default {
 
     getLeaseList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/leases`) }).then(({ data: [{ values }] }) => {
+        this.$get({ params, url: this.leaseLinks.self }).then(({ data: [{ values }] }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLeaseLabels = labels;
           this.dhcpLeaseValues = value;
@@ -268,13 +255,11 @@ export default {
 
     getPacketList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dhcps/${this.node}/packets`) }).then(({ data }) => {
+        this.$get({ params, url: this.packetsLinks.self }).then(({ data }) => {
           const [{ values }] = data;
           const [labels] = valuesParser(values);
           this.dhcpLabels = labels;
-
           this.dhcpValues = data;
-
         }).catch(err => err);
       });
     }

@@ -7,14 +7,14 @@
       <div>
         <slot name="right" />
         <Button
-          v-if="download.url"
+          v-if="download.self"
           type="primary"
           @click="handleDownload"
         >导出CSV</Button>
         <Select
-          v-if="hasTimeFilter"
+          v-if="value"
           style="width: 110px; margin-left: 20px"
-          v-model="value"
+          v-model="innerValue"
         >
           <Option
             v-for="(item) in dateList"
@@ -24,7 +24,6 @@
         </Select>
       </div>
     </header>
-
     <slot />
   </div>
 </template>
@@ -40,9 +39,9 @@ export default {
       type: Object,
       default: () => ({})
     },
-    hasTimeFilter: {
-      type: Boolean,
-      default: false
+    value: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -69,16 +68,19 @@ export default {
       },
       {
         label: "3个月",
-        hours: 148
+        hours: 2160
       }
     ];
     return {
-      value: 6
+      innerValue: 6
     };
   },
   computed: {},
   watch: {
     value(val) {
+      this.innerValue = val;
+    },
+    innerValue(val) {
       this.$emit("input", val);
     }
   },
@@ -86,27 +88,31 @@ export default {
   mounted() { },
   methods: {
     handleDownload() {
-      console.log(this.download)
       const url = `${this.download.self}?action=exportcsv`;
       const params = {
         period: this.value
       };
 
       this.$post({ url, params }).then(res => {
-        const downloadPath = this.pathParser(res);
+        const { downloadPath, fileName } = this.pathParser(res);
+        this.downloadFile(downloadPath, fileName);
       });
 
     },
     pathParser({ path }) {
       const realPath = "/opt/website";
       const staticPath = "/public";
-      return staticPath.concat(path.slice(realPath.length));
+      const fileName = path.slice(realPath.length);
+      return {
+        downloadPath: staticPath.concat(fileName),
+        fileName
+      };
     },
 
-    downloadFile(path) {
+    downloadFile(path, fileName) {
       let a = document.createElement("a");
       a.href = path;
-      a.download = "csv file";
+      a.download = fileName;
       a.click();
     }
   }
