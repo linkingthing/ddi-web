@@ -57,6 +57,10 @@ export default {
     this.rules = {
       name: [
         {
+          required: true,
+          message: "请填写名称"
+        },
+        {
           validator: function (rule, value, callback) {
             if (value.length > 128) {
               callback("名称最长128个字符");
@@ -66,6 +70,10 @@ export default {
         }
       ],
       regexp: [
+        {
+          required: true,
+          message: "请填写匹配条件"
+        },
         {
           validator: function (rule, value, callback) {
             if (value.length > 128) {
@@ -95,7 +103,7 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {};
+        this.$refs.formInline.resetFields();
         return;
       }
       if (this.links.update) {
@@ -122,7 +130,7 @@ export default {
     },
 
     handleConfirm(name) {
-      this.$refs[name].validate((valid) => {
+      this.$refs[name].validate(valid => {
 
         if (valid) {
           if (this.links.update) {
