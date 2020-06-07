@@ -92,9 +92,7 @@ export default {
         ttl: [
           {
             required: true,
-            type: "number",
-            message: "请输入延缓时间",
-            trigger: "change"
+            message: "请输入延缓时间"
           },
           positiveIntegerValidate
         ],
