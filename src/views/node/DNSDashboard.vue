@@ -179,24 +179,24 @@ export default {
     node() {
       this.initDataRequest();
     },
-    qpsTime(from) {
-      this.getQPSData({ from });
+    qpsTime(period) {
+      this.getQPSData({ period });
     },
-    toptenipsTime(from) {
-      this.getTopIps({ from });
+    toptenipsTime(period) {
+      this.getTopIps({ period });
     },
-    toptendomainsTime(from) {
-      this.getToptendomainsTimeData({ from });
+    toptendomainsTime(period) {
+      this.getToptendomainsTimeData({ period });
     },
-    querytyperatiosTime(from) {
-      this.getQuerytyperatiosData({ from });
+    querytyperatiosTime(period) {
+      this.getQuerytyperatiosData({ period });
 
     },
-    resolvedratiosTime(from) {
-      this.getResolvedratiosData({ from });
+    resolvedratiosTime(period) {
+      this.getResolvedratiosData({ period });
     },
-    cachehitTime(from) {
-      this.getCachehitData({ from });
+    cachehitTime(period) {
+      this.getCachehitData({ period });
     }
 
   },

@@ -143,20 +143,20 @@ export default {
       this.init();
     },
 
-    usageTime(from) {
-      this.getSubnetUsedRatioList({ from });
+    usageTime(period) {
+      this.getSubnetUsedRatioList({ period });
     },
 
-    dhcpTime(from) {
-      this.getPacketList({ from });
+    dhcpTime(period) {
+      this.getPacketList({ period });
     },
 
-    leaseTime(from) {
-      this.getLeaseList({ from });
+    leaseTime(period) {
+      this.getLeaseList({ period });
     },
 
-    lpsTime(from) {
-      this.getLpsList({ from });
+    lpsTime(period) {
+      this.getLpsList({ period });
     },
 
     useageIpnet(ipnet) {
