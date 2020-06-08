@@ -90,10 +90,10 @@ export default {
     };
   },
   created() {
-    this.viewId = this.$route.params.viewId;
+    this.viewId = this.$route.params.id;
     this.zoneId = this.$route.params.zoneId;
   },
-  mounted() {
+  mounted() {    
     this.getResources();
   },
   methods: {

@@ -6,7 +6,8 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 120,
+    width: 140,
+    className: "operate-column",
     render: (h, { row }) => 
       h("div", [
         h("btn-edit", {

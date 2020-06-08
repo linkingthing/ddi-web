@@ -16,6 +16,7 @@ export const columns = scope => [
   },
   {
     title: "操作",    
+    className: "operate-column",
     render: (h, { row }) => {
       return h("div",[
         h("Button", {
