@@ -40,7 +40,7 @@ export default {
 		{
 			// 资源记录
 			name: 'resource-record',
-			path: '/dns/dns/views/:viewId/zones/:zoneId/rrs',
+			path: '/dns/dns/views/:id/zones/:zoneId/rrs',
 			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/authority/resourceRecord'),
 			meta: {
 				title: '资源记录',

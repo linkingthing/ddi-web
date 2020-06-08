@@ -45,6 +45,7 @@ export function getApiByRoute(tpath = router.currentRoute.path) {
 */
 export function getRouteByLink(link, system) {
   let [,,,module,,...rest] = link.split("/");
+  
   return `/${system}/${module}/${rest.join("/")}`; 
 }
 

@@ -93,7 +93,7 @@ export default {
     this.viewId = this.$route.params.viewId;
     this.zoneId = this.$route.params.zoneId;
   },
-  mounted() {
+  mounted() {    
     this.getResources();
   },
   methods: {

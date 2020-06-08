@@ -30,7 +30,7 @@ export default {
   components: {
     "zone-modal": ZoneModal
   },
-  data() {
+  data() {    
     return {
       columns: [
         {
