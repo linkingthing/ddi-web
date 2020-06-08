@@ -273,7 +273,9 @@ export default {
   methods: {
     async getNodeInfo() {
       let totalQps = 0;
+      let qpsTime = 0;
       let totalLps = 0;
+      let lpsTime = 0;
 
       const { data } = await this.$get(this.$getApiByRoute("/monitor/metric/nodes"));
 
@@ -288,33 +290,33 @@ export default {
         }
 
         const { data: dnsData } = await this.$get({ url: links.dnses });
-        Array.isArray(dnsData) && dnsData.forEach(async ({ links }) => {
-          let time = 0;
-          const { data: qpsData } = await this.$get({ url: links.qpses });
-          if (Array.isArray(qpsData) && qpsData.length) {
-            if (Array.isArray(qpsData[0].values) && qpsData[0].values.length) {
-              totalQps += qpsData.values[0].value;
-              time++;
-            }
 
-          }
-          this.totalQps = totalQps / time || 0;
-        });
+        const qpsList = dnsData.find(item => item.id === "qps").qps.values;
+
+        const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
+
+        if (typeof lastQps.value === "number") {
+          totalQps += lastQps.value;
+          qpsTime++;
+        }
+
+
+
 
         const { data: dhcpData } = await this.$get({ url: links.dhcps });
-        Array.isArray(dhcpData) && dhcpData.forEach(async ({ links }) => {
-          let time = 0;
-          const { data: lpsData } = await this.$get({ url: links.lpses });
-          if (Array.isArray(lpsData) && lpsData.length) {
-            if (Array.isArray(lpsData[0].values) && lpsData[0].values.length) {
-              totalLps += lpsData[0].values[0].value;
-              time++;
-            }
-          }
 
-          this.totalLps = totalLps / time || 0;
-        });
+        const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
+        const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : 0;
+
+        if (typeof lastQps.value === "number") {
+          totalLps += lastLps.value;
+          lpsTime++;
+        }
+
       });
+
+      this.totalQps = totalQps / qpsTime || 0;
+      this.totalLps = totalLps / lpsTime || 0;
 
     },
 

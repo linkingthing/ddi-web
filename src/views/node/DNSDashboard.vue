@@ -274,7 +274,7 @@ export default {
             this.types = item.querytyperatios.map(item => {
               return {
                 name: item.type,
-                value: item.ratios.pop().ratio || 0
+                value: ({ ...item.ratios.pop() }).ratio || 0
               };
             });
           }
