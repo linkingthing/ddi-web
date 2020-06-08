@@ -99,6 +99,7 @@ export default {
   methods: {
     openConfig(viewId) {
       this.viewId = viewId;
+      this.$refs.formValidate.resetFields();
       this.ipModal = true;
     },
     update() {
@@ -110,7 +111,7 @@ export default {
           this.$emit("onCreateSuccess");
           this.$Message.success("新建成功!");
           this.ipModal = false;
-          this.$refs["formValidate"].resetFields();
+          this.$refs.formValidate.resetFields();
         })
         .catch((err) => {
           console.log(err)

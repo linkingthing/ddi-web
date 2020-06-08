@@ -87,6 +87,13 @@ export default {
       }
     };
   },
+  watch: {
+    configModal(val) {
+      if (!val) {
+        this.$refs.formValidate.resetFields();
+      }
+    }
+  },
   methods: {
     openConfig(viewId, zoneId) {
       this.viewId = viewId;

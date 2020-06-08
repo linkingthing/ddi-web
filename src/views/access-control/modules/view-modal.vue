@@ -54,6 +54,9 @@ export default {
           max: 19,
           message: "最多只能19个字符"
         }
+      ],
+      acls: [
+        { required: true, message: "请选择ACL规则" }
       ]
 
     };
