@@ -11,7 +11,7 @@ export const columns = scope => [
         }
       }, row.ipnet);
     },
-    align: "left"
+    align: "center"
   },
   {
     title: "名称",

@@ -26,7 +26,7 @@ export const columns = scope => [
   {
     title: "创建时间",
     key: "creationTimestamp",
-    align: "right"
+    align: "center"
   },
   {
     title: "操作",
