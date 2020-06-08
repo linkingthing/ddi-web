@@ -61,6 +61,7 @@ export default {
   methods: {
     openToCreate() {
       const { ipnet } = this.$route.query;
+      
       if (ipnet) {
         this.showEdit = true;
         this.links = {

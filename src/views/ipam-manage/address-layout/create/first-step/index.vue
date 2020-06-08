@@ -359,7 +359,7 @@ export default {
         return Promise.reject();
       }
       
-      if (!res.some(item => this.validateItem(item))) {
+      if (res.some(item => !this.validateItem(item))) {
         this.$$warning("标识长度只能为正整数！");
 
         return Promise.reject();

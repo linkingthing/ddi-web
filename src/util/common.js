@@ -182,7 +182,7 @@ export const isNumber = val => {
  */
 export const isPosNumber = val => {
   val = isNaN(val) ? val : val.toString();
-
+  
   return /^[1-9]([0-9]+)?$/g.test(val);
 };
 
@@ -355,7 +355,7 @@ export const ipv4IsValid = address => {
 
 export const isIp = address => {
   return ipv6IsValid(address) || ipv4IsValid(address);
-}
+};
 
 
 /**
