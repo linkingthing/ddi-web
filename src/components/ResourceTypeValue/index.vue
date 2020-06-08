@@ -22,15 +22,16 @@
       label="记录值"
       prop="rdata"
       :rules="[requiredValidate, 
-               params.datatype === 'A' && isIPv4Validate,
-               params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
+               params.datatype === 'A' && ipv4List,
+               params.datatype === 'AAAA' && ipv6List,
                params.datatype === 'CNAME' && domainValidate,
                params.datatype === 'URL' && urlValidate
       ]"
     >
       <i-input
+        type="textarea"
         v-model="params.rdata"
-        placeholder="请填写资源记录"
+        placeholder="可以添加多个记录值，多个记录值必须用逗号分隔，每次最多填写20条"
       />
     </form-item>
   </div>
@@ -38,10 +39,11 @@
 
 <script>
 import {
-  isIPv4Validate,
   urlValidate,
   domainValidate,
-  IPv6SimpleValidateFunc
+  IPv6SimpleValidateFunc,
+  ipv4IsValid,
+  ipv6IsValid
 } from "@/util/common";
 
 export default {
@@ -54,13 +56,48 @@ export default {
       })
     }
   },
+
   data() {
     this.requiredValidate = { required: true, message: "请填写记录值" };
-    this.isIPv4Validate = isIPv4Validate;
     this.IPv6SimpleValidateFunc = IPv6SimpleValidateFunc;
     this.domainValidate = domainValidate;
     this.urlValidate = urlValidate;
+
     return {};
+  },
+  computed: {
+    ipv4List() {
+      return {
+        validator: this.unitValidator(ipv4IsValid, "请正确输入ipv4记录")
+      };
+    },
+    ipv6List() {
+      return {
+        validator: this.unitValidator(ipv6IsValid, "请正确输入ipv6记录")
+      };
+    }
+  },
+  methods: {
+    unitValidator(fn, message) {
+      return (rule, value, callback) => {
+
+        const ipList = value.split(",");
+        const isPass = ipList.every(item => {
+          return fn(item.trim());
+        });
+
+        if (ipList.length > 20) {
+          callback(new Error("每次最多填写20条"));
+        }
+
+        if (isPass) {
+          callback();
+        } else {
+          callback(new Error(message));
+        }
+      };
+    }
+
   }
 };
 </script>

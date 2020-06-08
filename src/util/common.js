@@ -201,72 +201,12 @@ export const getQueryString = name => {
   }
 };
 
-/**
- * ipv6规则
- * 1. 组多8组，以冒号分割
- * 2. 每个单元由4位16进制组成
- * 3. 单元中全为0时可以 (::)简写
- * 4. 简写只能出现一次，且在最右边（！！！还是要双重判断）
- * 
- * 
- * 逻辑分析：
- * 1. ipv6要么全写要么简写
- * 2. 简写只能一个 (::)
- * 3. 单元数不能超过8
- * 4. 简写的右边不能有可简写的单元
-*/
 
-// a:b:c:d:e:f:a:b
-// aaaa:bbbb:cccc:dddd:eeee:ffff:aaaa:bbbb
-// aaaa::
-// aaaa::bbbb
-// aaaa:b:cccc::dddd:eeee
-// 1aef:e234:3fdf::1
 export const IPv6SimpleValidateFunc = (rule, value, callback) => {
-  console.log(value);
-  if (fullIPv6Reg.test(value)) {
+  if (ipv6IsValid(value.trim())) {
     callback();
   }
-
-  const simpleSplit = value.split("::");
-  if (simpleSplit.length > 2) {
-    callback("ipv6中只能有一次简写");
-  }
-
-  if (simpleSplit.length !== 2) {
-    callback("请正确输入IPv6地址");
-  }
-
-  console.log(simpleSplit);
-
-  let totalGroup = [];
-  simpleSplit.forEach((current, index) => {
-    console.log(1, current);
-    totalGroup = totalGroup.concat(current.split(":"));
-
-    if (index === 1 && current.length > 0) {
-      // 这里面不能有可简写的存在
-      current.split(":").every(item => {
-        if (item === "0") {
-          callback("简写方式不正确，请优先对右边单元简写");
-        } else {
-          return true;
-        }
-      });
-    } else {
-      // 处理 aaaa:: (::)双冒号结尾的情况
-      totalGroup.pop();
-    }
-  });
-
-  console.log(totalGroup);
-  if (totalGroup.length > 7) {
-    callback("IPv6简写地址单元数不能超过7");
-  }
-
-  IPv6UnitTest(totalGroup, callback);
-
-  callback();
+  callback(new Error("请正确输入ipv6地址"));
 };
 
 

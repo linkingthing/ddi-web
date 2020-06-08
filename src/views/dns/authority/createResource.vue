@@ -29,10 +29,11 @@
                 <span slot="append">{{recordSuffix}}</span>
               </i-input>
             </form-item>
-            <TypeValue :params="upgradeConfig" />
+            <ResourceTypeValue :params="upgradeConfig" />
             <form-item
               label="TTL"
               prop="ttl"
+              style="margin-bottom: 0"
             >
               <i-input
                 type="text"
@@ -52,12 +53,12 @@
 import services from "@/services";
 import { resourceDomainValidateFunc, positiveIntegerValidate } from "@/util/common";
 import { getParantData } from "@/util/request";
-import TypeValue from "@/components/TypeValue";
+import ResourceTypeValue from "@/components/ResourceTypeValue";
 
 export default {
   name: "createResource",
   components: {
-    TypeValue
+    ResourceTypeValue
   },
   data() {
     return {
@@ -107,17 +108,23 @@ export default {
       });
     },
     update() {
-      services
-        .createResourceRecord(this.viewId, this.zoneId, this.upgradeConfig)
-        .then(() => {
-          this.$Message.success("新建成功!");
-          this.configModal = false;
-          this.$refs.formValidate.resetFields();
-          this.$emit("onCreateSuccess");
-        })
-        .catch((err) => {
-          this.$Message.error(err.response.data.message);
-        });
+      const rdataList = this.upgradeConfig.rdata.split(",");
+      console.log(rdataList)
+      rdataList.forEach(rdata => {
+        const params = { ...this.upgradeConfig, rdata: rdata.trim() };
+        services
+          .createResourceRecord(this.viewId, this.zoneId, params)
+          .then(() => {
+            this.$Message.success("新建成功!");
+            this.configModal = false;
+            this.$refs.formValidate.resetFields();
+            this.$emit("onCreateSuccess");
+          })
+          .catch((err) => {
+            this.$Message.error(err.response.data.message);
+          });
+      })
+
     },
     // 应用
     handleSubmit() {
