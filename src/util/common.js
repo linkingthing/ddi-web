@@ -35,7 +35,7 @@ export const domainValidate = {
 
 export const nameValidate = {
   pattern: nameReg,
-  message: "名称由不超过64个a-zA-Z0-9_组成"
+  message: "请正确填写的域名"
 };
 
 export const commonNameValidate = {
