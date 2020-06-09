@@ -11,7 +11,8 @@ export const columns = scope => [
         }
       }, row.ipnet);
     },
-    align: "center"
+    width: "440",
+    align: "left"
   },
   {
     title: "名称",
@@ -21,7 +22,7 @@ export const columns = scope => [
   {
     title: "使用率",
     key: "usedRatio",
-    align: "center",
+    align: "right",
     width: "180",
     render: (h, { row }) => {
       return h("common-process",{
