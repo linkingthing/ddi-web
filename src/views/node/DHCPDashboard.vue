@@ -169,7 +169,6 @@ export default {
     packetsVersion(val) {
       console.log(val)
       this.dhcpValues = this.packetsList.filter(item => item.version === val)
-
     }
 
   },
@@ -240,8 +239,8 @@ export default {
 
     getSubnetUsedRatioList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.useageLinks.self }).then(({ data }) => {
-          this.usageList = data.map(({ ipnet, usedRatios }) => {
+        this.$get({ params, url: this.useageLinks.self }).then(({ subnetusedratios }) => {
+          this.usageList = subnetusedratios.map(({ ipnet, usedRatios }) => {
             return {
               ipnet,
               usedRatios
@@ -256,7 +255,7 @@ export default {
 
     getLpsList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.lpsLinks.self }).then(({ data: [{ values }] }) => {
+        this.$get({ params, url: this.lpsLinks.self }).then(({ lps: { values } }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
@@ -266,7 +265,7 @@ export default {
 
     getLeaseList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.leaseLinks.self }).then(({ data: [{ values }] }) => {
+        this.$get({ params, url: this.leaseLinks.self }).then(({ lease: { values } }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLeaseLabels = labels;
           this.dhcpLeaseValues = value;
@@ -275,12 +274,15 @@ export default {
     },
 
     getPacketList(params) {
+      const tempVersion = this.packetsVersion;
+      this.packetsVersion = 0;
       this.intercept().then(_ => {
-        this.$get({ params, url: this.packetsLinks.self }).then(({ data }) => {
-          const [{ values }] = data;
-          const [labels] = valuesParser(values);
+        this.$get({ params, url: this.packetsLinks.self }).then(({ packets }) => {
+          console.log(packets)
+          const [labels, values] = valuesParser(packets[0].values);
           this.dhcpLabels = labels;
-          this.dhcpValues = data;
+
+          this.packetsVersion = tempVersion;
         }).catch(err => err);
       });
     }
