@@ -30,10 +30,10 @@
           :key="idx"
           class="axis-unit"
           :class="{
-            'axis-unit-long': !(item % 8),
+            'axis-unit-long': !(item % 8) || !item,
             'axis-unit-inuse': item > canPlanLength
           }">
-          <a class="axis-label" v-if="item && !(item % 8)">{{item}}</a>
+          <a class="axis-label" v-if="!(item % 8)">{{item}}</a>
         </div>
       </div>
     </section>
@@ -260,7 +260,7 @@ export default {
       this.canPlanLength = this.maskLen - this.mask;
       
       // 可规划地址的起始长度
-      this.prefixPos = this.mask;
+      this.prefixPos = this.mask + 1;
 
       let count = -1;
 
