@@ -39,7 +39,7 @@ export function valuesParser(values) {
   const data = values && values.map(({ timestamp, value, ratio }) => {
     return {
       timestamp,
-      time: moment(timestamp).format("YYYY-MM-DD hh:mm:ss"),
+      time: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
       count: value,
       ratio
     };
