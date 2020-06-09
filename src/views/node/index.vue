@@ -58,12 +58,12 @@
           <span>离线</span>
         </div>
       </header>
-      <section class="node-map-content">
+      <section
+        class="node-map-content"
+        v-scroll="handleScroll"
+      >
 
-        <div
-          class="node-map-inner"
-          v-scroll="handleScroll"
-        >
+        <div class="node-map-inner">
           <!-- <VueDragResize :is-resizable="false"> -->
           <svg ref="nodeMapRef">
             <path

@@ -331,7 +331,7 @@ export default {
           this.types = querytyperatios.map(item => {
             return {
               name: item.type,
-              value: item.ratios[0].ratio || 0
+              value: item.ratios[item.ratios.length - 1].ratio || 0
             };
           });
 
