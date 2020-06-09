@@ -51,6 +51,15 @@
         v-model="dhcpTime"
         :download="packetsLinks"
       >
+        <template v-slot:right>
+          <Select
+            style="width: 100px;"
+            v-model="packetsVersion"
+          >
+            <Option value="4">dhcp4</Option>
+            <Option value="6">dhcp6</Option>
+          </Select>
+        </template>
         <line-bar
           multiple
           :labels="dhcpLabels"
@@ -106,6 +115,9 @@ export default {
       packetsLinks: {},
       dhcpLabels: [],
       dhcpValues: [],
+      packetsVersion: "",
+      packetsList: [],
+
 
       usageTime: 6,
       useageLinks: {},
@@ -123,6 +135,7 @@ export default {
 
       usageList: [],
       useageIpnet: ""
+
     };
   },
   watch: {
@@ -130,20 +143,20 @@ export default {
       this.init();
     },
 
-    usageTime(from) {
-      this.getSubnetUsedRatioList({ from });
+    usageTime(period) {
+      this.getSubnetUsedRatioList({ period });
     },
 
-    dhcpTime(from) {
-      this.getPacketList({ from });
+    dhcpTime(period) {
+      this.getPacketList({ period });
     },
 
-    leaseTime(from) {
-      this.getLeaseList({ from });
+    leaseTime(period) {
+      this.getLeaseList({ period });
     },
 
-    lpsTime(from) {
-      this.getLpsList({ from });
+    lpsTime(period) {
+      this.getLpsList({ period });
     },
 
     useageIpnet(ipnet) {
@@ -151,6 +164,12 @@ export default {
       const [labels, value] = valuesParser(usedRatios);
       this.dhcpUsageLabels = labels;
       this.dhcpUsageValues = value;
+    },
+
+    packetsVersion(val) {
+      console.log(val)
+      this.dhcpValues = this.packetsList.filter(item => item.version === val)
+
     }
 
   },
@@ -193,8 +212,10 @@ export default {
             if (item.id === "packets") {
               const [labels] = valuesParser(item.packets[0].values);
               this.dhcpLabels = labels;
-              this.dhcpValues = item.packets;
+              this.packetsList = item.packets;
               this.packetsLinks = item.links;
+
+              this.packetsVersion = "4";
             }
 
             if (item.id === "subnetusedratios") {
