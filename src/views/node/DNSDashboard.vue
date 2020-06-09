@@ -40,10 +40,11 @@
       >
         <line-bar
           is-percent
-          multiple
           :labels="successRateLabels"
           :values="successRateValues"
+          series-name="解析成功率"
         />
+        <!-- multiple -->
       </Card>
 
       <Card
@@ -260,8 +261,9 @@ export default {
             this.qpsLinks = item.links;
           }
 
-          if (item.id === "cachehit") {
-            const [labels, values] = valuesParser(item.cachehit.values || []);
+          if (item.id === "cachehitratio") {
+            // todo, 可能会改
+            const [labels, values] = valuesParser(item.cachehitratio.ratios || []);
             this.memoHitRateLabels = labels;
             this.memoHitRateValues = values;
             this.cachehitLinks = item.links;
@@ -280,9 +282,9 @@ export default {
           }
 
           if (item.id === "resolvedratios") {
-            const [labels] = valuesParser(item.resolvedratios[0].ratios || []);
+            const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
             this.successRateLabels = labels;
-            this.successRateValues = item.resolvedratios;
+            this.successRateValues = values;
             this.resolvedratiosLinks = item.links;
           }
         });
