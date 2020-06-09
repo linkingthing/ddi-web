@@ -293,8 +293,7 @@ export default {
 
     getQPSData(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.qpsLinks.self }).then(({ qps: values }) => {
-          console.log(values)
+        this.$get({ params, url: this.qpsLinks.self }).then(({ qps: { values } }) => {
           const [labels, value] = valuesParser(values);
           this.qpsLabels = labels;
           this.qpsValues = value;
@@ -304,9 +303,9 @@ export default {
 
     getCachehitData(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehit: values }) => {
-          console.log(values)
-          const [labels, value] = valuesParser(values);
+        this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehitratio }) => {
+          console.log("cachehit", cachehitratio)
+          const [labels, value] = valuesParser(cachehitratio.ratios);
           this.memoHitRateLabels = labels;
           this.memoHitRateValues = value;
         }).catch(err => err);
@@ -316,10 +315,10 @@ export default {
     getResolvedratiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
-          console.log(resolvedratios)
-          const [labels, value] = valuesParser(resolvedratios[0].ratios);
-          this.memoHitRateLabels = labels;
-          this.memoHitRateValues = resolvedratios;
+          console.log("memoHit", resolvedratios)
+          const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
+          this.successRateLabels = labels;
+          this.successRateValues = values;
         }).catch(err => err);
       });
     },
@@ -327,7 +326,7 @@ export default {
     getQuerytyperatiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.querytyperatiosLinks.self }).then(({ querytyperatios }) => {
-          console.log(querytyperatios)
+          console.log("type", querytyperatios)
           this.types = querytyperatios.map(item => {
             return {
               name: item.type,
