@@ -272,6 +272,7 @@ export default {
 
   methods: {
     async getNodeInfo() {
+      let requestCount = 0;
       let totalQps = 0;
       let qpsTime = 0;
       let totalLps = 0;
@@ -295,28 +296,37 @@ export default {
 
         const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
 
+        // console.log(dnsData)
+        console.log(1)
+        // const lastQps = { timestamp: "2020-06-10T09:57:39+08:00", value: 3 }
+
         if (typeof lastQps.value === "number") {
           totalQps += lastQps.value;
           qpsTime++;
         }
 
 
-
-
         const { data: dhcpData } = await this.$get({ url: links.dhcps });
 
         const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
-        const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : 0;
+        const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : {};
 
-        if (typeof lastQps.value === "number") {
+        // console.log(lpsList, "lpsList", lastLps)
+
+        if (typeof lastLps.value === "number") {
           totalLps += lastLps.value;
           lpsTime++;
         }
 
-      });
+        requestCount++;
 
-      this.totalQps = totalQps / qpsTime || 0;
-      this.totalLps = totalLps / lpsTime || 0;
+        if (requestCount === data.length) {
+          console.log(2)
+          this.totalQps = totalQps / qpsTime || 0;
+          this.totalLps = totalLps / lpsTime || 0;
+        }
+
+      });
 
     },
 

@@ -61,6 +61,7 @@
           </Select>
         </template>
         <line-bar
+          v-if="showPacketsLine"
           multiple
           :labels="dhcpLabels"
           :values="dhcpValues"
@@ -117,6 +118,7 @@ export default {
       dhcpValues: [],
       packetsVersion: "",
       packetsList: [],
+      showPacketsLine: false,
 
 
       usageTime: 6,
@@ -167,8 +169,21 @@ export default {
     },
 
     packetsVersion(val) {
-      console.log(val)
-      this.dhcpValues = this.packetsList.filter(item => item.version === val)
+
+      this.dhcpValues = this.packetsList.filter(item => item.version === val);
+      this.showPacketsLine = false;
+
+      this.packetsList.forEach(item => {
+        console.log(item)
+        item.values.filter(v => v.value).forEach(item => {
+          console.log(item.timestamp, item.value)
+        })
+      })
+
+      this.$nextTick().then(() => {
+        this.showPacketsLine = true;
+
+      });
     }
 
   },
@@ -239,6 +254,8 @@ export default {
 
     getSubnetUsedRatioList(params) {
       this.intercept().then(_ => {
+        const temp = this.useageIpnet;
+        this.useageIpnet = "";
         this.$get({ params, url: this.useageLinks.self }).then(({ subnetusedratios }) => {
           this.usageList = subnetusedratios.map(({ ipnet, usedRatios }) => {
             return {
@@ -246,9 +263,7 @@ export default {
               usedRatios
             };
           });
-          if (this.usageList.length) {
-            this.useageIpnet = this.usageList[0].ipnet;
-          }
+          this.useageIpnet = temp;
         });
       }).catch(err => err);
     },
@@ -276,6 +291,8 @@ export default {
     getPacketList(params) {
       const tempVersion = this.packetsVersion;
       this.packetsVersion = 0;
+      this.showPacketsLine = false;
+
       this.intercept().then(_ => {
         this.$get({ params, url: this.packetsLinks.self }).then(({ packets }) => {
           console.log(packets)
@@ -283,6 +300,10 @@ export default {
           this.dhcpLabels = labels;
 
           this.packetsVersion = tempVersion;
+          this.$nextTick().then(() => {
+            this.showPacketsLine = true;
+
+          });
         }).catch(err => err);
       });
     }
