@@ -134,7 +134,7 @@ export default {
         this.formModel = {
           zonetype: "master",
           ttl: 3600,
-          isarpa: false
+          isarpa: "false"
         };
         return;
       }
