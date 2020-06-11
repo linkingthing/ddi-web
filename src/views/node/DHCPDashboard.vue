@@ -61,6 +61,7 @@
           </Select>
         </template>
         <line-bar
+          :legend="legend"
           v-if="showPacketsLine"
           multiple
           :labels="dhcpLabels"
@@ -136,8 +137,9 @@ export default {
 
 
       usageList: [],
-      useageIpnet: ""
+      useageIpnet: "",
 
+      legend: []
     };
   },
   watch: {
@@ -172,6 +174,12 @@ export default {
     },
 
     packetsVersion(val) {
+      if (val === "4") {
+        this.legend = ["discover", "offer", "request", "ack"];
+
+      } else {
+        this.legend = ["solicit", "advertise", "request", "reply"];
+      }
 
       this.dhcpValues = this.packetsList.filter(item => item.version === val);
       this.showPacketsLine = false;

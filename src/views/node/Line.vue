@@ -62,6 +62,10 @@ export default {
     seriesName: {
       type: String,
       default: ""
+    },
+    legend: {
+      type: Array,
+      default: () => ([])
     }
   },
   computed: {
@@ -106,7 +110,6 @@ export default {
         }
       ];
       let labels;
-      let legend = [];
       if (this.multiple) {
         series = this.values.map(item => {
           labels = item.values.map(value => {
@@ -123,14 +126,13 @@ export default {
             smooth: true
           };
         });
-        legend = this.values.map(item => item.type);
 
       }
 
       return {
         color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"],
         legend: {
-          data: legend
+          data: this.legend
         },
         grid: {
           left: "55px",
