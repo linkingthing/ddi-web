@@ -26,8 +26,7 @@ export default {
     options() {
       const labels = this.values.map(item => item.name);
       const count = this.values.reduce((prev, result) => Number(result.value) + Number(prev), 0);
-      console.log(count)
-      console.log(this.values)
+
       return {
         color: ["#1171E7", "#0DDE79", "#F21B62", "#F1D90B", "#F79F14", "#6F20FF", "#20CDFF", "#B8E115", "#A24C22", "#D323FF", "#317EAA", "#C8A025", "#2994AB", "#B3B3B3"],
 

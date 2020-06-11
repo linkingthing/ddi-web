@@ -204,9 +204,14 @@ export default {
   created() { },
   mounted() {
     this.initDataRequest();
-    // this.timer = setInterval(() => {
-    //   this.initDataRequest();
-    // }, 3000);
+    this.timer = setInterval(() => {
+      this.getQPSData();
+      this.getCachehitData();
+      this.getResolvedratiosData();
+      this.getQuerytyperatiosData();
+      this.getToptendomainsTimeData();
+      this.getTopIps();
+    }, 3000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -241,7 +246,6 @@ export default {
     getNodeInfo() {
       this.baseGet().then(({ data }) => {
 
-        console.log(data)
         data.forEach(item => {
 
           if (item.id === "toptenips") {
@@ -291,7 +295,7 @@ export default {
       });
     },
 
-    getQPSData(params) {
+    getQPSData(params = { period: this.qpsTime }) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.qpsLinks.self }).then(({ qps: { values } }) => {
           const [labels, value] = valuesParser(values);
@@ -301,10 +305,9 @@ export default {
       });
     },
 
-    getCachehitData(params) {
+    getCachehitData(params = { period: this.cachehitTime }) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehitratio }) => {
-          console.log("cachehit", cachehitratio)
           const [labels, value] = valuesParser(cachehitratio.ratios);
           this.memoHitRateLabels = labels;
           this.memoHitRateValues = value;
@@ -312,10 +315,9 @@ export default {
       });
     },
 
-    getResolvedratiosData(params) {
+    getResolvedratiosData(params = { period: this.resolvedratiosTime }) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
-          console.log("memoHit", resolvedratios)
           const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
           this.successRateLabels = labels;
           this.successRateValues = values;
@@ -323,10 +325,9 @@ export default {
       });
     },
 
-    getQuerytyperatiosData(params) {
+    getQuerytyperatiosData(params = { period: this.querytyperatiosTime }) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.querytyperatiosLinks.self }).then(({ querytyperatios }) => {
-          console.log("type", querytyperatios)
           this.types = querytyperatios.map(item => {
             return {
               name: item.type,
@@ -338,16 +339,15 @@ export default {
       });
     },
 
-    getToptendomainsTimeData(params) {
+    getToptendomainsTimeData(params = { period: this.toptendomainsTime }) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.toptendomainsLinks.self }).then(({ toptendomains }) => {
-          console.log(toptendomains)
           this.domains = toptendomains;
         }).catch(err => err);
       });
     },
 
-    getTopIps(params) {
+    getTopIps(params = { period: this.toptenipsTime }) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.toptenipsLinks.self }).then(({ toptenips }) => {
           this.ips = toptenips;

@@ -103,8 +103,6 @@ export default {
   },
   data() {
 
-
-
     return {
       node: "",
 
@@ -200,7 +198,24 @@ export default {
   },
   mounted() {
     this.init();
+
+    this.timer = setInterval(() => {
+
+      this.getSubnetUsedRatioList({ period: this.usageTime });
+
+      this.getPacketList({ period: this.dhcpTime });
+
+      this.getLeaseList({ period: this.leaseTime });
+
+      this.getLpsList({ period: this.lpsTime });
+
+    }, 3000);
   },
+
+  destroyed() {
+    clearInterval(this.timer);
+  },
+
   methods: {
     init() {
       this.getNodeInfo();
@@ -306,7 +321,6 @@ export default {
 
       this.intercept().then(_ => {
         this.$get({ params, url: this.packetsLinks.self }).then(({ packets }) => {
-          console.log(packets)
           const [labels, values] = valuesParser(packets[0].values);
           this.dhcpLabels = labels;
           this.packetsList = packets;
