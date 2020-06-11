@@ -80,6 +80,7 @@ export default {
   computed: {},
   watch: {
     node() {
+      clearInterval(this.timer);
       this.init();
     }
   },
