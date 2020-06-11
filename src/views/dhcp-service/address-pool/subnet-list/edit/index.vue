@@ -154,12 +154,12 @@ export default {
         this.formModel = {};
       } else {
         if (this.isCreate) {
-          const { ipnet,tags } = this.$route.query;
-          let version;
-          if (ipv6IsValid(ipnet)) {
+          const { ipnet, tags } = this.$route.query;
+          let version = 4;
+          if (ipnet && ipv6IsValid(ipnet)) {
             version = 6;
           }
-          if (ipv4IsValid(ipnet)) {
+          if (ipnet && ipv4IsValid(ipnet)) {
             version = 4;
           }
           this.formModel = {

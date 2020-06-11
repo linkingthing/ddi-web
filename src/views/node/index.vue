@@ -139,9 +139,6 @@
 
 import moment from "moment";
 moment.locale("zh-cn");
-
-import VueDragResize from "vue-drag-resize";
-
 import ServerInfo from "./modules/server-info";
 import MapNodeItem from "./modules/map-node-item";
 
@@ -149,7 +146,6 @@ import MapNodeItem from "./modules/map-node-item";
 
 export default {
   components: {
-    VueDragResize,
     "server-info": ServerInfo,
     "map-node-item": MapNodeItem
   },
@@ -235,11 +231,10 @@ export default {
     positionMap: {
       deep: true,
       handler(value) {
-        // 杯子算法
+
         let startXPointMap = {};
         let lineGroup = [];
 
-        console.log(value)
         value.forEach(item => {
           if (!item.master) {
             startXPointMap[item.ip] = item;
@@ -250,8 +245,7 @@ export default {
           }
         });
 
-        console.log(lineGroup)
-        this.svgPathGroup = this.point2Path(lineGroup)
+        this.svgPathGroup = this.point2Path(lineGroup);
 
       }
     }
@@ -260,23 +254,24 @@ export default {
 
   mounted() {
 
-
     this.getNodeInfo();
     this.timer = setInterval(() => {
       this.parserRunTime = this.excuteRunTime();
     }, 1000);
+
+    addEventListener("resize", this.reDrawLine);
+
   },
   destroyed() {
     clearInterval(this.timer);
+    removeEventListener("resize", this.addEventListener);
   },
 
   methods: {
     async getNodeInfo() {
       let requestCount = 0;
       let totalQps = 0;
-      let qpsTime = 0;
       let totalLps = 0;
-      let lpsTime = 0;
 
       const { data } = await this.$get(this.$getApiByRoute("/monitor/metric/nodes"));
 
@@ -296,13 +291,9 @@ export default {
 
         const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
 
-        // console.log(dnsData)
-        console.log(1)
-        // const lastQps = { timestamp: "2020-06-10T09:57:39+08:00", value: 3 }
 
         if (typeof lastQps.value === "number") {
           totalQps += lastQps.value;
-          qpsTime++;
         }
 
 
@@ -311,20 +302,14 @@ export default {
         const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
         const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : {};
 
-        // console.log(lpsList, "lpsList", lastLps)
 
         if (typeof lastLps.value === "number") {
           totalLps += lastLps.value;
-          lpsTime++;
         }
 
         requestCount++;
 
         if (requestCount === data.length) {
-          console.log(2)
-          // this.totalQps = totalQps / qpsTime || 0;
-          // this.totalLps = totalLps / lpsTime || 0;
-
           this.totalQps = totalQps;
           this.totalLps = totalLps;
         }
@@ -357,7 +342,7 @@ export default {
       this.visible = false;
     },
 
-    handleScroll(direction, el, e) {
+    handleScroll(direction, el) {
       const zoom = el.dataset.transform || 1;
       if (direction === "down") {
         if (zoom > 0.4) {
@@ -378,7 +363,6 @@ export default {
 
     point2Path(pointList) {
       const pathList = pointList.map(({ startPoint, endPoint }) => {
-        console.log(startPoint)
 
         return {
           startX: startPoint.offsetLeft + startPoint.offsetWidth,
@@ -388,8 +372,16 @@ export default {
         };
       });
 
-      console.log(pathList)
       return pathList;
+    },
+
+    reDrawLine() {
+      const nodeList = this.nodeList;
+      this.nodeList = [];
+      this.positionMap = [];
+      this.$nextTick().then(() => {
+        this.nodeList = nodeList;
+      });
     }
   }
 };
