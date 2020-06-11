@@ -68,7 +68,8 @@ export default {
         label: "TTL",
         model: "ttl",
         type: "number",
-        placeholder: "请填写TTL"
+        placeholder: "请填写TTL",
+        max: 86400
       },
       {
         label: "备注",

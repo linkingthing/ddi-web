@@ -32,10 +32,11 @@
               label="TTL"
               prop="ttl"
             >
-              <i-input
-                type="number"
+              <InputNumber
+                :max="24*60*60"
                 v-model="upgradeConfig.ttl"
                 placeholder="请输入延缓时间"
+                style="width: 100%"
               />
             </form-item>
             <form-item
@@ -71,7 +72,7 @@ export default {
         name: "",
         datatype: "A",
         rdata: "",
-        ttl: 0,
+        ttl: 3600,
         redirecttype: "localzone"
       },
       viewId: "",

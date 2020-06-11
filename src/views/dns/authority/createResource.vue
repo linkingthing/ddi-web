@@ -70,7 +70,7 @@ export default {
         name: "",
         datatype: "A",
         rdata: "",
-        ttl: ""
+        ttl: 3600
       },
       viewId: "",
       zoneId: "",
