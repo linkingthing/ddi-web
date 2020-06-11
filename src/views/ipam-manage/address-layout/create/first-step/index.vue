@@ -127,7 +127,7 @@
 import deleteImg from "./../images/delete.png";
 import { isPosNumber } from "@/util/common";
 
-const colors = ["#8041FF", "#4586FE", "#47D6FF"];
+const colors = ["#4E73FF", "#62D984", "#73BFD3", "#F4A966", "#A061FF", "#E86F6F", "#77CFEC", "#ECE131"];
 
 export default {
   props: {
