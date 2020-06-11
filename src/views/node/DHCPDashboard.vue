@@ -162,10 +162,13 @@ export default {
     },
 
     useageIpnet(ipnet) {
-      const [{ usedRatios }] = this.usageList.filter(item => item.ipnet === ipnet);
-      const [labels, value] = valuesParser(usedRatios);
-      this.dhcpUsageLabels = labels;
-      this.dhcpUsageValues = value;
+      const current = this.usageList.filter(item => item.ipnet === ipnet);
+      if (current.length) {
+        const [{ usedRatios }] = current;
+        const [labels, value] = valuesParser(usedRatios);
+        this.dhcpUsageLabels = labels;
+        this.dhcpUsageValues = value;
+      }
     },
 
     packetsVersion(val) {
@@ -173,12 +176,12 @@ export default {
       this.dhcpValues = this.packetsList.filter(item => item.version === val);
       this.showPacketsLine = false;
 
-      this.packetsList.forEach(item => {
-        console.log(item)
-        item.values.filter(v => v.value).forEach(item => {
-          console.log(item.timestamp, item.value)
-        })
-      })
+      // this.packetsList.forEach(item => {
+      //   console.log(item)
+      //   item.values.filter(v => v.value).forEach(item => {
+      //     console.log(item.timestamp, item.value)
+      //   })
+      // })
 
       this.$nextTick().then(() => {
         this.showPacketsLine = true;
@@ -298,6 +301,7 @@ export default {
           console.log(packets)
           const [labels, values] = valuesParser(packets[0].values);
           this.dhcpLabels = labels;
+          this.packetsList = packets;
 
           this.packetsVersion = tempVersion;
           this.$nextTick().then(() => {
