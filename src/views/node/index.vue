@@ -322,8 +322,11 @@ export default {
 
         if (requestCount === data.length) {
           console.log(2)
-          this.totalQps = totalQps / qpsTime || 0;
-          this.totalLps = totalLps / lpsTime || 0;
+          // this.totalQps = totalQps / qpsTime || 0;
+          // this.totalLps = totalLps / lpsTime || 0;
+
+          this.totalQps = totalQps;
+          this.totalLps = totalLps;
         }
 
       });
