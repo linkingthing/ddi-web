@@ -6,7 +6,7 @@
     @mouseenter="(e) => $emit('mouseenter', value, e)"
     @mouseleave="(e) => $emit('mouseleave', value, e)"
   >
-    <i class="success" />
+    <i :class="{'success' :value.nodeIsAlive, 'error': !value.nodeIsAlive}" />
     <ul class="">
       <li
         v-for="item in value.roles"

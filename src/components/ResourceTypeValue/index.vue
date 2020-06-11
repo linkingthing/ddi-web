@@ -15,7 +15,6 @@
         <i-option value="PTR">PTR</i-option>
         <i-option value="SRV">SRV</i-option>
         <i-option value="TXT">TXT</i-option>
-        <i-option value="URL">URL</i-option>
       </i-select>
     </form-item>
     <form-item

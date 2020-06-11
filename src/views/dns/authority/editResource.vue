@@ -29,11 +29,11 @@
               label="TTL"
               prop="ttl"
             >
-              <i-input
-                type="text"
+              <InputNumber
+                :max="24*60*60"
                 v-model="params.ttl"
                 placeholder="请输入延缓时间"
-                number
+                style="width: 100%"
               />
             </form-item>
           </div>

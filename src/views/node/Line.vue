@@ -10,6 +10,8 @@
 <script>
 import Chart from "./Chart";
 import NoDataFigure from "./NoDataFigure";
+import moment from "moment";
+moment.locale("zh-cn");
 
 const ThemeConfig = {
   blue: {
@@ -60,6 +62,10 @@ export default {
     seriesName: {
       type: String,
       default: ""
+    },
+    legend: {
+      type: Array,
+      default: () => ([])
     }
   },
   computed: {
@@ -103,20 +109,31 @@ export default {
           }
         }
       ];
-
+      let labels;
       if (this.multiple) {
         series = this.values.map(item => {
+          labels = item.values.map(value => {
+            return moment(value.timestamp).format("YYYY-MM-DD HH:mm:ss");
+          });
           return {
             name: self.seriesName || item.packetType || item.rcode || item.type || "值",
             data: (item.values && item.values.map(item => item.value)) || (item.ratios && item.ratios.map(item => item.ratio)),
             type: "line",
+            lineStyle: {
+              width: 1,
+              // type: "dotted"
+            },
             smooth: true
           };
         });
+
       }
 
       return {
         color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"],
+        legend: {
+          data: this.legend
+        },
         grid: {
           left: "55px",
           right: "50px",
@@ -125,7 +142,7 @@ export default {
         },
         xAxis: {
           type: "category",
-          data: this.labels,
+          data: labels || this.labels,
           boundaryGap: false,
           axisTick: {
             show: false

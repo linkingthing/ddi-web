@@ -25,12 +25,18 @@ export default {
   computed: {
     options() {
       const labels = this.values.map(item => item.name);
+      const count = this.values.reduce((prev, result) => Number(result.value) + Number(prev), 0);
+      console.log(count)
+      console.log(this.values)
       return {
-        color: ["#19be6b", "#4089FF", "#FECD5D", "#FD8F64"],
+        color: ["#1171E7", "#0DDE79", "#F21B62", "#F1D90B", "#F79F14", "#6F20FF", "#20CDFF", "#B8E115", "#A24C22", "#D323FF", "#317EAA", "#C8A025", "#2994AB", "#B3B3B3"],
 
         tooltip: {
           trigger: "item",
-          formatter: "{a} <br/>{b}: {d}%"  // {c} ({d}%)
+          // formatter: "{a} <br/>{b}: {d}%"  // {c} ({d}%) // 这种方式是以当前高亮集合的占比
+          formatter: function (a) {
+            return `${a.seriesName}<br/> ${a.name}: ${(a.value / count * 100).toFixed(2)}%`;
+          }
         },
         legend: {
           orient: "vertical",

@@ -6,11 +6,26 @@
     <div class="server-info-header">
       <div class="useage">
         <dl>
-          <dt class="error">{{server.cpuUsage && 100*Number(server.cpuUsage[0].ratio).toFixed(2)}} <span>%</span> </dt>
+          <dt class="error">
+            {{
+              (Array.isArray(server.cpuUsage) && server.cpuUsage.length)
+                ? 100 * Number(server.cpuUsage[server.cpuUsage.length - 1].ratio).toFixed(2)
+                : 0
+            }}
+            <span>%</span>
+          </dt>
           <dd>cpu使用率</dd>
         </dl>
         <dl>
-          <dt class="warn">{{server.memoryUsage && 100*Number(server.memoryUsage[0].ratio)}} <span>%</span></dt>
+          <dt class="warn">
+
+            {{
+              (Array.isArray(server.memoryUsage) && server.memoryUsage.length)
+                ? 100 * Number(server.memoryUsage[server.memoryUsage.length - 1].ratio).toFixed(2)
+                : 0
+            }}
+            <span>%</span>
+          </dt>
           <dd>内存占用率</dd>
         </dl>
       </div>
@@ -41,6 +56,18 @@
             {{server.nodeIsAlive ? "在线" : "离线"}}
           </span>
         </li>
+
+        <li
+          v-for="role in server.roles.filter(item => item!== 'controller')"
+          :key="role"
+        >
+          <label>
+            {{role}}
+          </label>
+          <span :class="serverStatus">
+            {{server[`${role}IsAlive`] ? "在线" : "离线"}}
+          </span>
+        </li>
       </ul>
     </div>
   </div>
@@ -56,7 +83,9 @@ export default {
     },
     server: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+
+      })
     }
   },
   data() {

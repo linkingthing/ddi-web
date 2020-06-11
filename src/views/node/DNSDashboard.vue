@@ -40,10 +40,11 @@
       >
         <line-bar
           is-percent
-          multiple
           :labels="successRateLabels"
           :values="successRateValues"
+          series-name="解析成功率"
         />
+        <!-- multiple -->
       </Card>
 
       <Card
@@ -260,8 +261,9 @@ export default {
             this.qpsLinks = item.links;
           }
 
-          if (item.id === "cachehit") {
-            const [labels, values] = valuesParser(item.cachehit.values || []);
+          if (item.id === "cachehitratio") {
+            // todo, 可能会改
+            const [labels, values] = valuesParser(item.cachehitratio.ratios || []);
             this.memoHitRateLabels = labels;
             this.memoHitRateValues = values;
             this.cachehitLinks = item.links;
@@ -280,9 +282,9 @@ export default {
           }
 
           if (item.id === "resolvedratios") {
-            const [labels] = valuesParser(item.resolvedratios[0].ratios || []);
+            const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
             this.successRateLabels = labels;
-            this.successRateValues = item.resolvedratios;
+            this.successRateValues = values;
             this.resolvedratiosLinks = item.links;
           }
         });
@@ -291,8 +293,7 @@ export default {
 
     getQPSData(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.qpsLinks.self }).then(({ qps: values }) => {
-          console.log(values)
+        this.$get({ params, url: this.qpsLinks.self }).then(({ qps: { values } }) => {
           const [labels, value] = valuesParser(values);
           this.qpsLabels = labels;
           this.qpsValues = value;
@@ -302,9 +303,9 @@ export default {
 
     getCachehitData(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehit: values }) => {
-          console.log(values)
-          const [labels, value] = valuesParser(values);
+        this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehitratio }) => {
+          console.log("cachehit", cachehitratio)
+          const [labels, value] = valuesParser(cachehitratio.ratios);
           this.memoHitRateLabels = labels;
           this.memoHitRateValues = value;
         }).catch(err => err);
@@ -314,10 +315,10 @@ export default {
     getResolvedratiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
-          console.log(resolvedratios)
-          const [labels, value] = valuesParser(resolvedratios[0].ratios);
-          this.memoHitRateLabels = labels;
-          this.memoHitRateValues = resolvedratios;
+          console.log("memoHit", resolvedratios)
+          const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
+          this.successRateLabels = labels;
+          this.successRateValues = values;
         }).catch(err => err);
       });
     },
@@ -325,11 +326,11 @@ export default {
     getQuerytyperatiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.querytyperatiosLinks.self }).then(({ querytyperatios }) => {
-          console.log(querytyperatios)
+          console.log("type", querytyperatios)
           this.types = querytyperatios.map(item => {
             return {
               name: item.type,
-              value: item.ratios[0].ratio || 0
+              value: item.ratios[item.ratios.length - 1].ratio || 0
             };
           });
 

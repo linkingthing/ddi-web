@@ -35,11 +35,11 @@
               prop="ttl"
               style="margin-bottom: 0"
             >
-              <i-input
-                type="text"
+              <InputNumber
+                :max="24*60*60"
                 v-model="upgradeConfig.ttl"
                 placeholder="请输入延缓时间"
-                number
+                style="width: 100%"
               />
             </form-item>
           </div>

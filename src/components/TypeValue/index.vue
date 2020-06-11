@@ -8,6 +8,7 @@
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
+        
         <i-option value="HINFO">HINFO</i-option>
         <i-option value="MX">MX</i-option>
         <i-option value="NS">NS</i-option>
@@ -15,7 +16,6 @@
         <i-option value="PTR">PTR</i-option>
         <i-option value="SRV">SRV</i-option>
         <i-option value="TXT">TXT</i-option>
-        <i-option value="URL">URL</i-option>
       </i-select>
     </form-item>
     <form-item

@@ -61,6 +61,8 @@
           </Select>
         </template>
         <line-bar
+          :legend="legend"
+          v-if="showPacketsLine"
           multiple
           :labels="dhcpLabels"
           :values="dhcpValues"
@@ -117,6 +119,7 @@ export default {
       dhcpValues: [],
       packetsVersion: "",
       packetsList: [],
+      showPacketsLine: false,
 
 
       usageTime: 6,
@@ -134,8 +137,9 @@ export default {
 
 
       usageList: [],
-      useageIpnet: ""
+      useageIpnet: "",
 
+      legend: []
     };
   },
   watch: {
@@ -160,16 +164,37 @@ export default {
     },
 
     useageIpnet(ipnet) {
-      const [{ usedRatios }] = this.usageList.filter(item => item.ipnet === ipnet);
-      const [labels, value] = valuesParser(usedRatios);
-      this.dhcpUsageLabels = labels;
-      this.dhcpUsageValues = value;
+      const current = this.usageList.filter(item => item.ipnet === ipnet);
+      if (current.length) {
+        const [{ usedRatios }] = current;
+        const [labels, value] = valuesParser(usedRatios);
+        this.dhcpUsageLabels = labels;
+        this.dhcpUsageValues = value;
+      }
     },
 
     packetsVersion(val) {
-      console.log(val)
-      this.dhcpValues = this.packetsList.filter(item => item.version === val)
+      if (val === "4") {
+        this.legend = ["discover", "offer", "request", "ack"];
 
+      } else {
+        this.legend = ["solicit", "advertise", "request", "reply"];
+      }
+
+      this.dhcpValues = this.packetsList.filter(item => item.version === val);
+      this.showPacketsLine = false;
+
+      // this.packetsList.forEach(item => {
+      //   console.log(item)
+      //   item.values.filter(v => v.value).forEach(item => {
+      //     console.log(item.timestamp, item.value)
+      //   })
+      // })
+
+      this.$nextTick().then(() => {
+        this.showPacketsLine = true;
+
+      });
     }
 
   },
@@ -240,23 +265,23 @@ export default {
 
     getSubnetUsedRatioList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.useageLinks.self }).then(({ data }) => {
-          this.usageList = data.map(({ ipnet, usedRatios }) => {
+        const temp = this.useageIpnet;
+        this.useageIpnet = "";
+        this.$get({ params, url: this.useageLinks.self }).then(({ subnetusedratios }) => {
+          this.usageList = subnetusedratios.map(({ ipnet, usedRatios }) => {
             return {
               ipnet,
               usedRatios
             };
           });
-          if (this.usageList.length) {
-            this.useageIpnet = this.usageList[0].ipnet;
-          }
+          this.useageIpnet = temp;
         });
       }).catch(err => err);
     },
 
     getLpsList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.lpsLinks.self }).then(({ data: [{ values }] }) => {
+        this.$get({ params, url: this.lpsLinks.self }).then(({ lps: { values } }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
@@ -266,7 +291,7 @@ export default {
 
     getLeaseList(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.leaseLinks.self }).then(({ data: [{ values }] }) => {
+        this.$get({ params, url: this.leaseLinks.self }).then(({ lease: { values } }) => {
           const [labels, value] = valuesParser(values);
           this.dhcpLeaseLabels = labels;
           this.dhcpLeaseValues = value;
@@ -275,12 +300,22 @@ export default {
     },
 
     getPacketList(params) {
+      const tempVersion = this.packetsVersion;
+      this.packetsVersion = 0;
+      this.showPacketsLine = false;
+
       this.intercept().then(_ => {
-        this.$get({ params, url: this.packetsLinks.self }).then(({ data }) => {
-          const [{ values }] = data;
-          const [labels] = valuesParser(values);
+        this.$get({ params, url: this.packetsLinks.self }).then(({ packets }) => {
+          console.log(packets)
+          const [labels, values] = valuesParser(packets[0].values);
           this.dhcpLabels = labels;
-          this.dhcpValues = data;
+          this.packetsList = packets;
+
+          this.packetsVersion = tempVersion;
+          this.$nextTick().then(() => {
+            this.showPacketsLine = true;
+
+          });
         }).catch(err => err);
       });
     }
