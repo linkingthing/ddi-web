@@ -53,7 +53,7 @@ export default {
         label: "服务器",
         model: "ips",
         type: "textarea",
-        placeholder: "可以添加多个转发服务器，多个服务器必 须用换行符分隔，每次最多填写10条",
+        placeholder: "可以添加多个转发服务器，多个服务器必须用逗号分隔，每次最多填写10条",
         autosize: { minRows: 4, maxRows: 8 }
       },
 
@@ -93,7 +93,7 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {};
+        this.$refs.formInline.resetFields();
         return;
       }
 
