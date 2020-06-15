@@ -64,7 +64,7 @@
           <label>
             {{role}}
           </label>
-          <span :class="serverStatus">
+          <span :class="{'success': server[`${role}IsAlive`],'error': !server[`${role}IsAlive`]}">
             {{server[`${role}IsAlive`] ? "在线" : "离线"}}
           </span>
         </li>

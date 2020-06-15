@@ -62,7 +62,6 @@
         </template>
         <line-bar
           :legend="legend"
-          v-if="showPacketsLine"
           multiple
           :labels="dhcpLabels"
           :values="dhcpValues"
@@ -179,7 +178,10 @@ export default {
         this.legend = ["solicit", "advertise", "request", "reply"];
       }
 
-      this.dhcpValues = this.packetsList.filter(item => item.version === val);
+      if (val) {
+        this.dhcpValues = this.packetsList.filter(item => item.version === val);
+      }
+
       this.showPacketsLine = false;
 
       // this.packetsList.forEach(item => {

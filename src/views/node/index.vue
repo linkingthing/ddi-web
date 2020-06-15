@@ -277,11 +277,11 @@ export default {
 
       this.nodeList = data;
 
-      Array.isArray(data) && data.forEach(async ({ creationTimestamp, roles, links }) => {
+      Array.isArray(data) && data.forEach(async ({ startTime, roles, links }) => {
         if (roles.includes("controller")) {
 
-          this.bootTime = moment(creationTimestamp).format("YYYY.MM.DD HH:mm");
-          this.bootTimestamp = creationTimestamp;
+          this.bootTime = moment(startTime).format("YYYY.MM.DD HH:mm");
+          this.bootTimestamp = startTime;
 
         }
 
