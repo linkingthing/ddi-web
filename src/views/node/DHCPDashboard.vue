@@ -171,14 +171,15 @@ export default {
     },
 
     packetsVersion(val) {
-      if (val === "4") {
-        this.legend = ["discover", "offer", "request", "ack"];
 
-      } else {
-        this.legend = ["solicit", "advertise", "request", "reply"];
-      }
 
       if (val) {
+        if (val === "4") {
+          this.legend = ["discover", "offer", "request", "ack"];
+
+        } else {
+          this.legend = ["solicit", "advertise", "request", "reply"];
+        }
         this.dhcpValues = this.packetsList.filter(item => item.version === val);
       }
 
