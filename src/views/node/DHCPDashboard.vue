@@ -182,17 +182,9 @@ export default {
 
         this.dhcpValues = this.packetsList.filter(item => item.version === val);
 
-        console.log(this.dhcpValues)
       }
 
       this.showPacketsLine = false;
-
-      // this.packetsList.forEach(item => {
-      //   console.log(item)
-      //   item.values.filter(v => v.value).forEach(item => {
-      //     console.log(item.timestamp, item.value)
-      //   })
-      // })
 
       this.$nextTick().then(() => {
         this.showPacketsLine = true;

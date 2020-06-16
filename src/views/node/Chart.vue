@@ -54,12 +54,8 @@ export default {
   watch: {
     options: {
       handler: function (values) {
-        console.log("ren", values, this.chart)
         if (this.chart) {
-          this.chart.clear();
-          this.chart.setOption(values);
-
-          // this.chart.showLoading();
+          this.chart.setOption(values, true);
         }
 
       },
