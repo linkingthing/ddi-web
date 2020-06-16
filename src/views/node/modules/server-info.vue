@@ -9,7 +9,7 @@
           <dt class="error">
             {{
               (Array.isArray(server.cpuUsage) && server.cpuUsage.length)
-                ? 100 * Number(server.cpuUsage[server.cpuUsage.length - 1].ratio).toFixed(2)
+                ? (100 * Number(server.cpuUsage[server.cpuUsage.length - 1].ratio)).toFixed(2)
                 : 0
             }}
             <span>%</span>
@@ -21,7 +21,7 @@
 
             {{
               (Array.isArray(server.memoryUsage) && server.memoryUsage.length)
-                ? 100 * Number(server.memoryUsage[server.memoryUsage.length - 1].ratio).toFixed(2)
+                ? (100 * Number(server.memoryUsage[server.memoryUsage.length - 1].ratio)).toFixed(2)
                 : 0
             }}
             <span>%</span>
