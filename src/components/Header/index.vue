@@ -29,7 +29,7 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-              {{item.title}}
+            {{item.title}}
             </MenuItem>
           </Menu>
         </div>
@@ -140,7 +140,7 @@ export default {
       setToken: "SET_TOKEN"
     }),
 
-    handleClickMainMenu(menu) {      
+    handleClickMainMenu(menu) {
       this.$router.push({ path: menu });
     },
 
@@ -158,11 +158,12 @@ export default {
     },
     handleSubmit() {
       if (this.password === this.rePassword) {
-        services
-          .updatePassword({
-            username: "admin",
-            password: this.password
-          })
+        const username = "admin";
+        const params = {
+          username,
+          password: this.password
+        };
+        this.$put({ url: `/apis/linkingthing.com/auth/v1/users/${username}`, params })
           .then(res => {
             this.$Message.success("修改成功");
             this.visible = false;

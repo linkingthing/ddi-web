@@ -11,7 +11,7 @@ axios.interceptors.request.use(
 
     const token = store.getters.token;
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `${token}`;
     }
     return config;
   },
@@ -47,10 +47,10 @@ export default {
     return axios.get(`${baseUrl}/checkvalue`, { params });
   },
   login(params) {
-    return axios.post(`${baseUrl}/login`, params);
+    return axios.post(`/login`, params);
   },
   updatePassword(params) {
-    return axios.post(`${baseUrl}/changepwd`, params);
+    return axios.post(`/apis/linkingthing.com/auth/v1/users`, params);
   },
   // 权威管理
 
