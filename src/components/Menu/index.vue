@@ -8,7 +8,7 @@
         :open-names="openNames"
       >
         <template v-for="(item, idx) in routes">
-          <template v-if="item.meta.isFlat  && hasShowMenu(item.meta.range) ">
+          <template v-if="item.meta.isFlat && hasShowMenu(item.meta.range) ">
             <template v-for="child in item.children">
               <MenuItem
                 v-if="!child.meta.notInMenu"
@@ -17,11 +17,11 @@
                 @click.native="handleJump(child.path)"
                 class="sigle-menu"
               >
-              <i
-                class="menu-icon"
-                :class="child.icon"
-              />
-              {{ child.meta.title }}
+                <i
+                  class="menu-icon"
+                  :class="child.icon"
+                />
+                {{ child.meta.title }}
               </MenuItem>
             </template>
           </template>
@@ -34,12 +34,12 @@
               @click.native="handleJump(item.path)"
               class="single-node"
             >
-            <i
-              v-if="item.icon"
-              class="menu-icon"
-              :class="item.icon"
-            />
-            {{ item.meta.title }}
+              <i
+                v-if="item.icon"
+                class="menu-icon"
+                :class="item.icon"
+              />
+              {{ item.meta.title }}
             </MenuItem>
 
             <Submenu
@@ -64,7 +64,7 @@
                   :name="child.name"
                   @click.native="handleJump(child.path)"
                 >
-                {{ child.meta.title }}
+                  {{ child.meta.title }}
                 </MenuItem>
               </template>
             </Submenu>
@@ -104,6 +104,7 @@ export default {
         "dhcp-config",
         "forward",
         "dhcp-dhcp",
+        "system-log",
         "system-alarms"
       ],
       routes: [],
