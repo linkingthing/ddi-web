@@ -8,7 +8,7 @@
         :open-names="openNames"
       >
         <template v-for="(item, idx) in routes">
-          <template v-if="item.meta.isFlat && PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range) ">
+          <template v-if="item.meta.isFlat  && hasShowMenu(item.meta.range) ">
             <template v-for="child in item.children">
               <MenuItem
                 v-if="!child.meta.notInMenu"
@@ -17,34 +17,34 @@
                 @click.native="handleJump(child.path)"
                 class="sigle-menu"
               >
-                <i
-                  class="menu-icon"
-                  :class="child.icon"
-                />
-                {{ child.meta.title }}
+              <i
+                class="menu-icon"
+                :class="child.icon"
+              />
+              {{ child.meta.title }}
               </MenuItem>
             </template>
           </template>
 
           <template v-else>
             <MenuItem
-              v-if="item.meta.isSingle && PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range)"
+              v-if="item.meta.isSingle && hasShowMenu(item.meta.range)"
               :key="idx"
               :name="item.name"
               @click.native="handleJump(item.path)"
               class="single-node"
             >
-              <i
-                v-if="item.icon"
-                class="menu-icon"
-                :class="item.icon"
-              />
-              {{ item.meta.title }}
+            <i
+              v-if="item.icon"
+              class="menu-icon"
+              :class="item.icon"
+            />
+            {{ item.meta.title }}
             </MenuItem>
 
             <Submenu
               :key="idx"
-              v-else-if="PACK_SYSTEM.includes(item.meta.range) && hasShowMenu(item.meta.range)"
+              v-else-if="hasShowMenu(item.meta.range)"
               :name="item.name"
               class="level-menu"
             >
@@ -64,7 +64,7 @@
                   :name="child.name"
                   @click.native="handleJump(child.path)"
                 >
-                  {{ child.meta.title }}
+                {{ child.meta.title }}
                 </MenuItem>
               </template>
             </Submenu>
@@ -83,17 +83,7 @@ export default {
   name: "menuNav",
 
   data() {
-    // this.openNames = [
-    //   "ipam-manage",
-    //   "dns-service",
-    //   "access-control",
-    //   "dhcp-service",
-    //   "system-safe",
-    //   "dhcp-config",
-    //   "forward",
-    //   "dhcp-dhcp"
-    // ];
-    
+
     return {
       // eslint-disable-next-line no-undef
       PACK_SYSTEM,
@@ -113,7 +103,8 @@ export default {
         "system-safe",
         "dhcp-config",
         "forward",
-        "dhcp-dhcp"
+        "dhcp-dhcp",
+        "system-alarms"
       ],
       routes: [],
       tab: "" // 路由tab
@@ -124,7 +115,7 @@ export default {
     $route: {
       immediate: true,
       async handler(val) {
-        if (!val) return; 
+        if (!val) return;
 
         await this.$nextTick();
 
@@ -133,21 +124,20 @@ export default {
         } else {
           this.tab = val.name;
         }
-        
+
         if (val.meta && val.meta.active) {
           this.tab = val.meta.active;
         }
 
         await this.$nextTick();
-        
-        this.$refs.menu.updateOpened();        
+
+        this.$refs.menu.updateOpened();
       }
     }
   },
 
   created() {
-    this.formatMenus(); 
-       
+    this.formatMenus();
   },
 
   methods: {
@@ -159,16 +149,16 @@ export default {
       this.routes = routes.map(item => {
         if (item.meta.isSingle) {
           let res = item.children.filter(item => !item.notInMenu)[0];
-
           res.meta.isSingle = true;
-
           return res;
         }
         else {
           return item;
         }
+      }).filter(item => {
+        return "dns,monitor,address,system".includes(item.meta.range);
       });
-      
+
       // this.openNames = this.routes.map(item => item.name);      
     },
 

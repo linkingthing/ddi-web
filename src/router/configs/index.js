@@ -4,6 +4,7 @@ import dns from "./dns";
 import ipam from "./ipam";
 import node from "./node";
 import forword from "./forward";
+import systemAlarms from "./system-alarms";
 
 let res = [
   node,
@@ -12,6 +13,7 @@ let res = [
   forword,
   accessControl,
   dhcp,
+  systemAlarms
 ];
 
 res.forEach(item => {

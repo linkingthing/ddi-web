@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import blacklistConfig from "@/components/BlacklistConfig";
 import services from "@/services";
 export default {

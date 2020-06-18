@@ -15,6 +15,10 @@ Vue.component("btn-edit", BaseBtnEdit);
 import BaseBtnDel from "@/components/BaseBtnDel";
 Vue.component("btn-del", BaseBtnDel);
 
+import BaseLineEdit from "@/components/BaseLineEdit";
+Vue.component("line-edit", BaseLineEdit);
+
+
 import BaseBtnMove from "@/components/BaseBtnMove";
 Vue.component("btn-move", BaseBtnMove);
 

@@ -34,9 +34,9 @@
           </Menu>
         </div>
         <div class="user">
-          <!-- <Badge :count="3">
-            <Icon type="ios-notifications-outline" style="font-size: 20px" />
-          </Badge> -->
+          <Badge :count="3">
+            <Icon type="ios-notifications-outline" style="font-size: 20px;cursor: pointer" />
+          </Badge>
           <Dropdown
             style="margin-left: 20px"
             @on-click="handleClickMenu"
@@ -122,6 +122,9 @@ export default {
     }, {
       title: "地址管理",
       url: "/address"
+    }, {
+      title: "系统管理",
+      url: "/system"
     }];
     return {
       logoSrc,
