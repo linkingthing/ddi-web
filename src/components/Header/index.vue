@@ -35,7 +35,10 @@
         </div>
         <div class="user">
           <Badge :count="3">
-            <Icon type="ios-notifications-outline" style="font-size: 20px;cursor: pointer" />
+            <Icon
+              type="ios-notifications-outline"
+              style="font-size: 20px;cursor: pointer"
+            />
           </Badge>
           <Dropdown
             style="margin-left: 20px"
@@ -51,10 +54,7 @@
               <Icon type="md-arrow-dropdown" />
             </a>
             <DropdownMenu slot="list">
-              <DropdownItem
-                name="user"
-                key="user"
-              >用户信息</DropdownItem>
+
               <DropdownItem
                 name="password"
                 key="password"

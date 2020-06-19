@@ -23,7 +23,7 @@
 		padding-right: 32px;
 		padding-left: 26px;
 
-		&.ivu-table-cell-with-selection{
+		&.ivu-table-cell-with-selection {
 			text-overflow: clip;
 		}
 	}
@@ -33,20 +33,27 @@
 		height: 50px;
 
 		.ivu-table-cell {
-			span {
+			& > span {
 				color: #333;
 				font-size: 14px;
-      }
-      .ivu-switch-inner {
-        span {
-          color: #fff;
-          font-size: 12px;
-        }
-      }
+			}
+			.ivu-switch-inner {
+				span {
+					color: #fff;
+					font-size: 12px;
+				}
+			}
 
 			label {
 				font-size: 14px;
-			}
+      }
+      .ivu-btn {
+        padding-left: 8px;
+        padding-right: 8px;
+        &+.ivu-btn {
+          margin-left: 10px;
+        }
+      }
 		}
 	}
 

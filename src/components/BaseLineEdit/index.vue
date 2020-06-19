@@ -1,9 +1,11 @@
 <template>
   <div class="line-eidt">
-    <span
-      :contenteditable="contenteditable"
-      ref="inputFocus"
-    >
+    <Input
+      v-if="contenteditable"
+      v-model="innerValue"
+      style="width: 60px"
+    />
+    <span v-else>
       {{innerValue}}
     </span>
 
@@ -34,7 +36,6 @@ export default {
   computed: {},
   watch: {
     value(val) {
-      console.log(val)
       this.innerValue = val;
     }
   },
@@ -43,38 +44,22 @@ export default {
 
   },
   mounted() { },
-  destroyed() {
-    this.el.removeEventListener("compositionend", this.handleChangeText);
-  },
+
   methods: {
     handleToggleEdit() {
       if (this.contenteditable) {
-
         this.$emit("on-edit-finish", this.innerValue);
       }
-
-
-
       this.contenteditable = !this.contenteditable;
-      this.$nextTick().then(() => {
-        const el = this.el = this.$refs.inputFocus;
-        el.focus();
-        el.addEventListener("compositionend", this.handleChangeText);
-
-      });
-
     },
     handleChangeText(e) {
-
-      console.log(e)
-      // console.log(target.innerText)
       this.innerValue = e.target.innerText;
     }
   }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 :focus {
   outline: none;
 }
@@ -82,6 +67,10 @@ export default {
 .line-eidt {
   cursor: pointer;
 
+  .ivu-input {
+    height: initial;
+    padding: 0 5px;
+  }
   span {
     padding: 0 5px;
   }

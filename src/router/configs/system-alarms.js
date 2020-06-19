@@ -6,7 +6,7 @@ export default {
 	meta: {
 		range: 'system',
 		title: '告警管理'
-	},
+  },
 	name: 'system-alarms',
 	children: [
 		{
@@ -20,9 +20,9 @@ export default {
 			}
 		},
 		{
-			name: 'alarm-info',
-			path: '/system/alarms-fin',
-			component: () => import('@/views/system/alarm/alarm-info'),
+			name: 'alarm-notice',
+			path: '/system/alarms-notice',
+			component: () => import('@/views/system/alarm/alarm-notice'),
 			icon: 'icon-node',
 			meta: {
 				range: 'system',
@@ -30,9 +30,9 @@ export default {
 			}
 		},
 		{
-			name: 'alarm-config',
+			name: 'alarm-info',
 			path: '/system/alarms-info',
-			component: () => import('@/views/system/alarm/alarm-config'),
+			component: () => import('@/views/system/alarm/alarm-info'),
 			icon: 'icon-node',
 			meta: {
 				range: 'system',

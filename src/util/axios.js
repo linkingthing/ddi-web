@@ -31,14 +31,14 @@ async function netCall(request) {
 
   try {
     const response = await request;
-    let { data, status, message } = await response;
-    
+    let { data, status, message, code } = await response;
+
     if (successCode.includes(status)) { // 请求成功
       LoadingBar.finish();
 
       return data;
     } 
-    else if (status === 401) { // 验证失败
+    else if (status === 401 || code === 401) { // 验证失败
       LoadingBar.error();
 
       Message.error(message);
@@ -56,6 +56,13 @@ async function netCall(request) {
   }
   catch (error) {
     LoadingBar.error();
+    const {status, statusText} = error.response;
+    if (status === 401) {
+      Message.error(statusText);
+
+      router.push("/login");
+    }
+
 
     console.error("request exception -> error", error);
 
@@ -84,5 +91,5 @@ export {
   get,
   del,
   put,
-  axios
+  instance as axios
 };
