@@ -5,6 +5,7 @@ import ipam from "./ipam";
 import node from "./node";
 import forword from "./forward";
 import systemAlarms from "./system-alarms";
+import systemLog from "./system-log";
 
 let res = [
   node,
@@ -13,6 +14,7 @@ let res = [
   forword,
   accessControl,
   dhcp,
+  systemLog,
   systemAlarms
 ];
 
