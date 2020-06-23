@@ -11,7 +11,6 @@
         </div>
       </template>
     </table-page>
-    
 
   </div>
 </template>
@@ -81,14 +80,27 @@ export default {
           }
         }
       ],
-      list: [{}]
+      list: []
     };
   },
   computed: {},
   watch: {},
-  created() { },
+  created() {
+    this.getData();
+  },
   mounted() { },
-  methods: {}
+  methods: {
+    getData() {
+      this.$getData().then(({ data }) => {
+        console.log(data)
+        this.loading = false;
+        this.list = data;
+      }).catch().finally(() => {
+        this.loading = false;
+      });
+
+    },
+  }
 };
 </script>
 

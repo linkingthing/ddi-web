@@ -1,7 +1,10 @@
 <template>
   <div class="alarm-info">
-    <div class="">
-      <Tabs value="tabValue">
+    <div class="top-border">
+      <Tabs
+        v-model="tabValue"
+        class="top-tab"
+      >
         <TabPane
           label="告警配置"
           name="alarmConfig"
@@ -13,7 +16,10 @@
       </Tabs>
     </div>
 
-    <div class="alarm-config">
+    <div
+      class="alarm-config"
+      v-if="tabValue === 'alarmConfig'"
+    >
       <Form
         ref="alarmConfig"
         :model="alarmConfig"
@@ -24,41 +30,38 @@
       >
         <FormItem
           label="发件邮箱"
-          prop="passwd"
+          prop="username"
         >
           <Input
-            type="password"
-            v-model="alarmConfig.passwd"
+            v-model="alarmConfig.username"
             placeholder="请填写发件邮箱"
           />
         </FormItem>
         <FormItem
           label="发件箱密码"
-          prop="passwdCheck"
+          prop="password"
         >
           <Input
             type="password"
-            v-model="alarmConfig.passwdCheck"
+            v-model="alarmConfig.password"
             placeholder="请填写发件箱密码"
           />
         </FormItem>
         <FormItem
           label="邮箱服务器"
-          prop="passwdCheck"
+          prop="host"
         >
           <Input
-            type="password"
-            v-model="alarmConfig.passwdCheck"
+            v-model="alarmConfig.host"
             placeholder="请填写邮箱服务器"
           />
         </FormItem>
         <FormItem
           label="邮箱服务器端口"
-          prop="passwdCheck"
+          prop="port"
         >
           <Input
-            type="password"
-            v-model="alarmConfig.passwdCheck"
+            v-model.number="alarmConfig.port"
             placeholder="请填写邮箱服务器端口"
           />
         </FormItem>
@@ -73,7 +76,7 @@
       </Form>
     </div>
 
-    <AdminEmail />
+    <AdminEmail v-else />
 
   </div>
 </template>
@@ -86,26 +89,42 @@ export default {
   },
   props: {},
   data() {
+    this.rules = {
+
+    };
     return {
-      tabValue: "alarmConfig",
-      alarmConfig: {}
+      tabValue: "adminList", // alarmConfig
+      alarmConfig: {},
+      configUpdateLink: ""
     };
   },
   computed: {},
-  watch: {
-    tabValue(value) {
-      console.log(value)
-    }
+  created() {
+    this.getSender();
   },
-  created() { },
   mounted() { },
   methods: {
+
+    getSender() {
+      this.$get(this.$getApiByRoute("/system/alarm/mailsenders")).then(({ data, links }) => {
+        this.alarmConfig = (Array.isArray(data) && data.length) ? data[0] : {};
+        this.configUpdateLink = this.alarmConfig.links.update;
+      }).catch(() => {
+        this.$Message.error("获取发件者信息失败");
+      })
+    },
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.$Message.success('Success!');
+          const params = this.alarmConfig;
+          this.$put({ url: this.configUpdateLink, params }).then(() => {
+            this.$Message.success("更新成功!");
+
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
         } else {
-          this.$Message.error('Fail!');
+          this.$Message.error("Fail!");
         }
       })
     },
@@ -113,8 +132,53 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .alarm-info {
-  padding-top: 100px;
+  padding-top: 60px;
+  .top-border {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 40px;
+    padding-left: 25px;
+    padding-bottom: 30px;
+    .top-tab {
+      position: relative;
+      z-index: 100;
+      display: inline-block;
+    }
+  }
+  .ivu-tabs-bar {
+    border: none;
+    .ivu-tabs-tab {
+      border-width: 3px;
+      padding-left: 0;
+      padding-right: 0;
+      margin-right: 70px;
+    }
+    .ivu-tabs-ink-bar {
+      display: none;
+    }
+    .ivu-tabs-tab-focused {
+      &::after {
+        content: "";
+        display: block;
+        height: 2px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #2d8cf0;
+        position: absolute;
+        left: 0;
+        bottom: 1px;
+        z-index: 1;
+        transition: transform 0.3s ease-in-out;
+        transform-origin: 0 0;
+      }
+    }
+  }
+  .alarm-config {
+    padding: 0 25px;
+    .ivu-form-item {
+      margin-bottom: 36px;
+    }
+  }
 }
 </style>

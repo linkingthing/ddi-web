@@ -14,7 +14,7 @@
           <Select
             v-model="searchParams.name"
             placeholder="请选择告警项"
-            style="width: 140px"
+            class="m-select"
             clearable
           >
             <Option value="cpuUsedRatio">CPU使用率</Option>
@@ -36,7 +36,7 @@
         >
           <Select
             v-model="searchParams.label"
-            style="width: 140px"
+            class="m-select"
             placeholder="请选择告警类型"
             clearable
           >
@@ -52,7 +52,7 @@
         >
           <Select
             v-model="searchParams.state"
-            style="width: 140px"
+            class="m-select"
             clearable
           >
             <Option value="cpuUsedRatio">已处理</Option>
@@ -71,7 +71,7 @@
             type="daterange"
             placement="bottom-end"
             placeholder="Select date"
-            style="width: 200px"
+            class="m-date"
           />
 
         </FormItem>
@@ -112,6 +112,23 @@ export default {
     flex: 1;
   }
   .search-operate {
+  }
+  .m-select {
+    width: 140px;
+  }
+  .m-date {
+    width: 200px;
+  }
+}
+
+@media screen and(min-width: 1200px) and(max-width: 1500px) {
+  .search-bar {
+    .m-select {
+      width: 120px;
+    }
+    .m-date {
+      width: 120px;
+    }
   }
 }
 </style>

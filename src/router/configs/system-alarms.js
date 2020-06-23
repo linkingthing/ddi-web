@@ -21,7 +21,7 @@ export default {
 		},
 		{
 			name: 'alarm-notice',
-			path: '/system/alarms-notice',
+			path: '/system/alarm/alarms',
 			component: () => import('@/views/system/alarm/alarm-notice'),
 			icon: 'icon-node',
 			meta: {
