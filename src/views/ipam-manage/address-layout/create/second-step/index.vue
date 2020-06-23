@@ -319,8 +319,8 @@ export default {
 
             return Promise.reject({ message: "标识下各项名称不能重复！" });
           }
-
-          if (!/(1|0)/g.test(tag.value.toString().trim())) {
+          
+          if (isNaN(tag.value) || !/(1|0)/g.test(tag.value.toString().trim())) {
             refs[`tagValue${i}-${j}`][0].focus();
 
             return Promise.reject({ message: "请输入正确的标识值！" });
