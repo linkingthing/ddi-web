@@ -12,8 +12,8 @@ export default {
 	children: [
 		{
 			name: 'operate-logs',
-			path: '/system/log/logs',
-			component: () => import(/* webpackChuckName: "operate-logs" */ '@/views/system/log/operate-logs'),
+			path: '/system/log/auditlogs',
+			component: () => import(/* webpackChuckName: "operate-logs" */ '@/views/system/log/auditlog'),
 			icon: 'icon-node',
 			meta: {
 				range: 'system',
