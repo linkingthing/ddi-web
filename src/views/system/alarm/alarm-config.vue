@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { alarmConfig, alarmLevel } from "@/dictionary";
 
 export default {
   props: {},
@@ -19,12 +20,18 @@ export default {
         {
           title: "告警项",
           key: "name",
-          align: "left"
+          align: "left",
+          render: (h, { row }) => {
+            return h("div", alarmConfig[row.name]);
+          }
         },
         {
           title: "告警类型",
-          key: "level",
-          align: "center"
+          key: `level`,
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", alarmLevel[row.level]);
+          }
         },
         {
           title: "告警阈值",
