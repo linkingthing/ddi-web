@@ -1,5 +1,5 @@
 <template>
-  <div class="operate-logs">   
+  <div class="audit-log">   
     <IviewLoading v-if="loading" />
 
     <table-page 
@@ -10,29 +10,17 @@
       <template slot="top-right">
         <div class="condition-item">
           <label class="condition-item-label">时间：</label>
-          <Input
-            v-model="condition.date"
-            class="top-input"
-            @on-enter="handleQuery" />
+          <DatePicker
+            v-model="conditions.date"
+            format="yyyy-MM-dd"
+            type="daterange"
+            placement="bottom"
+            placeholder="请选择时间"/>
         </div>
         <div class="condition-item">
           <label class="condition-item-label">IP地址：</label>
           <Input
-            v-model="condition.ip"
-            class="top-input"
-            @on-enter="handleQuery" />
-        </div>
-        <div class="condition-item">
-          <label class="condition-item-label">操作：</label>
-          <Input
-            v-model="condition.operate"
-            class="top-input"
-            @on-enter="handleQuery" />
-        </div>
-        <div class="condition-item">
-          <label class="condition-item-label">结果：</label>
-          <Input
-            v-model="condition.result"
+            v-model="conditions.sourceIp"
             class="top-input"
             @on-enter="handleQuery" />
         </div>
@@ -55,6 +43,7 @@
 
 <script>
 import { columns } from "./define";
+import resources from "@/dictionary/resources";
 
 export default {
   data() {
@@ -64,11 +53,10 @@ export default {
       tableData: [],
       columns: columns(this),
       conditions: {
-        date: "",
-        ip: "",
-        operate: "",
-        result: ""
+        date: [],
+        sourceIp: ""
       },
+      isSmallScreen: document.body.clientWidth <= 1366,
       showConfig: false
     };
   },
@@ -85,7 +73,9 @@ export default {
         let { data } = await this.$get({ url: this.url, params: this.getParams() });
         
         this.tableData = data.map(item => {
-          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+          item.creationTime = this.$trimDate(item.creationTimestamp);
+          item.content = this.formatContent(item);
+          item.opperText = item.succeed ? "操作成功" : "操作失败";
 
           return item;
         });
@@ -98,9 +88,32 @@ export default {
     },
 
     getParams() {
-      return {
-        ...this.conditions
+      const { date,sourceIp } = this.conditions;
+
+      let res = {};
+
+      if (sourceIp.trim()) {
+        res.source_ip = sourceIp.trim();
+      }
+      
+      if (date[0]) {
+        res.from = date[0].toLocaleDateString().replace(/\//g,"-");
+        res.to = date[1].toLocaleDateString().replace(/\//g,"-");
+      }
+
+      return res;
+    },
+
+    formatContent(data) {
+      const getOpperText = opper => {
+        switch (opper.toLocaleLowerCase()) {
+          case "put":return "更新";
+          case "post":return "新建";
+          case "delete": return "删除";
+        }
       };
+
+      return `${data.username}${getOpperText(data.method)}${resources[data.resourceKind]}${data.succeed ? "成功" : ("失败：" + data.errMessage)}`;
     }
   }
 };

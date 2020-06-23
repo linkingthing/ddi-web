@@ -56,7 +56,7 @@ async function netCall(request) {
   }
   catch (error) {
     LoadingBar.error();
-    const {status, statusText} = error.response;
+    const { status, statusText } = error.response;
     if (status === 401) {
       Message.error(statusText);
 
