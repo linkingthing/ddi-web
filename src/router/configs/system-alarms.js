@@ -1,7 +1,7 @@
 import Layout from '@/views/layout';
 
 export default {
-	path: '/system/alarms',
+	path: '/system/alarm',
 	component: Layout,
 	meta: {
 		range: 'system',
@@ -11,7 +11,7 @@ export default {
 	children: [
 		{
 			name: 'alarm-config',
-			path: '/system/alarms/alarms',
+			path: '/system/alarm/thresholds',
 			component: () => import('@/views/system/alarm/alarm-config'),
 			icon: 'icon-node',
 			meta: {

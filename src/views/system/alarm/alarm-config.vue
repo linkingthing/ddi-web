@@ -14,7 +14,7 @@ export default {
   props: {},
   data() {
     return {
-      list: [{}],
+      list: [],
       columns: [
         {
           title: "告警项",
@@ -23,35 +23,27 @@ export default {
         },
         {
           title: "告警类型",
-          key: "",
-          align: "center",
-          render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.ips,
-                field: row
-              }
-            });
-          }
+          key: "level",
+          align: "center"
         },
         {
           title: "告警阈值",
-          key: "status",
-          align: "center",
+          align: "right",
           render: (h, { row }) => {
 
             return h("line-edit",
               {
                 on: {
-                  "on-edit-finish": (val) => {
-                    console.log(val)
+                  "on-edit-finish": val => {
+                    this.handleUpdateValue(row.links.update, val, row);
                   }
                 },
                 props: {
-                  value: "20"
+                  isPercent: row.name && row.name.endsWith("Ratio"),
+                  value: row.value
                 }
               }
-              
+
             );
           }
         },
@@ -62,8 +54,14 @@ export default {
           width: 160,
           render: (h, { row }) => {
             return h("i-switch", {
+              on: {
+                "on-change": (val) => {
+                  this.handleToggle(row.links.update, val, row)
+                }
+              },
               props: {
-                size: "large"
+                size: "large",
+                value: row.enabled
               }
             }, [
               h("span", {
@@ -83,7 +81,7 @@ export default {
   computed: {},
   watch: {},
   created() {
-    // this.getData();
+    this.getData();
   },
   mounted() { },
   methods: {
@@ -91,11 +89,25 @@ export default {
       this.$getData().then(({ data }) => {
         console.log(data)
         this.loading = false;
-        this.tableData = data;
+        this.list = data;
       }).catch().finally(() => {
         this.loading = false;
       });
 
+    },
+    handleUpdateValue(url, value, row) {
+      this.$put({ url, params: { ...row, value } }).then(() => {
+        this.$Message.success("更新成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+    },
+    handleToggle(url, enabled, row) {
+      this.$put({ url, params: { ...row, enabled } }).then(() => {
+        this.$Message.success("更新成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
     }
   }
 };

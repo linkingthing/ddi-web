@@ -2,11 +2,12 @@
   <div class="line-eidt">
     <Input
       v-if="contenteditable"
-      v-model="innerValue"
+      v-model.number="innerValue"
       style="width: 60px"
     />
     <span v-else>
       {{innerValue}}
+      {{isPercent ? '%' : ''}}
     </span>
 
     <img
@@ -21,15 +22,19 @@ export default {
   name: "BaseLineEdit",
   components: {},
   props: {
+    isPercent: {
+      type: Boolean,
+      default: false
+    },
     value: {
-      type: String,
-      default: ""
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
       el: null,
-      innerValue: "",
+      innerValue: 0,
       contenteditable: false
     };
   },
