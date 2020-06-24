@@ -38,6 +38,7 @@
             <Icon
               type="ios-notifications-outline"
               style="font-size: 20px;cursor: pointer"
+              @click="$router.push({name: 'alarm-notice',query: {state:'untreated'}})"
             />
           </Badge>
           <Dropdown

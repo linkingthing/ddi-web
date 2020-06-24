@@ -55,7 +55,7 @@ export default {
           }
         },
         {
-          title: "通知",
+          title: "告警通知",
           key: "action",
           align: "right",
           width: 160,
@@ -109,8 +109,8 @@ export default {
         this.$Message.error(err.response.data.message);
       });
     },
-    handleToggle(url, enabled, row) {
-      this.$put({ url, params: { ...row, enabled } }).then(() => {
+    handleToggle(url, sendMail, row) {
+      this.$put({ url, params: { ...row, sendMail } }).then(() => {
         this.$Message.success("更新成功");
       }).catch(err => {
         this.$Message.error(err.response.data.message);

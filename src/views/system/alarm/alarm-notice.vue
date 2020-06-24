@@ -40,6 +40,7 @@ export default {
           title: "告警项",
           key: "name",
           align: "left",
+          width: "160",
           render: (h, { row }) => {
             return h("div", alarmConfig[row.name]);
           }
@@ -47,6 +48,7 @@ export default {
         {
           title: "告警级别",
           key: "level",
+          width: "130",
           align: "left",
           render: (h, { row }) => {
             return h("div", {
@@ -62,10 +64,9 @@ export default {
             if (row.haCmd) {
               if (row.haCmd === "master_up") {
                 return h("div", `辅${row.slaveIp}切换到主${row.masterIp}`)
-
               }
               if (row.haCmd === "master_down") {
-                return h("div", "");
+                return h("div", `主${row.masterIp}切换到辅${row.slaveIp}`);
               }
             }
 
@@ -77,6 +78,7 @@ export default {
           title: "告警状态",
           key: "state",
           align: "left",
+          width: "140",
           render: (h, { row }) => {
             return h("div", {
 
@@ -87,6 +89,7 @@ export default {
           title: "时间",
           key: "creationTimestamp",
           align: "left",
+          width: "220",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
           }
@@ -140,7 +143,7 @@ export default {
   },
   watch: {},
   created() {
-    this.getData();
+    this.getData(this.$route.query);
   },
   mounted() { },
   methods: {

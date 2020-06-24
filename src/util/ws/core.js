@@ -3,8 +3,10 @@ const baseConfig = {
 };
 const {port, protocol, host} = document.location;
 const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-console.log(`${wsProtocol}://${host}:${port}${baseConfig.baseUrl}`)
-const wsUrl = `${wsProtocol}://127.0.0.1:${port}${baseConfig.baseUrl}`;
+const wsHost = process.env.NODE_ENV === "development" ? "127.0.0.1" : host;
+const wsUrl = `${wsProtocol}://${wsHost}:${port}${baseConfig.baseUrl}`;
+console.log(process.env.NODE_ENV, wsUrl)
+
 function ws(resource) {
   const ws = new WebSocket(`${wsUrl}/${resource}`); 
   ws.onmessage = function (e) {

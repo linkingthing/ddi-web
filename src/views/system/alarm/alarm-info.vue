@@ -29,6 +29,18 @@
         style="width: 380px"
       >
         <FormItem
+          label="是否启用"
+          prop="enabled"
+        >
+          <i-switch
+            v-model="alarmConfig.enabled"
+            size="large"
+          >
+            <template slot="open">启用</template>
+            <template slot="close">关闭</template>
+          </i-switch>
+        </FormItem>
+        <FormItem
           label="发件邮箱"
           prop="username"
         >
