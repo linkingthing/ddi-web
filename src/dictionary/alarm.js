@@ -1,7 +1,7 @@
 export const alarmConfig = {
   cpuUsedRatio: "CPU使用率",
-  dhcpoffline: "DHCP服务离线",
-  dnsoffline: "DNS服务离线",
+  dhcpOffline: "DHCP服务离线",
+  dnsOffline: "DNS服务离线",
   haTrigger: "Ha主备份切换",
   lps: "LPS",
   memoryUsedRatio: "内存使用率",

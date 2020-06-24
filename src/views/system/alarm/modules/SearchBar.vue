@@ -115,8 +115,13 @@ export default {
   mounted() { },
   methods: {
     handleDateChange([from, to]) {
-      this.searchParams.from = from;
-      this.searchParams.to = to;
+      if (from) {
+        this.searchParams.from = from;
+        this.searchParams.to = to;
+      } else {
+        delete this.searchParams.from;
+        delete this.searchParams.to;
+      }
     }
   }
 };
