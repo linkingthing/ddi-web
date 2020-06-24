@@ -107,8 +107,12 @@
 <script>
 import { mapMutations } from "vuex";
 import services from "@/services";
+import ws from "@/util/ws";
 
 import logoSrc from "@/assets/images/logo.png";
+
+
+console.log(ws)
 
 export default {
   name: "Header",

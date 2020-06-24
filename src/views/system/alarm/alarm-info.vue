@@ -93,9 +93,11 @@ export default {
 
     };
     return {
-      tabValue: "adminList", // alarmConfig
+      tabValue: "alarmConfig",
       alarmConfig: {},
-      configUpdateLink: ""
+      configUpdateLink: "",
+      links: {},
+      method: "$put"
     };
   },
   computed: {},
@@ -108,8 +110,11 @@ export default {
     getSender() {
       this.$get(this.$getApiByRoute("/system/alarm/mailsenders")).then(({ data, links }) => {
         this.alarmConfig = (Array.isArray(data) && data.length) ? data[0] : {};
+        this.links = links;
         this.configUpdateLink = this.alarmConfig.links.update;
       }).catch(() => {
+        this.configUpdateLink = this.links.self;
+        this.method = "$post";
         this.$Message.error("获取发件者信息失败");
       })
     },
@@ -117,9 +122,8 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = this.alarmConfig;
-          this.$put({ url: this.configUpdateLink, params }).then(() => {
+          this[this.method]({ url: this.configUpdateLink, params }).then(() => {
             this.$Message.success("更新成功!");
-
           }).catch(err => {
             this.$Message.error(err.response.data.message);
           });

@@ -80,8 +80,8 @@
       </Form>
     </div>
     <div class="search-operate">
-      <Button type="primary">忽略</Button>
-      <Button type="primary">已处理</Button>
+      <Button type="primary" @click="$emit('on-mutiple', {state:'ignored'})">忽略</Button>
+      <Button type="primary" @click="$emit('on-mutiple', {state:'solved'})">已处理</Button>
     </div>
   </div>
 </template>

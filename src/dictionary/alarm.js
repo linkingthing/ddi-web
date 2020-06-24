@@ -17,4 +17,8 @@ export const alarmLevel = {
   minor: "次要告警"
 };
 
-
+export const alarmState = {  
+  untreated: "未处理",
+  solved: "已处理",
+  ignored: "已忽略"
+};
