@@ -25,9 +25,9 @@ export default {
   recursivecurrent: "递归安全",
   /** IPAM */
   asset: "IP资产",
-  plan: "IP规划",
+  plan: "IP地址规划",
   layout: "IP布局",
-  segment: "IP网段",
+  segment: "IP地址规划",
   plannedsubnet: "规划子网",
   scannedsubnet: "扫描子网",
   router: "设备探测",
