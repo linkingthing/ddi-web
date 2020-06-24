@@ -8,7 +8,10 @@
     >
       <template slot="neck">
         <div>
-          <SearchBar @on-mutiple="handleMutipleDeal" />
+          <SearchBar
+            @on-mutiple="handleMutipleDeal"
+            @on-search="handleSearch"
+          />
         </div>
       </template>
     </table-page>
@@ -132,14 +135,18 @@ export default {
   },
   mounted() { },
   methods: {
-    getData() {
-      this.$getData().then(({ data }) => {
+    getData(params) {
+      this.$getData(params).then(({ data }) => {
         this.loading = false;
         this.list = data;
       }).catch().finally(() => {
         this.loading = false;
       });
 
+    },
+
+    handleSearch(params) {
+      this.getData(params);
     },
     handleDeal({ links, ...params }, state) {
       this.$put({ url: links.update, params: { ...params, ...state } }).then(() => {

@@ -17,16 +17,11 @@
             class="m-select"
             clearable
           >
-            <Option value="cpuUsedRatio">CPU使用率</Option>
-            <Option value="memoryUsedRatio">内存使用率</Option>
-            <Option value="haTrigger">Ha主备份切换</Option>
-            <Option value="nodeOffline">节点离线</Option>
-            <Option value="dnsoffline">DNS服务离线</Option>
-            <Option value="dhcpoffline">DHCP服务离线</Option>
-            <Option value="qps">QPS</Option>
-            <Option value="lps">LPS</Option>
-            <Option value="subnetUsedRatio">地址池使用率</Option>
-            <Option value="storageUsedRatio">硬盘使用率</Option>
+            <Option
+              :value="item"
+              v-for="item in Object.keys(alarmConfig)"
+              :key="item"
+            >{{alarmConfig[item]}}</Option>
           </Select>
 
         </FormItem>
@@ -35,14 +30,16 @@
           label="告警类型"
         >
           <Select
-            v-model="searchParams.label"
+            v-model="searchParams.level"
             class="m-select"
             placeholder="请选择告警类型"
             clearable
           >
-            <Option value="critical">严重告警</Option>
-            <Option value="major">一般告警</Option>
-            <Option value="minor">次要告警</Option>
+            <Option
+              :value="item"
+              v-for="item in Object.keys(alarmLevel)"
+              :key="item"
+            >{{alarmLevel[item]}}</Option>
           </Select>
 
         </FormItem>
@@ -55,9 +52,11 @@
             class="m-select"
             clearable
           >
-            <Option value="cpuUsedRatio">已处理</Option>
-            <Option value="memoryUsedRatio">已处理</Option>
-            <Option value="haTrigger">已忽略</Option>
+            <Option
+              :value="item"
+              v-for="item in Object.keys(alarmState)"
+              :key="item"
+            >{{alarmState[item]}}</Option>
           </Select>
 
         </FormItem>
@@ -66,31 +65,45 @@
           label="告警时间"
         >
           <DatePicker
-            :value="searchParams.creationTimestamp"
-            format="yyyy/MM/dd"
+            format="yyyy-MM-dd"
             type="daterange"
             placement="bottom-end"
-            placeholder="Select date"
+            placeholder="起止时间"
             class="m-date"
+            @on-change="handleDateChange"
           />
 
         </FormItem>
-        <Button type="default">搜索</Button>
+        <Button
+          type="default"
+          @click="$emit('on-search', searchParams)"
+        >搜索</Button>
 
       </Form>
     </div>
     <div class="search-operate">
-      <Button type="primary" @click="$emit('on-mutiple', {state:'ignored'})">忽略</Button>
-      <Button type="primary" @click="$emit('on-mutiple', {state:'solved'})">已处理</Button>
+      <Button
+        type="primary"
+        @click="$emit('on-mutiple', {state:'ignored'})"
+      >忽略</Button>
+      <Button
+        type="primary"
+        @click="$emit('on-mutiple', {state:'solved'})"
+      >已处理</Button>
     </div>
   </div>
 </template>
 
 <script>
+import { alarmConfig, alarmLevel, alarmState } from "@/dictionary";
+
 export default {
   components: {},
   props: {},
   data() {
+    this.alarmConfig = alarmConfig;
+    this.alarmLevel = alarmLevel;
+    this.alarmState = alarmState;
     return {
       searchParams: {
 
@@ -98,10 +111,14 @@ export default {
     };
   },
   computed: {},
-  watch: {},
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    handleDateChange([from, to]) {
+      this.searchParams.from = from;
+      this.searchParams.to = to;
+    }
+  }
 };
 </script>
 

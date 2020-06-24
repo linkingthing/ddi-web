@@ -123,7 +123,7 @@ Vue.prototype.$put = put;
 Vue.prototype.$post = post;
 Vue.prototype.$delete = del;
 Vue.prototype.$axios = axios;
-Vue.prototype.$getData = params => get(getApiByRoute(params)); 
+Vue.prototype.$getData = (params, path) => get({...getApiByRoute(path), params}); 
 Vue.prototype.$createEntity = params => post({ ...getApiByRoute(), params }); 
 
 
