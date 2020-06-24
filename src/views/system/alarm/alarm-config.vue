@@ -38,7 +38,7 @@ export default {
           align: "right",
           render: (h, { row }) => {
 
-            return h("line-edit",
+            return row.thresholdType !== "trigger" && h("line-edit",
               {
                 on: {
                   "on-edit-finish": val => {
@@ -68,7 +68,7 @@ export default {
               },
               props: {
                 size: "large",
-                value: row.enabled
+                value: row.sendMail
               }
             }, [
               h("span", {
