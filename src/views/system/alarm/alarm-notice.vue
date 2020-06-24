@@ -59,10 +59,17 @@ export default {
           align: "left",
           render: (h, { row }) => {
             // 百分比 布尔 整型
-            const offlineList = ["dhcpOffline", "dnsOffline", "haTrigger", "nodeOffline"];
-            const endResult = "";
-            const thresholdText = row.threshold && `超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`;
+            if (row.haCmd) {
+              if (row.haCmd === "master_up") {
+                return h("div", `辅${row.slaveIp}切换到主${row.masterIp}`)
 
+              }
+              if (row.haCmd === "master_down") {
+                return h("div", "");
+              }
+            }
+
+            const thresholdText = row.thresholdType !== "trigger" && `超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`;
             return h("div", `节点${row.nodeIp} ${alarmConfig[row.name]} ${thresholdText}`);
           }
         },

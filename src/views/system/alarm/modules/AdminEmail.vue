@@ -88,7 +88,6 @@ export default {
       this.visible = true;
     },
     handleOpenEdit(links) {
-      console.log(links)
       this.paramsLinks = links;
       this.visible = true;
     },

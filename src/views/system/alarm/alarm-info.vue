@@ -115,7 +115,7 @@ export default {
       }).catch(() => {
         this.configUpdateLink = this.links.self;
         this.method = "$post";
-        this.$Message.error("获取发件者信息失败");
+        // this.$Message.error("获取发件者信息失败");
       })
     },
     handleSubmit(name) {
