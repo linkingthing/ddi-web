@@ -6,6 +6,7 @@
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"
+      :current="currentPage"
     > 
       <template slot="top-right">
         <div class="condition-item">
@@ -56,6 +57,7 @@ export default {
         date: [],
         sourceIp: ""
       },
+      currentPage: 1,
       isSmallScreen: document.body.clientWidth <= 1366,
       showConfig: false
     };
@@ -68,6 +70,8 @@ export default {
   methods: {
     async handleQuery() {
       this.loading = true;
+
+      this.currentPage = 1;
 
       try {
         let { data } = await this.$get({ url: this.url, params: this.getParams() });
