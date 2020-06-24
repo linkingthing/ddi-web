@@ -59,9 +59,11 @@ export default {
           align: "left",
           render: (h, { row }) => {
             // 百分比 布尔 整型
-            const offlineList = ["dhcpoffline",]
+            const offlineList = ["dhcpOffline", "dnsOffline", "haTrigger", "nodeOffline"];
             const endResult = "";
-            return h("div", `节点${row.nodeIp} ${alarmConfig[row.name]} 超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`);
+            const thresholdText = row.threshold && `超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`;
+
+            return h("div", `节点${row.nodeIp} ${alarmConfig[row.name]} ${thresholdText}`);
           }
         },
         {

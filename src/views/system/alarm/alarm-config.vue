@@ -26,7 +26,7 @@ export default {
           }
         },
         {
-          title: "告警类型",
+          title: "告警级别",
           key: `level`,
           align: "center",
           render: (h, { row }) => {
