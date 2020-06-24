@@ -29,12 +29,12 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-              {{item.title}}
+            {{item.title}}
             </MenuItem>
           </Menu>
         </div>
         <div class="user">
-          <Badge :count="3">
+          <Badge :count="alarmCount">
             <Icon
               type="ios-notifications-outline"
               style="font-size: 20px;cursor: pointer"
@@ -107,12 +107,12 @@
 <script>
 import { mapMutations } from "vuex";
 import services from "@/services";
-import ws from "@/util/ws";
+import alarmWs from "@/util/ws";
 
 import logoSrc from "@/assets/images/logo.png";
 
 
-console.log(ws)
+console.log(alarmWs)
 
 export default {
   name: "Header",
@@ -135,12 +135,17 @@ export default {
       currentMainMenu: "/monitor",
       visible: false,
       password: "",
-      rePassword: ""
+      rePassword: "",
+      alarmCount: 0
     };
   },
   created() {
     const [, moduleName] = this.$route.path.split("/");
     this.currentMainMenu = `/${moduleName}`;
+    alarmWs.getMessage = ({ count }) => {
+      console.log(count)
+      this.alarmCount = count;
+    };
   },
   methods: {
     ...mapMutations({

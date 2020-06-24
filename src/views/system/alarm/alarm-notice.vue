@@ -47,9 +47,6 @@ export default {
           align: "left",
           render: (h, { row }) => {
             return h("div", {
-              style: {
-                color: row.level === "critical" && "#FA8A40"
-              }
             }, alarmLevel[row.level]);
           }
         },
@@ -70,9 +67,7 @@ export default {
           align: "left",
           render: (h, { row }) => {
             return h("div", {
-              style: {
-                color: row.state === "untreated" ? "#F74B4B" : (row.state === "ignored" ? "#999999" : "")
-              }
+
             }, alarmState[row.state]);
           }
         },
@@ -158,11 +153,20 @@ export default {
       this.mutipleList = select.map(item => item.links);
     },
     handleMutipleDeal(state) {
-      console.log(this.mutipleListLinks, state)
+      if (!this.mutipleList.length) {
+        return;
+      }
       // Promise all
-      this.mutipleList.forEach(item => {
-        this.$put({url: item.update, params: {...item, ...state}}).then()
+      Promise.all(this.mutipleList.map(item => {
+        return this.$put({ url: item.update, params: { ...item, ...state } });
+      })).then(() => {
+        this.$Message.success("批量操作成功");
+        this.mutipleList = [];
+        this.getData();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       })
+
     }
   }
 };
