@@ -113,7 +113,7 @@ export default {
         }
       };
 
-      return `${data.username}${getOpperText(data.method)}${resources[data.resourceKind]}${data.succeed ? "成功" : ("失败：" + data.errMessage)}`;
+      return `${data.username}${getOpperText(data.method)}${resources[data.resourceKind]}${data.succeed ? "" : ("失败：" + data.errMessage)}`;
     }
   }
 };
