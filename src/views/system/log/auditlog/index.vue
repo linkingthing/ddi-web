@@ -6,7 +6,7 @@
       :data="tableData"
       :columns="columns"  
       :total="tableData.length"
-      :current="currentPage"
+      :current.sync="currentPage"
     > 
       <template slot="top-right">
         <div class="condition-item">
