@@ -114,6 +114,7 @@ export default {
           case "put":return "更新";
           case "post":return "新建";
           case "delete": return "删除";
+          case "exportcsv": return "导出";
         }
       };
 
