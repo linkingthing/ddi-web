@@ -146,7 +146,7 @@ export default {
       });
     }
   },
-  watch: {},
+
   created() {
     const { query } = this.$route;
     this.initParams = query;
@@ -154,7 +154,7 @@ export default {
   },
   mounted() { },
   methods: {
-    getData(params) {
+    getData(params = this.initParams) {
       this.$getData(params).then(({ data }) => {
         this.loading = false;
         this.list = data;
@@ -166,6 +166,7 @@ export default {
 
     handleSearch(params) {
       this.current = 1;
+      this.initParams = params;
       this.getData(params);
     },
     handleDeal({ links, ...params }, state) {
