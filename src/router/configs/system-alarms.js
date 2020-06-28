@@ -6,8 +6,9 @@ export default {
 	meta: {
 		range: 'system',
 		title: '告警管理'
-  },
+	},
 	name: 'system-alarms',
+	icon: 'icon-alarm',
 	children: [
 		{
 			name: 'alarm-config',
