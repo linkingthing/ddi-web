@@ -1,9 +1,9 @@
 const baseConfig = {
   baseUrl: "/apis/ws.linkingthing.com/v1"
 };
-const {port, protocol, host} = document.location;
+const {port, protocol, hostname} = document.location;
 const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-const wsHost = process.env.NODE_ENV === "development" ? "127.0.0.1" : host;
+const wsHost = process.env.NODE_ENV === "development" ? "127.0.0.1" : hostname;
 const wsUrl = `${wsProtocol}://${wsHost}:${port}${baseConfig.baseUrl}`;
 console.log(process.env.NODE_ENV, wsUrl)
 
