@@ -137,7 +137,6 @@ export default {
   },
   computed: {
     executeList() {
-      console.log(this.current)
       return this.list.map(item => {
         return {
           ...item,
