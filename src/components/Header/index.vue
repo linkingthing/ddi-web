@@ -38,7 +38,7 @@
             <Icon
               type="ios-notifications-outline"
               style="font-size: 20px;cursor: pointer"
-              @click="$router.push({name: 'alarm-notice',query: {state:'untreated'}})"
+              @click="handleClickMessage"
             />
           </Badge>
           <Dropdown
@@ -141,12 +141,21 @@ export default {
     };
   },
   created() {
-    const [, moduleName] = this.$route.path.split("/");
-    this.currentMainMenu = `/${moduleName}`;
+
     alarmWs.getMessage = ({ count }) => {
       console.log(count)
       this.alarmCount = count;
     };
+  },
+  watch: {
+    $route: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        const [, moduleName] = val.path.split("/");
+        this.currentMainMenu = `/${moduleName}`;
+      }
+    }
   },
   methods: {
     ...mapMutations({
@@ -168,6 +177,11 @@ export default {
       if (name === "password") {
         this.visible = true;
       }
+    },
+    handleClickMessage() {
+      console.log(this.currentMainMenu)
+      this.currentMainMenu = "/system";
+      this.$router.push({ name: 'alarm-notice', query: { state: 'untreated' } })
     },
     handleSubmit() {
       if (this.password === this.rePassword) {

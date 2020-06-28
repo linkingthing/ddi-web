@@ -136,6 +136,7 @@ export default {
           const params = this.alarmConfig;
           this[this.method]({ url: this.configUpdateLink, params }).then(() => {
             this.$Message.success("更新成功!");
+            this.method = "$put";
           }).catch(err => {
             this.$Message.error(err.response.data.message);
           });
