@@ -27,7 +27,7 @@
         </FormItem>
         <FormItem
           prop="label"
-          label="告警类型"
+          label="告警级别"
         >
           <Select
             v-model="searchParams.level"

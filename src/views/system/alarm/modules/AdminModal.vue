@@ -41,23 +41,24 @@ export default {
   },
 
   data() {
-    this.formItemList = [
-      {
-        label: "管理员",
-        model: "name",
-        type: "input",
-        placeholder: "请填写管理员姓名"
-      },
-      {
-        label: "邮箱",
-        model: "address",
-        type: "input",
-        placeholder: "请填写邮箱地址"
-      }
-    ];
+
 
     this.rules = {};
     return {
+      formItemList: [
+        {
+          label: "管理员",
+          model: "name",
+          type: "input",
+          placeholder: "请填写管理员姓名"
+        },
+        {
+          label: "邮箱",
+          model: "address",
+          type: "input",
+          placeholder: "请填写邮箱地址"
+        }
+      ],
       formModel: {},
       loading: false,
       dialogVisible: false
@@ -80,6 +81,12 @@ export default {
       }
 
       if (this.links.update) {
+        this.formItemList.find(item => {
+          console.log(item)
+          if (item.model === "name") {
+            item.type = "text"
+          }
+        })
         this.$get({ url: this.links.self }).then(res => {
           this.formModel = res;
         }).catch();
@@ -91,6 +98,7 @@ export default {
       if (!val) {
         // 关闭弹窗
         // console.log(val)
+        this.$refs.formInline.resetFields();
       }
 
       this.$emit("update:visible", val);
