@@ -4,11 +4,13 @@
       :total="list.length"
       :data="executeList"
       :columns="columns"
+      :current.sync="current"
       @on-selection-change="handleMutipleSelect"
     >
       <template slot="neck">
         <div>
           <SearchBar
+            :params="initParams"
             @on-mutiple="handleMutipleDeal"
             @on-search="handleSearch"
           />
@@ -128,11 +130,14 @@ export default {
         }
       ],
       list: [],
-      mutipleList: []
+      mutipleList: [],
+      initParams: {},
+      current: 1
     };
   },
   computed: {
     executeList() {
+      console.log(this.current)
       return this.list.map(item => {
         return {
           ...item,
@@ -143,7 +148,9 @@ export default {
   },
   watch: {},
   created() {
-    this.getData(this.$route.query);
+    const { query } = this.$route;
+    this.initParams = query;
+    this.getData(query);
   },
   mounted() { },
   methods: {
@@ -158,6 +165,7 @@ export default {
     },
 
     handleSearch(params) {
+      this.current = 1;
       this.getData(params);
     },
     handleDeal({ links, ...params }, state) {

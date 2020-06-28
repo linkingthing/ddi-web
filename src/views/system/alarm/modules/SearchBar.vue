@@ -99,7 +99,12 @@ import { alarmConfig, alarmLevel, alarmState } from "@/dictionary";
 
 export default {
   components: {},
-  props: {},
+  props: {
+    params: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     this.alarmConfig = alarmConfig;
     this.alarmLevel = alarmLevel;
@@ -111,6 +116,15 @@ export default {
     };
   },
   computed: {},
+  watch: {
+    params: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        this.searchParams = val;
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {
