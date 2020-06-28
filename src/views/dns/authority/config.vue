@@ -4,7 +4,7 @@
       title="权威管理"
       :data="list"
       :columns="columns"
-      :current="current"
+      :current.sync="current"
       :total="total"
     />
   </div>
