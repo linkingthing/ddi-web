@@ -182,7 +182,7 @@ export default {
                 .login(this.params)
                 .then(res => {
                   if (res.data.code === "200") {
-                    this.$Message.success("Success!");
+                    // this.$Message.success("Success!");
                     this.SET_TOKEN(res.data.token);
                     this.$router.push({
                       path: "/"

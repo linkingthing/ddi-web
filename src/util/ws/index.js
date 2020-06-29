@@ -1,5 +1,5 @@
 import ws from "./core";
 
-const alarmWs = ws("alarm");
+const alarmWs = ws;
 
 export default alarmWs;

@@ -35,22 +35,18 @@
         </div>
         <div class="user">
           <Badge :count="alarmCount">
-            <Icon
-              type="ios-notifications-outline"
-              style="font-size: 20px;cursor: pointer"
+            <i
+              class="icon-header-notifications"
+              style="font-size: 20px;cursor: pointer;color: #CFCFCF;vertical-align: middle;"
               @click="handleClickMessage"
             />
           </Badge>
           <Dropdown
-            style="margin-left: 20px"
+            style="margin-left: 30px"
             @on-click="handleClickMenu"
           >
             <a href="javascript:void(0)">
-              <img
-                src="../../assets/images/avatar.png"
-                alt
-                class="avatar"
-              >
+              <i class="avatar icon-header-avatar"></i>
               Admin
               <Icon type="md-arrow-dropdown" />
             </a>

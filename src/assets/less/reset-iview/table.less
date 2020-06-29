@@ -46,19 +46,23 @@
 
 			label {
 				font-size: 14px;
-      }
-      .ivu-btn {
-        padding-left: 8px;
-        padding-right: 8px;
-        &+.ivu-btn {
-          margin-left: 10px;
-        }
-      }
+			}
+			.ivu-btn {
+				padding-left: 8px;
+				padding-right: 8px;
+				& + .ivu-btn {
+					margin-left: 10px;
+				}
+			}
 		}
 	}
 
 	.ivu-checkbox-inner {
 		border-color: #66615b;
+	}
+
+	.ivu-checkbox-disabled .ivu-checkbox-inner {
+		border-color: #dcdee2;
 	}
 
 	a {
