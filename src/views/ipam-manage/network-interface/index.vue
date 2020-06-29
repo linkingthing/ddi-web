@@ -365,8 +365,7 @@ export default {
       }
     },
 
-    handleFix() {
-      console.log(1);
+    handleFix(row) {
       
     }
   }
