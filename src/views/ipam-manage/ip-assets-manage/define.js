@@ -1,21 +1,52 @@
 const tooltip = true;
 
+export const deviceTypes = [
+  {
+    text: "PC端",
+    label: "pc"
+  },
+  {
+    text: "手机端",
+    label: "mobile"
+  },
+  {
+    text: "打印机",
+    label: "printer"
+  },
+  {
+    text: "摄像头",
+    label: "camera"
+  },
+  {
+    text: "NVR",
+    label: "nvr"
+  },
+  {
+    text: "物联设备",
+    label: "iot"
+  },
+  {
+    text: "其他",
+    label: "other"
+  }
+];
+
 export const columns = scope => [  
   {
-    title: "IP地址",
-    key: "ip",
+    title: "MAC",
+    key: "mac",
     align: "left",
     tooltip
   },
   {
-    title: "主机名",
+    title: "终端名称",
     key: "name",
     align: "center",
     tooltip
   },
   {
     title: "设备类型",
-    key: "type",
+    key: "deviceType",
     align: "center",
     tooltip
   },
