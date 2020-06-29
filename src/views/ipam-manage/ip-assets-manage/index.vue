@@ -10,20 +10,25 @@
     > 
       <template slot="top-left">
         <div class="condition-item">
-          <label class="condition-item-label">IP地址：</label>
+          <label class="condition-item-label">MAC</label>
           <Input
-            v-model="condition.ip"
-            placeholder="请输入IP地址"
+            v-model="condition.mac"
+            placeholder="请输入MAC地址"
             class="top-input"
             @on-enter="handleQuery" />
         </div>
         <div class="condition-item">
-          <label class="condition-item-label">主机名：</label>
-          <Input
-            v-model="condition.name"
-            placeholder="请输入IP地址"
-            class="top-input"
-            @on-enter="handleQuery" />
+          <label class="condition-item-label">设备类型：</label>
+          <Select
+            style="width: 160px"
+            v-model="condition.deviceType"
+            @on-change="handleQuery"
+          >
+            <Option
+              v-for="item in deviceTypes"
+              :key="item.label"
+              :value="item.label">{{item.text}}</Option>
+          </Select>
         </div>
 
         <Button 
@@ -60,7 +65,7 @@
 <script>
 import Edit from "./edit";
 
-import { columns } from "./define";
+import { columns, deviceTypes } from "./define";
 
 export default {
   components: {
@@ -71,11 +76,10 @@ export default {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      ip: "",
-      name: "",
+      deviceTypes,
       condition: {
-        ip: "",
-        name: ""
+        mac: "",
+        deviceType: "PC端"
       },
       tableData: [],
       columns: columns(this),
@@ -87,7 +91,7 @@ export default {
   async mounted() {    
     this.handleQuery();
 
-    const { id, ip } = this.$route.query;
+    const { id, mac } = this.$route.query;
 
     if (id) {
       try {
@@ -98,11 +102,11 @@ export default {
         this.$handleError(err);
       }
     }
-    else if (ip) {
-      this.currentData = { ip };
+    else if (mac) {
+      this.currentData = { mac };
     }
 
-    if (ip) {
+    if (mac) {
       this.showEdit = true;
     }
   },

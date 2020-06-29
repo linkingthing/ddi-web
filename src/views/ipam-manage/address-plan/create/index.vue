@@ -25,7 +25,7 @@
           class="info-row-input" />
       </div>
 
-      <div class="info-row-inline" v-if="ipType === 'IPv4'">
+      <div class="info-row-inline">
         <div class="info-row-label"><i class="is-required">*</i>子网规划范围</div>
         <Input
           ref="maskLen"
@@ -148,6 +148,12 @@ export default {
 
           return Promise.reject({ message: "请输入正确的网络地址！" });
         }
+
+        if (!maskIsValid(maskLen, "ipv6")) {
+          this.$refs.maskLen.focus();          
+
+          return Promise.reject({ message: "子网可规划范围须大于网络前缀，不超过64位！" });
+        }
       }
 
       if (parseInt(maskLen) <= addrArr[1]) {
@@ -162,7 +168,7 @@ export default {
     getParams() {
       return {
         prefix: this.prefix.trim(),
-        maskLen: this.ipType === "IPv4" ? parseInt(this.maskLen.toString().trim()) : 64,
+        maskLen: parseInt(this.maskLen.toString().trim()),
         description: this.description
       };
     }

@@ -1,28 +1,31 @@
 import { ipv4IsValid, ipv6IsValid, mobilePhoneReg } from "@/util/common";
+import { deviceTypes } from "./../define";
 
 const required = true;
 
 export const formItemList = [    
   {
-    label: "IP地址",
-    model: "ip",
+    label: "MAC",
+    model: "mac",
     type: "input",
     required,
-    placeholder: "请输入IP地址"
+    disabled: true,
+    placeholder: "请输入MAC"
   },
   {
-    label: "主机名",
+    label: "终端名称",
     model: "name",
     type: "input",
     required,
-    placeholder: "请输入主机名"
+    placeholder: "请输入终端名称"
   },
   {
     label: "设备类型",
-    model: "type",
-    type: "input",
+    model: "deviceType",
+    type: "select",
+    children: deviceTypes,
     required,
-    placeholder: "请输入设备类型"
+    placeholder: "请选择设备类型"
   },
   {
     label: "业务名称",

@@ -49,9 +49,9 @@ export default {
       url: this.$getApiByRoute().url,
 
       formModel: {
-        ip: "",
+        mac: "",
         name: "",
-        type: "",
+        deviceType: "",
         deployedService: "",
         department: "",
         responsiblePerson: "",
@@ -83,7 +83,7 @@ export default {
       if (!val) {
         this.$refs.form.resetFields();
         
-        if (this.$route.query.ip) {
+        if (this.$route.query.mac) {
           this.$refresh();
         }
       }

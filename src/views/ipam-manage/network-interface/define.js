@@ -38,22 +38,38 @@ export const columns = scope => [
   {
     title: "操作",
     align: "center",  
-    minWidth: 120,    
+    minWidth: 180,    
     render: (h, { row }) => {
-      return h("Button", {
-        class: "table-row-button",
-        style: {
-          width: "80px"
-        },
-        props: {
-          type: "default"
-        },
-        on: {
-          click: () => {              
-            scope.handleEdit(row);
+      return [
+        h("Button", {
+          class: "table-row-button",
+          style: {
+            width: "70px"
+          },
+          props: {
+            type: "default"
+          },
+          on: {
+            click: () => {              
+              scope.handleEdit(row);
+            }
           }
-        }
-      }, "属性编辑");
+        }, "终端登记"),
+        h("Button", {
+          class: "table-row-button",
+          style: {
+            width: "60px"
+          },
+          props: {
+            type: "default"
+          },
+          on: {
+            click: () => {              
+              scope.handleFix(row);
+            }
+          }
+        }, "转固定")
+      ];
     }
   }
 ];

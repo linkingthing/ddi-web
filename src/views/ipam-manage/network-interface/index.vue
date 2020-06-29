@@ -349,7 +349,7 @@ export default {
 
     async handleEdit(row) {
       try {
-        let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?ip=${row.ip}`));
+        let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?mac=${row.mac}`));
         
         let res = data[0] || {};
         
@@ -357,12 +357,16 @@ export default {
           name: "ip-assets-manage",
           query: {
             id: res.id,
-            ip: row.ip
+            mac: row.mac
           }
         });
       } catch (err) {
         this.$handleError(err);
       }
+    },
+
+    handleFix(row) {
+      
     }
   }
 };

@@ -29,7 +29,7 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-            {{item.title}}
+              {{item.title}}
             </MenuItem>
           </Menu>
         </div>
@@ -109,10 +109,11 @@ import alarmWs from "@/util/ws";
 import logoSrc from "@/assets/images/logo.png";
 
 
-console.log(alarmWs)
+console.log(alarmWs);
 
 export default {
   name: "Header",
+
   data() {
     this.mainMenuList = [{
       title: "系统状态",
@@ -136,13 +137,7 @@ export default {
       alarmCount: 0
     };
   },
-  created() {
 
-    alarmWs.getMessage = ({ count }) => {
-      console.log(count)
-      this.alarmCount = count;
-    };
-  },
   watch: {
     $route: {
       deep: true,
@@ -153,6 +148,14 @@ export default {
       }
     }
   },
+  created() {
+
+    alarmWs.getMessage = ({ count }) => {
+      console.log(count);
+      this.alarmCount = count;
+    };
+  },
+
   methods: {
     ...mapMutations({
       setToken: "SET_TOKEN"
@@ -175,10 +178,11 @@ export default {
       }
     },
     handleClickMessage() {
-      console.log(this.currentMainMenu)
+      console.log(this.currentMainMenu);
       this.currentMainMenu = "/system";
-      this.$router.push({ name: 'alarm-notice', query: { state: 'untreated' } })
+      this.$router.push({ name: "alarm-notice", query: { state: "untreated" } });
     },
+
     handleSubmit() {
       if (this.password === this.rePassword) {
         const username = "admin";
@@ -196,6 +200,7 @@ export default {
         this.$Message.error("两次密码输入不一致");
       }
     },
+    
     cancel() {
       this.visible = false;
     }
