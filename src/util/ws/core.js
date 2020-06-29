@@ -11,7 +11,7 @@ const baseConfig = {
 };
 const { port, protocol, hostname } = document.location;
 const wsProtocol = protocol.includes('s') ? 'wss' : 'ws';
-const wsHost = process.env.NODE_ENV === 'development' ? '10.0.0.90' : hostname;
+const wsHost = process.env.NODE_ENV === 'development' ? 'localhost' : hostname;
 const wsUrl = `${wsProtocol}://${wsHost}:${port}${baseConfig.baseUrl}/${baseConfig.resource}`;
 console.log(process.env.NODE_ENV, wsUrl);
 
@@ -22,7 +22,14 @@ ws.onopen = function() {
 };
 ws.onmessage = function(e) {
 	console.log(e);
-	ws.getMessage && ws.getMessage(JSON.parse(e.data));
+	if (ws.getMessage) {
+		ws.getMessage(JSON.parse(e.data));
+	} else {
+		setTimeout(() => {
+      console.log("意外补救")
+			ws.getMessage && ws.getMessage(JSON.parse(e.data));
+		}, 600);
+	}
 };
 ws.onerror = function(e) {
 	console.log(e);
