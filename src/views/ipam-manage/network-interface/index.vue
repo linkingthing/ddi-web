@@ -372,7 +372,7 @@ export default {
       this.loading = true;
         
       try {
-        this.$put({ 
+        await this.$put({ 
           url: `/subnets/${this.$route.params.scannedsubnetsId}/reservations`, 
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
