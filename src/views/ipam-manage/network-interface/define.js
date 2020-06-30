@@ -38,7 +38,7 @@ export const columns = scope => [
   {
     title: "操作",
     align: "center",  
-    minWidth: 180,    
+    width: 210,    
     render: (h, { row }) => {
       return [
         h("Button", {

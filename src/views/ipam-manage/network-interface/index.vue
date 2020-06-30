@@ -136,7 +136,7 @@ export default {
 
   mounted() {
     this.initChart();
-    this.getData();  
+    this.getData();      
   },
 
   methods: {
@@ -365,8 +365,28 @@ export default {
       }
     },
 
-    handleFix(row) {
-      
+    /**
+     * 转固定
+     */
+    async handleFix(row) {
+      this.loading = true;
+        
+      try {
+        await this.$put({ 
+          url: `/subnets/${this.$route.params.scannedsubnetsId}/reservations`, 
+          params: {
+            hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
+            ipAddress: row.ip
+          } 
+        });
+
+        this.$$success("操作成功！");
+      } catch (err) {
+        this.$handleError(err);
+      }
+      finally {
+        this.loading = false;
+      }
     }
   }
 };
