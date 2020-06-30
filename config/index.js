@@ -27,7 +27,7 @@ module.exports = {
 	},
 	dev: {
 		env: require('./dev.env'),
-		port: 8081,
+		port: 8082,
 		autoOpenBrowser: true,
 		assetsSubDirectory: 'static',
 		assetsPublicPath: '/',
@@ -40,7 +40,7 @@ module.exports = {
 				target: 'https://10.0.0.90:8081'
 			},
 			'/apis': {
-				target: 'https://10.0.0.90:8081/apis',
+				target: 'https://10.0.0.19:8081/apis',
 
 				changeOrigin: true,
 				ws: true, //如果要代理 websockets，配置这个参数
@@ -50,17 +50,7 @@ module.exports = {
 					'^/apis': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
 				}
 			},
-			'/ws': {
-				target: 'wss://10.0.0.90:8081/apis',
 
-				changeOrigin: true,
-				ws: true, //如果要代理 websockets，配置这个参数
-				secure: false, // 如果是https接口，需要配置这个参数
-				//重写路径
-				pathRewrite: {
-					'^/apis': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
-				}
-			},
 			'/public': {
 				target: 'https://10.0.0.90:8081/public',
 				changeOrigin: true,

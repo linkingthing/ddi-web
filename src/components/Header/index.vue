@@ -108,9 +108,6 @@ import alarmWs from "@/util/ws";
 
 import logoSrc from "@/assets/images/logo.png";
 
-
-console.log(alarmWs);
-
 export default {
   name: "Header",
 

@@ -1,6 +1,4 @@
-let ws = {
-	getMessage() {}
-};
+let ws = null;
 let count = 0;
 const baseConfig = {
 	timer: null,
@@ -12,7 +10,7 @@ const baseConfig = {
 const { port, protocol, hostname } = document.location;
 const wsProtocol = protocol.includes('s') ? 'wss' : 'ws';
 const wsHost = process.env.NODE_ENV === 'development' ? 'localhost' : hostname;
-const wsUrl = `${wsProtocol}://${wsHost}:${port}${baseConfig.baseUrl}/${baseConfig.resource}`;
+const wsUrl = `${wsProtocol}://${wsHost}:8081${baseConfig.baseUrl}/${baseConfig.resource}`;
 console.log(process.env.NODE_ENV, wsUrl);
 
 ws = new WebSocket(`${wsUrl}`);
@@ -34,24 +32,26 @@ ws.onmessage = function(e) {
 ws.onerror = function(e) {
 	console.log(e);
 };
-ws.onclose = function(e) {
-	console.log(e);
-	clearInterval(baseConfig.timer);
-	baseConfig.timer = setInterval(() => {
-		count++;
+// ws.onclose = function(e) {
+// 	console.log(e);
+// 	clearInterval(baseConfig.timer);
+// 	baseConfig.timer = setInterval(() => {
+//     count++;
+    
+//     console.log(count, "计数器")
 
-		if (count < baseConfig.reconnectNumber) {
-			console.log('重连中...');
-			ws = new WebSocket(`${wsUrl}`);
-			ws.onopen = function() {
-				console.log('重连成功 重连');
-				count = 0;
-				clearInterval(baseConfig.timer);
-			};
-		} else {
-			clearInterval(baseConfig.timer);
-		}
-	}, 3000);
-};
+// 		if (count < baseConfig.reconnectNumber) {
+// 			console.log('重连中...');
+// 			ws = new WebSocket(`${wsUrl}`);
+// 			ws.onopen = function() {
+// 				console.log('重连成功 重连');
+// 				count = 0;
+// 				clearInterval(baseConfig.timer);
+// 			};
+// 		} else {
+// 			clearInterval(baseConfig.timer);
+// 		}
+// 	}, 3000);
+// };
 
 export default ws;

@@ -33,6 +33,16 @@ export default {
     AclModal
   },
   data() {
+    this.ispList = [{
+      label: "中国移动",
+      value: "cmcc"
+    }, {
+      label: "中国联通",
+      value: "cucc"
+    }, {
+      label: "中国电信",
+      value: "ctcc"
+    }]
     return {
       columns: [
         {
@@ -45,12 +55,17 @@ export default {
           key: "",
           align: "center",
           render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.ips,
-                field: row
-              }
-            });
+            if (!!row.isp) {
+              return h("div", row.isp)
+            } else {
+              return h("Tags", {
+                props: {
+                  list: row.ips,
+                  field: row
+                }
+              });
+            }
+
           }
         },
         {

@@ -29,7 +29,7 @@
 <script>
 import { commonNameValidate, isIp } from "@/util/common";
 import { resStringToArray, resArrayToString } from "@/util/parser";
-
+import ISPSelect from "./ISPSelect";
 export default {
   props: {
     visible: {
@@ -44,41 +44,6 @@ export default {
   },
 
   data() {
-    this.formItemList = [
-      {
-        label: "状态",
-        model: "status",
-        type: "radio",
-        placeholder: "请填写前缀长度",
-        children: [{
-          label: "allow",
-          text: "允许"
-        },
-        {
-          label: "forbidden",
-          text: "禁止"
-        }]
-      },
-      {
-        label: "规则名称",
-        model: "name",
-        type: "input",
-        placeholder: "请填写规则名称"
-      },
-
-      {
-        label: "网络地址",
-        model: "ips",
-        type: "input",
-        placeholder: "请填写网络地址"
-      },
-      {
-        label: "备注",
-        model: "comment",
-        type: "input",
-        placeholder: "请填写备注"
-      }
-    ];
 
     this.rules = {
       name: [
@@ -94,7 +59,9 @@ export default {
         {
           validator: function (rule, value, callback) {
             if (isIp(value)) {
-
+              callback();
+            }
+            if ("cmcc,cucc,ctcc".includes(value)) {
               callback();
             }
             callback("请正确填写网络地址");
@@ -108,7 +75,8 @@ export default {
     };
     return {
       formModel: {
-        status: "allow"
+        status: "allow",
+        lineType: "isp"
       },
       loading: false,
       dialogVisible: false
@@ -121,6 +89,69 @@ export default {
     },
     isEdit() {
       return !!this.links.update;
+    },
+    formItemList() {
+
+      let netAddress = {
+        label: "网络地址",
+        model: "ips",
+        type: "input",
+        placeholder: "请填写网络地址"
+      }
+
+      if (this.formModel.lineType === "isp") {
+        netAddress = {
+          label: "网络地址",
+          model: "isp",
+          placeholder: "请填写网络地址",
+          type: "component",
+          component: ISPSelect
+        }
+      }
+
+      return [
+        {
+          label: "状态",
+          model: "status",
+          type: "radio",
+          placeholder: "请填写前缀长度",
+          children: [{
+            label: "allow",
+            text: "允许"
+          },
+          {
+            label: "forbidden",
+            text: "禁止"
+          }]
+        },
+        {
+          label: "规则名称",
+          model: "name",
+          type: "input",
+          placeholder: "请填写规则名称"
+        },
+        {
+          label: "线路类型",
+          model: "lineType",
+          type: "radio",
+          placeholder: "请填写前缀长度",
+          children: [{
+            label: "isp",
+            text: "运营商"
+          },
+          {
+            label: "custom",
+            text: "自定义"
+          }]
+        },
+        netAddress,
+        {
+          label: "备注",
+          model: "comment",
+          type: "input",
+          placeholder: "请填写备注"
+        }
+      ];
     }
   },
 
@@ -147,6 +178,14 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
+    },
+
+    "formModel.lineType"(val) {
+      if (val === "custom") {
+        this.formModel.isp = "";
+      } else {
+        this.formModel.ips = "";
+      }
     }
   },
 
