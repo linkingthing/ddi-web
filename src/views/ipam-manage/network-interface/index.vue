@@ -373,7 +373,7 @@ export default {
         
       try {
         await this.$put({ 
-          url: `/subnets/${this.$route.params.scannedsubnetsId}/reservations`, 
+          url: `/apis/linkingthing.com/dhcp/v1/subnets/${this.$route.params.scannedsubnetsId}/reservations`, 
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
             ipAddress: row.ip
