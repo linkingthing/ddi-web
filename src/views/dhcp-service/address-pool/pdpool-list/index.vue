@@ -65,13 +65,13 @@ export default {
           align: "right",
           render: (h, { row }) => {
             return h("div", [
-              h("btn-edit", {
-                on: {
-                  click: () => {
-                    this.handleEdit(row);
-                  }
-                }
-              }),
+              // h("btn-edit", {
+              //   on: {
+              //     click: () => {
+              //       this.handleEdit(row);
+              //     }
+              //   }
+              // }),
               h("btn-del", {
                 on: {
                   click: () => {
