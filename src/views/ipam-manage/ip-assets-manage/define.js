@@ -46,7 +46,7 @@ export const columns = scope => [
   },
   {
     title: "设备类型",
-    key: "deviceType",
+    key: "deviceTypeText",
     align: "center",
     tooltip
   },
@@ -76,7 +76,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 120,
+    width: 130,
     render: (h, { row }) => 
       h("div", [
         h("btn-edit", {

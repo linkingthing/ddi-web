@@ -59,7 +59,7 @@ export default {
         telephone: ""
       },
       
-      formItemList,
+      formItemList: [],
       rules
     };
   },
@@ -78,7 +78,7 @@ export default {
     },
 
     dialogVisible(val) {
-      this.setValue();
+      // this.setValue();
 
       if (!val) {
         this.$refs.form.resetFields();
@@ -101,9 +101,14 @@ export default {
 
   methods: {
     setValue(val) {
-      if (!val) val = {};
+      let value = val || {};
       
-      this.formModel = { ...val };
+      this.formModel = { 
+        ...value,
+        deviceType: value.deviceType || "pc"
+      };
+
+      this.formItemList = formItemList(!val);
     },
 
     async handleConfirm() {

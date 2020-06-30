@@ -120,7 +120,13 @@ export default {
 
         let { data } = await this.$get({ url: this.$formatQuerys(condition, url) });
         
-        this.tableData = data;
+        this.tableData = data.map(item => {
+          const type = deviceTypes.find(({ label }) => label === item.deviceType);
+
+          item.deviceTypeText = type ? type.text : "";
+
+          return item;
+        });
       } catch (err) {
         this.$handleError(err);
       }
