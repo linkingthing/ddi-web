@@ -3,13 +3,13 @@ import { deviceTypes } from "./../define";
 
 const required = true;
 
-export const formItemList = [    
+export const formItemList = isNew => [    
   {
     label: "MAC",
     model: "mac",
     type: "input",
     required,
-    disabled: true,
+    disabled: !isNew,
     placeholder: "请输入MAC"
   },
   {
