@@ -82,7 +82,6 @@ export default {
 
       if (this.links.update) {
         this.formItemList.find(item => {
-          console.log(item)
           if (item.model === "name") {
             item.type = "text"
           }
@@ -90,6 +89,12 @@ export default {
         this.$get({ url: this.links.self }).then(res => {
           this.formModel = res;
         }).catch();
+      } else {
+          this.formItemList.find(item => {
+          if (item.model === "name") {
+            item.type = "input"
+          }
+        })
       }
       this.dialogVisible = val;
     },
