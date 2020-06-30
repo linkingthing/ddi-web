@@ -1,7 +1,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path');
-var https = require("https");
-var fs = require("fs");
+var https = require('https');
+var fs = require('fs');
 
 let assetsPublicPath = './';
 
@@ -27,34 +27,35 @@ module.exports = {
 	},
 	dev: {
 		env: require('./dev.env'),
-		port: 8081,
+		port: 8082,
 		autoOpenBrowser: true,
 		assetsSubDirectory: 'static',
 		assetsPublicPath: '/',
-		https:{
-			key: fs.readFileSync(path.join(__dirname, "./cert/server.key")),
-			cert: fs.readFileSync(path.join(__dirname, "./cert/server.crt"))
+		https: {
+			key: fs.readFileSync(path.join(__dirname, './cert/server.key')),
+			cert: fs.readFileSync(path.join(__dirname, './cert/server.crt'))
 		},
 		proxyTable: {
 			'/login': {
-				target: 'https://10.0.0.90:8081',
+				target: 'https://10.0.0.90:8081'
 			},
 			'/apis': {
-				target: 'https://10.0.0.90:8081/apis',
+				target: 'https://10.0.0.19:8081/apis',
 
 				changeOrigin: true,
-				ws: true,        //如果要代理 websockets，配置这个参数
-				secure: false,  // 如果是https接口，需要配置这个参数
+				ws: true, //如果要代理 websockets，配置这个参数
+				secure: false, // 如果是https接口，需要配置这个参数
 				//重写路径
 				pathRewrite: {
 					'^/apis': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
 				}
 			},
+
 			'/public': {
 				target: 'https://10.0.0.90:8081/public',
 				changeOrigin: true,
 				// ws: true,        //如果要代理 websockets，配置这个参数
-				secure: false,  // 如果是https接口，需要配置这个参数
+				secure: false, // 如果是https接口，需要配置这个参数
 				//重写路径
 				pathRewrite: {
 					'^/public': '' //例如 /api/getuser或被重写为 /abc/xxx/getuser
@@ -71,7 +72,11 @@ module.exports = {
 	PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,monitor,address,system'"
 };
 
-console.log('正在生成', process.argv.slice(2).length ? process.argv.slice(2) : [ 'dns', 'monitor', 'address', 'system' ], '相关模块');
+console.log(
+	'正在生成',
+	process.argv.slice(2).length ? process.argv.slice(2) : [ 'dns', 'monitor', 'address', 'system' ],
+	'相关模块'
+);
 console.log('正在生成...');
 console.log('正在生成......');
 console.log('正在生成.........');

@@ -87,6 +87,6 @@ export default {
 				from: 'a4-compose-view',
 				title: 'A4地址合成'
 			}
-		}
+    }
 	]
 };
