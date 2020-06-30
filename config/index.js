@@ -40,7 +40,7 @@ module.exports = {
 				target: 'https://10.0.0.90:8081'
 			},
 			'/apis': {
-				target: 'https://10.0.0.19:8081/apis',
+				target: 'https://10.0.0.90:8081/apis',
 
 				changeOrigin: true,
 				ws: true, //如果要代理 websockets，配置这个参数

@@ -30,7 +30,8 @@ import {
   ipv6IsValid,
   isIPv4Reg,
   getAddressType,
-  isPosNumber
+  isPosNumber,
+  macAddressIsValid
 } from "@/util/common";
 
 const types = [
@@ -73,7 +74,17 @@ export default {
       }
     ];
 
-    this.rules = {};
+    this.rules = {
+      hwAddress: [{
+        validator: function (rule, value, callback) {
+          if (macAddressIsValid(value)) {
+            callback()
+          } else {
+            callback("请正确填写MAC地址")
+          }
+        }
+      }]
+    };
     return {
       formModel: {},
       loading: false,
