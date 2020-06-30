@@ -17,17 +17,10 @@ export default {
   data() {
 
     return {
-      tabList: [{
-        name: "pools",
-        label: "地址池",
-        route: "address-pool-list"
-      }, {
-        name: "reservations",
-        label: "固定地址",
-        route: "address-reservations-list"
-      }],
+      tabList: [],
       tab: "",
-      addressType: ""
+      addressType: "",
+      subnetLenth: 0
     };
   },
   computed: {},
@@ -40,6 +33,26 @@ export default {
           route: "address-pdpool-list"
         });
       }
+    },
+    subnetLenth(value) {
+      if (Number(value) === 64) {
+        console.log(value)
+        this.tabList.unshift({
+          name: "pools",
+          label: "地址池",
+          route: "address-pool-list"
+        }, {
+          name: "reservations",
+          label: "固定地址",
+          route: "address-reservations-list"
+        });
+      } else {
+        this.tab = "pdpools";
+        const { params } = this.$route;
+        this.$router.push({ name: "address-pdpool-list", params });
+
+      }
+
     }
   },
   created() {
@@ -48,8 +61,8 @@ export default {
     this.tab = pathSplit.pop();
 
     this.$get(this.$getApiByRoute(pathSplit.join("/"))).then((data) => {
-      console.log(data)
-      this.addressType = data.version; // TODO: 等接口改造来判断ipv6，ipv6 可以 前缀委派
+      this.addressType = data.version;
+      this.subnetLenth = data.ipnet.split("/")[1];
     });
   },
   methods: {
