@@ -158,17 +158,19 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {};
+        this.reset();
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, status, ips, comment }) => {
+        this.$get({ url: this.links.self }).then(({ name, status, ips, comment, isp }) => {
           this.formModel = {
             name,
             ips,
             comment,
-            status
+            status,
+            isp,
+            lineType: !!isp ? "isp" : "custom"
           };
           resArrayToString(this.formModel, ["ips"]);
         }).catch();
@@ -194,6 +196,13 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.$refs['formInline'].resetFields();
+      this.formModel = {
+        status: "allow",
+        lineType: "isp"
+      };
+    },
 
     handleConfirm(name) {
       this.$refs[name].validate((valid) => {

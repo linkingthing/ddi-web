@@ -33,7 +33,7 @@ export default {
     AclModal
   },
   data() {
-    this.ispList = [{
+    const ispList = [{
       label: "中国移动",
       value: "cmcc"
     }, {
@@ -56,7 +56,7 @@ export default {
           align: "center",
           render: (h, { row }) => {
             if (!!row.isp) {
-              return h("div", row.isp)
+              return h("div", ispList.find(item => item.value === row.isp).label)
             } else {
               return h("Tags", {
                 props: {

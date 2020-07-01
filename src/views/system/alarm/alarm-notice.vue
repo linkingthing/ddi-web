@@ -4,7 +4,7 @@
       :total="list.length"
       :data="executeList"
       :columns="columns"
-      :current.sync="current"
+      :current.sync="initParams.current"
       @on-selection-change="handleMutipleSelect"
     >
       <template slot="neck">
@@ -131,8 +131,8 @@ export default {
       ],
       list: [],
       mutipleList: [],
-      initParams: {},
-      current: 1
+      initParams: { current: 1 },
+
     };
   },
   computed: {
@@ -164,9 +164,10 @@ export default {
     },
 
     handleSearch(params) {
-      this.current = 1;
       this.initParams = params;
-      this.getData(params);
+      this.initParams.current = 1
+
+      this.getData(this.initParams);
     },
     handleDeal({ links, ...params }, state) {
       this.$put({ url: links.update, params: { ...params, ...state } }).then(() => {
