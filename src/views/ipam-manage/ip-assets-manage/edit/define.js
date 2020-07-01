@@ -1,4 +1,4 @@
-import { ipv4IsValid, ipv6IsValid, mobilePhoneReg } from "@/util/common";
+import { macReg, mobilePhoneReg } from "@/util/common";
 import { deviceTypes } from "./../define";
 
 const required = true;
@@ -60,30 +60,20 @@ export const formItemList = isNew => [
 ];
 
 export const rules = {
-  ip: [
+  mac: [
     {
       required,
-      message: "请输入IP地址"
-    },
-    {
-      validator: function (rule, value, callback) {
-        value = value.trim();
-          
-        if (!ipv4IsValid(value) && !ipv6IsValid(value)) {
-          callback("请输入正确的IP地址");
-        }
-
-        callback();
-      }
+      patter: macReg,
+      message: "请输入正确的MAC地址"
     }
   ],
   name: [{
     required,
-    message: "请输入设备名称"
+    message: "请输入终端名称"
   }],
-  type: [{
+  deviceType: [{
     required,
-    message: "请输入设备类型"
+    message: "请选择设备类型"
   }],
   telephone: [{
     pattern: mobilePhoneReg,

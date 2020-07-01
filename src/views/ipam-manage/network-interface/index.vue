@@ -370,10 +370,12 @@ export default {
      */
     async handleFix(row) {
       this.loading = true;
+
+      let url = this.$getApiByRoute(`/subnets/${this.$route.params.scannedsubnetsId}/reservations`).url;
         
       try {
         await this.$put({ 
-          url: `/apis/linkingthing.com/dhcp/v1/subnets/${this.$route.params.scannedsubnetsId}/reservations`, 
+          url, 
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
             ipAddress: row.ip
