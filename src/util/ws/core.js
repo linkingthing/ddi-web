@@ -9,11 +9,14 @@ const baseConfig = {
 };
 const { port, protocol, hostname } = document.location;
 const wsProtocol = protocol.includes('s') ? 'wss' : 'ws';
-const wsHost = process.env.NODE_ENV === 'development' ? 'localhost' : hostname;
+const wsHost = process.env.NODE_ENV === 'development' ? '10.0.0.90' : hostname;
 const wsUrl = `${wsProtocol}://${wsHost}:8081${baseConfig.baseUrl}/${baseConfig.resource}`;
 console.log(process.env.NODE_ENV, wsUrl);
 
-ws = new WebSocket(`${wsUrl}`);
+const token =
+	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTM1OTM5NzQsImlzcyI6Imx0IGRkaSB1c2VyIGxvZ2luIn0.CIl2_AIxYMZcSiDnfQP_Df92aHa_upmXW9sgL5D2CU8';
+
+ws = new WebSocket(`${wsUrl}`, token);
 
 ws.onopen = function() {
 	console.log('连接成功 初始化');
@@ -24,7 +27,7 @@ ws.onmessage = function(e) {
 		ws.getMessage(JSON.parse(e.data));
 	} else {
 		setTimeout(() => {
-      console.log("意外补救")
+			console.log('意外补救');
 			ws.getMessage && ws.getMessage(JSON.parse(e.data));
 		}, 600);
 	}
@@ -37,7 +40,7 @@ ws.onerror = function(e) {
 // 	clearInterval(baseConfig.timer);
 // 	baseConfig.timer = setInterval(() => {
 //     count++;
-    
+
 //     console.log(count, "计数器")
 
 // 		if (count < baseConfig.reconnectNumber) {

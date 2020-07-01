@@ -132,6 +132,7 @@ export default {
       list: [],
       mutipleList: [],
       initParams: { current: 1 },
+      query: {}
 
     };
   },
@@ -145,11 +146,27 @@ export default {
       });
     }
   },
+  watch: {
+    "$route.query": {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.getData(value);
+      }
+    },
+    query: {
+      deep: true,
+      immediate: true,
+      handler(value) {
+
+        // this.getData(value);
+      }
+    }
+  },
 
   created() {
     const { query } = this.$route;
     this.initParams = query;
-    this.getData(query);
   },
   mounted() { },
   methods: {
@@ -163,11 +180,11 @@ export default {
 
     },
 
-    handleSearch(params) {
-      this.initParams = params;
-      this.initParams.current = 1
-
-      this.getData(this.initParams);
+    handleSearch(aquery) {
+      const { path, query } = this.$route;
+      this.$router.push({ path, query: { "_": "ranck" } }); // 哥用名字镇压的bug，你删一个试试
+      this.$router.push({ path, query: { ...query, ...aquery } });
+      // 尝试 window.location + 定时器成功过但不稳定
     },
     handleDeal({ links, ...params }, state) {
       this.$put({ url: links.update, params: { ...params, ...state } }).then(() => {
@@ -193,7 +210,7 @@ export default {
         this.getData();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
-      })
+      });
 
     }
   }

@@ -175,7 +175,6 @@ export default {
       }
     },
     handleClickMessage() {
-      console.log(this.currentMainMenu);
       this.currentMainMenu = "/system";
       this.$router.push({ name: "alarm-notice", query: { state: "untreated" } });
     },

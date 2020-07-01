@@ -33,10 +33,7 @@ export default {
           route: "address-pdpool-list"
         });
       }
-    },
-    subnetLenth(value) {
-      if (Number(value) === 64) {
-        console.log(value)
+      if (value === 4) {
         this.tabList.unshift({
           name: "pools",
           label: "地址池",
@@ -46,12 +43,28 @@ export default {
           label: "固定地址",
           route: "address-reservations-list"
         });
-      } else {
-        this.tab = "pdpools";
-        const { params } = this.$route;
-        this.$router.push({ name: "address-pdpool-list", params });
-
       }
+    },
+    subnetLenth(value) {
+      if (this.addressType === 6) {
+        if (Number(value) === 64) {
+          this.tabList.unshift({
+            name: "pools",
+            label: "地址池",
+            route: "address-pool-list"
+          }, {
+            name: "reservations",
+            label: "固定地址",
+            route: "address-reservations-list"
+          });
+        } else {
+          this.tab = "pdpools";
+          const { params } = this.$route;
+          this.$router.push({ name: "address-pdpool-list", params });
+
+        }
+      }
+
 
     }
   },
