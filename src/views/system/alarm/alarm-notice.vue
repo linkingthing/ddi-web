@@ -166,7 +166,7 @@ export default {
 
   created() {
     const { query } = this.$route;
-    this.initParams = query;
+    this.initParams = { ...query, current: Number(query.current) };
   },
   mounted() { },
   methods: {
