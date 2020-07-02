@@ -8,11 +8,12 @@
         <dl>
           <dt class="error">
             {{
-              (Array.isArray(server.cpuUsage) && server.cpuUsage.length)
-                ? (100 * Number(server.cpuUsage[server.cpuUsage.length - 1].ratio)).toFixed(2)
-                : 0
+              server.cpuRatio
             }}
             <span>%</span>
+            <!-- (Array.isArray(server.cpuUsage) && server.cpuUsage.length) 主 辅（拿不到实时） 
+                ? (100 * Number(server.cpuUsage[server.cpuUsage.length - 1].ratio)).toFixed(2)
+                : 0 -->
           </dt>
           <dd>cpu使用率</dd>
         </dl>
@@ -20,10 +21,12 @@
           <dt class="warn">
 
             {{
-              (Array.isArray(server.memoryUsage) && server.memoryUsage.length)
-                ? (100 * Number(server.memoryUsage[server.memoryUsage.length - 1].ratio)).toFixed(2)
-                : 0
+              server.memRatio
+            
             }}
+            <!-- (Array.isArray(server.memoryUsage) && server.memoryUsage.length)
+                ? (100 * Number(server.memoryUsage[server.memoryUsage.length - 1].ratio)).toFixed(2)
+                : 0 -->
             <span>%</span>
           </dt>
           <dd>内存占用率</dd>
