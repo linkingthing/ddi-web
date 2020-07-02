@@ -40,7 +40,7 @@ export const columns = scope => [
     align: "center",  
     width: 210,    
     render: (h, { row }) => {
-      return [
+      let buttons = [
         h("Button", {
           class: "table-row-button",
           style: {
@@ -70,6 +70,12 @@ export const columns = scope => [
           }
         }, "转固定")
       ];
+
+      if (row.ipType === "reservation") {
+        buttons.splice(1,1);
+      }
+
+      return buttons;
     }
   }
 ];

@@ -371,10 +371,10 @@ export default {
     async handleFix(row) {
       this.loading = true;
 
-      let url = this.$getApiByRoute(`/subnets/${this.$route.params.scannedsubnetsId}/reservations`).url;
+      let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/reservations`).url;
         
       try {
-        await this.$put({ 
+        await this.$post({ 
           url, 
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
@@ -383,6 +383,8 @@ export default {
         });
 
         this.$$success("操作成功！");
+
+        this.getData();
       } catch (err) {
         this.$handleError(err);
       }
