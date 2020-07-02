@@ -193,8 +193,8 @@ export default {
                 });
               }
             })
-            .catch(res => {
-              this.$Message.error(res.message);
+            .catch(err => {
+              this.$Message.error(err.response.data.message);
             });
           // });
           // .catch(err => err);
