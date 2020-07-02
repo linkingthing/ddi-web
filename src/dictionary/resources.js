@@ -23,6 +23,7 @@ export default {
   redirection: "重定向",
   ipblackhole: "IP黑名单",
   recursivecurrent: "递归安全",
+  log: "DNS日志",
   /** IPAM */
   asset: "IP资产",
   plan: "IP地址规划",
