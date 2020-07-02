@@ -37,9 +37,8 @@ module.exports = {
 		},
 		proxyTable: {
 			'/login': {
-        target: 'https://10.0.0.90:8081',
-        secure: false, // 如果是https接口，需要配置这个参数
-
+				target: 'https://10.0.0.90:8081',
+				secure: false, // 如果是https接口，需要配置这个参数
 			},
 			'/apis': {
 				target: 'https://10.0.0.90:8081/apis',
