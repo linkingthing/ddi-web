@@ -16,7 +16,7 @@ console.log(process.env.NODE_ENV, wsUrl);
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTM1OTM5NzQsImlzcyI6Imx0IGRkaSB1c2VyIGxvZ2luIn0.CIl2_AIxYMZcSiDnfQP_Df92aHa_upmXW9sgL5D2CU8";
 
-ws = new WebSocket(`${wsUrl}`, token);
+ws = new WebSocket(`${wsUrl}`, null);
 
 ws.onopen = function () {
   console.log("连接成功 初始化");

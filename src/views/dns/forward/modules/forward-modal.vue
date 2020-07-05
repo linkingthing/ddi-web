@@ -27,6 +27,10 @@
 </template>
 
 <script>
+import {
+  ipv4IsValid,
+  ipv6IsValid
+} from "@/util/common";
 
 export default {
   props: {
@@ -68,6 +72,32 @@ export default {
     this.rules = {
       name: [
         { required: true, message: "请填写组名称" }
+      ],
+      ips: [
+        { required: true, message: "请填写组名称" },
+        {
+          validator: (rule, value, callback) => {
+            if (value.trim() === "") {
+              callback("请输入服务器地址");
+            }
+            const ipList = value.split(",");
+            const isPass = ipList.every(item => {
+              return (ipv4IsValid(item.trim()) || ipv6IsValid(item.trim())) && !item.includes("/");
+            });
+
+            if (ipList.length > 10) {
+              callback(new Error("每次最多填写10条"));
+            }
+
+            if (isPass) {
+              callback();
+            } else {
+              callback(new Error("请正确填写服务器地址"));
+            }
+
+
+          }
+        }
       ]
     };
     return {
@@ -124,7 +154,17 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
-          params.ips = typeof params.ips === "string" ? (params.ips.length && params.ips.split(",")) : [];
+
+          if (typeof params.ips === "string") {
+            if (params.ips.trim().length) {
+              params.ips = params.ips.split(",").map(item => item.trim());
+            } else {
+              params.ips = [];
+            }
+          } else {
+            params.ips = [];
+          }
+
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
               this.$$success("编辑成功");

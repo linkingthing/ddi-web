@@ -109,7 +109,6 @@ export default {
     },
     update() {
       const rdataList = this.upgradeConfig.rdata.split(",");
-      console.log(rdataList)
       rdataList.forEach(rdata => {
         const params = { ...this.upgradeConfig, rdata: rdata.trim() };
         services
@@ -121,7 +120,7 @@ export default {
             this.$emit("onCreateSuccess");
           })
           .catch((err) => {
-            this.$Message.error(err.response.data.message);
+            this.$Message.error(err.message);
           });
       })
 

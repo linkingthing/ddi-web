@@ -82,7 +82,7 @@ export default {
 
         const ipList = value.split(",");
         const isPass = ipList.every(item => {
-          return fn(item.trim());
+          return fn(item.trim()) && !item.includes("/");
         });
 
         if (ipList.length > 20) {

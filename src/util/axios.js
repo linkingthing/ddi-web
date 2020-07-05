@@ -11,8 +11,7 @@ const instance = axios.create();
 
 instance.interceptors.request.use(
   config => {
-    LoadingBar.start();
-  
+
     const token = store.getters.token;
 
     if (token) {
@@ -25,6 +24,7 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
 
 async function netCall(request) {
   LoadingBar.start();
