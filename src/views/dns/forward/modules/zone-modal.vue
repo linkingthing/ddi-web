@@ -158,7 +158,7 @@ export default {
   },
 
   created() {
-    this.$getData("/dns/dns/forwards").then(({ data }) => {
+    this.$getData({}, "/dns/dns/forwards").then(({ data }) => {
       this.forwardList = data;
     }).catch();
   },
