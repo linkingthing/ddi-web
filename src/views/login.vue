@@ -32,7 +32,7 @@
               size="large"
               type="password"
               v-model="params.password"
-              @keyup.enter="login"
+              @keyup.enter.native="login"
               placeholder="登录密码"
             />
             <img
@@ -194,7 +194,7 @@ export default {
               }
             })
             .catch(err => {
-              this.$Message.error(err.response.data.message);
+              this.$Message.error(err.message);
             });
           // });
           // .catch(err => err);
