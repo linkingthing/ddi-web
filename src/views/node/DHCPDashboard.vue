@@ -16,7 +16,7 @@
         <template v-slot:right>
           <Select
             style="width: 100px;"
-            v-model="useageIpnet"
+            v-model="keepShowUseageIpnet"
           >
             <Option
               :value="item.ipnet"
@@ -54,7 +54,7 @@
         <template v-slot:right>
           <Select
             style="width: 100px;"
-            v-model="packetsVersion"
+            v-model="keepShowPacketsVersion"
           >
             <Option value="4">dhcp4</Option>
             <Option value="6">dhcp6</Option>
@@ -114,6 +114,7 @@ export default {
       packetsLinks: {},
       dhcpLabels: [],
       dhcpValues: [],
+      keepShowPacketsVersion: "",
       packetsVersion: "",
       packetsList: [],
       showPacketsLine: false,
@@ -134,6 +135,7 @@ export default {
 
 
       usageList: [],
+      keepShowUseageIpnet: "",
       useageIpnet: "",
 
       legend: []
@@ -159,7 +161,9 @@ export default {
     lpsTime(period) {
       this.getLpsList({ period });
     },
-
+    keepShowUseageIpnet(val) {
+      this.useageIpnet = val;
+    },
     useageIpnet(ipnet) {
       const current = this.usageList.filter(item => item.ipnet === ipnet);
       if (current.length) {
@@ -168,6 +172,10 @@ export default {
         this.dhcpUsageLabels = labels;
         this.dhcpUsageValues = value;
       }
+    },
+
+    keepShowPacketsVersion(val) {
+      this.packetsVersion = val;
     },
 
     packetsVersion(val) {
@@ -252,7 +260,7 @@ export default {
               this.packetsList = item.packets;
               this.packetsLinks = item.links;
 
-              this.packetsVersion = "4";
+              this.keepShowPacketsVersion = "4";
             }
 
             if (item.id === "subnetusedratios") {
@@ -265,7 +273,7 @@ export default {
               });
 
               if (this.usageList.length) {
-                this.useageIpnet = this.usageList[0].ipnet;
+                this.keepShowUseageIpnet = this.usageList[0].ipnet;
               }
 
             }
