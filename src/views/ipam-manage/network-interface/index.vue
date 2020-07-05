@@ -127,6 +127,7 @@ export default {
       tableData: [],
       columns: columns(this),
       tableTitle: "活跃地址",
+      currentType: {},
       condition: {
         ipAddress: "",
         mac: ""
@@ -343,6 +344,8 @@ export default {
       this.tableTitle = label;
       
       this.dispatchPieAction(label);
+
+      this.currentType = type;
       
       this.getList(type);
     },
@@ -384,7 +387,7 @@ export default {
 
         this.$$success("操作成功！");
 
-        this.getData();
+        this.getList(this.currentType);
       } catch (err) {
         this.$handleError(err);
       }
