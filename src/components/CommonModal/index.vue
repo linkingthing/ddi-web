@@ -38,6 +38,7 @@
         :class="button.class"
         :type="typeList.includes(button.type) ? button.type : 'primary'"
         @click="handleButtonClick(button)"
+        :loading="loading(button)"
       >
         {{ button.label }}
       </Button>
@@ -58,6 +59,10 @@ export default {
   name: "DialogCustom",
 
   props: {
+    // loading: {
+    //   type: Boolean,
+    //   default: false
+    // },
     buttons: {
       type: Array,
       default: () => [
@@ -110,7 +115,7 @@ export default {
       type: [String, Number],
       default: 520
     },
-    
+
     /**
      * 是否在触发confirm事件后，异步关闭
      * 若设置该值为true, 则在触发confirm事件后，需要返回promise
@@ -124,8 +129,8 @@ export default {
   data() {
     this.typeList = ["default", "primary", "dashed", "text", "info", "success", "warning", "error"];
     return {
-      loading: false,
-      isEdit: false
+      isEdit: false,
+      isLoading: false
     };
   },
 
@@ -141,9 +146,13 @@ export default {
   },
 
   methods: {
+    loading(button) {
+      const shouldLoading = button.event === "confirm";
+      return shouldLoading && this.isLoading;
+    },
     async handleButtonClick(button) {
       let event = button.event;
-      
+
       let listener = this.$listeners[event] || this.$listeners[toKebabCase(event)];
 
       if (event === "cancel") {
@@ -157,6 +166,15 @@ export default {
       }
       else {
         listener && listener();
+
+        // 防重复点击
+        if (event === "confirm" && listener) {
+          this.isLoading = true;
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 800);
+        }
+
       }
     }
   }
