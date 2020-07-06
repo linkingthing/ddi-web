@@ -61,39 +61,53 @@
       <section
         class="node-map-content"
         v-scroll="handleScroll"
+        ref="nodeMapRef"
       >
 
         <div class="node-map-inner">
           <!-- <VueDragResize :is-resizable="false"> -->
           <svg ref="nodeMapRef">
             <path
-              v-for="(item, index) in svgPathGroup"
+              v-for="(item, index) in curve"
               :key="index"
-              :d="`M${item.startX} ${item.startY} Q${item.endX-30} ${item.endY} ${item.endX-10} ${item.endY} T${item.endX} ${item.endY}`"
+              :d="item.d"
               stroke="#7BAFFD"
-              stroke-dasharray="10,10"
+              :data-slave="`${item.isSalve}`"
+              :stroke-dasharray="item.isSalve ? '10,10': 'false' "
               fill="none"
               style="stroke-width: 2px;"
             />
           </svg>
-          <div class="node-group">
+          <div
+            class="node-group"
+            :key="controllerItem.ip"
+            v-for="controllerItem in controllerList"
+          >
             <div class="controller-box">
-              <div
-                class="controller-item "
-                v-for="item in controllerList"
-                :key="item.ip"
-              >
+              <div class="controller-item ">
                 <div class="controller-master node-item">
                   <map-node-item
-                    v-position="{ip: item.ip, end:item.controllerIP, getPosition}"
-                    :value="item"
-                    :key="item.ip"
+                    v-position="{ip: controllerItem.ip, type: 'controller', getPosition}"
+                    :value="controllerItem"
+                    :key="controllerItem.ip"
                     @mouseenter="handleMouseenter"
                     @mouseleave="handleMouseleave"
                   />
                 </div>
-                <div class="controller-slave node-item">
-                  <div class="slave-node"></div>
+                <div class="controller-slave ">
+                  <div
+                    class="slave-node "
+                    v-for="slave in controllerItem.slaveList"
+                    :key="slave.ip"
+                  >
+                    <map-node-item
+                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', getPosition}"
+                      :value="slave"
+                      :key="slave.ip"
+                      @mouseenter="handleMouseenter"
+                      @mouseleave="handleMouseleave"
+                    />
+                  </div>
 
                 </div>
               </div>
@@ -101,20 +115,33 @@
             <div class="common-node-box">
               <div
                 class="common-node-item "
-                v-for="item in commonNodeList"
+                v-for="item in controllerItem.children"
                 :key="item.ip"
               >
                 <div class="node-item">
                   <map-node-item
                     :value="item"
-                    v-position="{ip: item.ip, master: item.controllerIP, getPosition}"
+                    v-position="{ip: item.ip, master: item.controllerIP, type: 'child',hasSlave: !!(item.slave&& item.slave.length), getPosition}"
                     :key="item.ip"
                     @mouseenter="handleMouseenter"
                     @mouseleave="handleMouseleave"
                   />
                 </div>
-                <div class="common-node-item-slave node-item">
-                  <div class="slave-node"></div>
+                <div class="common-node-item-slave ">
+
+                  <div
+                    class="slave-node "
+                    v-for="slave in item.slaveList"
+                    :key="slave.ip"
+                  >
+                    <map-node-item
+                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', getPosition}"
+                      :value="slave"
+                      :key="slave.ip"
+                      @mouseenter="handleMouseenter"
+                      @mouseleave="handleMouseleave"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -143,6 +170,7 @@ import ServerInfo from "./modules/server-info";
 import MapNodeItem from "./modules/map-node-item";
 
 
+import { treeData, commondata } from "./nodeListTestData";
 
 export default {
   components: {
@@ -155,48 +183,7 @@ export default {
       timer: null,
       parserRunTime: {},
 
-      nodeList: [
-        // {
-        //   ip: "10.0.0.20",
-        //   roles: ["controller"]
-        // },
-        // {
-        //   roles: ["dns"]
-        // },
-        // {
-        //   roles: ["dhcp"]
-        // },
-        // {
-        //   roles: ["dns"]
-        // },
-        // {
-        //   roles: ["dhcp"]
-        // },
-        // {
-        //   roles: ["dns"]
-        // },
-        // {
-        //   ip: "10.0.0.1",
-        //   controllerIP: "10.0.0.20",
-        //   roles: ["dhcp"]
-        // },
-        // {
-        //   ip: "10.0.0.10",
-        //   controllerIP: "10.0.0.20",
-
-        //   roles: ["dns"]
-        // },
-        // {
-        //   ip: "10.0.0.12",
-        //   controllerIP: "10.0.0.20",
-        //   roles: ["dhcp"]
-        // },
-        // {
-        //   roles: ["controller"]
-        // }, {
-        //   roles: ["controller"]
-        // }
-      ],
+      nodeList: [],
       totalQps: 0,
       totalLps: 0,
       bootTimestamp: "",
@@ -212,18 +199,34 @@ export default {
 
       svgPathGroup: [],
 
-      positionMap: []
+      positionMap: [],
+      zoom: 1
     };
   },
   computed: {
 
     controllerList() {
-      const result = this.nodeList.filter(item => item.roles.includes("controller"));
-      return result;
+      const tree = this.nodeList2Tree(this.nodeList);
+      return tree;
     },
-    commonNodeList() {
-      const result = this.nodeList.filter(item => !item.roles.includes("controller"));
-      return result;
+
+    curve() {
+      const svgCurveList = this.svgPathGroup.map(item => {
+
+        const qox = item.startX + (item.endX - item.startX) / 2;
+        const qoy = item.startY + (item.endY - item.startY) / 4;
+
+        const qtx = item.endX - (item.endX - item.startX) * 3 / 8;
+        const qty = item.endY - (item.endY - item.startY) / 4;
+
+        const d = `M${item.startX} ${item.startY} Q${qox} ${qoy} ${qtx} ${qty} T${item.endX} ${item.endY}`;
+        return {
+          d,
+          isSalve: item.slave
+        };
+      });
+
+      return svgCurveList;
     }
 
   },
@@ -236,12 +239,20 @@ export default {
         let lineGroup = [];
 
         value.forEach(item => {
-          if (!item.master) {
+          if (item.type === "child") {
+            startXPointMap[item.ip] = item;
+          }
+          if (item.type === "controller") {
             startXPointMap[item.ip] = item;
           } else {
             const endPoint = item;
             const startPoint = startXPointMap[item.master];
-            lineGroup.push({ startPoint, endPoint });
+            if (startPoint && endPoint) {
+              lineGroup.push({ startPoint, endPoint, slave: item.type === "slave" });
+
+            } else {
+              throw new Error(`positionMap 方法构造连线失败，${startPoint},${JSON.stringify(endPoint)}`);
+            }
           }
         });
 
@@ -254,6 +265,10 @@ export default {
 
   mounted() {
 
+    // console.log(this.findNodeFromTree(treeData, "10.0.0.73", "children"))
+
+    this.nodeMapRef = this.$refs.nodeMapRef;
+
     this.getNodeInfo();
     this.timer = setInterval(() => {
       this.parserRunTime = this.excuteRunTime();
@@ -264,10 +279,69 @@ export default {
   },
   destroyed() {
     clearInterval(this.timer);
-    removeEventListener("resize", this.addEventListener);
+    removeEventListener("resize", this.reDrawLine);
   },
 
   methods: {
+    nodeList2Tree(list) {
+      let tree = [];
+
+      let map = {};
+      list.forEach(item => {
+        map[item.id] = item;
+      });
+
+
+      list.forEach(item => {
+        const master = map[item.master];
+        const controller = map[item.controllerIP];
+
+        if (item.controllerIP === item.id && item.master === "") {
+          tree.push(item);
+        } else {
+          if (item.master) {
+            if (Array.isArray(master.slaveList)) {
+              if (!master.slaveList.find(slave => slave.id === item.id)) {
+                master.slaveList.push(item);
+              }
+            } else {
+              master.slaveList = [item];
+            }
+
+          } else if (item.controllerIP) {
+
+            if (Array.isArray(controller.children)) {
+              if (!controller.children.find(child => child.id === item.id)) {
+                controller.children.push(item);
+              }
+            } else {
+              controller.children = [item];
+            }
+
+          }
+
+        }
+      });
+
+      return tree;
+
+    },
+
+    findNodeFromTree(tree, id, catogary) {
+
+      for (let i = 0; i < tree.length; i++) {
+        const node = tree[i];
+        if (node.id === id) {
+          return node;
+        } else {
+          if (Array.isArray(node[catogary])) {
+            return this.findNodeFromTree(node[catogary], id, catogary)
+          }
+        }
+      }
+      return null;
+
+    },
     async getNodeInfo() {
       let requestCount = 0;
       let totalQps = 0;
@@ -334,8 +408,22 @@ export default {
       this.visible = true;
       this.server = server;
       const { clientWidth, offsetLeft, offsetTop } = e.target;
-      this.serverInfoLeft = offsetLeft + clientWidth + 24;
-      this.serverInfoTop = offsetTop - 24;
+
+
+      const maxWidth = this.nodeMapRef.clientWidth;
+      const maxHeight = this.nodeMapRef.clientHeight;
+      let serverInfoLeft = offsetLeft + clientWidth + 24;
+      if (serverInfoLeft + clientWidth > maxWidth) {
+        serverInfoLeft = offsetLeft - clientWidth + 24;
+      }
+
+      let serverInfoTop = offsetTop;
+      if (serverInfoTop + 225 > maxHeight) {
+        serverInfoTop = maxHeight - 250;
+      }
+
+      this.serverInfoLeft = serverInfoLeft;
+      this.serverInfoTop = serverInfoTop;
     },
 
     handleMouseleave() {
@@ -346,29 +434,45 @@ export default {
       const zoom = el.dataset.transform || 1;
       if (direction === "down") {
         if (zoom > 0.4) {
-          el.style.transform = `scale(${Number(zoom) - 0.2})`;
-          el.dataset.transform = Number(zoom) - 0.2;
+          const newZoom = Number(zoom) - 0.2;
+          el.style.transform = `scale(${newZoom})`;
+          el.dataset.transform = newZoom;
+          this.zoom = newZoom;
         }
 
       } else {
-        el.style.transform = `scale(${Number(zoom) + 0.2})`;
-        el.dataset.transform = Number(zoom) + 0.2;
+        const newZoom = Number(zoom) + 0.2;
+        el.style.transform = `scale(${newZoom})`;
+        el.dataset.transform = newZoom;
+        this.zoom = newZoom;
       }
     },
 
     getPosition(position) {
+      // console.log("position", position)
       this.positionMap.push(position);
       // 下一步要不要排个序
     },
 
     point2Path(pointList) {
-      const pathList = pointList.map(({ startPoint, endPoint }) => {
+      const pathList = pointList.map(({ startPoint, endPoint, slave }) => {
 
+        let startX = 0;
+        let endX = 0;
+
+        if (startPoint.offsetLeft > endPoint.offsetLeft) {
+          startX = startPoint.offsetLeft;
+          endX = endPoint.offsetLeft + endPoint.offsetWidth;
+        } else {
+          startX = startPoint.offsetLeft + startPoint.offsetWidth;
+          endX = endPoint.offsetLeft;
+        }
         return {
-          startX: startPoint.offsetLeft + startPoint.offsetWidth,
+          startX,
           startY: startPoint.offsetTop + startPoint.offsetHeight / 2,
-          endX: endPoint.offsetLeft,
-          endY: endPoint.offsetTop + endPoint.offsetHeight / 2
+          endX,
+          endY: endPoint.offsetTop + endPoint.offsetHeight / 2,
+          slave
         };
       });
 
@@ -382,6 +486,7 @@ export default {
       this.$nextTick().then(() => {
         this.nodeList = nodeList;
       });
+
     }
   }
 };
@@ -518,7 +623,7 @@ export default {
         left: 0;
         top: 0;
         width: 100%;
-        height: 100%;
+        height: 500%;
       }
     }
   }
@@ -544,6 +649,7 @@ export default {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-evenly;
+    align-items: center;
     // margin: 40px;
     & > .controller-master,
     & > .controller-slave {
@@ -567,8 +673,9 @@ export default {
   }
 
   .slave-node {
-    height: 104px;
+    // height: 104px;
     // background: #f20;
+    margin: 20px 0;
   }
 }
 

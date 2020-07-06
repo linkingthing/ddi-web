@@ -27,7 +27,7 @@ ws.onmessage = function (e) {
     ws.getMessage(JSON.parse(e.data));
   } else {
     setTimeout(() => {
-      console.log("意外补救");
+      console.log("再次连接");
       ws.getMessage && ws.getMessage(JSON.parse(e.data));
     }, 600);
   }
