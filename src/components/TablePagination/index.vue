@@ -146,7 +146,6 @@ export default {
 
   watch: {
     current(val) {
-      console.log(val)
       this.innerCurrent = val;
     },
 

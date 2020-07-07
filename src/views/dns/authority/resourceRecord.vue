@@ -4,7 +4,7 @@
       title="资源记录"
       :data="resList"
       :columns="columns"
-      :pagination-enable="false"
+      :total="resList.length"
     >
       <template slot="top-right">
         <i-button

@@ -4,7 +4,7 @@
       title="转发区域"
       :data="dsliteList"
       :columns="columns"
-      :pagination-enable="false"
+      :total="dsliteList.length"
     >
       <template slot="top-right">
         <i-button
