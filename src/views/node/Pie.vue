@@ -34,7 +34,7 @@ export default {
           trigger: "item",
           // formatter: "{a} <br/>{b}: {d}%"  // {c} ({d}%) // 这种方式是以当前高亮集合的占比
           formatter: function (a) {
-            return `${a.seriesName}<br/> ${a.name}: ${(a.value / count * 100).toFixed(2)}%`;
+            return `${a.seriesName}<br/> ${a.name}: ${((a.value / count * 100) || 0).toFixed(2)}%`;
           }
         },
         legend: {
