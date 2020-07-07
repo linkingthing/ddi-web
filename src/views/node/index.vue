@@ -112,7 +112,10 @@
                 </div>
               </div>
             </div>
-            <div class="common-node-box">
+            <div
+              class="common-node-box"
+              v-if="controllerItem.children && controllerItem.children.length"
+            >
               <div
                 class="common-node-item "
                 v-for="item in controllerItem.children"
@@ -676,6 +679,7 @@ export default {
     // height: 104px;
     // background: #f20;
     margin: 20px 0;
+    opacity: 0.5;
   }
 }
 

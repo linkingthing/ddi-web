@@ -24,7 +24,10 @@
             >
               {{`${params.name}.${recordSuffix}`}}
             </form-item>
-            <TypeValue :params="params" />
+            <TypeValue
+              :params="params"
+              :has-all="true"
+            />
             <form-item
               label="TTL"
               prop="ttl"
