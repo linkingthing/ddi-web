@@ -76,10 +76,10 @@ export default {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      deviceTypes,
+      deviceTypes: [{ text: "全部", label: "全部" },...deviceTypes],
       condition: {
         mac: "",
-        deviceType: "PC端"
+        deviceType: "全部"
       },
       tableData: [],
       columns: columns(this),
@@ -118,7 +118,13 @@ export default {
       try {
         let { url, condition } = this;
 
-        let { data } = await this.$get({ url: this.$formatQuerys(condition, url) });
+        let { mac, deviceType } = condition;
+
+        if (deviceType === "全部") {
+          deviceType = "";
+        }
+
+        let { data } = await this.$get({ url: this.$formatQuerys({ mac, deviceType }, url) });
         
         this.tableData = data.map(item => {
           const type = deviceTypes.find(({ label }) => label === item.deviceType);
