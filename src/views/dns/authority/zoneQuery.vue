@@ -4,7 +4,7 @@
       title="区域查询"
       :data="list"
       :columns="columns"
-      :pagination-enable="false"
+      :total="list.length"
     >
       <template slot="top-right">
         <i-button

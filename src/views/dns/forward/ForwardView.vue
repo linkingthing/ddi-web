@@ -4,7 +4,7 @@
       title="转发视图"
       :data="list"
       :columns="columns"
-      :pagination-enable="false"
+      :total="list.length"
     />
   </div>
 </template>

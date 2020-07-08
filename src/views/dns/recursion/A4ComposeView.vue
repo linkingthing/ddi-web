@@ -4,7 +4,7 @@
       title="4A地址合成视图"
       :data="list"
       :columns="columns"
-      :pagination-enable="false"
+      :total="list.length"
     />
     <createDefaultA4 ref="networkRef" />
     <editDefaultA4 ref="subnetRef" />
