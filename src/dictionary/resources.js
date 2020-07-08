@@ -36,5 +36,7 @@ export default {
   /** metric */
   node: "node",
   dns: "dns",
-  dhcp: "dhcp"
+  dhcp: "dhcp",
+  /** 用户 */
+  user: ""
 };

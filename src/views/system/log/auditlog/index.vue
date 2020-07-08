@@ -109,6 +109,8 @@ export default {
     },
 
     formatContent(data) {
+      const { username, method, resourceKind, succeed, errMessage } = data;
+
       const getOpperText = opper => {
         switch (opper.toLocaleLowerCase()) {
           case "put":return "更新";
@@ -118,7 +120,9 @@ export default {
         }
       };
 
-      return `${data.username}${getOpperText(data.method)}${resources[data.resourceKind]}${data.succeed ? "" : ("失败：" + data.errMessage)}`;
+      const opper = resourceKind === "user" ? "登录" : getOpperText(method);
+
+      return `${username}${opper}${resources[resourceKind]}${succeed ? "" : ("失败：" + errMessage)}`;
     }
   }
 };
