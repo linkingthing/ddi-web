@@ -10,21 +10,19 @@ const successCode = [200, 201, 202, 204];
 const instance = axios.create();
 
 instance.interceptors.request.use(
-  config => {
-
+  (config) => {
     const token = store.getters.token;
 
     if (token) {
       config.headers.Authorization = `${token}`;
     }
-      
+
     return config;
   },
-  error => {    
+  (error) => {
     return Promise.reject(error);
-  },
+  }
 );
-
 
 async function netCall(request) {
   LoadingBar.start();
@@ -33,36 +31,35 @@ async function netCall(request) {
     const response = await request;
     let { data, status, message, code } = await response;
 
-    if (successCode.includes(status)) { // 请求成功
+    if (successCode.includes(status)) {
+      // 请求成功
       LoadingBar.finish();
 
       return data;
-    } 
-    else if (status === 401 || code === 401) { // 验证失败
+    } else if (status === 401 || code === 401) {
+      // 验证失败
       LoadingBar.error();
 
-      Message.error(message);
+      Message.error(data.message);
 
       router.push("/login");
-    } 
-    else { // 请求失败
+    } else {
+      // 请求失败
       console.error("request fail -> status: ", status);
-      
+
       return Promise.reject({
         status,
-        message
+        message,
       });
     }
-  }
-  catch (error) {
+  } catch (error) {
     LoadingBar.error();
-    const { status, statusText } = error.response;
+    const { status } = error.response;
     if (status === 401) {
-      Message.error(statusText);
+      Message.error(error.response.data.message);
 
       router.push("/login");
     }
-
 
     console.error("request exception -> error", error);
 
@@ -86,10 +83,4 @@ function del({ url, otherOptions = {} }) {
   return netCall(instance.delete(url, otherOptions));
 }
 
-export {
-  post,
-  get,
-  del,
-  put,
-  instance as axios
-};
+export { post, get, del, put, instance as axios };
