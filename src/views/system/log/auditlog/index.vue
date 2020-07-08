@@ -120,7 +120,7 @@ export default {
         }
       };
 
-      const opper = resourceKind === "user" ? "登录" : getOpperText(method);
+      const opper = getOpperText(method);
 
       return `${username}${opper}${resources[resourceKind]}${succeed ? "" : ("失败：" + errMessage)}`;
     }

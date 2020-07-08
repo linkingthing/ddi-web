@@ -38,5 +38,5 @@ export default {
   dns: "dns",
   dhcp: "dhcp",
   /** 用户 */
-  user: ""
+  user: "用户信息"
 };
