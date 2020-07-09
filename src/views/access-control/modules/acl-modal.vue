@@ -197,11 +197,9 @@ export default {
 
   methods: {
     reset() {
-      this.$refs['formInline'].resetFields();
-      this.formModel = {
-        status: "allow",
-        lineType: "isp"
-      };
+      this.$refs["formInline"].resetFields();
+      this.formModel.status = "allow";
+      this.formModel.lineType = "isp";
     },
 
     handleConfirm(name) {
