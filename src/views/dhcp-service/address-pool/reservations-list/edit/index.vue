@@ -27,10 +27,7 @@
 <script>
 
 import {
-  ipv6IsValid,
-  isIPv4Reg,
-  getAddressType,
-  isPosNumber,
+  isIp,
   macAddressIsValid
 } from "@/util/common";
 
@@ -75,12 +72,24 @@ export default {
     ];
 
     this.rules = {
+      ipAddress: [{
+        validator: function (rule, value, callback) {
+          if (/\//.test(value)) {
+            callback("请正确输入ip");
+          }
+          if (isIp(value)) {
+            callback();
+          } else {
+            callback("请正确输入ip");
+          }
+        }
+      }],
       hwAddress: [{
         validator: function (rule, value, callback) {
           if (macAddressIsValid(value)) {
-            callback()
+            callback();
           } else {
-            callback("请正确填写MAC地址")
+            callback("请正确填写MAC地址");
           }
         }
       }]
@@ -132,23 +141,28 @@ export default {
   methods: {
 
     handleConfirm() {
-      if (this.isEdit) {
-        this.$put({ url: this.links.update, params: this.formModel }).then(res => {
-          this.$$success("编辑成功");
-          this.$emit("success");
-          this.dialogVisible = false;
-        }).catch(err => {
-          this.$$error(err.response.data.message);
-        });
-      } else {
-        this.$post({ url: this.links.self, params: this.formModel }).then(res => {
-          this.$$success("新建成功");
-          this.$emit("success");
-          this.dialogVisible = false;
-        }).catch(err => {
-          this.$$error(err.response.data.message);
-        });
-      }
+      this.$refs.formInline.validate(valid => {
+        if (valid) {
+          if (this.isEdit) {
+            this.$put({ url: this.links.update, params: this.formModel }).then(res => {
+              this.$$success("编辑成功");
+              this.$emit("success");
+              this.dialogVisible = false;
+            }).catch(err => {
+              this.$$error(err.response.data.message);
+            });
+          } else {
+            this.$post({ url: this.links.self, params: this.formModel }).then(res => {
+              this.$$success("新建成功");
+              this.$emit("success");
+              this.dialogVisible = false;
+            }).catch(err => {
+              this.$$error(err.response.data.message);
+            });
+          }
+        }
+      });
+
 
     }
 
