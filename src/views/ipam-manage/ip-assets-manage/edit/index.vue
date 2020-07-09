@@ -48,16 +48,7 @@ export default {
       dialogVisible: false,
       url: this.$getApiByRoute().url,
 
-      formModel: {
-        mac: "",
-        name: "",
-        deviceType: "",
-        deployedService: "",
-        department: "",
-        responsiblePerson: "",
-        location: "",
-        telephone: ""
-      },
+      formModel: this.initForm(),
       
       formItemList: [],
       rules
@@ -78,10 +69,10 @@ export default {
     },
 
     dialogVisible(val) {
-      // this.setValue();
-
       if (!val) {
         this.$refs.form.resetFields();
+
+        this.formModel = this.initForm();
         
         if (this.$route.query.mac) {
           this.$refresh();
@@ -109,6 +100,19 @@ export default {
       };
 
       this.formItemList = formItemList(!val);
+    },
+
+    initForm() {
+      return {
+        mac: "",
+        name: "",
+        deviceType: "",
+        deployedService: "",
+        department: "",
+        responsiblePerson: "",
+        location: "",
+        telephone: ""
+      };
     },
 
     async handleConfirm() {
