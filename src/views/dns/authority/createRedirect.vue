@@ -80,7 +80,7 @@ export default {
       // 表单验证规则
       ruleValidate: {
         name: [
-          { required: true, message: "请填写正确的域名" },
+          { required: true, message: "请填写域名" },
           {
             type: "string",
             max: 253,
@@ -100,8 +100,8 @@ export default {
   methods: {
     openConfig(viewId) {
       this.viewId = viewId;
-      this.$refs.formValidate.resetFields();
       this.ipModal = true;
+      this.$refs.formValidate.resetFields();
     },
     update() {
       const params = this.upgradeConfig;

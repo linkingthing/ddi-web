@@ -63,7 +63,8 @@ export default {
 
     return {
       formModel: {
-        status: "allow"
+        status: "allow",
+        name: ""
       },
       loading: false,
       dialogVisible: false,

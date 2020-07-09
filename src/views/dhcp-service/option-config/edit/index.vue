@@ -85,7 +85,10 @@ export default {
       ]
     };
     return {
-      formModel: {},
+      formModel: {
+        name: "",
+        regexp: ""
+      },
       dialogVisible: false,
       optionId: "",
       optionName: "",
