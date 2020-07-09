@@ -63,7 +63,7 @@ export const rules = {
   mac: [
     {
       required,
-      patter: macReg,
+      pattern: macReg,
       message: "请输入正确的MAC地址"
     }
   ],
