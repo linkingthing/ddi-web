@@ -168,7 +168,7 @@ export default {
       const current = this.usageList.filter(item => item.ipnet === ipnet);
       if (current.length) {
         const [{ usedRatios }] = current;
-        const [labels, value] = valuesParser(usedRatios);
+        const [labels, value] = valuesParser(usedRatios || []);
         this.dhcpUsageLabels = labels;
         this.dhcpUsageValues = value;
       }
@@ -285,6 +285,9 @@ export default {
                 });
               } else {
                 this.usageList = [];
+                this.keepShowUseageIpnet = "";
+                this.dhcpUsageLabels = [];
+                this.dhcpUsageValues = [];
               }
 
 
@@ -313,6 +316,9 @@ export default {
             });
           } else {
             this.usageList = [];
+            this.keepShowUseageIpnet = "";
+            this.dhcpUsageLabels = [];
+            this.dhcpUsageValues = [];
           }
 
           this.useageIpnet = temp;
