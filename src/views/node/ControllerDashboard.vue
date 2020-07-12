@@ -90,29 +90,51 @@ export default {
   methods: {
     init() {
       this.getNodeInfo();
-      this.timer = setInterval(() => {
-        this.getNodeInfo();
-      }, 3000);
+      // this.timer = setInterval(() => {
+      //   this.getNodeInfo();
+      // }, 3000);
     },
     getNodeInfo() {
       if (this.node.length) {
         this.$get(this.$getApiByRoute(`/monitor/metric/nodes/${this.node}`)).then(({ cpuUsage, discUsage, memoryUsage, network }) => {
 
-          const [cpuLabels, cpuValues] = valuesParser(cpuUsage);
-          this.cpuLabels = cpuLabels;
-          this.cpuValues = cpuValues;
+          if (Array.isArray(cpuUsage)) {
+            const [cpuLabels, cpuValues] = valuesParser(cpuUsage);
+            this.cpuLabels = cpuLabels;
+            this.cpuValues = cpuValues;
+          } else {
+            this.cpuLabels = [];
+            this.cpuValues = [];
+          }
 
-          const [memoLabels, memoValues] = valuesParser(memoryUsage);
-          this.memoLabels = memoLabels;
-          this.memoValues = memoValues;
 
-          const [diskLabels, diskValues] = valuesParser(discUsage);
-          this.diskLabels = diskLabels;
-          this.diskValues = diskValues;
+          if (Array.isArray(memoryUsage)) {
+            const [memoLabels, memoValues] = valuesParser(memoryUsage);
+            this.memoLabels = memoLabels;
+            this.memoValues = memoValues;
+          } else {
+            this.memoLabels = [];
+            this.memoValues = [];
+          }
 
-          const [networkLabels, networkValues] = valuesParser(network);
-          this.networkLabels = networkLabels;
-          this.networkValues = networkValues;
+
+          if (Array.isArray(discUsage)) {
+            const [diskLabels, diskValues] = valuesParser(discUsage);
+            this.diskLabels = diskLabels;
+            this.diskValues = diskValues;
+          } else {
+            this.diskLabels = [];
+            this.diskValues = [];
+          }
+
+          if (Array.isArray(network)) {
+            const [networkLabels, networkValues] = valuesParser(network);
+            this.networkLabels = networkLabels;
+            this.networkValues = networkValues;
+          } else {
+            this.networkLabels = [];
+            this.networkValues = [];
+          }
 
         });
       }

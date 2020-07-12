@@ -204,6 +204,7 @@ export default {
   mounted() {
     this.init();
 
+
     this.timer = setInterval(() => {
 
       this.getSubnetUsedRatioList({ period: this.usageTime });
@@ -223,6 +224,8 @@ export default {
 
   methods: {
     init() {
+      this.dhcpValues = [];
+      this.dhcpLabels = [];
       this.getNodeInfo();
     },
 
@@ -241,23 +244,30 @@ export default {
           data.forEach(item => {
 
             if (item.id === "lps") {
-              const [labels, value] = valuesParser(item.lps.values);
+              const [labels, value] = valuesParser(item.lps.values || []);
               this.dhcpLpsLabels = labels;
               this.dhcpLpsValues = value;
               this.lpsLinks = item.links;
             }
 
             if (item.id === "lease") {
-              const [labels, value] = valuesParser(item.lease.values);
+              const [labels, value] = valuesParser(item.lease.values || []);
               this.dhcpLeaseLabels = labels;
               this.dhcpLeaseValues = value;
               this.leaseLinks = item.links;
             }
 
             if (item.id === "packets") {
-              const [labels] = valuesParser(item.packets[0].values);
-              this.dhcpLabels = labels;
-              this.packetsList = item.packets;
+              if (Array.isArray(item.packets) && item.packets.length) {
+                const [labels] = valuesParser(item.packets[0].values);
+                this.dhcpLabels = labels;
+                this.packetsList = item.packets;
+              } else {
+                this.dhcpLabels = [];
+                this.packetsList = [];
+              }
+
+
               this.packetsLinks = item.links;
 
               this.keepShowPacketsVersion = "4";
@@ -265,12 +275,18 @@ export default {
 
             if (item.id === "subnetusedratios") {
               this.useageLinks = item.links;
-              this.usageList = item.subnetusedratios.map(({ ipnet, usedRatios }) => {
-                return {
-                  ipnet,
-                  usedRatios
-                };
-              });
+
+              if (Array.isArray(item.subnetusedratios)) {
+                this.usageList = item.subnetusedratios.map(({ ipnet, usedRatios }) => {
+                  return {
+                    ipnet,
+                    usedRatios
+                  };
+                });
+              } else {
+                this.usageList = [];
+              }
+
 
               if (this.usageList.length) {
                 this.keepShowUseageIpnet = this.usageList[0].ipnet;
@@ -288,12 +304,17 @@ export default {
         const temp = this.useageIpnet;
         this.useageIpnet = "";
         this.$get({ params, url: this.useageLinks.self }).then(({ subnetusedratios }) => {
-          this.usageList = subnetusedratios.map(({ ipnet, usedRatios }) => {
-            return {
-              ipnet,
-              usedRatios
-            };
-          });
+          if (Array.isArray(subnetusedratios)) {
+            this.usageList = subnetusedratios.map(({ ipnet, usedRatios }) => {
+              return {
+                ipnet,
+                usedRatios
+              };
+            });
+          } else {
+            this.usageList = [];
+          }
+
           this.useageIpnet = temp;
         });
       }).catch(err => err);
@@ -302,7 +323,7 @@ export default {
     getLpsList(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.lpsLinks.self }).then(({ lps: { values } }) => {
-          const [labels, value] = valuesParser(values);
+          const [labels, value] = valuesParser(values || []);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
         }).catch(err => err);
@@ -312,7 +333,7 @@ export default {
     getLeaseList(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.leaseLinks.self }).then(({ lease: { values } }) => {
-          const [labels, value] = valuesParser(values);
+          const [labels, value] = valuesParser(values || []);
           this.dhcpLeaseLabels = labels;
           this.dhcpLeaseValues = value;
         }).catch(err => err);
@@ -326,14 +347,20 @@ export default {
 
       this.intercept().then(_ => {
         this.$get({ params, url: this.packetsLinks.self }).then(({ packets }) => {
-          const [labels, values] = valuesParser(packets[0].values);
-          this.dhcpLabels = labels;
-          this.packetsList = packets;
+
+          if (Array.isArray(packets) && packets.length) {
+            const [labels] = valuesParser(packets[0].values);
+            this.dhcpLabels = labels;
+            this.packetsList = packets;
+          } else {
+            this.dhcpLabels = [];
+            this.packetsList = [];
+          }
+
 
           this.packetsVersion = tempVersion;
           this.$nextTick().then(() => {
             this.showPacketsLine = true;
-
           });
         }).catch(err => err);
       });

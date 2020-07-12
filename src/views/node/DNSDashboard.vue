@@ -277,19 +277,31 @@ export default {
             this.querytyperatiosLinks = item.links;
 
             // TODO: 略显尴尬
-            this.types = item.querytyperatios.map(item => {
-              return {
-                name: item.type,
-                value: ({ ...item.ratios.pop() }).ratio || 0
-              };
-            });
+            if (Array.isArray(item.querytyperatios)) {
+              this.types = item.querytyperatios.map(item => {
+                return {
+                  name: item.type,
+                  value: ({ ...item.ratios.pop() }).ratio || 0
+                };
+              });
+            } else {
+              this.types = [];
+            }
+
           }
 
           if (item.id === "resolvedratios") {
-            const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
-            this.successRateLabels = labels;
-            this.successRateValues = values;
-            this.resolvedratiosLinks = item.links;
+            if (Array.isArray(item.resolvedratios)) {
+              const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
+              this.successRateLabels = labels;
+              this.successRateValues = values;
+              this.resolvedratiosLinks = item.links;
+            } else {
+              this.successRateLabels = [];
+              this.successRateValues = [];
+              this.resolvedratiosLinks = item.links;
+            }
+
           }
         });
       });
