@@ -90,9 +90,9 @@ export default {
   methods: {
     init() {
       this.getNodeInfo();
-      // this.timer = setInterval(() => {
-      //   this.getNodeInfo();
-      // }, 3000);
+      this.timer = setInterval(() => {
+        this.getNodeInfo();
+      }, 3000);
     },
     getNodeInfo() {
       if (this.node.length) {
