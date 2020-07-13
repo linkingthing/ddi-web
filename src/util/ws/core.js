@@ -9,7 +9,7 @@ const baseConfig = {
 };
 const { port, protocol, hostname } = document.location;
 const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.19" : hostname;
+const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.170" : hostname;
 const wsUrl = `${wsProtocol}://${wsHost}:8081${baseConfig.baseUrl}/${baseConfig.resource}`;
 console.log(process.env.NODE_ENV, wsUrl);
 

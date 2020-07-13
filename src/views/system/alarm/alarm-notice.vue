@@ -151,6 +151,7 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
+        this.initParams = value;
         this.getData(value);
       }
     },
@@ -166,7 +167,10 @@ export default {
 
   created() {
     const { query } = this.$route;
-    this.initParams = { ...query, current: Number(query.current) };
+    this.initParams = { ...query };
+    if (query.current) {
+      this.initParams.current = Number(query.current);
+    }
   },
   mounted() { },
   methods: {
@@ -207,7 +211,12 @@ export default {
       })).then(() => {
         this.$Message.success("批量操作成功");
         this.mutipleList = [];
-        this.getData();
+        // this.getData();
+        const { query } = this.$route;
+        if (query.current && +query.current > 1) {
+          this.$router.push({ query: { ...this.$route.query, current: Number(query.current) - 1 } });
+        }
+
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });

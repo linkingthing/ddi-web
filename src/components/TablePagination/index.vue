@@ -55,6 +55,7 @@
 </style>
 
 <script>
+
 export default {
   name: "TablePagination",
 
@@ -138,15 +139,19 @@ export default {
         return data;
       }
     },
-    
+
     showPage() {
       return this.paginationEnable && this.data.length > this.size;
     }
   },
 
   watch: {
-    current(val) {
-      this.innerCurrent = val;
+    current: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        this.innerCurrent = val;
+      }
     },
 
     columns(val) {
@@ -161,6 +166,20 @@ export default {
 
         this.slotNames = names;
       }
+    },
+    data: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+
+        if (this.dataFilter.length === 0) {
+          if (this.data.length) {
+            const current = this.innerCurrent - 2;
+            this.innerCurrent = current;
+            this.handlePageChange(current);
+          }
+        }
+      }
     }
   },
 
@@ -173,6 +192,8 @@ export default {
     },
 
     handlePageChange(val) {
+      const { query } = this.$route;
+      this.$router.push({ query: { ...query, current: val } });
       this.$emit("update:current", val);
 
       this.$emit("page-change", {

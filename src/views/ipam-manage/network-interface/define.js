@@ -37,7 +37,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    align: "right",  
+    align: "center",  
     width: 210,    
     render: (h, { row }) => {
       let buttons = [
@@ -61,7 +61,8 @@ export const columns = scope => [
             width: "60px"
           },
           props: {
-            type: "default"
+            type: "default",
+            disabled: row.ipType === "reservation"
           },
           on: {
             click: () => {              
@@ -71,9 +72,9 @@ export const columns = scope => [
         }, "转固定")
       ];
 
-      if (row.ipType === "reservation") {
-        buttons.splice(1,1);
-      }
+      // if (row.ipType === "reservation") {
+      //   buttons.splice(1,1);
+      // }
 
       return buttons;
     }
