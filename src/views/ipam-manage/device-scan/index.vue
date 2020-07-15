@@ -74,7 +74,7 @@ export default {
 
     handleEdit(res) {
       this.showEdit = true;
-      this.currentData = res;
+      this.currentData = { ...res };
     },
 
     handleSaved() {
