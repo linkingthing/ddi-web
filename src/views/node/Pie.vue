@@ -38,18 +38,19 @@ export default {
           }
         },
         legend: {
-          orient: "vertical",
-          right: 10,
+          orient: "horizontal",
+          right: 170,
           bottom: "center",
-          data: labels
+          data: labels,
+          itemGap: 30
         },
         series: [
           {
             name: "解析类型",
             type: "pie",
-            center: [130, "center"],
+            center: [250, "center"],
 
-            radius: ["50%", "70%"],
+            radius: ["62%", "85%"],
             avoidLabelOverlap: false,
             label: {
               normal: {
