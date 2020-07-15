@@ -14,7 +14,7 @@ export default {
   props: {
     theme: {
       type: String,
-      default: "width:100%;height:240px"
+      default: "width:100%;height:280px"
     },
     options: {
       type: Object,
@@ -27,8 +27,28 @@ export default {
     };
   },
   computed: {},
+  watch: {
+    options: {
+      handler: function (values) {
+        if (this.chart) {
+          this.chart.setOption(values, true);
+        }
+
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   mounted() {
     this.initChart();
+  },
+  beforeDestroy() {
+    if (!this.chart) {
+      return;
+    }
+    window.removeEventListener("resize", this.chart.resize);
+    this.chart.dispose();
+    this.chart = null;
   },
   methods: {
     initChart() {
@@ -41,26 +61,6 @@ export default {
         myChart.setOption(this.options);
         window.addEventListener("resize", this.chart.resize);
       }
-    }
-  },
-  beforeDestroy() {
-    if (!this.chart) {
-      return;
-    }
-    window.removeEventListener("resize", this.chart.resize);
-    this.chart.dispose();
-    this.chart = null;
-  },
-  watch: {
-    options: {
-      handler: function (values) {
-        if (this.chart) {
-          this.chart.setOption(values, true);
-        }
-
-      },
-      deep: true,
-      immediate: true
     }
   }
 };

@@ -7,7 +7,7 @@ const baseUrl = "/apis/linkingthing.com/dns/v1";
 
 axios.interceptors.request.use(
   config => {
-    LoadingBar.start();
+    // LoadingBar.start();
 
     const token = store.getters.token;
     if (token) {
@@ -22,7 +22,7 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   res => {
-    LoadingBar.finish();
+    // LoadingBar.finish();
     return res;
   }, err => {
     console.error(err);
@@ -32,7 +32,7 @@ axios.interceptors.response.use(
       router.push("/login");
     }
 
-    LoadingBar.error();
+    // LoadingBar.error();
 
     return Promise.reject(err.response.data);
   },

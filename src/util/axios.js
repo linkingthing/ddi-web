@@ -25,7 +25,7 @@ instance.interceptors.request.use(
 );
 
 async function netCall(request) {
-  LoadingBar.start();
+  // LoadingBar.start();
 
   try {
     const response = await request;
@@ -33,12 +33,12 @@ async function netCall(request) {
 
     if (successCode.includes(status)) {
       // 请求成功
-      LoadingBar.finish();
+      // LoadingBar.finish();
 
       return data;
     } else if (status === 401 || code === 401) {
       // 验证失败
-      LoadingBar.error();
+      // LoadingBar.error();
 
       Message.error(data.message);
 
@@ -53,7 +53,7 @@ async function netCall(request) {
       });
     }
   } catch (error) {
-    LoadingBar.error();
+    // LoadingBar.error();
     const { status } = error.response;
     if (status === 401) {
       Message.error(error.response.data.message);
