@@ -70,7 +70,9 @@ export default {
     },
 
     dialogVisible(val) {
-      this.setValue();
+      if (!val) {
+        this.setValue();
+      }
 
       this.$emit("update:visible", val);
     },
