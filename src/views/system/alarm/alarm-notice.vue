@@ -62,6 +62,11 @@ export default {
           key: "name",
           align: "left",
           render: (h, { row }) => {
+
+            if (row.name === "ipConflict") {
+              return h("div", `${row.conflictIp} 冲突`);
+            }
+
             // 百分比 布尔 整型
             if (row.haCmd) {
               if (row.haCmd === "master_up") {
@@ -73,7 +78,9 @@ export default {
             }
 
             const thresholdText = row.thresholdType !== "trigger" && `超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`;
+
             return h("div", `节点${row.nodeIp} ${alarmConfig[row.name]} ${thresholdText}`);
+
           }
         },
         {
