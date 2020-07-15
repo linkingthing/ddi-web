@@ -28,7 +28,7 @@ axios.interceptors.response.use(
     console.error(err);
 
     if (err.response.data.code === 401) {
-      Message.error(err.response.data.message);
+      // Message.error(err.response.data.message);
       router.push("/login");
     }
 

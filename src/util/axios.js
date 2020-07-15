@@ -40,7 +40,7 @@ async function netCall(request) {
       // 验证失败
       // LoadingBar.error();
 
-      Message.error(data.message);
+      // Message.error(data.message);
 
       router.push("/login");
     } else {
@@ -56,7 +56,7 @@ async function netCall(request) {
     // LoadingBar.error();
     const { status } = error.response;
     if (status === 401) {
-      Message.error(error.response.data.message);
+      // Message.error(error.response.data.message);
 
       router.push("/login");
     }
