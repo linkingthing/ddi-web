@@ -214,7 +214,7 @@ export default {
 
       this.getLpsList({ period: this.lpsTime });
 
-    }, 3000);
+    }, 10000);
   },
 
   destroyed() {

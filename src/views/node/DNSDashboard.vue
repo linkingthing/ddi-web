@@ -211,7 +211,7 @@ export default {
       this.getQuerytyperatiosData();
       this.getToptendomainsTimeData();
       this.getTopIps();
-    }, 3000);
+    }, 10000);
   },
   beforeDestroy() {
     clearInterval(this.timer);

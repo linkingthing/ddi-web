@@ -92,7 +92,7 @@ export default {
       this.getNodeInfo();
       this.timer = setInterval(() => {
         this.getNodeInfo();
-      }, 3000);
+      }, 10000);
     },
     getNodeInfo() {
       if (this.node.length) {
