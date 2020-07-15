@@ -15,7 +15,7 @@
       >
         <template v-slot:right>
           <Select
-            style="width: 100px;"
+            style="width: 100px;margin-right: 20px"
             v-model="keepShowUseageIpnet"
           >
             <Option
@@ -53,7 +53,7 @@
       >
         <template v-slot:right>
           <Select
-            style="width: 100px;"
+            style="width: 100px;margin-right: 20px"
             v-model="keepShowPacketsVersion"
           >
             <Option value="4">dhcp4</Option>
@@ -189,7 +189,6 @@ export default {
         }
 
         this.dhcpValues = this.packetsList.filter(item => item.version === val);
-
       }
 
       this.showPacketsLine = false;
@@ -362,7 +361,6 @@ export default {
             this.dhcpLabels = [];
             this.packetsList = [];
           }
-
 
           this.packetsVersion = tempVersion;
           this.$nextTick().then(() => {

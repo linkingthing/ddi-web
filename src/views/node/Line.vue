@@ -74,14 +74,20 @@ export default {
         ThemeConfig[this.lineTheme] || ThemeConfig.blue;
       const self = this;
 
+
+
+      // console.log(this.values)
+
       let series = [
         {
           name: self.seriesName || (self.isPercent ? "百分比" : "值"),
 
           data: this.values,
           type: "line",
+
           smooth: true,
-          lineStyle: { color: primaryColor, width: 2 },
+          symbol: "none",
+          lineStyle: { color: primaryColor, width: 5 },
           itemStyle: {
             // borderWidth: 4,
             borderColor: primaryColor
@@ -109,19 +115,18 @@ export default {
           }
         }
       ];
-      let labels;
+
       if (this.multiple) {
+
         series = this.values.map(item => {
-          labels = item.values.map(value => {
-            return moment(value.timestamp).format("YYYY-MM-DD HH:mm:ss");
-          });
+
           return {
             name: self.seriesName || item.packetType || item.rcode || item.type || "值",
-            data: (item.values && item.values.map(item => item.value)) || (item.ratios && item.ratios.map(item => item.ratio)),
+            data: (item.values && item.values.map(({ timestamp, value }) => [timestamp, value])) || (item.ratios && item.ratios.map(({ timestamp, ratio }) => [timestamp, ratio])),
             type: "line",
+            symbol: "none",
             lineStyle: {
-              width: 1,
-              // type: "dotted"
+              width: 5
             },
             smooth: true
           };
@@ -136,29 +141,49 @@ export default {
         },
         grid: {
           left: "55px",
-          right: "50px",
-          top: "20px",
+          right: "0",
+          top: "30px",
           bottom: "40px"
         },
         xAxis: {
           type: "category",
-          data: labels || this.labels,
-          boundaryGap: false,
           axisTick: {
-            show: false
+            show: true,
+            axisTick: {
+              length: 200
+            }
           },
           splitLine: {
-            show: true,
+            show: false,
             color: "#D3D3D3"
           },
+
+          min: function ({ min, max }) {
+            return min - (max - min) * .05;
+          },
+          max: function ({ min, max }) {
+            return max + (max - min) * .05;
+          },
+          // splitNumber: 10,
+          boundaryGap: ["10%", "10%"],
+
           axisLine: {
             show: false
           },
           axisLabel: {
-            // interval: 0,
-            // rotate: "45"
+
+            interval: function (index) {
+              const points = [0, 50, 100, 150, 200, 250, 300];
+              return points.includes(index);
+            },
+
+            align: "center",
+            showMinLabel: true,
+            showMaxLabel: true,
+            margin: 16,
             formatter: function (params) {
-              return params.split(" ").join("\n");
+              // console.log(params)
+              return moment(params).format("YYYY-MM-DD HH:mm:ss").split(" ").join("\n"); // params.split(" ")[0]; .format("YYYY-MM-DD HH:mm:ss")
             }
           }
         },
@@ -167,6 +192,8 @@ export default {
           axisLine: {
             show: false
           },
+          boundaryGap: false,
+
           axisTick: {
             show: false
           },
@@ -192,16 +219,16 @@ export default {
 
         tooltip: {
           trigger: "axis",
-          axisPointer: {
-            type: "cross",
-            label: {
-              backgroundColor: "#6a7985"
-            }
-          },
+          // axisPointer: {
+          //   type: "cross",
+          //   label: {
+          //     backgroundColor: "#6a7985"
+          //   }
+          // },
           formatter: function (value) {
             let title = value.length && value[0].name;
-            return `<p>${title}</p>` + value.map(item => {
-              return `<p>${item.marker}${item.seriesName}:${self.isPercent ? (Number(item.value) * 100).toFixed(2) + "%" : item.value}</p>`;
+            return `<p>${moment(title).format("YYYY-MM-DD HH:mm:ss")}</p>` + value.map(item => {
+              return `<p>${item.marker}${item.seriesName}:${self.isPercent ? (Number(item.value[1]) * 100).toFixed(2) + "%" : item.value[1]}</p>`;
             }).join("");
           }
         },

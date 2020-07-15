@@ -211,10 +211,11 @@ export default {
       })).then(() => {
         this.$Message.success("批量操作成功");
         this.mutipleList = [];
-        // this.getData();
         const { query } = this.$route;
         if (query.current && +query.current > 1) {
-          this.$router.push({ query: { ...this.$route.query, current: Number(query.current) - 1 } });
+          this.$router.push({ query: { ...query, current: Number(query.current) - 1 } });
+        } else {
+          this.getData();
         }
 
       }).catch(err => {
