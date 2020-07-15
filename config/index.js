@@ -32,8 +32,8 @@ module.exports = {
 		assetsSubDirectory: 'static',
 		assetsPublicPath: '/',
 		https: {
-			key: fs.readFileSync(path.join(__dirname, './cert/server.key')),
-			cert: fs.readFileSync(path.join(__dirname, './cert/server.crt'))
+			key: fs.readFileSync(path.join(__dirname, './cert/tls_key.key')),
+			cert: fs.readFileSync(path.join(__dirname, './cert/tls_cert.crt'))
 		},
 		proxyTable: {
 			'/login': {

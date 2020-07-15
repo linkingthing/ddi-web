@@ -37,6 +37,7 @@ export default {
   node: "node",
   dns: "dns",
   dhcp: "dhcp",
+  dhcpconfig: "基础配置",
   /** 用户 */
   user: "用户信息"
 };
