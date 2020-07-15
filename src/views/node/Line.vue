@@ -87,7 +87,7 @@ export default {
 
           smooth: true,
           symbol: "none",
-          lineStyle: { color: primaryColor, width: 5 },
+          lineStyle: { color: primaryColor, width: 3 },
           itemStyle: {
             // borderWidth: 4,
             borderColor: primaryColor
@@ -126,7 +126,7 @@ export default {
             type: "line",
             symbol: "none",
             lineStyle: {
-              width: 5
+              width: 3
             },
             smooth: true
           };
