@@ -31,12 +31,12 @@
           </Select>
         </div>
 
-        <Button 
+        <btn-search 
           type="primary" 
           @click="handleQuery" 
         >
           搜索
-        </Button>
+        </btn-search>
       </template>
 
       <template slot="top-right">

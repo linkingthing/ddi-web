@@ -9,7 +9,6 @@
       <template slot="top-right">
         <i-button
           type="primary"
-          size="large"
           @click="handleOpenCreate(id)"
         >新建</i-button>
       </template>

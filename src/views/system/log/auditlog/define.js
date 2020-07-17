@@ -16,21 +16,23 @@ export const columns = (self) => [
     key: "content",
     align: "center",
     render: (h, { row }) => {
-      return h(
-        "div",
-        [row.content, h("Icon", {
+      return h("div", [
+        row.content,
+        h("Icon", {
           style: {
-            "vertical-align": " baseline",
-            paddingLeft: "10px"
+            verticalAlign: "baseline",
+            paddingLeft: "10px",
+            fontSize: "16px",
+            cursor: "pointer"
           },
           props: {
-            custom: "icon-info"
+            custom: "icon-info",
           },
           on: {
-            click: () => self.handleOpenMessage(row)
-          }
-        })]
-      );
+            click: () => self.handleOpenMessage(row),
+          },
+        }),
+      ]);
     },
   },
   {

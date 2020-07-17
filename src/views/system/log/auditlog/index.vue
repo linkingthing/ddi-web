@@ -28,13 +28,13 @@
           />
         </div>
 
-        <Button
+        <btn-search
           type="primary"
           @click="handleQuery"
           class="top-button"
         >
           搜索
-        </Button>
+        </btn-search>
       </template>
     </table-page>
   </div>
