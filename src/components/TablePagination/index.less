@@ -1,58 +1,70 @@
-.table-pagination{
-    @import "./../../assets/less/reset-ivu-table.less";
+.table-pagination {
+	background: transparent;
 
-    background: transparent;
+	&.is-padding-top {
+		padding-top: 60px;
+	}
 
-    &-title{
-        padding: 27px 30px 0;
-        line-height: 1; 
-        font-size: 20px;
-        color: #252422;
-        font-weight: 600;
+	&-title {
+		padding: 27px 30px 0;
+		line-height: 1;
+		font-size: 20px;
+		color: #252422;
+		font-weight: 600;
+	}
+
+	&-top {
+		min-height: 60px;
+		line-height: 60px;
+		padding: 0 32px;
+		display: flex;
+		justify-content: space-between;
+		position: relative;
+		z-index: 1;
+
+		.ivu-input {
+			font-size: 14px;
+		}
+
+		.top-input {
+			width: 210px;
+			margin-right: 20px;
+		}
+
+		.top-button {
+			margin-left: 20px;
+		}
+		.ivu-btn-primary {
+			padding: 0 27px;
+		}
+	}
+
+	&-content {
+	}
+
+	.table-row-button {
+		margin-right: 12px;
+		height: 26px;
+		padding: 0 8px;
+
+		&:last-child {
+			margin-right: 0;
+		}
+
+		& > span {
+			font-size: 12px !important;
+			color: #4586fe !important;
+			line-height: 1;
     }
-
-    &-top{
-        padding: 30px 30px 0; 
-        display: flex;
-        justify-content: space-between;
-
-        .ivu-input{
-            height: 38px;
-            font-size: 14px;
-        }
-
-        .top-input{
-            width: 210px;
-            margin-right: 20px;
-        }
-
-        .top-button{
-            height: 38px;
-            background-color: #6BB3C7;
-            border: none;
-            margin-right: 20px;
-            font-size: 16px;
-            padding: 0 20px;
-
-            &>.ivu-icon{
-                line-height: 1;
-                font-size: 25px;
-            }
-
-            &>span{
-                font-size: 16px;
-                color: #fff;
-                letter-spacing: 3px;
-            }
-        }
+    &.ivu-btn[disabled='disabled'] {
+      & > span {
+        color: #dcdee2 !important;
+      }
     }
+	}
 
-    &-content{
-        
-    }
-
-    &-footer{
-        text-align: center;
-        padding-top: 40px;
-    }
+	&-footer {
+		text-align: right;
+		padding: 36px;
+	}
 }

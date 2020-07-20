@@ -3,15 +3,15 @@ import store from "@/store";
 import router from "@/router";
 import { LoadingBar, Message } from "view-design";
 
-const baseUrl = "/apis/linkingthing.com/example/v1";
+const baseUrl = "/apis/linkingthing.com/dns/v1";
 
 axios.interceptors.request.use(
   config => {
-    LoadingBar.start();
+    // LoadingBar.start();
 
     const token = store.getters.token;
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `${token}`;
     }
     return config;
   },
@@ -22,17 +22,17 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   res => {
-    LoadingBar.finish();
+    // LoadingBar.finish();
     return res;
   }, err => {
     console.error(err);
 
     if (err.response.data.code === 401) {
-      Message.error(err.response.data.message);
+      // Message.error(err.response.data.message);
       router.push("/login");
     }
 
-    LoadingBar.error();
+    // LoadingBar.error();
 
     return Promise.reject(err.response.data);
   },
@@ -47,10 +47,10 @@ export default {
     return axios.get(`${baseUrl}/checkvalue`, { params });
   },
   login(params) {
-    return axios.post(`${baseUrl}/login`, params);
+    return axios.post(`/login`, params);
   },
   updatePassword(params) {
-    return axios.post(`${baseUrl}/changepwd`, params);
+    return axios.post(`/apis/linkingthing.com/auth/v1/users`, params);
   },
   // 权威管理
 

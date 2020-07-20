@@ -1,4 +1,4 @@
-import { Address6 } from "ip-address";
+import { Address6, Address4 } from "ip-address";
 
 export const isIPv4Reg = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/;
 
@@ -16,48 +16,51 @@ export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za
 
 export const domainReg = /^(?=^.{1,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*$/;
 
-export const macReg = /^((([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2})|(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}))$/;
+export const macReg = /^(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2})$/;
+
+/**
+ * 移动电话正则
+ */
+export const mobilePhoneReg = /^(\+86)?1[1-9]{1}[0-9]{9}$/g;
 
 export const urlValidate = {
   pattern: urlReg,
-  message: "请正确输入url"
+  message: "请正确输入url",
 };
 
 export const domainValidate = {
   pattern: domainReg,
-  message: "请正确输入域名"
+  message: "请正确输入域名",
 };
 
 export const nameValidate = {
   pattern: nameReg,
-  message: "名称由不超过64个a-zA-Z0-9_组成"
+  message: "请正确填写的域名",
 };
 
 export const commonNameValidate = {
   pattern: /^[a-zA-Z0-9_]{1,19}$/,
-  message: "名称由不超过20个a-zA-Z0-9_组成"
+  message: "名称由不超过20个a-zA-Z0-9_组成",
 };
 
 export const isIPv4Validate = {
   pattern: isIPv4Reg,
-  message: "请正确输入IPv4地址"
+  message: "请正确输入IPv4地址",
 };
 
 export const isIPv6Validate = {
   pattern: fullIPv6Reg,
-  message: "请正确输入IPv6地址"
+  message: "请正确输入IPv6地址",
 };
-
 
 function IPv6UnitTest(unitArr, callback) {
   unitArr.every((unit, index) => {
-
     // 高位0检验
     if (/^0+\d$/.test(unit)) {
       callback("填写错误，IPv6单元禁止高位0");
     }
 
-    if (!(/^[0-9a-fA-F]{1,4}$/.test(unit))) {
+    if (!/^[0-9a-fA-F]{1,4}$/.test(unit)) {
       callback(`填写错误，第${index + 1}单元不符合4位16进制要求`);
     }
     return /^[0-9a-fA-F]{1,4}$/.test(unit);
@@ -68,38 +71,38 @@ function IPv6UnitTest(unitArr, callback) {
  * 校验Mac是否合法
  * @param {String} mac MAC地址
  */
-export const macAddressIsValid = mac => macReg.test(mac.trim());
+export const macAddressIsValid = (mac) => macReg.test(mac.trim());
 
 /**
  * 将IPv6地址填充为完整的IPv6
- * @param {String} address 
+ * @param {String} address
  */
-export const fillIPv6 = address => {
+export const fillIPv6 = (address) => {
   // 如果没有简写，则直接返回
   if (address.indexOf("::") < 0) return address;
 
   let arr = address.split("::");
-  
-  let begin = arr[0], end = arr[1];
-  let beginLen = 0, endLen = 0;
+
+  let begin = arr[0],
+    end = arr[1];
+  let beginLen = 0,
+    endLen = 0;
 
   if (!begin) {
     beginLen = 0;
-  }
-  else {
+  } else {
     beginLen = begin.split(":").length;
   }
 
   if (!end) {
     endLen = 0;
-  }
-  else {
+  } else {
     endLen = end.split(":").length;
   }
 
   const totalLen = 8;
   const fillLen = totalLen - beginLen - endLen;
-  
+
   let ret = new Array(fillLen).fill("0");
 
   if (begin) {
@@ -117,7 +120,7 @@ export const fillIPv6 = address => {
  * 获取ip地址的类型
  * 判断地址是否有冒号，如果有冒号，就认为是ipv6，反之则是ipv4
  */
-export const getAddressType = val => {
+export const getAddressType = (val) => {
   return val.toString().indexOf(":") > 0 ? "ipv6" : "ipv4";
 };
 
@@ -125,8 +128,11 @@ export const getAddressType = val => {
  * 掩码是否合法
  * @param {String, Number} address IP地址或者掩码
  * @param {String, Number} ipType IP地址的类型  ipv4|ipv6
+ * @param {Array} range 掩码的范围，可不传
  */
-export const gatewayIsValid = (address, ipType) => {
+export const maskIsValid = (address, ipType, range) => {
+  if (!address) return false;
+
   let val = address.toString();
   let index = val.indexOf("/");
 
@@ -151,16 +157,15 @@ export const gatewayIsValid = (address, ipType) => {
 
   if (!isPosNumber(val)) return false;
 
-  if (ipType === "ipv6") {
-    return val > 1 && val < 128;
+  if (!range) {
+    range = ipType === "ipv6" ? [2, 64] : [2, 24];
   }
-  else {
-    return val > 1 && val < 32;
-  }
+
+  return val >= range[0] && val <= range[1];
 };
 
 // 是否是数字
-export const isNumber = val => {
+export const isNumber = (val) => {
   var regPos = /^\d+(\.\d+)?$/; // 非负浮点数
   var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
   if (regPos.test(val) || regNeg.test(val)) {
@@ -173,14 +178,14 @@ export const isNumber = val => {
 /**
  * 是否是正整数
  */
-export const isPosNumber = val => {
+export const isPosNumber = (val) => {
   val = isNaN(val) ? val : val.toString();
 
   return /^[1-9]([0-9]+)?$/g.test(val);
 };
 
 // 获取url参数
-export const getQueryString = name => {
+export const getQueryString = (name) => {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
   try {
     var r = window.location.href.split("?")[1].match(reg);
@@ -194,88 +199,24 @@ export const getQueryString = name => {
   }
 };
 
-/**
- * ipv6规则
- * 1. 组多8组，以冒号分割
- * 2. 每个单元由4位16进制组成
- * 3. 单元中全为0时可以 (::)简写
- * 4. 简写只能出现一次，且在最右边（！！！还是要双重判断）
- * 
- * 
- * 逻辑分析：
- * 1. ipv6要么全写要么简写
- * 2. 简写只能一个 (::)
- * 3. 单元数不能超过8
- * 4. 简写的右边不能有可简写的单元
-*/
-
-// a:b:c:d:e:f:a:b
-// aaaa:bbbb:cccc:dddd:eeee:ffff:aaaa:bbbb
-// aaaa::
-// aaaa::bbbb
-// aaaa:b:cccc::dddd:eeee
-// 1aef:e234:3fdf::1
 export const IPv6SimpleValidateFunc = (rule, value, callback) => {
-  console.log(value);
-  if (fullIPv6Reg.test(value)) {
+  if (ipv6IsValid(value.trim())) {
     callback();
   }
-
-  const simpleSplit = value.split("::");
-  if (simpleSplit.length > 2) {
-    callback("ipv6中只能有一次简写");
-  }
-
-  if (simpleSplit.length !== 2) {
-    callback("请正确输入IPv6地址");
-  }
-
-  console.log(simpleSplit);
-
-  let totalGroup = [];
-  simpleSplit.forEach((current, index) => {
-    console.log(1, current);
-    totalGroup = totalGroup.concat(current.split(":"));
-
-    if (index === 1 && current.length > 0) {
-      // 这里面不能有可简写的存在
-      current.split(":").every(item => {
-        if (item === "0") {
-          callback("简写方式不正确，请优先对右边单元简写");
-        } else {
-          return true;
-        }
-      });
-    } else {
-      // 处理 aaaa:: (::)双冒号结尾的情况
-      totalGroup.pop();
-    }
-  });
-
-  console.log(totalGroup);
-  if (totalGroup.length > 7) {
-    callback("IPv6简写地址单元数不能超过7");
-  }
-
-  IPv6UnitTest(totalGroup, callback);
-
-  callback();
+  callback(new Error("请正确输入ipv6地址"));
 };
-
 
 export const requiredValidate = { required: true, message: "该项必填" };
 
-
 export const positiveIntegerValidate = {
   pattern: positiveIntegerReg,
-  message: "请输入正整数"
+  message: "请输入正整数",
 };
 
 export const prefixValidate = {
   pattern: prefixReg,
-  message: "格式以十六进制表示,以'::/N'结尾,N可以为32,40,48,56,64,96中的一个"
+  message: "格式以十六进制表示,以'::/N'结尾,N可以为32,40,48,56,64,96中的一个",
 };
-
 
 export const prefixValidateFunc = (rule, value, callback) => {
   const endNumReg = /[\d]{2}$/;
@@ -297,7 +238,7 @@ export const prefixValidateFunc = (rule, value, callback) => {
  * 验证域名是否合法
  * @param {String} value 域名
  */
-export const domainIsValid = value => {
+export const domainIsValid = (value) => {
   return value === "*" || value === "@" || domainReg.test(value);
 };
 
@@ -338,17 +279,21 @@ export const subnetValidateFunc = (rule, value, callback) => {
 /**
  * 判断是否是合法的ipv6，不校验掩码
  */
-export const ipv6IsValid = address => {
-  if (address.indexOf("/")) {
-    address = address.split("/")[0];
-  }
-
+export const ipv6IsValid = (address) => {
   return new Address6(address).isValid();
+};
+
+export const ipv4IsValid = (address) => {
+  return new Address4(address).isValid();
+};
+
+export const isIp = (address) => {
+  return ipv6IsValid(address) || ipv4IsValid(address);
 };
 
 /**
  * 格式化日期
- * @param { Date|String } res 时间对象或字符串 
+ * @param { Date|String } res 时间对象或字符串
  * @param { String } formatter 格式化方式  yyyy-MM-dd hh:mm:ss
  */
 export const formatDate = (res, formatter = "yyyy-MM-dd hh:mm:ss") => {
@@ -359,12 +304,12 @@ export const formatDate = (res, formatter = "yyyy-MM-dd hh:mm:ss") => {
   if (isNaN(date.getTime())) throw new Error("日期格式错误");
 
   const opt = {
-    "y+": date.getFullYear().toString(),        // 年
-    "M+": (date.getMonth() + 1).toString(),     // 月
-    "d+": date.getDate().toString(),            // 日
-    "h+": date.getHours().toString(),           // 时
-    "m+": date.getMinutes().toString(),         // 分
-    "s+": date.getSeconds().toString()          // 秒
+    "y+": date.getFullYear().toString(), // 年
+    "M+": (date.getMonth() + 1).toString(), // 月
+    "d+": date.getDate().toString(), // 日
+    "h+": date.getHours().toString(), // 时
+    "m+": date.getMinutes().toString(), // 分
+    "s+": date.getSeconds().toString(), // 秒
     // 有其他格式化字符需求可以继续添加，必须转化成字符串
   };
 
@@ -374,9 +319,33 @@ export const formatDate = (res, formatter = "yyyy-MM-dd hh:mm:ss") => {
     ret = new RegExp(`(${k})`).exec(formatter);
 
     if (ret) {
-      formatter = formatter.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
+      formatter = formatter.replace(
+        ret[1],
+        ret[1].length === 1 ? opt[k] : opt[k].padStart(ret[1].length, "0")
+      );
     }
   }
 
   return formatter;
+};
+
+/**
+ * 将驼峰字符串转换为短横线连接字符串
+ * @param {String} str
+ */
+export const toKebabCase = (str) => {
+  return str
+    .split("")
+    .map((item, idx) => {
+      let code = item.charCodeAt();
+
+      if (code >= 65 && code <= 90) {
+        const result = item.toLocaleLowerCase();
+
+        return idx ? `-${result}` : result;
+      }
+
+      return item;
+    })
+    .join("");
 };

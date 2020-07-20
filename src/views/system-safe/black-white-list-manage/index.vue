@@ -4,21 +4,24 @@
       title="地址黑名单配置"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+      :total="list.length"
+    >
       <template slot="top-right">
         <i-button
-          type="success"
-          size="large"
-          @click="handleOpenCreate">新建</i-button>
+          type="primary"
+          @click="handleOpenCreate"
+        >新建</i-button>
       </template>
     </table-page>
 
-    <blacklist-config ref="blacklistRef" @onCreateSuccess="getView"/>
+    <blacklist-config
+      ref="blacklistRef"
+      @onCreateSuccess="getView"
+    />
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import blacklistConfig from "@/components/BlacklistConfig";
 import services from "@/services";
 export default {

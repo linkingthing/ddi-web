@@ -9,7 +9,8 @@
           ref="formLogin"
           :model="params"
           :rules="rules"
-          class="login-form">
+          class="login-form"
+        >
           <FormItem prop="username">
             <Input
               size="large"
@@ -22,7 +23,8 @@
               src="../assets/images/user.png"
               class="icon"
               alt
-              slot="prepend" >
+              slot="prepend"
+            >
             </Input>
           </FormItem>
           <FormItem prop="password">
@@ -30,14 +32,15 @@
               size="large"
               type="password"
               v-model="params.password"
-              @keyup.enter="login"
+              @keyup.enter.native="login"
               placeholder="登录密码"
             />
             <img
               src="../assets/images/password.png"
               class="icon"
               alt
-              slot="prepend" >
+              slot="prepend"
+            >
             </Input>
           </FormItem>
           <!-- <FormItem>
@@ -62,7 +65,8 @@
           <Button
             type="primary"
             long
-            @click="login">登录</Button>
+            @click="login"
+          >登录</Button>
         </Form>
       </div>
     </div>
@@ -75,7 +79,7 @@ import { mapMutations } from "vuex";
 
 export default {
   name: "login",
-  
+
   data() {
     this.isDNS = PACK_SYSTEM === "dns,node";
 
@@ -118,7 +122,7 @@ export default {
     };
   },
   created() {
-    this.getCaptcha();
+    // this.getCaptcha();
   },
   methods: {
     ...mapMutations(["SET_TOKEN"]),
@@ -164,36 +168,36 @@ export default {
     login() {
       this.$refs["formLogin"].validate(valid => {
         if (valid) {
+          // services
+          //   .verifyCaptcha({
+          //     CheckValueToken: this.checkvaluetoken,
+          //     CheckValue: this.captcha
+          //   })
+          //   .then(res => {
+          //     if (res.data !== "check value fail!" || true) {
+          //     } else {
+          //       this.$Message.error("图片验证失败");
+          //       this.getCaptcha();
+          //       throw "";
+          //     }
+          //   })
+          //   .finally(() => {
           services
-            .verifyCaptcha({
-              CheckValueToken: this.checkvaluetoken,
-              CheckValue: this.captcha
-            })
+            .login(this.params)
             .then(res => {
-              if (res.data !== "check value fail!" || true) {
-              } else {
-                this.$Message.error("图片验证失败");
-                this.getCaptcha();
-                throw "";
+              if (res.data.code === "200") {
+                // this.$Message.success("Success!");
+                this.SET_TOKEN(res.data.token);
+                this.$router.push({
+                  path: "/"
+                });
               }
             })
-            .finally(() => {
-              services
-                .login(this.params)
-                .then(res => {
-                  if (res.data.code === 200) {
-                    this.$Message.success("Success!");
-                    this.SET_TOKEN(res.data.token);
-                    this.$router.push({
-                      path: "/"
-                    });
-                  }
-                })
-                .catch(res => {
-                  this.$Message.error(res.message);
-                });
-            })
-            .catch(err => err);
+            .catch(err => {
+              this.$Message.error(err.message);
+            });
+          // });
+          // .catch(err => err);
         }
       });
     }
@@ -207,7 +211,7 @@ export default {
     border-color: #2d9fff;
     height: 40px;
     line-height: 40px;
-    
+
     span {
       font-size: 16px;
     }
@@ -235,8 +239,7 @@ export default {
     padding: 0 70px;
   }
 
-  .header-text{
-
+  .header-text {
   }
 
   .login-form {

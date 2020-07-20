@@ -10,6 +10,8 @@
 <script>
 import Chart from "./Chart";
 import NoDataFigure from "./NoDataFigure";
+import moment from "moment";
+moment.locale("zh-cn");
 
 const ThemeConfig = {
   blue: {
@@ -31,6 +33,7 @@ const ThemeConfig = {
 };
 export default {
   name: "ChartLine",
+  components: { Chart, NoDataFigure },
   props: {
     isPercent: {
       type: Boolean,
@@ -51,41 +54,136 @@ export default {
     lineTheme: {
       type: String,
       default: "blue"
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    seriesName: {
+      type: String,
+      default: ""
+    },
+    legend: {
+      type: Array,
+      default: () => ([])
     }
   },
-  components: { Chart, NoDataFigure },
   computed: {
     options() {
       const { primaryColor, gradualColor } =
         ThemeConfig[this.lineTheme] || ThemeConfig.blue;
       const self = this;
+
+
+
+      // console.log(this.values)
+
+      let series = [
+        {
+          name: self.seriesName || (self.isPercent ? "百分比" : "值"),
+
+          data: this.values,
+          type: "line",
+
+          smooth: true,
+          symbol: "none",
+          lineStyle: { color: primaryColor, width: 3 },
+          itemStyle: {
+            // borderWidth: 4,
+            borderColor: primaryColor
+          },
+          areaStyle: {
+            color: {
+              type: "linear",
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: primaryColor // 0% 处的颜色
+                },
+                {
+                  offset: 0.1,
+                  color: gradualColor // 100% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: "#fff"
+                }
+              ]
+            }
+          }
+        }
+      ];
+
+      if (this.multiple) {
+
+        series = this.values.map(item => {
+
+          return {
+            name: self.seriesName || item.packetType || item.rcode || item.type || "值",
+            data: (item.values && item.values.map(({ timestamp, value }) => [timestamp, value])) || (item.ratios && item.ratios.map(({ timestamp, ratio }) => [timestamp, ratio])),
+            type: "line",
+            symbol: "none",
+            lineStyle: {
+              width: 3
+            },
+            smooth: true
+          };
+        });
+
+      }
+
       return {
-        color: "#f80",
+        color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"],
+        legend: {
+          data: this.legend
+        },
         grid: {
-          left: "50px",
-          right: "50px",
-          top: "20px",
+          left: "55px",
+          right: "0",
+          top: "30px",
           bottom: "40px"
         },
         xAxis: {
           type: "category",
-          data: this.labels,
-          boundaryGap: false,
           axisTick: {
-            show: false
+            show: true,
+            axisTick: {
+              length: 200
+            }
           },
           splitLine: {
-            show: true,
+            show: false,
             color: "#D3D3D3"
           },
+
+          min: function ({ min, max }) {
+            return min - (max - min) * .05;
+          },
+          max: function ({ min, max }) {
+            return max + (max - min) * .05;
+          },
+          // splitNumber: 10,
+          boundaryGap: ["10%", "10%"],
+
           axisLine: {
             show: false
           },
           axisLabel: {
-            // interval: 0,
-            // rotate: "45"
+
+            interval: function (index) {
+              const points = [0, 50, 100, 150, 200, 250, 300];
+              return points.includes(index);
+            },
+
+            align: "center",
+            showMinLabel: true,
+            showMaxLabel: true,
+            margin: 16,
             formatter: function (params) {
-              return params.split(" ").join("\n");
+              // console.log(params)
+              return moment(params).format("YYYY-MM-DD HH:mm:ss").split(" ").join("\n"); // params.split(" ")[0]; .format("YYYY-MM-DD HH:mm:ss")
             }
           }
         },
@@ -94,6 +192,8 @@ export default {
           axisLine: {
             show: false
           },
+          boundaryGap: false,
+
           axisTick: {
             show: false
           },
@@ -110,22 +210,29 @@ export default {
           axisLabel: {
             formatter: function (params) {
               if (self.isPercent) {
-                return Number(params) * 100 + "%";
+                return (Number(params) * 100).toFixed(2) + "%";
               }
               return params;
             }
           }
         },
+
         tooltip: {
-          // show: true,
           trigger: "axis",
-          formatter: function ([data]) {
-            if (self.isPercent) {
-              return (Number(data.data) * 100).toFixed(2) + "%";
-            }
-            return Number(data.data);
+          // axisPointer: {
+          //   type: "cross",
+          //   label: {
+          //     backgroundColor: "#6a7985"
+          //   }
+          // },
+          formatter: function (value) {
+            let title = value.length && value[0].name;
+            return `<p>${moment(title).format("YYYY-MM-DD HH:mm:ss")}</p>` + value.map(item => {
+              return `<p>${item.marker}${item.seriesName}:${self.isPercent ? (Number(item.value[1]) * 100).toFixed(2) + "%" : item.value[1]}</p>`;
+            }).join("");
           }
         },
+
         dataZoom: [
           //   {
           //     show: true,
@@ -141,39 +248,7 @@ export default {
           // }
         ],
 
-        series: [
-          {
-            data: this.values,
-            type: "line",
-            smooth: true,
-            lineStyle: { color: primaryColor, width: 2 },
-            itemStyle: {
-              // borderWidth: 4,
-              borderColor: primaryColor
-            },
-            areaStyle: {
-              color: {
-                type: "linear",
-                x2: 0,
-                y2: 1,
-                colorStops: [
-                  {
-                    offset: 0,
-                    color: primaryColor // 0% 处的颜色
-                  },
-                  {
-                    offset: 0.1,
-                    color: gradualColor // 100% 处的颜色
-                  },
-                  {
-                    offset: 1,
-                    color: "#fff"
-                  }
-                ]
-              }
-            }
-          }
-        ]
+        series
       };
     }
   }

@@ -1,122 +1,167 @@
 <template>
-  <ModalCustom 
+  <common-modal
     :visible.sync="dialogVisible"
     :title="getTitle"
     @cancel="handleCancel"
-    @confirm="handleConfirm"
+    @confirm="handleConfirm('formInline')"
   >
-    <div class="option-config-info">
-      <div class="info-row">
-        <div class="info-row-label">名称</div>
-        <Input v-model="optionName" placeholder="请输入OPTION名称" class="info-row-input" />
-      </div>
-      <div class="info-row">
-        <div class="info-row-label">类型</div>
-        <Input v-model="optionType" placeholder="请输入类型" class="info-row-input" />
-      </div>
-    </div>
-  </ModalCustom>
+    <Form
+      ref="formInline"
+      label-position="left"
+      :label-width="100"
+      :label-colon="true"
+      :rules="rules"
+      :model="formModel"
+    >
+
+      <common-form
+        :form-model="formModel"
+        :form-item-list="formItemList"
+      />
+
+    </Form>
+  </common-modal>
 </template>
 
 <script>
-import ModalCustom from "@/components/ModalCustom";
-import service from '@/services'
 
 export default {
-  components:{
-    ModalCustom
-  },
-
-  props:{
-    visible:{
+  props: {
+    visible: {
       type: Boolean,
       default: false
     },
 
-    data:{
-      type:Object,
-      default: ()=> ({})
+    links: {
+      type: Object,
+      default: () => null
     }
   },
 
-  data(){
+  data() {
+    this.formItemList = [
+      {
+        label: "名称",
+        model: "name",
+        type: "input",
+        placeholder: "请填写名称"
+      },
+      {
+        label: "匹配条件",
+        model: "regexp",
+        type: "input",
+        placeholder: "请填写匹配条件"
+      }
+    ];
+
+    this.rules = {
+      name: [
+        {
+          required: true,
+          message: "请填写名称"
+        },
+        {
+          validator: function (rule, value, callback) {
+            if (value.length > 128) {
+              callback("名称最长128个字符");
+            }
+            callback();
+          }
+        }
+      ],
+      regexp: [
+        {
+          required: true,
+          message: "请填写匹配条件"
+        },
+        {
+          validator: function (rule, value, callback) {
+            if (value.length > 128) {
+              callback("匹配条件最长128个字符");
+            }
+            callback();
+          }
+        }
+      ]
+    };
     return {
-      dialogVisible:false,
-      optionId:"",
-      optionName:"",
-      optionType:"",
-      isEdit:false
+      formModel: {
+        name: "",
+        regexp: ""
+      },
+      dialogVisible: false,
+      optionId: "",
+      optionName: "",
+      optionType: "",
+      isEdit: false
+    };
+  },
+
+  computed: {
+    getTitle() {
+      return (this.links ? "编辑" : "添加") + "OPTION";
     }
   },
 
-  computed:{
-    getTitle(){
-      return (this.isEdit ? "编辑" : "添加") + "OPTION";
-    }
-  },
+  watch: {
+    visible(val) {
+      if (!val) {
+        this.$refs.formInline.resetFields();
+        return;
+      }
+      if (this.links.update) {
+        this.$axios(this.links.self).then(({ data }) => {
+          this.formModel = data;
+        });
+      }
 
-  watch:{
-    visible(val){
-      if(!val) return;
-      
       this.dialogVisible = val;
     },
 
-    data(val){
-      this.isEdit = !!val;
-
-      if(!val) return;
-
-      this.optionId = val.optionId;
-      this.optionName = val.optionName;
-      this.optionType = val.optionType;
-    },
-
-    dialogVisible(val){
-      this.$emit("update:visible", val)
+    dialogVisible(val) {
+      this.$emit("update:visible", val);
     }
   },
 
-  methods:{
-    init(){
-      this.optionId = "";
-      this.optionName = "";
-      this.optionType = "";
+  created() {
+    console.log("created")
+  },
+  methods: {
+
+    handleCancel() {
+      this.dialogVisible = false;
     },
 
-    handleCancel(){
-      this.init();
-    },
+    handleConfirm(name) {
+      this.$refs[name].validate(valid => {
 
-    async handleConfirm(){
-      try {
-        const action = this.isEdit ? "editOption" : "addOption";
+        if (valid) {
+          if (this.links.update) {
+            this.$put({ url: this.links.update, params: this.formModel }).then(res => {
+              this.$$success("更新成功");
+              this.dialogVisible = false;
+              this.$emit("confirmed");
+            }).catch((err) => {
 
-        let res = await service[action](this.getParams(), this.optionId);
-        
-        console.log(res);
-        
+            });
+          } else {
+            this.$createEntity(this.formModel).then(res => {
+              this.$$success("创建成功");
+              this.$emit("confirmed");
+              this.dialogVisible = false;
+            }).catch(err => {
+              console.dir(err)
+              this.$$error(err.response.data.message);
+            });
+          }
+        }
+      });
 
-        this.init();
-
-        this.$emit("confirmed")
-      } catch (err) {
-        console.error(err);
-      }
-    },
-
-    getParams(){
-      return {
-        optionId:this.optionId,
-        optionName:this.optionName,
-        optionType:this.optionType,
-        optionVer:this.data ? this.data.optionVer : ""
-      }
     }
+
   }
-}
+};
 </script>
 
 <style>
-
 </style>

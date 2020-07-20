@@ -1,17 +1,9 @@
 import Layout from "@/views/layout";
 
-const config = r => require.ensure([], () => r(require("@/views/dns/authority/config")), "dnsLayout");
-const authorityZoneQuery = r => require.ensure([], () => r(require("@/views/dns/authority/zoneQuery")), "dnsLayout");
-const resourceRecord = r => require.ensure([], () => r(require("@/views/dns/authority/resourceRecord")), "dnsLayout");
-const redirectView = r => require.ensure([], () => r(require("@/views/dns/authority/redirectView")), "dnsLayout");
-const redirect = r => require.ensure([], () => r(require("@/views/dns/authority/redirect")), "dnsLayout");
-
-const A4ComposeView = r => require.ensure([], () => r(require("@/views/dns/recursion/A4ComposeView")), "dnsLayout");
-const A4Compose = r => require.ensure([], () => r(require("@/views/dns/recursion/A4Compose")), "dnsLayout");
-
 /**
  * meta.notInMenu：表示不在菜单中显示
- * meta.isRootMen：表示是根节点
+ * meta.isRootMen：表示是根节点（暂未使用）
+ * meta.hideTitle: 表示是否将标题在面包屑上展示
  */
 
 export default {
@@ -20,7 +12,7 @@ export default {
   icon: "icon-authority",
   meta: {
     title: "权威服务",
-    range: "dns"
+    range: "dns",
   },
   name: "dns-service",
   redirect: { name: "config-group" },
@@ -28,76 +20,120 @@ export default {
     {
       // 配置组管理
       name: "config-group",
-      path: "/dns/authority/config",
-      component: config,
+      path: "/dns/dns/views_zones",
+      component: () =>
+        import(
+          /* webpackChunkName: "option-config" */ "@/views/dns/authority/config"
+        ),
       meta: {
-        // title: "配置管理",
-        title: "权威管理"
-      }
+        title: "区配置",
+      },
     },
     {
       // 权威区域查询
       name: "authority-zone-query",
-      path: "/dns/authority/zoneQuery",
-      component: authorityZoneQuery,
+      path: "/dns/dns/views/:id/zones",
+      component: () =>
+        import(
+          /* webpackChunkName: "option-config" */ "@/views/dns/authority/zoneQuery"
+        ),
       meta: {
         title: "区域查询",
         notInMenu: true,
-        from: "config-group"
-      }
+        from: "config-group",
+      },
     },
     {
       // 资源记录
       name: "resource-record",
-      path: "/dns/authority/resourceRecord",
-      component: resourceRecord,
+      path: "/dns/dns/views/:id/zones/:zoneId/rrs",
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/authority/resourceRecord"
+        ),
       meta: {
         title: "资源记录",
         notInMenu: true,
-        from: "authority-zone-query"
-      }
+        from: "authority-zone-query",
+      },
     },
     {
       // 重定向
       name: "redirect-view",
-      path: "/dns/authority/redirectView",
-      component: redirectView,
+      path: "/dns/dns/views_redirects",
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/authority/redirectView"
+        ),
       meta: {
-        // title: "重定向视图"
-        title: "重定向"
-      }
+        title: "重定向",
+      },
     },
     {
       // 重定向
       name: "redirect",
-      path: "/dns/authority/redirect",
-      component: redirect,
+      path: "/dns/dns/views/:id/redirects",
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/authority/redirect"
+        ),
       meta: {
         title: "重定向",
         notInMenu: true,
-        from: "redirect-view"
-      }
+        from: "redirect-view",
+      },
+    },
+
+    {
+      name: "urlredirects-view",
+      path: "/dns/dns/views_urlredirects",
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirectsView"
+        ),
+      meta: {
+        title: "URL重定向",
+      },
+    },
+
+    {
+      name: "urlredirects",
+      path: "/dns/dns/views/:id/urlredirects",
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirects"
+        ),
+      meta: {
+        title: "URL重定向",
+        notInMenu: true,
+        from: "urlredirects-view",
+      },
     },
 
     {
       name: "a4-compose-view",
       path: "/dns/recursion/A4ComposeView",
-      component: A4ComposeView,
+      component: () =>
+        import(
+          /* webpackChunkName: "option-config" */ "@/views/dns/recursion/A4ComposeView"
+        ),
       meta: {
-        // title: "A4地址合成视图"
         notInMenu: true,
-        title: "DNS64"
-      }
+        title: "DNS64",
+      },
     },
     {
       name: "a4-compose",
       path: "/dns/recursion/view/A4Compose",
-      component: A4Compose,
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/recursion/A4Compose"
+        ),
       meta: {
         notInMenu: true,
         from: "a4-compose-view",
-        title: "A4地址合成"
-      }
-    }
-  ]
+        title: "A4地址合成",
+      },
+    },
+  ],
 };

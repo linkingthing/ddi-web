@@ -1,17 +1,27 @@
 <template>
-  <span class="btn-edit" @click="$emit('click')">编辑</span>
+  <i
+    class="icon-edit btn-edit"
+    @click="$emit('click')"
+  />
 </template>
 
 <script>
 export default {};
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .btn-edit {
-  font-size: 15px;
-  margin: 0 8px;
-  color: rgba(71, 179, 255, 0.8) !important;
+  font-size: 18px;
+  margin-left: 16px;
+  color: #6a94ea !important;
   cursor: pointer;
+}
+.icon-edit {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  background-image: url(./icon-edit.png);
 }
 </style>
 

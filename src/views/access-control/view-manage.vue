@@ -1,50 +1,53 @@
 <template>
   <div class="viewManage">
     <table-page
-      title="视图管理"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+      :total="list.length"
+    >
       <template slot="top-right">
         <i-button
-          type="success"
-          size="large"
-          @click="handleOpenCreate">新建</i-button>
+          type="primary"
+          @click="handleOpenCreate"
+        >新建</i-button>
       </template>
     </table-page>
 
-    <createView
-      ref="deviceRef"
-      @onCreateSuccess="getView"
-      :max-priority="list.length"/>
-    <editView
-      ref="analysis2Ref"
-      @onEditSuccess="getView"
-      :max-priority="list.length"/>
+    <ViewModal
+      :visible.sync="visible"
+      :links="paramsLinks"
+      @success="getView"
+    />
   </div>
 </template>
 
 <script>
-import createView from "./createView";
-import editView from "./editView";
+
 import services from "@/services";
+
+import ViewModal from "./modules/view-modal";
 
 export default {
   name: "deviceMonitor",
   components: {
-    createView,
-    editView
+
+    ViewModal
   },
   data() {
     return {
       columns: [
         {
-          title: "名称",
+          title: "视图名称",
           key: "name",
+          align: "left"
+        },
+        {
+          title: "优先级",
+          key: "priority",
           align: "center"
         },
         {
-          title: "访问控制列表",
+          title: "访问控制",
           key: "acls",
           align: "center",
 
@@ -57,39 +60,59 @@ export default {
           }
         },
         {
-          title: "优先级",
-          key: "priority",
+          title: "DNS64",
+          key: "dns64",
+          align: "center"
+        },
+        {
+          title: "备注",
+          key: "comment",
           align: "center"
         },
         {
           title: "操作",
           key: "action",
-          align: "center",
-          width: 160,
+          align: "right",
+          width: 220,
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {
                 on: {
-                  click: () => this.goConfig1(row.id, row)
+                  click: () => this.handleEdit(row)
                 }
               }),
               row.name !== "default" &&
-                h("btn-del", {
-                  on: {
-                    click: () => this.delect(row.id)
-                  }
-                })
+              h("btn-del", {
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              }),
+              h("btn-move", {
+                props: {
+                  type: "up",
+                  disabled: row.name === "default"
+                },
+                on: {
+                  click: () => this.handleMove(row, "up")
+                }
+              }),
+              h("btn-move", {
+                props: {
+                  type: "down",
+                  disabled: row.name === "default"
+                },
+                on: {
+                  click: () => this.handleMove(row, "down")
+                }
+              })
             ]);
           }
         }
       ],
       list: [],
-      id: "",
-      name: "",
-      remove: "",
-      modal1: false,
-      priority: "",
-      acls: []
+      visible: false,
+      links: {},
+      paramsLinks: {}
     };
   },
   mounted() {
@@ -97,23 +120,19 @@ export default {
   },
   methods: {
     handleOpenCreate() {
-      this.$refs.deviceRef.openConfig();
+      this.visible = true;
+      this.paramsLinks = this.links;
     },
-    goConfig1(a, b) {
-      this.$refs.analysis2Ref.openConfig(a, b);
+    handleEdit({ links }) {
+      this.visible = true;
+      this.paramsLinks = links;
     },
     getView() {
-      let _self = this;
       services
         .getViewList()
-        .then(function (res) {
-          _self.list = res.data.data;
-          for (var key in _self.list) {
-            _self.id = _self.list[key].id;
-            _self.name = _self.list[key].name;
-            _self.priority = _self.list[key].priority;
-            _self.acls = _self.list[key].acls;
-          }
+        .then(res => {
+          this.list = res.data.data;
+          this.links = res.data.links;
         })
         .catch(function (err) {
           console.log(err);
@@ -133,9 +152,26 @@ export default {
               this.getView();
             })
             .catch(err => {
-              this.$Message.success("删除失败");
+              this.$Message.success(err.message);
             });
         }
+      });
+    },
+    handleMove({ priority, links, ...rest }, type) {
+      let count = priority;
+      if (type === "up") {
+        count -= 1;
+      } else {
+        count += 1;
+      }
+      this.$put({
+        url: links.update,
+        params: { priority: count, ...rest }
+      }).then(() => {
+        this.$Message.success("更新成功");
+        this.getView();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
     }
   }

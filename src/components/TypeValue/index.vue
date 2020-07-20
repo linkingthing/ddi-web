@@ -2,36 +2,38 @@
   <div class="typeValue">
     <form-item
       label="类型"
-      prop="type"
-      :label-width="110"
+      prop="datatype"
     >
-      <i-select v-model="params.type">
+      <i-select v-model="params.datatype">
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
-        <!-- <i-option value="MX">MX</i-option>
-        <i-option value="NS">NS</i-option>
-        <i-option value="NAPTR">NAPTR</i-option>
-        <i-option value="PTR">PTR</i-option>
-        <i-option value="SRV">SRV</i-option>
-        <i-option value="TXT">TXT</i-option>
-        <i-option value="URL">URL</i-option> -->
+
+        <template v-if="hasAll">
+          <i-option value="HINFO">HINFO</i-option>
+          <i-option value="MX">MX</i-option>
+          <i-option value="NS">NS</i-option>
+          <i-option value="NAPTR">NAPTR</i-option>
+          <i-option value="PTR">PTR</i-option>
+          <i-option value="SRV">SRV</i-option>
+          <i-option value="TXT">TXT</i-option>
+        </template>
+
       </i-select>
     </form-item>
     <form-item
       label="记录值"
-      :label-width="110"
-      prop="value"
+      prop="rdata"
       :rules="[requiredValidate, 
-               params.type === 'A' && isIPv4Validate,
-               params.type === 'AAAA' && IPv6SimpleValidateFunc,
-               params.type === 'CNAME' && domainValidate,
-               params.type === 'URL' && urlValidate
+               params.datatype === 'A' && isIPv4Validate,
+               params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
+               params.datatype === 'CNAME' && domainValidate,
+               params.datatype === 'URL' && urlValidate
       ]"
     >
       <i-input
-        v-model="params.value"
-        placeholder="请填写记录值"
+        v-model="params.rdata"
+        placeholder="请填写资源记录"
       />
     </form-item>
   </div>
@@ -51,8 +53,12 @@ export default {
     params: {
       type: Object,
       default: () => ({
-        type: "A"
+        datatype: "A"
       })
+    },
+    hasAll: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

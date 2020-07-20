@@ -1,13 +1,14 @@
 <template>
   <common-modal
+    :width="413"
     :visible.sync="linkModal"
     title="修改重定向列表"
     @confirm="handleSubmit"
   >
     <i-form
       :model="params"
-      label-position="right"
-      :label-width="500"
+      label-position="left"
+      :label-width="100"
       :rules="ruleValidate"
       ref="formValidate"
     >
@@ -19,33 +20,28 @@
           >
             <form-item
               label="域名"
-              :label-width="110"
               prop="name"
             >
-              <i-input
-                v-model="params.name"
-                placeholder="请填写正确域名"
-              />
+              <span>{{params.name}}</span>
             </form-item>
             <TypeValue :params="params" />
             <form-item
               label="TTL"
               prop="ttl"
-              :label-width="110"
             >
-              <i-input
-                type="number"
+              <InputNumber
+                :max="24*60*60"
                 v-model="params.ttl"
                 placeholder="请输入延缓时间"
+                style="width: 100%"
               />
             </form-item>
             <form-item
               label="重定向方式"
               prop="redirecttype"
-              :label-width="110"
             >
               <i-select v-model="params.redirecttype">
-                <i-option value="localzone">localzone</i-option>
+                <i-option value="localzone">强制重定向</i-option>
                 <i-option value="nxdomain">nxdomain</i-option>
               </i-select>
             </form-item>
@@ -71,9 +67,9 @@ export default {
       // 表单数据
       params: {
         name: "",
-        type: "",
-        value: "",
-        ttl: 0,
+        datatype: "",
+        rdata: "",
+        ttl: 3600,
         redirecttype: ""
       },
       viewId: "",
@@ -90,16 +86,14 @@ export default {
           },
           nameValidate
         ],
-        type: [
+        datatype: [
           { required: true, message: "请选择资源类型", trigger: "change" }
         ],
         value: [{ required: true, message: "请填写记录值", trigger: "change" }],
         ttl: [
           {
             required: true,
-            type: "number",
-            message: "请输入延缓时间",
-            trigger: "change"
+            message: "请输入延缓时间"
           },
           positiveIntegerValidate
         ],

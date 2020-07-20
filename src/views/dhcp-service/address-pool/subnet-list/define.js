@@ -1,44 +1,62 @@
 export const columns = scope => [    
   {
-    title: "网络地址",
-    key: "subnet",
-    align: "center",
+    title: "子网地址",
+    key: "ipnet",
+    align: "left",
     render: (h, { row }) => {
       return h("div", [
-        h("label", {
-          class: "operate-label operate-link",
+        h("a", {
+          class: "is-link",
           on: {
             click: () => {
-              scope.showDetail(row);
+              scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools?address=${row.ipnet}` });
             }
           }
-        }, row.subnet)
+        }, row.ipnet)
       ]);
     }
   },
   {
-    title: "地址数量",
-    key: "total",
-    align: "center"
+    title: "地址总量",
+    key: "capacity",
+    align: "center",
+    render: (h, { row }) => {
+      return row.version === 4 && h("div", row.capacity);
+    }
   },
   {
-    title: "使用率",
-    key: "usage",
-    align: "center"
+    title: "DHCP使用率",
+    key: "usedRatio",
+    align: "center",
+    width: "180",
+    render: (h, { row }) => {
+      return row.version === 4 && h("common-process",{
+        props: {
+          percent: +row.usedRatio 
+        }
+      });    
+
+    }
   },
   {
     title: "操作",
-    align: "center",      
+    align: "right",      
     render: (h, { row }) => {
       return h("div", [
-        h("label", {
-          class: "operate-label operate-delete",
+        h("btn-edit", {
+          on: {
+            click: () => {
+              scope.handleEdit(row);
+            }
+          }
+        }),
+        h("btn-del", {
           on: {
             click: () => {
               scope.handleDelete(row);
             }
           }
-        }, "删除")
+        })
       ]);
     }
   }

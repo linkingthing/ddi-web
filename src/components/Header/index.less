@@ -1,65 +1,90 @@
+@import "./../../assets/less/var.less";
 
 .header {
-    position: relative;
-    height: 70px;
-    box-sizing: border-box;
-  
-    .header-inner {
-      position: relative;
-      background: #fff;
-      width: 100%;
-      box-sizing: border-box;
-      z-index: 10;
-    }
+	position: relative;
+	height: @headerH;
+	box-sizing: border-box;
 
-    .logo {
-      display: inline-block;
-      vertical-align: middle;
-      padding: 13px 101px 0 34px;
-      background-color: #455484;
-      border-bottom: 1px solid #556494;
-      
-      img{
-        height: 50px;
-      }
-    }
+	.header-inner {
+		position: relative;
+		background: #fff;
+		width: 100%;
+		box-sizing: border-box;
+		z-index: 100;
+	}
 
-    .logo-text{
-      display: inline-block;
-      vertical-align: middle;
-      padding: 4px 0;
-    }
+	.logo {
+		display: inline-flex;
+		align-items: center;
+		width: @menuWidth;
+		vertical-align: middle;
+		background-color: @menuBackgroundActive;
+		border-bottom: 1px solid #556494;
 
-    .main-menu {
-      display: inline-block;
-      vertical-align: middle;
-      margin-bottom: -10px;
-      margin-left: 20px;
+		.logo-image {
+			flex: 1;
+			text-align: center;
+		}
 
-      .ivu-menu-horizontal.ivu-menu-light:after {
-        display: none;
-      }
-      .ivu-menu-item {
-        border-width: 4px;
-      }
+		img {
+			vertical-align: middle;
+			margin-left: 4px;
+		}
 
-      .ivu-menu-item {
-        font-size: 16px;
-        font-weight: bold;
-      }
-    }
-  
-    .user {
-      font-size: 16px;
-      float: right;
-      margin-top: 15px;
-      margin-right: 40px;
+		h1 {
+			display: inline-block;
+			width: 185px;
+			text-align: center;
+			font-size: 18px;
+			color: #fff;
+			line-height: 20px;
+			padding: 20px;
+			border-left: 1px solid rgba(255, 255, 255, 0.1);
+		}
+	}
 
-      .avatar {
-        height: 36px;
-        height: 36px;
-        padding-right: 20px;
-        vertical-align: middle;
-      }
-    }
-  }
+	.logo-text {
+		display: inline-block;
+		vertical-align: middle;
+		padding: 4px 0;
+	}
+
+	.main-menu {
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: 20px;
+
+		.ivu-menu-horizontal.ivu-menu-light:after {
+			display: none;
+		}
+		.ivu-menu-item {
+			border-width: 0;
+		}
+
+		.ivu-menu-item {
+			font-size: 16px;
+			font-weight: bold;
+		}
+	}
+
+	.user {
+		font-size: 16px;
+		float: right;
+		margin-top: 12px;
+		margin-right: 40px;
+
+		.avatar {
+			height: 36px;
+			height: 36px;
+			padding-right: 20px;
+			vertical-align: middle;
+			color: #cfcfcf;
+			background: #f0f0f0;
+			width: 30px;
+			font-size: 20px;
+			padding: 5px;
+      border-radius: 50%;
+      margin-right: 8px;
+		}
+	}
+}

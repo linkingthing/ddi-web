@@ -4,12 +4,11 @@
       title="重定向"
       :data="list"
       :columns="columns"
-      :pagination-enable="false"
+      :total="list.length"
     >
       <template slot="top-right">
         <i-button
-          type="success"
-          size="large"
+          type="primary"
           @click="handleOpenCreate(id)"
         >新建</i-button>
       </template>
@@ -42,6 +41,16 @@ export default {
         {
           title: "域名",
           key: "name",
+          align: "left"
+        },
+        {
+          title: "记录类型",
+          key: "datatype",
+          align: "center"
+        },
+        {
+          title: "记录值",
+          key: "rdata",
           align: "center"
         },
         {
@@ -50,24 +59,17 @@ export default {
           align: "center"
         },
         {
-          title: "记录类型",
-          key: "type",
-          align: "center"
-        },
-        {
-          title: "记录值",
-          key: "value",
-          align: "center"
-        },
-        {
           title: "重定向方式",
           key: "redirecttype",
-          align: "center"
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", row.redirecttype === "localzone" ? "强制重定向" : row.redirecttype)
+          }
         },
         {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           width: 160,
           render: (h, { row }) => {
             return h("div", [
@@ -103,7 +105,7 @@ export default {
     };
   },
   created() {
-    this.id = this.$route.query.id;
+    this.id = this.$route.params.id;
   },
   mounted() {
     this.getView();
@@ -113,7 +115,7 @@ export default {
       this.$refs.ipRef.openConfig(data);
     },
     handleOpenEdit(a, b, item) {
-      this.$refs.linkRef.openConfig(a, b, {...item});
+      this.$refs.linkRef.openConfig(a, b, { ...item });
     },
     getView() {
       let _self = this;

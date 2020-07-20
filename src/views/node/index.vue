@@ -1,550 +1,695 @@
 <template>
-  <div>
-    <div class="node-topology">
-      <Row>
-        <i-col :span="8">
-          <article>
-            <h1>节点拓扑图</h1>
-            <p>点击节点即可查看节点的详细数据分析</p>
-          </article>
-
-          <section>
-            <ul>
-              <li>
-                <em>{{serverList.length}}</em>
-                <span>总节点数</span>
-              </li>
-              <li>
-                <em>{{serverList.filter(item => item.state).length}}</em>
-                <span>在线节点数</span>
-              </li>
-              <li>
-                <em>{{serverList.filter(item => !item.state).length}}</em>
-                <span>离线节点数</span>
-              </li>
-            </ul>
-          </section>
-
-        </i-col>
-        <i-col
-          :span="16"
-          class="innerbox"
-          style="text-align: right;"
+  <div class="monitor dashboard">
+    <h1>概览</h1>
+    <div class="count-card-list">
+      <div class="count-card-item">
+        <strong>{{totalQps}}</strong>
+        <span>QPS（个）</span>
+        <img
+          class="count-card-item-img"
+          src="../../assets/images/monitor-speed.png"
+          alt=""
         >
-          <div class="node-box">
-            <div class="parent">
-              <div
-                class="host"
-                @click="handleGoDeviceInfo(item)"
-                v-for="item in serverList.filter(item => item.role === 'controller') "
-                :key="item.ip"
-              >
-                <host-node :host="item" />
+      </div>
+      <div class="count-card-item">
+        <strong>{{totalLps}}</strong>
+        <span>LPS（个）</span>
+        <img
+          class="count-card-item-img"
+          src="../../assets/images/monitor-line.png"
+          alt=""
+        >
+      </div>
+      <div class="count-card-item">
+        <strong>{{bootTime}}</strong>
+        <span>系统启动时间</span>
+        <img
+          class="count-card-item-img"
+          src="../../assets/images/monitor-time.png"
+          alt=""
+        >
+      </div>
+      <div class="count-card-item">
+        <strong>
+          {{parserRunTime.days || 0}} <span>天</span>
+          {{parserRunTime.hours || 0}} <span>时</span>
+          {{parserRunTime.minutes || 0}} <span>分</span>
+          {{parserRunTime.seconds || 0}} <span>秒</span>
+        </strong>
+        <span>系统运行总时长</span>
+        <img
+          class="count-card-item-img"
+          src="../../assets/images/monitor-live.png"
+          alt=""
+        >
+      </div>
+    </div>
+
+    <section class="node-map">
+      <header class="node-map-header">
+        <div>
+          <h3>节点分布图</h3>
+          <span>点击节点即可查看该节点的详细数据信息</span>
+        </div>
+        <div>
+          <i class="success" />
+          <span>在线</span>
+          <i class="error" />
+          <span>离线</span>
+        </div>
+      </header>
+      <section
+        class="node-map-content"
+        v-scroll="handleScroll"
+        ref="nodeMapRef"
+      >
+
+        <div class="node-map-inner">
+          <!-- <VueDragResize :is-resizable="false"> -->
+          <svg ref="nodeMapRef">
+            <path
+              v-for="(item, index) in curve"
+              :key="index"
+              :d="item.d"
+              stroke="#7BAFFD"
+              :data-slave="`${item.isSalve}`"
+              :stroke-dasharray="item.isSalve ? '10,10': 'false' "
+              fill="none"
+              style="stroke-width: 2px;"
+            />
+          </svg>
+          <div
+            class="node-group"
+            :key="controllerItem.ip"
+            v-for="controllerItem in controllerList"
+          >
+            <div class="controller-box">
+              <div class="controller-item ">
+                <div class="controller-master node-item">
+                  <map-node-item
+                    v-position="{ip: controllerItem.ip, type: 'controller', getPosition}"
+                    :value="controllerItem"
+                    :key="controllerItem.ip"
+                    @mouseenter="handleMouseenter"
+                    @mouseleave="handleMouseleave"
+                  />
+                </div>
+                <div class="controller-slave ">
+                  <div
+                    class="slave-node "
+                    v-for="slave in controllerItem.slaveList"
+                    :key="slave.ip"
+                  >
+                    <map-node-item
+                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', getPosition}"
+                      :value="slave"
+                      :key="slave.ip"
+                      @mouseenter="handleMouseenter"
+                      @mouseleave="handleMouseleave"
+                    />
+                  </div>
+
+                </div>
               </div>
             </div>
-            <div class="children">
-              <host-node
-                :host="item"
-                @click="handleGoDeviceInfo(item)"
+            <div
+              class="common-node-box"
+              v-if="controllerItem.children && controllerItem.children.length"
+            >
+              <div
+                class="common-node-item "
+                v-for="item in controllerItem.children"
                 :key="item.ip"
-                v-for="(item,index) in serverList.filter(item => item.role !== 'controller') "
-              />
+              >
+                <div class="node-item">
+                  <map-node-item
+                    :value="item"
+                    v-position="{ip: item.ip, master: item.controllerIP, type: 'child',hasSlave: !!(item.slave&& item.slave.length), getPosition}"
+                    :key="item.ip"
+                    @mouseenter="handleMouseenter"
+                    @mouseleave="handleMouseleave"
+                  />
+                </div>
+                <div class="common-node-item-slave ">
+
+                  <div
+                    class="slave-node "
+                    v-for="slave in item.slaveList"
+                    :key="slave.ip"
+                  >
+                    <map-node-item
+                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', getPosition}"
+                      :value="slave"
+                      :key="slave.ip"
+                      @mouseenter="handleMouseenter"
+                      @mouseleave="handleMouseleave"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+
           </div>
-        </i-col>
-      </Row>
-    </div>
-    <div class="nodeManage">
-      <!-- <Tabs @on-click="handleTab">
-      <TabPane
-        label="拓扑图"
-        name="topology"
-      > -->
+          <!-- </VueDragResize> -->
 
-      <!-- </TabPane>
-      <TabPane
-        label="服务器列表"
-        name="serverList"
-      >
-        <div class="tab-item">
-          <Table
-            :data="serverList"
-            :columns="serviceColumns"
-          />
         </div>
-      </TabPane>
-    </Tabs> -->
 
-      <Row
-        type="flex"
-        justify="space-between"
-        style="margin-bottom: 50px"
-      >
-        <i-col span="11">
-          <Card title="QPS">
-            <line-bar
-              :labels="qpsLabels"
-              :values="qpsValues"
-            />
-          </Card>
+        <server-info
+          :visible="visible"
+          :server="server"
+          :style="`left:${serverInfoLeft}px;top: ${serverInfoTop}px`"
+        />
+      </section>
 
-        </i-col>
-        <i-col span="11">
-          <Card title="解析成功率">
-            <line-bar
-              is-percent
-              :labels="successRateLabels"
-              :values="successRateValues"
-            />
-          </Card>
-        </i-col>
-      </Row>
-
-      <Row
-        type="flex"
-        justify="space-between"
-        style="margin-bottom: 50px"
-      >
-        <i-col span="11">
-          <Card title="解析状态">
-            <Pie :values="status" />
-
-          </Card>
-        </i-col>
-        <i-col span="11">
-          <Card title="DHCP使用率">
-            <line-bar
-              is-percent
-              line-theme="brown"
-              :labels="dhcpUsageLabels"
-              :values="dhcpUsageValues"
-            />
-          </Card>
-        </i-col>
-      </Row>
-
-      <Row
-        type="flex"
-        justify="space-between"
-        style="margin-bottom: 50px"
-      >
-
-        <i-col span="11">
-          <Card title="Leases总量统计">
-            <line-bar
-              line-theme="golden"
-              :labels="dhcpLeaseLabels"
-              :values="dhcpLeaseValues"
-            />
-          </Card>
-        </i-col>
-        <i-col span="11">
-          <Card title="DHCP报文统计">
-            <line-bar
-              :labels="dhcpLabels"
-              :values="dhcpValues"
-            />
-          </Card>
-        </i-col>
-      </Row>
-    </div>
-
+    </section>
   </div>
 </template>
 
 <script>
-import services from "@/services";
-import Card from "./Card";
-import Line from "./Line";
-import Pie from "./Pie";
-import HostNode from "./HostNode";
+
 import moment from "moment";
 moment.locale("zh-cn");
+import ServerInfo from "./modules/server-info";
+import MapNodeItem from "./modules/map-node-item";
 
-import { getDeviceHistoryInfo } from "./tools";
 
+import { treeData, commondata } from "./nodeListTestData";
 
 export default {
   components: {
-    "host-node": HostNode,
-    Card,
-    "line-bar": Line,
-    Pie
+    "server-info": ServerInfo,
+    "map-node-item": MapNodeItem
   },
   props: {},
   data() {
     return {
-      serviceColumns: [
-        {
-          title: "服务器类型",
-          key: "role",
-          align: "center"
-        },
-        {
-          title: "服务器名称",
-          key: "hostname",
-          align: "center"
-        },
-        {
-          title: "服务器IP",
-          key: "ip",
-          align: "center"
-        },
-        {
-          title: "服务器状态",
-          key: "state",
-          align: "center",
-          render: (h, { row }) => {
-            return h("div", [
-              h("Badge", {
-                props: {
-                  status: row.state ? "success" : "error"
-                }
-              }),
-              row.state ? "(在线)" : "(利线)"
-            ]);
-          }
-        }
-      ],
-      serverList: [],
-      node: "",
-      dhcpNode: "",
-      qpsLabels: [],
-      qpsValues: [],
-      status: [],
-      successRateLabels: [],
-      successRateValues: [],
-      dhcpLeaseLabels: [],
-      dhcpLeaseValues: [],
-      dhcpUsageLabels: [],
-      dhcpUsageValues: [],
-      dhcpLabels: [],
-      dhcpValues: []
+      timer: null,
+      parserRunTime: {},
+
+      nodeList: [],
+      totalQps: 0,
+      totalLps: 0,
+      bootTimestamp: "",
+      bootTime: "0000.00.00",
+      runTime: "",
+
+      visible: false,
+      serverInfoLeft: 0,
+      serverInfoTop: 0,
+      server: {},
+
+      nodeMapRef: null,
+
+      svgPathGroup: [],
+
+      positionMap: [],
+      zoom: 1
     };
   },
-  watch: {
-    node() {
-      this.initDataRequest();
+  computed: {
+
+    controllerList() {
+      const tree = this.nodeList2Tree(this.nodeList);
+      return tree;
     },
-    dhcpNode(node) {
-      this.batchExecute(node);
+
+    curve() {
+      const svgCurveList = this.svgPathGroup.map(item => {
+
+        const qox = item.startX + (item.endX - item.startX) / 2;
+        const qoy = item.startY + (item.endY - item.startY) / 4;
+
+        const qtx = item.endX - (item.endX - item.startX) * 3 / 8;
+        const qty = item.endY - (item.endY - item.startY) / 4;
+
+        const d = `M${item.startX} ${item.startY} Q${qox} ${qoy} ${qtx} ${qty} T${item.endX} ${item.endY}`;
+        return {
+          d,
+          isSalve: item.slave
+        };
+      });
+
+      return svgCurveList;
     }
+
+  },
+  watch: {
+    positionMap: {
+      deep: true,
+      handler(value) {
+
+        let startXPointMap = {};
+        let lineGroup = [];
+
+        value.forEach(item => {
+          if (item.type === "child") {
+            startXPointMap[item.ip] = item;
+          }
+          if (item.type === "controller") {
+            startXPointMap[item.ip] = item;
+          } else {
+            const endPoint = item;
+            const startPoint = startXPointMap[item.master];
+            if (startPoint && endPoint) {
+              lineGroup.push({ startPoint, endPoint, slave: item.type === "slave" });
+
+            } else {
+              throw new Error(`positionMap 方法构造连线失败，${startPoint},${JSON.stringify(endPoint)}`);
+            }
+          }
+        });
+
+        this.svgPathGroup = this.point2Path(lineGroup);
+
+      }
+    }
+
   },
 
   mounted() {
-    this.getList();
+
+    // console.log(this.findNodeFromTree(treeData, "10.0.0.73", "children"))
+
+    this.nodeMapRef = this.$refs.nodeMapRef;
+
+    this.getNodeInfo();
+    this.timer = setInterval(() => {
+      this.parserRunTime = this.excuteRunTime();
+    }, 1000);
+
+    addEventListener("resize", this.reDrawLine);
+
+  },
+  destroyed() {
+    clearInterval(this.timer);
+    removeEventListener("resize", this.reDrawLine);
   },
 
   methods: {
-    initDataRequest() {
-      this.getQpsList();
-      this.getDNSAnalysisStateData();
-      this.getDNSAnalysisStateSuccessRecode();
-    },
+    nodeList2Tree(list) {
+      let tree = [];
 
-    getList() {
-      services
-        .getServerList()
-        .then(res => {
-          this.serverList = res.data.data || [];
-          this.node = res.data.data.find(item => item.role === "dns").ip;
-          this.dhcpNode = res.data.data.find(item => item.role === "dhcp").ip;
-        })
-        .catch(err => err);
-    },
-    getQpsList() {
-      const params = {
-        node: this.node || this.$route.query.ip,
-        type: "qps"
-      };
-      getDeviceHistoryInfo(params)
-        .then(([labels, values]) => {
-          this.qpsLabels = labels || [];
-          this.qpsValues = values || [];
-        })
-        .catch(err => err);
-    },
-    getDNSAnalysisStateData() {
-      const params = {
-        node: this.node || this.$route.query.ip,
-        start: parseInt(new Date().getTime() / 1000)
-      };
-      services
-        .getDNSAnalysisState(params)
-        .then(res => {
-          this.status = res.data.data.result.map(({ metric, values }) => {
-            const [[, value]] = values;
-            return {
-              name: metric.data_type,
-              value: Number(value)
-            };
-          });
-        })
-        .catch(err => err);
-    },
-    getDNSAnalysisStateSuccessRecode() {
-      services
-        .getDNSAnalysisState({
-          node: this.node || this.$route.query.ip,
-          start: parseInt(new Date().getTime() / 1000 - 5 * 24 * 60 * 60),
-          end: parseInt(new Date().getTime() / 1000)
-        })
-        .then(res => {
-          const result = this.analysisMatrix(res.data.data.result);
-          const data = Object.values(result).map(timeGroup => {
-            let successCount = 0;
-            let time;
-            const total = timeGroup
-              .map(item => {
-                if (item.type === "NOERROR") {
-                  successCount = item.count;
-                  time = item.time;
-                }
-                return item.count;
-              })
-              .reduce((result, current) => {
-                return result + current;
-              }, 0);
-            const successRate = successCount / total || 0;
-            return {
-              total,
-              time,
-              successCount,
-              successRate
-            };
-          });
-          this.successRateLabels = data.map(item => item.time);
-          this.successRateValues = data.map(item => item.successRate);
-        })
-        .catch(err => err);
-    },
-
-    /**
-     * 本质是数组平整化后重新分组的过程
-     * data_type 维度转换成时间维度
-     */
-    analysisMatrix(matrix) {
-      // x4
-      const result = matrix
-        .map(({ metric, values }) => {
-          const { data_type } = metric;
-          return values.map(([time, count]) => {
-            return {
-              time: moment(time * 1000).format("YYYY-MM-DD hh:mm:ss"),
-              timestamp: time,
-              count: +count,
-              type: data_type
-            };
-          });
-        })
-
-        .reduce((all, current) => {
-          return [...all, ...current];
-        }, [])
-        .reduce((result, current) => {
-          if (Array.isArray(result[current.timestamp])) {
-            result[current.timestamp].push(current);
-          } else {
-            result[current.timestamp] = [current];
-          }
-          return result;
-        }, {});
-
-      return result;
-    },
-    batchExecute(node) {
-      const batch = [
-        {
-          type: "dhcppacket",
-          labelsField: "dhcpLabels",
-          valuesField: "dhcpValues"
-        },
-        {
-          type: "dhcpusage",
-          labelsField: "dhcpUsageLabels",
-          valuesField: "dhcpUsageValues"
-        },
-        {
-          type: "dhcplease",
-          labelsField: "dhcpLeaseLabels",
-          valuesField: "dhcpLeaseValues"
-        }
-      ];
-
-      batch.forEach(({ type, labelsField, valuesField }) => {
-        getDeviceHistoryInfo({
-          node,
-          type
-        }).then(([labels, values]) => {
-          this[labelsField] = labels || [];
-          this[valuesField] = values || [];
-          if (valuesField === "dhcpUsageValues") {
-            this.dhcpUsageValues = this.dhcpUsageValues.map(item => Number(item / 100).toFixed(4));
-          }
-        });
+      let map = {};
+      list.forEach(item => {
+        map[item.id] = item;
       });
+
+
+      list.forEach(item => {
+        const master = map[item.master];
+        const controller = map[item.controllerIP];
+
+        if (item.controllerIP === item.id && item.master === "") {
+          tree.push(item);
+        } else {
+          if (item.master) {
+            if (Array.isArray(master.slaveList)) {
+              if (!master.slaveList.find(slave => slave.id === item.id)) {
+                master.slaveList.push(item);
+              }
+            } else {
+              master.slaveList = [item];
+            }
+
+          } else if (item.controllerIP) {
+
+            if (Array.isArray(controller.children)) {
+              if (!controller.children.find(child => child.id === item.id)) {
+                controller.children.push(item);
+              }
+            } else {
+              controller.children = [item];
+            }
+
+          }
+
+        }
+      });
+
+      return tree;
+
     },
-    handleTab(tab) {
-      console.log(tab);
+
+    findNodeFromTree(tree, id, catogary) {
+
+      for (let i = 0; i < tree.length; i++) {
+        const node = tree[i];
+        if (node.id === id) {
+          return node;
+        } else {
+          if (Array.isArray(node[catogary])) {
+            return this.findNodeFromTree(node[catogary], id, catogary)
+          }
+        }
+      }
+      return null;
+
     },
-    handleGoDeviceInfo({ ip, role }) {
-      if (role === "controller") {
-        this.$router.push({
-          name: "ControllerDashboard",
-          query: { ip }
-        });
+    async getNodeInfo() {
+      let requestCount = 0;
+      let totalQps = 0;
+      let totalLps = 0;
+
+      const { data } = await this.$get(this.$getApiByRoute("/monitor/metric/nodes"));
+
+      this.nodeList = data;
+
+      Array.isArray(data) && data.forEach(async ({ startTime, roles, links }) => {
+        if (roles.includes("controller")) {
+
+          this.bootTime = moment(startTime).format("YYYY.MM.DD HH:mm");
+          this.bootTimestamp = startTime;
+
+        }
+
+        const { data: dnsData } = await this.$get({ url: links.dnses });
+
+        const qpsList = dnsData.find(item => item.id === "qps").qps.values;
+
+        const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
+
+
+        if (typeof lastQps.value === "number") {
+          totalQps += lastQps.value;
+        }
+
+
+        const { data: dhcpData } = await this.$get({ url: links.dhcps });
+
+        const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
+        const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : {};
+
+
+        if (typeof lastLps.value === "number") {
+          totalLps += lastLps.value;
+        }
+
+        requestCount++;
+
+        if (requestCount === data.length) {
+          this.totalQps = totalQps;
+          this.totalLps = totalLps;
+        }
+
+      });
+
+    },
+
+    excuteRunTime() {
+      const createMoment = moment(this.bootTime);
+      const secondCount = moment().unix() - createMoment.unix();
+
+      const days = parseInt(secondCount / (3600 * 24));
+      const hours = parseInt((secondCount - days * 3600 * 24) / 3600);
+      const minutes = parseInt((secondCount - days * 3600 * 24 - hours * 3600) / 60);
+      const seconds = parseInt((secondCount - hours * 3600) % 60);
+
+      return { days, hours, minutes, seconds }; // 2*3600*24+17*3600+55*60+44 237344
+    },
+
+    handleMouseenter(server, e) {
+      this.visible = true;
+      this.server = server;
+      const { clientWidth, offsetLeft, offsetTop } = e.target;
+
+
+      const maxWidth = this.nodeMapRef.clientWidth;
+      const maxHeight = this.nodeMapRef.clientHeight;
+      let serverInfoLeft = offsetLeft + clientWidth + 24;
+      if (serverInfoLeft + clientWidth > maxWidth) {
+        serverInfoLeft = offsetLeft - clientWidth + 24;
       }
 
-      if (role === "dns") {
-        this.$router.push({
-          name: "DNSDashboard",
-          query: { ip }
-        });
+      let serverInfoTop = offsetTop;
+      if (serverInfoTop + 225 > maxHeight) {
+        serverInfoTop = maxHeight - 250;
       }
 
-      if (role === "dhcp") {
-        this.$router.push({
-          name: "DHCPDashboard",
-          query: { ip }
-        });
+      this.serverInfoLeft = serverInfoLeft;
+      this.serverInfoTop = serverInfoTop;
+    },
+
+    handleMouseleave() {
+      this.visible = false;
+    },
+
+    handleScroll(direction, el) {
+      const zoom = el.dataset.transform || 1;
+      if (direction === "down") {
+        if (zoom > 0.4) {
+          const newZoom = Number(zoom) - 0.2;
+          el.style.transform = `scale(${newZoom})`;
+          el.dataset.transform = newZoom;
+          this.zoom = newZoom;
+        }
+
+      } else {
+        const newZoom = Number(zoom) + 0.2;
+        el.style.transform = `scale(${newZoom})`;
+        el.dataset.transform = newZoom;
+        this.zoom = newZoom;
       }
+    },
+
+    getPosition(position) {
+      // console.log("position", position)
+      this.positionMap.push(position);
+      // 下一步要不要排个序
+    },
+
+    point2Path(pointList) {
+      const pathList = pointList.map(({ startPoint, endPoint, slave }) => {
+
+        let startX = 0;
+        let endX = 0;
+
+        if (startPoint.offsetLeft > endPoint.offsetLeft) {
+          startX = startPoint.offsetLeft;
+          endX = endPoint.offsetLeft + endPoint.offsetWidth;
+        } else {
+          startX = startPoint.offsetLeft + startPoint.offsetWidth;
+          endX = endPoint.offsetLeft;
+        }
+        return {
+          startX,
+          startY: startPoint.offsetTop + startPoint.offsetHeight / 2,
+          endX,
+          endY: endPoint.offsetTop + endPoint.offsetHeight / 2,
+          slave
+        };
+      });
+
+      return pathList;
+    },
+
+    reDrawLine() {
+      const nodeList = this.nodeList;
+      this.nodeList = [];
+      this.positionMap = [];
+      this.$nextTick().then(() => {
+        this.nodeList = nodeList;
+      });
+
     }
   }
 };
+
 </script>
 <style lang="less" scoped>
-@nodeLinkTop: -44px;
-@nodeLinkHeight: 44px;
+@import url("./index.less");
 
-.nodeManage {
-  padding: 30px;
+.monitor {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background: #f6f6f6;
+  z-index: 10;
+  padding-right: 0;
+  h1 {
+    font-size: 20px;
+    color: #333;
+    margin-top: 20px;
+    line-height: 1;
+  }
 }
 
-.node-topology {
-  height: 360px;
-  padding: 50px 40px 20px;
-  // background-image: url("../../assets/images/bg-node-topology.png");
-  background: linear-gradient(
-    -75deg,
-    rgba(216, 230, 255, 1),
-    rgba(255, 255, 255, 1)
-  );
+.count-card-list {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 20px 0;
 
-  margin-bottom: 50px;
-
-  article {
-    margin-bottom: 120px;
-  }
-  h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 16px;
-  }
-  p {
-    font-size: 14px;
-    color: #999;
-  }
-
-  section {
-    ul {
-      display: flex;
-    }
-    li {
-      width: 180px;
-    }
-    em {
+  .count-card-item {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 138px;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 0 10px;
+    color: #fff;
+    strong {
       display: block;
-      font-size: 30px;
-      font-style: normal;
-      font-weight: bold;
-      margin-bottom: 4px;
+      font-size: 36px;
+      margin-bottom: 5px;
+    }
+    span {
+      font-size: 16px;
+    }
+
+    .count-card-item-img {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 100px;
+      height: 100px;
+    }
+
+    &:first-child {
+      background-image: linear-gradient(180deg, #4089f0, #5aa3f2);
+      margin-left: 0;
+    }
+    &:nth-child(2) {
+      background-image: linear-gradient(180deg, #6561d9, #7361e4);
+    }
+    &:nth-child(3) {
+      background-image: linear-gradient(180deg, #4cc96d, #66d681);
+    }
+    &:last-child {
+      margin-right: 0;
+      background-image: linear-gradient(180deg, #d8854d, #d7a153);
+    }
+  }
+}
+
+.node-map {
+  background: #fff;
+  box-shadow: 0px 0px 21px 3px rgba(120, 120, 120, 0.09);
+  border-radius: 6px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  .node-map-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px;
+    line-height: 1;
+    border-bottom: 1px solid #f6f6f6;
+    & > * {
+      display: flex;
+      justify-content: space-between;
+    }
+    h3 {
+      display: inline-block;
+      font-size: 18px;
+      color: #333;
     }
     span {
       font-size: 14px;
+      line-height: 18px;
       color: #999;
+      padding-left: 8px;
+    }
+
+    i {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 3px;
+      margin-left: 30px;
+      &.success {
+        background: #4ad66c;
+      }
+      &.error {
+        background: #f15e5e;
+      }
+    }
+  }
+  .node-map-content {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+
+    .node-map-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      // background: #ddd;
+
+      svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 500%;
+      }
     }
   }
 }
 
-.innerbox::-webkit-scrollbar {
-  /*滚动条整体样式*/
-  width: 4px; /*高宽分别对应横竖滚动条的尺寸*/
-  height: 4px;
-}
-.innerbox::-webkit-scrollbar-thumb {
-  /*滚动条里面小方块*/
-  border-radius: 5px;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  background: rgba(0, 0, 0, 0.2);
-}
-.innerbox::-webkit-scrollbar-track {
-  /*滚动条里面轨道*/
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  border-radius: 0;
-  background: rgba(0, 0, 0, 0.1);
-}
-.node-box {
-  display: inline-block;
-  height: 280px;
-}
-
-.parent {
+.node-group {
+  height: 100%;
   display: flex;
   justify-content: center;
-  .host {
-    margin-left: 30px;
+  align-items: center;
+
+  .node-item {
+    padding: 40px;
+  }
+  .controller-box,
+  .common-node-box {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .controller-item {
+    flex: 1;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+    align-items: center;
+    // margin: 40px;
+    & > .controller-master,
+    & > .controller-slave {
+      // padding: 40px;
+    }
+  }
+  .controller-master {
+    // flex: 1;
+  }
+  .controller-slave,
+  .common-node-item-slave {
+    // flex: 1;
+
+    width: 300px;
+  }
+
+  .common-node-item {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .slave-node {
+    // height: 104px;
+    // background: #f20;
+    margin: 20px 0;
+    opacity: 0.5;
   }
 }
 
-.children {
-  display: flex;
-  text-align: center;
-  margin-top: 70px;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    margin-left: -40px;
-    top: -80px;
-    height: @nodeLinkHeight;
-    width: 2px;
-    border-left: 2px solid #afcbf9;
-  }
-
-  .host {
-    position: relative;
-    display: inline-block;
-    text-align: left;
-    margin: 0 20px;
-    width: 160px;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      margin-left: -40px;
-      top: @nodeLinkTop;
-      height: @nodeLinkHeight;
-      width: 0;
-      border-left: 2px solid #afcbf9;
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      margin-left: -40px;
-      top: @nodeLinkTop;
-      width: 200px;
-      border-top: 2px solid #afcbf9;
-    }
-    &:last-child::after {
-      border: 0;
+@media screen and (max-width: 1800px) {
+  .count-card-list {
+    .count-card-item {
+      strong {
+        font-size: 24px;
+      }
     }
   }
-}
-.tab-item {
-  padding-top: 60px;
 }
 </style>

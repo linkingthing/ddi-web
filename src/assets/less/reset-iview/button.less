@@ -1,0 +1,70 @@
+.ivu-btn{
+    // height: 32px;
+    border: none;
+    font-size: 14px;
+    padding: 0 20px;
+
+    &>.ivu-icon{
+        line-height: 1;
+        font-size: 25px;
+    }
+
+    &>span{
+        font-size: 14px;
+        color: #fff;
+    }
+    
+    &.ivu-btn-text{
+        span{
+            color: #333;
+        }
+    }
+
+    &.ivu-btn-primary{        
+        background-color: rgba(69,134,254,1);
+
+        &:hover{
+            background-color: rgba(69,134,254, .75);
+        }
+    }
+
+    &.ivu-btn-warning{        
+        background-color: rgba(242,161,107,1);
+
+        &:hover{
+            background-color: rgba(242,161,107, .75);
+        }
+    }
+
+    &.ivu-btn-default{
+        border:1px solid rgba(69,134,254,1);
+
+        &>span{
+            color: rgba(69,134,254,1);
+        }
+
+        &:hover{
+            border-color: rgba(69,134,254, .8);
+            
+            span{
+                color: rgba(69,134,254, .8);
+            }
+        }
+    }
+
+    &[disabled='disabled']{
+        border-color: #dcdee2;
+
+        &>span{
+            color: #c5c8ce;
+        }
+
+        &:hover{
+            border-color: #dcdee2;
+            
+            span{
+                color: #c5c8ce;
+            }
+        }
+    }
+}

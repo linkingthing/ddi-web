@@ -4,9 +4,10 @@
       title="4A地址合成视图"
       :data="list"
       :columns="columns"
-      :pagination-enable="false" />
-    <createDefaultA4 ref="networkRef"/>
-    <editDefaultA4 ref="subnetRef"/>
+      :total="list.length"
+    />
+    <createDefaultA4 ref="networkRef" />
+    <editDefaultA4 ref="subnetRef" />
   </div>
 </template>
 
@@ -55,7 +56,10 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center"
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", this.$trimDate(row.creationTimestamp));
+          }
         }
       ],
       list: [],

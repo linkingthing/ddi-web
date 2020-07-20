@@ -1,10 +1,12 @@
 import accessControl from "./access-control";
 import dhcp from "./dhcp";
 import dns from "./dns";
+import dnsGlobalConfig from "./dns-global-config";
 import ipam from "./ipam";
 import node from "./node";
-import systemSafe from "./system-safe";
 import forword from "./forward";
+import systemAlarms from "./system-alarms";
+import systemLog from "./system-log";
 
 let res = [
   node,
@@ -12,8 +14,10 @@ let res = [
   dns,
   forword,
   accessControl,
+  dnsGlobalConfig,
   dhcp,
-  systemSafe
+  systemLog,
+  systemAlarms
 ];
 
 res.forEach(item => {

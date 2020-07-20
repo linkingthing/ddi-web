@@ -1,94 +1,127 @@
 <template>
   <div class="acceccControlList">
     <table-page
-      title="访问控制列表"
+      :total="list.length"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+    >
       <template slot="top-right">
         <i-button
-          type="success"
-          size="large"
-          @click="goConfig(0)">新建</i-button>
+          type="primary"
+          @click="handleOpenCreate"
+        >新建</i-button>
       </template>
     </table-page>
 
-    <createAccess
-      ref="configRef"
-      @onSuccess="createSuccess"
-      :access-list="list"/>
-    <editAccess
-      ref="eviceRef"
-      @onSuccess="getManger"
-      :access-list="list"/>
+    <AclModal
+      :visible.sync="visible"
+      :links="paramsLinks"
+      @success="getManger"
+    />
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import createAccess from "./createAccess";
-import editAccess from "./editAccess";
+import AclModal from "./modules/acl-modal";
+
 export default {
   name: "accessControlList",
   components: {
-    createAccess,
-    editAccess
+
+    AclModal
   },
   data() {
+    const ispList = [{
+      label: "中国移动",
+      value: "cmcc"
+    }, {
+      label: "中国联通",
+      value: "cucc"
+    }, {
+      label: "中国电信",
+      value: "ctcc"
+    }]
     return {
       columns: [
         {
-          title: "名称",
+          title: "规则名称",
           key: "name",
-          align: "center"
+          align: "left"
         },
         {
-          title: "IP",
+          title: "网络地址",
           key: "",
           align: "center",
           render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.list,
-                field: row
-              }
-            });
+            if (!!row.isp) {
+              return h("div", ispList.find(item => item.value === row.isp).label)
+            } else {
+              return h("Tags", {
+                props: {
+                  list: row.ips,
+                  field: row
+                }
+              });
+            }
+
+          }
+        },
+        {
+          title: "状态",
+          key: "status",
+          align: "center",
+          render: (h, { row }) => {
+            return h("span",
+              {
+                style: {
+                  color: row.status === "allow" ? "#40D366" : "#E54B4B"
+                }
+              },
+              row.status === "allow" ? "允许" : "禁止");
           }
         },
         {
           title: "创建时间",
           key: "creationTimestamp",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", this.$trimDate(row.creationTimestamp))
+          }
+        },
+        {
+          title: "备注",
+          key: "comment",
           align: "center"
         },
         {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           width: 160,
           render: (h, { row }) => {
             return h("div", [
               !["any", "none"].includes(row.name) &&
-                h("btn-edit", {
-                  on: {
-                    click: () => this.goConfig1(row.id, row)
-                  }
-                }),
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEdit(row)
+                }
+              }),
               !["any", "none"].includes(row.name) &&
-                h("btn-del", {
-                  on: {
-                    click: () => this.delect(row.id)
-                  }
-                })
+              h("btn-del", {
+                on: {
+                  click: () => this.delete(row.id)
+                }
+              })
             ]);
           }
         }
       ],
       list: [],
-      IP: [],
       id: "",
-      name: "",
-      remove: "",
-      modal1: false
+      visible: false,
+      links: {},
+      paramsLinks: {}
     };
   },
   watch: {},
@@ -103,30 +136,26 @@ export default {
     },
 
     getManger() {
-      let _self = this;
       services
         .getAccessList()
-        .then(function (res) {
-          _self.list = res.data.data;
+        .then(res => {
+          this.list = res.data.data;
+          this.links = res.data.links;
         })
-        .catch(function (err) {
-          console.log(err);
+        .catch(err => {
+          this.$Message.error(err.message);
         });
     },
-    // 修改
-    goConfig(type) {
-      if (type == 0) {
-        this.$refs.configRef.openConfig();
-      }
+    handleOpenCreate() {
+      this.visible = true;
+      this.paramsLinks = this.links;
     },
-    goConfig1(data) {
-      this.$refs.eviceRef.openConfig({ data });
-    },
-    createSuccess() {
-      this.getManger();
+    handleOpenEdit({ links }) {
+      this.visible = true;
+      this.paramsLinks = links;
     },
     // 删除
-    delect(data) {
+    delete(data) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定删除？",

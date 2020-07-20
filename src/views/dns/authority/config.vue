@@ -4,7 +4,9 @@
       title="权威管理"
       :data="list"
       :columns="columns"
-      :pagination-enable="false" />
+      :current.sync="current"
+      :total="total"
+    />
   </div>
 </template>
 
@@ -19,7 +21,7 @@ export default {
         {
           title: "视图名称",
           key: "name",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h(
               "router-link",
@@ -27,7 +29,7 @@ export default {
                 props: {
                   to: {
                     name: "authority-zone-query",
-                    query: { id: row.id, name: row.name }
+                    params: { id: row.id }
                   }
                 }
               },
@@ -37,7 +39,12 @@ export default {
         },
         {
           title: "区数量",
-          key: "zonesize",
+          key: "masterzonesize",
+          align: "center"
+        },
+        {
+          title: "记录数",
+          key: "rrsize",
           align: "center"
         },
         {
@@ -46,7 +53,7 @@ export default {
           align: "center"
         },
         {
-          title: "访问控制列表",
+          title: "访问控制",
           key: "action",
           align: "center",
           render: (h, { row }) => {
@@ -56,17 +63,16 @@ export default {
               }
             });
           }
+        },
+        {
+          title: "DNS64",
+          key: "dns64",
+          align: "center"
         }
       ],
       list: [],
-      IP: [],
-      id: "",
-      name: "",
-      modal1: false,
-      aclids: [],
-      zones: "",
-      areaList: [],
-      number: ""
+      current: 1,
+      total: 0
     };
   },
   mounted() {
@@ -78,14 +84,7 @@ export default {
         .getViewList()
         .then(res => {
           this.list = res.data.data;
-          for (var key in this.list) {
-            this.id = this.list[key].id;
-            this.name = this.list[key].name;
-            this.priority = this.list[key].priority;
-            this.aclids = this.list[key].aclids;
-            this.zones = this.list[key].links.zones;
-            this.zonesize = this.list[key].links.zonesize;
-          }
+          this.total = this.list.length;
         })
         .catch(function (err) {
           console.log(err);

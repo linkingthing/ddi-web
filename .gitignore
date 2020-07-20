@@ -5,5 +5,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .VSCodeCounter
-config/index.js
-/config
+# config/index.js
+# config/

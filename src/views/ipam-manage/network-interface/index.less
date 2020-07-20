@@ -1,0 +1,148 @@
+.netword-interface{
+  margin-top: 60px;
+  border-top: 1px solid #E6E6E6;
+  background:#F6F6F6;
+
+  .chart-wrapper{
+    background: #fff;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 30px;
+    box-shadow:0 5px 16px 0px rgba(67,67,67,0.08);
+    border-radius:0 0 6px 6px;
+    margin-bottom: 16px;
+  }
+
+  .chart-item{
+    width: 100%;
+    height: 298px;
+    display: flex;
+
+    &-title{
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1;
+      margin: 50px 0 38px;
+    }
+
+    &-content{
+      width: 49%;
+    }
+  }
+
+  .chart-legend{
+    display: flex;
+    flex-wrap: wrap;
+
+    &-item{
+      margin-bottom: 43px;
+      border-radius: 2px;
+      width: 50%;
+    }
+
+    &-item-percent{
+        line-height: 1;
+        font-size: 24px;
+        font-weight: 600;
+        margin-right: 35px;
+        margin-bottom: 11px;
+
+        &.percent-no-data{
+          font-size: 16px;
+          color: #999;
+        }
+    }
+
+    &-item-info{
+        display: flex;
+        align-items: center;
+
+        &.is-clickable{
+          .chart-legend-item-color{
+            cursor: pointer;
+          }
+
+          .chart-legend-item-label{
+            cursor: pointer;
+
+            &:after{
+              position: absolute;
+              content: " ";
+              width: 0;
+              height: 0;
+              right: -20px;
+              top: 3px;
+              border-top: 4px solid transparent;
+              border-bottom: 4px solid transparent;
+              border-left: 8px solid #888;
+            }
+          }
+        }
+    }
+
+    &-item-color{
+      width: 22px;
+      height: 11px;
+      margin-right: 11px;
+      border-radius: 2px;
+    }
+
+    &-item-label{
+        font-size: 14px;
+        color: #666;
+        line-height: 1;
+        position: relative;
+    }
+  }
+
+  // .chart-no-data{
+
+  // }
+
+  .chart-container-type,
+  .chart-container-status{
+      height: 100%;
+      width: 51%;
+  }
+
+  .table-pagination{
+    .table-title{
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 600;
+      color: #333;
+      margin-right: 36px;
+    }
+
+    .top-left{
+      display: flex;
+      align-items: center;
+      height: 72px;
+      line-height: 72px;
+      justify-content: flex-start;
+
+      .ivu-input{
+        width: 160px;
+        background: transparent;
+        border-color: #CCCCCC;
+        font-size: 14px;
+      }
+
+      .top-input{
+        width: auto;
+      }
+
+      .condition-item{
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+      }
+
+      .condition-item-label{
+        font-size: 14px;
+        color: #333;
+        white-space: nowrap;
+      }
+    }
+  }
+}

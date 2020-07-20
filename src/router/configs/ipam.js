@@ -2,7 +2,8 @@ import Layout from "@/views/layout";
 
 /**
  * meta.notInMenu：表示不在菜单中显示
- * meta.isRootMen：表示是根节点
+ * meta.isRootMen：表示是根节点（暂未使用）
+ * meta.hideTitle: 表示是否将标题在面包屑上展示
  */
 
 export default {
@@ -14,32 +15,68 @@ export default {
   },
   name: "ipam-manage",
   icon: "icon-ipam",
-  redirect: { name: "subnet-manage" },
+  redirect: { name: "ipam-address-plan" },
   children: [
     {
-      name: 'subnet-manage',
-      path: '/address/ipam-manage/subnet-manage',
-      component: () => import(/* webpackChuckName: "subnet-manage" */ "@/views/ipam-manage/subnet-manage/list"),
+      name: 'ipam-address-plan',
+      path: '/address/ipam/plans',
+      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan'),
+      meta: {
+        title: "IP地址规划"
+      }
+    },
+    {
+      name: 'ipam-address-layouts',
+      path: '/address/ipam/plans/:plansId/layouts',
+      component: () => import(/* webpackChuckName: "ipam-address-layouts" */ '@/views/ipam-manage/address-layout'),
+      meta: {
+        notInMenu: true,
+        from: "ipam-address-plan",
+        title: ":prefix"
+      }
+    },
+    {
+      name: 'ipam-address-plan-subnet',
+      path: '/address/ipam/plans/:plansId/layouts/:layoutsId/plannedsubnets',
+      component: () => import(/* webpackChuckName: "ipam-address-plan-subnet" */ '@/views/ipam-manage/address-plan-subnet'),
+      meta: {
+        notInMenu: true,
+        from: "ipam-address-layouts",
+        title: ":layoutName"
+      }
+    },
+    {
+      name: 'ipam-address-manage',
+      path: '/address/ipam/scannedsubnets',
+      component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
         title: "IP地址管理"
       }
     },
     {
-      name: 'ip-manage',
-      path: '/address/ipam-manage/ip-manage',
-      component: () => import(/* webpackChuckName: "ip-manage" */ "@/views/ipam-manage/subnet-manage/ip-manage"),
+      name: 'ipam-network-interface',
+      path: '/address/ipam/scannedsubnets/:scannedsubnetsId/networkinterfaces',
+      component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
       meta: {
         notInMenu: true,
-        from: "subnet-manage",
-        title: ":addr"
+        from: "ipam-address-manage",
+        title: ":subnet"
       }
     },
     {
-      name: 'ip-address-devide',
-      path: '/address/ipam-manage/address-devide',
-      component: () => import(/* webpackChuckName: "ip-address-devide" */ '@/views/ipam-manage/address-devide'),
+      name: 'ip-assets-manage',
+      path: '/address/ipam/assets',
+      component: () => import(/* webpackChuckName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
       meta: {
-        title: "IP地址规划"
+        title: "终端管理"
+      }
+    },
+    {
+      name: 'device-scan',
+      path: '/address/ipam/routers',
+      component: () => import(/* webpackChuckName: "device-scan" */ "@/views/ipam-manage/device-scan"),
+      meta: {
+        title: "设备探测"
       }
     }
   ]

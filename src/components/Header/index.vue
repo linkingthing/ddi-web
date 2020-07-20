@@ -3,10 +3,13 @@
     <div class="header">
       <div class="header-inner">
         <div class="logo">
-          <img
-            :src="logoSrc"
-            alt
-          >
+          <div class="logo-image">
+            <img
+              :src="require('@/assets/images/logo.png')"
+              alt
+            >
+          </div>
+          <h1>DDI配置管理平台</h1>
         </div>
         <!-- <div class="logo-text">
           <img
@@ -26,32 +29,29 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-            {{item.title}}
+              {{item.title}}
             </MenuItem>
           </Menu>
         </div>
         <div class="user">
-          <!-- <Badge :count="3">
-            <Icon type="ios-notifications-outline" style="font-size: 20px" />
-          </Badge> -->
+          <Badge :count="alarmCount">
+            <i
+              class="icon-header-notifications"
+              style="font-size: 20px;cursor: pointer;color: #CFCFCF;vertical-align: middle;"
+              @click="handleClickMessage"
+            />
+          </Badge>
           <Dropdown
-            style="margin-left: 20px"
+            style="margin-left: 30px"
             @on-click="handleClickMenu"
           >
             <a href="javascript:void(0)">
-              <img
-                src="../../assets/images/avatar.png"
-                alt
-                class="avatar"
-              >
+              <i class="avatar icon-header-avatar"></i>
               Admin
               <Icon type="md-arrow-dropdown" />
             </a>
             <DropdownMenu slot="list">
-              <DropdownItem
-                name="user"
-                key="user"
-              >用户信息</DropdownItem>
+
               <DropdownItem
                 name="password"
                 key="password"
@@ -104,12 +104,13 @@
 <script>
 import { mapMutations } from "vuex";
 import services from "@/services";
+import alarmWs from "@/util/ws";
 
 import logoSrc from "@/assets/images/logo.png";
-import logoTextSrc from "@/assets/images/logo-text.jpg";
 
 export default {
   name: "Header",
+
   data() {
     this.mainMenuList = [{
       title: "系统状态",
@@ -120,20 +121,38 @@ export default {
     }, {
       title: "地址管理",
       url: "/address"
+    }, {
+      title: "系统管理",
+      url: "/system"
     }];
     return {
       logoSrc,
       currentMainMenu: "/monitor",
-      logoTextSrc,
       visible: false,
       password: "",
-      rePassword: ""
+      rePassword: "",
+      alarmCount: 0
     };
   },
-  created() {
-    const [, moduleName] = this.$route.path.split("/");
-    this.currentMainMenu = `/${moduleName}`;
+
+  watch: {
+    $route: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        const [, moduleName] = val.path.split("/");
+        this.currentMainMenu = `/${moduleName}`;
+      }
+    }
   },
+  created() {
+
+    alarmWs.getMessage = ({ count }) => {
+      console.log(count);
+      this.alarmCount = count;
+    };
+  },
+
   methods: {
     ...mapMutations({
       setToken: "SET_TOKEN"
@@ -155,13 +174,19 @@ export default {
         this.visible = true;
       }
     },
+    handleClickMessage() {
+      this.currentMainMenu = "/system";
+      this.$router.push({ name: "alarm-notice", query: { state: "untreated" } });
+    },
+
     handleSubmit() {
       if (this.password === this.rePassword) {
-        services
-          .updatePassword({
-            username: "admin",
-            password: this.password
-          })
+        const username = "admin";
+        const params = {
+          username,
+          password: this.password
+        };
+        this.$put({ url: `/apis/linkingthing.com/auth/v1/users/${username}`, params })
           .then(res => {
             this.$Message.success("修改成功");
             this.visible = false;
@@ -171,6 +196,7 @@ export default {
         this.$Message.error("两次密码输入不一致");
       }
     },
+    
     cancel() {
       this.visible = false;
     }
@@ -179,5 +205,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import "../../assets/less/var.less";
+
 @import "./index.less";
 </style>

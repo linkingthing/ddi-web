@@ -2,7 +2,8 @@ import Layout from "@/views/layout"
 
 /**
  * meta.notInMenu：表示不在菜单中显示
- * meta.isRootMen：表示是根节点
+ * meta.isRootMen：表示是根节点（暂未使用）
+ * meta.hideTitle: 表示是否将标题在面包屑上展示
  */
 
 export default {
@@ -15,15 +16,7 @@ export default {
   },
   name: "system-safe",
   children: [
-    {
-      // 并发控制
-      name: "concurrency-control",
-      path: "/dns/system-safe/concurrency-control",
-      component: () => import(/* webpackChunkName: "concurrency-control" */ "@/views/system-safe/concurrency-control"),
-      meta: {
-        title: "并发控制"
-      }
-    },
+   
     {
       // 黑白名单(安全管理)
       name: "black-white-list-manage",

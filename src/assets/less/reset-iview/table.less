@@ -1,0 +1,85 @@
+.ivu-table-wrapper {
+	border: none;
+}
+
+.ivu-table {
+	&::before {
+		background-color: rgba(102, 97, 91, .1);
+	}
+
+	&-header thead tr th {
+		background-color: rgba(244, 247, 253, .8);
+		border-bottom: none;
+		padding: 12px 0;
+
+		.ivu-table-cell span {
+			font-size: 16px;
+			font-weight: 500;
+			color: #9f9f9f;
+		}
+	}
+
+	.ivu-table-cell {
+		padding-right: 32px;
+		padding-left: 26px;
+
+		&.ivu-table-cell-with-selection {
+			text-overflow: clip;
+		}
+	}
+
+	td {
+		border-bottom-color: rgba(102, 97, 91, .1);
+		height: 50px;
+
+		.ivu-table-cell {
+			& > span {
+				color: #333;
+				font-size: 14px;
+			}
+			.ivu-switch-inner {
+				span {
+					color: #fff;
+					font-size: 12px;
+				}
+			}
+
+			label {
+				font-size: 14px;
+			}
+			.ivu-btn {
+				padding-left: 8px;
+				padding-right: 8px;
+				& + .ivu-btn {
+					margin-left: 10px;
+				}
+			}
+		}
+	}
+
+	.ivu-checkbox-inner {
+		border-color: #66615b;
+	}
+
+	.ivu-checkbox-disabled .ivu-checkbox-inner {
+		border-color: #dcdee2;
+	}
+
+	a {
+		color: #4083f3;
+	}
+
+	.operate-label {
+		font-size: 14px;
+		margin-right: 18px;
+		cursor: pointer;
+
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+
+	&:after {
+		background-color: #fff;
+	}
+}

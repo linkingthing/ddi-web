@@ -5,27 +5,45 @@
     :closable="closable"
     :mask-closable="maskClosable"
     :class-name="`modal-custom ${customClass}`"
+    :width="width"
   >
-    <div class="modal-header" slot="header">
+    <div
+      class="modal-header"
+      slot="header"
+    >
       {{ title }}
-      <i class="el-icon-close" @click="handleClose" />
+      <!-- <i class="el-icon-close" @click="handleClose" /> -->
+
+      <div
+        v-if="$slots['header-right']"
+        class="header-right"
+      >
+        <slot name="header-right" />
+      </div>
     </div>
 
     <slot />
 
-    <template v-if="showFooter" slot="footer">
+    <template
+      v-if="showFooter"
+      slot="footer"
+    >
+      <slot name="footer" />
+
+      <slot name="footer-left" />
+
       <Button
-        v-if="buttons.cancel"
-        class="button-cancel"
-        type="primary"
-        @click="handleClose"
-      >{{ buttons.cancel.text }}</Button>
-      <Button
-        v-if="buttons.confirm"
-        class="button-confirm"
-        type="primary"
-        @click="handleConfirm"
-      >{{ buttons.confirm.text }}</Button>
+        v-for="button in buttons"
+        :key="button.label"
+        :class="button.class"
+        :type="typeList.includes(button.type) ? button.type : 'primary'"
+        @click="handleButtonClick(button)"
+        :loading="loading(button)"
+      >
+        {{ button.label }}
+      </Button>
+
+      <slot name="footer-right" />
     </template>
   </Modal>
 </template>
@@ -35,20 +53,32 @@
 </style>
 
 <script>
+import { toKebabCase } from "@/util/common";
+
 export default {
-  name: "common-modal",
+  name: "DialogCustom",
 
   props: {
+    // loading: {
+    //   type: Boolean,
+    //   default: false
+    // },
     buttons: {
-      type: Object,
-      default: () => ({
-        cancel: {
-          text: "取消"
+      type: Array,
+      default: () => [
+        {
+          label: "取消",
+          type: "default",
+          class: "button-cancel",
+          event: "cancel"
         },
-        confirm: {
-          text: "确定"
+        {
+          label: "确认",
+          type: "primary",
+          class: "button-confirm",
+          event: "confirm"
         }
-      })
+      ]
     },
 
     visible: {
@@ -81,17 +111,26 @@ export default {
       default: true
     },
 
-    /**是否在点击确认按钮后立即关闭弹窗 */
-    immediateCloseAfterConfirm: {
+    width: {
+      type: [String, Number],
+      default: 520
+    },
+
+    /**
+     * 是否在触发confirm事件后，异步关闭
+     * 若设置该值为true, 则在触发confirm事件后，需要返回promise
+     */
+    closeAsyncWhenConfirm: {
       type: Boolean,
       default: false
     }
   },
 
   data() {
+    this.typeList = ["default", "primary", "dashed", "text", "info", "success", "warning", "error"];
     return {
-      loading: false,
-      isEdit: false
+      isEdit: false,
+      isLoading: false
     };
   },
 
@@ -107,17 +146,37 @@ export default {
   },
 
   methods: {
-    // 关于$listeners，若存在"confirm"和"cancel"需返回Promise
-
-    handleConfirm() {
-      this.$emit("confirm");
+    loading(button) {
+      const shouldLoading = button.event === "confirm";
+      return shouldLoading && this.isLoading;
     },
+    async handleButtonClick(button) {
+      let event = button.event;
 
-    handleClose() {
-      this.$emit("cancel");
-      this.dialogVisible = false;
-    },
+      let listener = this.$listeners[event] || this.$listeners[toKebabCase(event)];
 
+      if (event === "cancel") {
+        this.dialogVisible = false;
+      }
+
+      if (this.closeAsyncWhenConfirm) {
+        if (event === "confirm" && listener) {
+          await listener();
+        }
+      }
+      else {
+        listener && listener();
+
+        // 防重复点击
+        if (event === "confirm" && listener) {
+          this.isLoading = true;
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 800);
+        }
+
+      }
+    }
   }
 };
 </script>

@@ -1,8 +1,10 @@
 <template>
-  <div class="table-pagination">
-    <h3 v-if="getTitle" class="table-pagination-title">{{ getTitle }}</h3>
+  <div
+    class="table-pagination"
+    :class="{'is-padding-top': isPaddingTop}"
+  >
 
-    <article v-if="$slots.top || $slots['top-left'] || $slots['top-right']" class="table-pagination-top">      
+    <article class="table-pagination-top">
       <div class="top-left">
         <slot name="top-left" />
       </div>
@@ -12,20 +14,35 @@
       </div>
     </article>
 
-    <Table
-      v-if="showTable"
-      :data="data"
-      :columns="columns"
-      v-on="$listeners"
-    /> 
+    <slot name="neck" />
+
+    <template v-if="showTable">
+      <Table
+        v-if="tableInnerHeight"
+        :data="dataFilter"
+        :columns="columns"
+        :max-height="tableInnerHeight"
+        v-on="$listeners"
+      />
+      <Table
+        v-else
+        :data="dataFilter"
+        :columns="columns"
+        v-on="$listeners"
+      />
+    </template>
 
     <slot />
 
-    <article v-if="paginationEnable" class="table-pagination-footer">
-      <Page 
-        :current="currentPage" 
-        :total="totalPage"
-        prev-text="上一页" 
+    <article
+      v-if="showPage"
+      class="table-pagination-footer"
+    >
+      <Page
+        :current.sync="innerCurrent"
+        :total="total"
+        :page-size="size"
+        prev-text="上一页"
         next-text="下一页"
         @on-change="handlePageChange"
       />
@@ -38,6 +55,7 @@
 </style>
 
 <script>
+
 export default {
   name: "TablePagination",
 
@@ -55,11 +73,6 @@ export default {
     data: {
       type: Array,
       default: () => []
-    },    
-
-    calcHeight: {
-      type: Boolean,
-      default: false
     },
 
     paginationEnable: {
@@ -67,14 +80,34 @@ export default {
       default: true
     },
 
-    tableAutoInnerHeight: {
+    showTable: {
+      type: Boolean,
+      default: true
+    },
+
+    tableInnerHeight: {
+      type: [String, Number],
+      default: null
+    },
+
+    isPaddingTop: {
       type: Boolean,
       default: false
     },
 
-    showTable: {
-      type: Boolean,
-      default: true
+    total: {
+      type: Number,
+      default: 0
+    },
+
+    current: {
+      type: Number,
+      default: 1
+    },
+
+    size: {
+      type: Number,
+      default: 10
     }
   },
 
@@ -85,38 +118,46 @@ export default {
         .toString(36)
         .slice(2),
 
-      totalPage: 0,
-      currentPage: 0,
-
-      slotNames: []
+      slotNames: [],
+      innerCurrent: 1
     };
   },
 
   computed: {
-    getTitle() {
-      let title = this.$route.meta.title;
+    dataFilter() {
+      const { data, size, innerCurrent } = this;
 
-      if (!title || title.indexOf(":") === 0) {
-        title = this.title;
+      if (data.length > size) {
+        let start = (innerCurrent - 1) * size;
+
+        if (start >= data.length && data.length > size) {
+          start -= size;
+        }
+
+        return data.slice(start, start + size);
+      } else {
+        return data;
       }
+    },
 
-      return title;
+    showPage() {
+      return this.paginationEnable && this.data.length > this.size;
     }
   },
 
   watch: {
-    calcHeight(val) {
-      if (!val) return;
-
-      this.setTableHeight();
-
-      this.$emit("update:calc-height", false);
+    current: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        this.innerCurrent = val;
+      }
     },
 
     columns(val) {
       if (val.length) {
         let names = [];
-        
+
         val.forEach(col => {
           if (col.slot) {
             names.push(col.slot);
@@ -126,36 +167,23 @@ export default {
         this.slotNames = names;
       }
     },
-
     data: {
+      deep: true,
       immediate: true,
-      async handler(newVal, oldVal) {
-        if (JSON.stringify(newVal) === JSON.stringify(oldVal)) return;
+      handler(val) {
 
-        this.setTableHeight();
+        if (this.dataFilter.length === 0) {
+          if (this.data.length) {
+            const current = this.innerCurrent - 2;
+            this.innerCurrent = current;
+            this.handlePageChange(current);
+          }
+        }
       }
     }
   },
 
   methods: {
-    async setTableHeight() {
-      if (this.tableAutoInnerHeight) return;
-
-      await this.$nextTick();
-
-      const el = this.$el;
-      const height = el.clientHeight;
-
-      let titleEl = el.querySelector(".table-pagination-title"),
-        topEl = el.querySelector(".table-pagination-top"),
-        footerEl = el.querySelector(".table-pagination-footer");
-      
-      this.tableHeight = height 
-        - (titleEl ? titleEl.clientHeight : 0) 
-        - (topEl ? topEl.clientHeight : 0) 
-        - (footerEl ? footerEl.clientHeight : 0);
-    },
-
     handlePageSizeChange(val) {
       this.$emit("size-change", {
         size: val,
@@ -164,8 +192,12 @@ export default {
     },
 
     handlePageChange(val) {
+      const { query } = this.$route;
+      this.$router.push({ query: { ...query, current: val } });
+      this.$emit("update:current", val);
+
       this.$emit("page-change", {
-        page: val,
+        current: val,
         size: this.size
       });
     }

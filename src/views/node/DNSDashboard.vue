@@ -1,105 +1,108 @@
 <template>
   <div class="DNSDashboard dashboard">
-    <h1 class="d-title">DNS服务器</h1>
+    <h1 class="d-title">DNS服务器
+      <NodeSelect
+        type="dns"
+        v-model="node"
+      />
+    </h1>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <HostInfo :ip="ip" />
-      </i-col>
-      <i-col span="11">
-        <Card title="QPS">
-          <line-bar
-            :labels="qpsLabels"
-            :values="qpsValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
+    <div class="card-list">
+      <Card
+        title="QPS"
+        v-model="qpsTime"
+        :download="qpsLinks"
+      >
+        <line-bar
+          :labels="qpsLabels"
+          :values="qpsValues"
+          series-name="qps"
+        />
+      </Card>
 
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="解析状态">
-          <Pie :values="status" />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="解析类型">
-          <Pie :values="types" />
-        </Card>
-      </i-col>
-    </Row>
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="解析成功率">
-          <line-bar
-            is-percent
-            :labels="successRateLabels"
-            :values="successRateValues"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="缓存命中率">
-          <line-bar
-            is-percent
-            :labels="memoHitRateLabels"
-            :values="memoHitRateValues"
-          />
-        </Card>
-      </i-col>
-    </Row>
-    <Row
-      type="flex"
-      justify="space-between"
-      style="margin-bottom: 50px"
-    >
-      <i-col span="11">
-        <Card title="TOP请求域名">
-          <Table
-            :data="domains"
-            :columns="topDomainColumns"
-            style="padding-top: 30px"
-          />
-        </Card>
-      </i-col>
-      <i-col span="11">
-        <Card title="TOP请求IP">
-          <Table
-            :data="ips"
-            :columns="topIPColumns"
-            style="padding-top: 30px"
-          />
-        </Card>
-      </i-col>
-    </Row>
+      <Card
+        title="缓存命中率"
+        v-model="cachehitTime"
+        :download="cachehitLinks"
+      >
+        <line-bar
+          is-percent
+          :labels="memoHitRateLabels"
+          :values="memoHitRateValues"
+          series-name="缓存命中率"
+        />
+      </Card>
+
+      <Card
+        title="解析成功率"
+        v-model="resolvedratiosTime"
+        :download="resolvedratiosLinks"
+      >
+        <line-bar
+          is-percent
+          :labels="successRateLabels"
+          :values="successRateValues"
+          series-name="解析成功率"
+        />
+        <!-- multiple -->
+      </Card>
+
+      <Card
+        title="解析类型"
+        v-model="querytyperatiosTime"
+        :download="querytyperatiosLinks"
+      >
+        <Pie :values="types" />
+      </Card>
+
+      <Card
+        title="TOP请求域名"
+        v-model="toptendomainsTime"
+        :download="toptendomainsLinks"
+      >
+        <TopList
+          :data="domains"
+          :columns="topDomainColumns"
+          style="padding-top: 20px"
+        />
+      </Card>
+
+      <Card
+        title="TOP请求IP"
+        v-model="toptenipsTime"
+        :download="toptenipsLinks"
+      >
+        <TopList
+          :data="ips"
+          :columns="topIPColumns"
+          style="padding-top: 20px"
+        />
+      </Card>
+
+    </div>
+
   </div>
 </template>
 
 <script>
 import Card from "./Card";
-import HostInfo from "./HostInfo";
 import Line from "./Line";
 import Pie from "./Pie";
-import services from "@/services";
 import moment from "moment";
 moment.locale("zh-cn");
-import { getDeviceHistoryInfo } from "./tools";
+import { valuesParser } from "./tools";
+import NodeSelect from "./modules/node-select";
+import TopList from "./modules/top-list";
 
 export default {
   name: "DNSDashboard",
-  components: { Card, HostInfo, "line-bar": Line, Pie },
+  components: {
+    Card,
+    "line-bar": Line,
+    Pie,
+    NodeSelect,
+    TopList
+  },
   props: {
     ip: {
       type: String,
@@ -108,65 +111,107 @@ export default {
   },
   data() {
     return {
+      node: "",
       topDomainColumns: [
         {
           title: "排名",
           type: "index",
-          align: "center"
+          width: 40
         },
         {
           title: "域名",
-          key: "key",
-          align: "center"
+          key: "domain"
         },
         {
           title: "统计次数",
-          key: "doc_count",
-          align: "center"
+          key: "count",
+          align: "right"
         }
       ],
       topIPColumns: [
         {
           title: "排名",
           type: "index",
-          align: "center"
+          width: 40
         },
         {
           title: "IP地址",
-          key: "key",
-          align: "center"
+          key: "ip"
         },
         {
           title: "统计次数",
-          key: "doc_count",
-          align: "center"
+          key: "count",
+          align: "right"
         }
       ],
       timer: null,
+
+      qpsTime: 6,
+      qpsLinks: {},
       qpsLabels: [],
       qpsValues: [],
+
+      toptenipsTime: 6,
+      toptenipsLinks: {},
       ips: [],
+
+      toptendomainsTime: 6,
+      toptendomainsLinks: {},
       domains: [],
+
+      querytyperatiosTime: 6,
+      querytyperatiosLinks: {},
       types: [],
       status: [],
+
+      resolvedratiosTime: 6,
+      resolvedratiosLinks: {},
       successRateLabels: [],
       successRateValues: [],
+
+      cachehitTime: 6,
+      cachehitLinks: {},
       memoHitRateLabels: [],
       memoHitRateValues: []
     };
   },
   computed: {},
   watch: {
-    ip() {
+    node() {
       this.initDataRequest();
+    },
+    qpsTime(period) {
+      this.getQPSData({ period });
+    },
+    toptenipsTime(period) {
+      this.getTopIps({ period });
+    },
+    toptendomainsTime(period) {
+      this.getToptendomainsTimeData({ period });
+    },
+    querytyperatiosTime(period) {
+      this.getQuerytyperatiosData({ period });
+
+    },
+    resolvedratiosTime(period) {
+      this.getResolvedratiosData({ period });
+    },
+    cachehitTime(period) {
+      this.getCachehitData({ period });
     }
+
   },
   created() { },
   mounted() {
     this.initDataRequest();
     this.timer = setInterval(() => {
-      this.initDataRequest();
-    }, 3000);
+      this.getQPSData();
+      this.getCachehitData();
+      this.getResolvedratiosData();
+      this.getQuerytyperatiosData();
+      this.getToptendomainsTimeData();
+      this.getTopIps();
+    }, 10000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -174,178 +219,159 @@ export default {
 
   methods: {
     initDataRequest() {
-      const node = this.ip || this.$route.query.ip;
-      this.getDNSTop(node);
-      this.getQpsList(node);
-      this.getDNSAnalysisStateData(node);
-      this.getDNSAnalysisStateSuccessRecode(node);
-      this.getMemoHitRateData(node);
-    },
-    getQpsList(node) {
-      const params = {
-        node,
-        type: "qps"
-      };
-      getDeviceHistoryInfo(params)
-        .then(([labels, values]) => {
-          this.qpsLabels = labels || [];
-          this.qpsValues = values || [];
-        })
-        .catch(err => err);
-    },
-    getDNSTop() {
-      services
-        .getDNSTop()
-        .then(res => {
-          const { ips, domains, types } = res.data.data;
-          this.ips = ips;
-          this.domains = domains;
-          this.types = types.map(item => ({
-            name: item.key,
-            value: item.doc_count
-          }));
-        })
-        .catch(err => err);
-    },
-    getDNSAnalysisStateData(node) {
-      const params = {
-        node,
-        start: parseInt(new Date().getTime() / 1000)
-      };
-      services
-        .getDNSAnalysisState(params)
-        .then(res => {
-          this.status = res.data.data.result.map(({ metric, values }) => {
-            const [[, value]] = values;
-            return {
-              name: metric.data_type,
-              value: Number(value)
-            };
-          });
-        })
-        .catch(err => err);
-    },
-    getDNSAnalysisStateSuccessRecode(node) {
-      services
-        .getDNSAnalysisState({
-          node,
-          start: parseInt(new Date().getTime() / 1000 - 5 * 24 * 60 * 60),
-          end: parseInt(new Date().getTime() / 1000)
-        })
-        .then(res => {
-          const result = this.analysisMatrix(res.data.data.result);
-          const data = Object.values(result).map(timeGroup => {
-            let successCount = 0;
-            let time;
-            const total = timeGroup
-              .map(item => {
-                if (item.type === "NOERROR") {
-                  successCount = item.count;
-                  time = item.time;
-                }
-                return item.count;
-              })
-              .reduce((result, current) => {
-                return result + current;
-              }, 0);
-            const successRate = successCount / total || 0;
-            return {
-              total,
-              time,
-              successCount,
-              successRate
-            };
-          });
-
-          this.successRateLabels = data.map(item => item.time);
-          this.successRateValues = data.map(item => item.successRate.toFixed(4));
-        })
-        .catch(err => err);
+      this.getNodeInfo();
     },
 
-    /**
-     * 本质是数组平整化后重新分组的过程
-     * data_type 维度转换成时间维度
-     */
-    analysisMatrix(matrix) {
-      // x4
-      const result = matrix
-        .map(({ metric, values }) => {
-          const { data_type } = metric;
-          return values.map(([time, count]) => {
-            return {
-              time: moment(time * 1000).format("YYYY-MM-DD hh:mm:ss"),
-              timestamp: time,
-              count: +count,
-              type: data_type
-            };
-          });
-        })
-
-        .reduce((all, current) => {
-          return [...all, ...current];
-        }, [])
-        .reduce((result, current) => {
-          if (Array.isArray(result[current.timestamp])) {
-            result[current.timestamp].push(current);
-          } else {
-            result[current.timestamp] = [current];
-          }
-          return result;
-        }, {});
-
-      return result;
-    },
-    executeRate(stageData) {
-      return Object.values(stageData).map(timeGroup => {
-        let count = 0;
-        let time;
-        let total;
-        timeGroup.forEach(item => {
-          if (item.type === "memhit") {
-            count = item.count;
-          }
-          if (item.type === "querys") {
-            total = item.count;
-            time = item.time;
-          }
-        });
-        const rate = count / total || 0;
-        return {
-          time,
-          count,
-          total,
-          rate
-        };
+    intercept() {
+      const hasNode = !!this.node;
+      return new Promise(resolve => {
+        if (hasNode) {
+          resolve();
+        }
       });
     },
-    getMemoHitRateData(node) {
-      const params = {
-        node,
-        start: moment().unix() - 5 * 24 * 60 * 60,
-        end: moment().unix()
-      };
-      services
-        .getMemoHitRate(params)
-        .then(res => {
-          const result = this.analysisMatrix(res.data.data.result);
-          const data = this.executeRate(result);
-          this.memoHitRateLabels = data.map(item => item.time);
-          this.memoHitRateValues = data.map(item => item.rate);
-        })
-        .catch(err => err);
+
+
+    baseGet(params) {
+      return new Promise(resolve => {
+        this.intercept().then(_ => {
+          this.$get({ params, ...this.$getApiByRoute(`/monitor/metric/nodes/${this.node}/dnses`) }).then(data => {
+            resolve(data);
+          });
+
+        }).catch(err => err);
+      });
+    },
+
+    getNodeInfo() {
+      this.baseGet().then(({ data }) => {
+
+        data.forEach(item => {
+
+          if (item.id === "toptenips") {
+            this.ips = item.toptenips;
+            this.toptenipsLinks = item.links;
+          }
+
+          if (item.id === "toptendomains") {
+            this.domains = item.toptendomains;
+            this.toptendomainsLinks = item.links;
+          }
+
+          if (item.id === "qps") {
+            const [labels, values] = valuesParser(item.qps.values || []);
+            this.qpsLabels = labels;
+            this.qpsValues = values;
+            this.qpsLinks = item.links;
+          }
+
+          if (item.id === "cachehitratio") {
+            // todo, 可能会改
+            const [labels, values] = valuesParser(item.cachehitratio.ratios || []);
+            this.memoHitRateLabels = labels;
+            this.memoHitRateValues = values;
+            this.cachehitLinks = item.links;
+          }
+
+          if (item.id === "querytyperatios") {
+            this.querytyperatiosLinks = item.links;
+
+            // TODO: 略显尴尬
+            if (Array.isArray(item.querytyperatios)) {
+              this.types = item.querytyperatios.map(item => {
+                return {
+                  name: item.type,
+                  value: ({ ...item.ratios.pop() }).ratio || 0
+                };
+              });
+            } else {
+              this.types = [];
+            }
+
+          }
+
+          if (item.id === "resolvedratios") {
+            if (Array.isArray(item.resolvedratios)) {
+              const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
+              this.successRateLabels = labels;
+              this.successRateValues = values;
+              this.resolvedratiosLinks = item.links;
+            } else {
+              this.successRateLabels = [];
+              this.successRateValues = [];
+              this.resolvedratiosLinks = item.links;
+            }
+
+          }
+        });
+      });
+    },
+
+    getQPSData(params = { period: this.qpsTime }) {
+      this.intercept().then(_ => {
+        this.$get({ params, url: this.qpsLinks.self }).then(({ qps: { values } }) => {
+          const [labels, value] = valuesParser(values);
+          this.qpsLabels = labels;
+          this.qpsValues = value;
+        }).catch(err => err);
+      });
+    },
+
+    getCachehitData(params = { period: this.cachehitTime }) {
+      this.intercept().then(_ => {
+        this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehitratio }) => {
+          const [labels, value] = valuesParser(cachehitratio.ratios);
+          this.memoHitRateLabels = labels;
+          this.memoHitRateValues = value;
+        }).catch(err => err);
+      });
+    },
+
+    getResolvedratiosData(params = { period: this.resolvedratiosTime }) {
+      this.intercept().then(_ => {
+        this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
+          const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
+          this.successRateLabels = labels;
+          this.successRateValues = values;
+        }).catch(err => err);
+      });
+    },
+
+    getQuerytyperatiosData(params = { period: this.querytyperatiosTime }) {
+      this.intercept().then(_ => {
+        this.$get({ params, url: this.querytyperatiosLinks.self }).then(({ querytyperatios }) => {
+          this.types = querytyperatios.map(item => {
+            return {
+              name: item.type,
+              value: item.ratios[item.ratios.length - 1].ratio || 0
+            };
+          });
+
+        }).catch(err => err);
+      });
+    },
+
+    getToptendomainsTimeData(params = { period: this.toptendomainsTime }) {
+      this.intercept().then(_ => {
+        this.$get({ params, url: this.toptendomainsLinks.self }).then(({ toptendomains }) => {
+          this.domains = toptendomains;
+        }).catch(err => err);
+      });
+    },
+
+    getTopIps(params = { period: this.toptenipsTime }) {
+      this.intercept().then(_ => {
+        this.$get({ params, url: this.toptenipsLinks.self }).then(({ toptenips }) => {
+          this.ips = toptenips;
+        }).catch(err => err);
+      });
     }
+
+
   }
 };
 </script>
 
 <style lang="less" scoped>
-.dashboard {
-  padding: 30px;
-}
-.d-title {
-  font-size: 22px;
-  color: #252422;
-  margin-bottom: 50px;
-}
+@import url("./index.less");
 </style>

@@ -4,11 +4,11 @@
       title="资源记录"
       :data="resList"
       :columns="columns"
-      :pagination-enable="false"
+      :total="resList.length"
     >
       <template slot="top-right">
         <i-button
-          type="success"
+          type="primary"
           @click="handleOpenCreate(viewId,zoneId)"
         >新建</i-button>
       </template>
@@ -41,16 +41,16 @@ export default {
         {
           title: "名称",
           key: "name",
-          align: "center"
+          align: "left"
         },
         {
           title: "类型",
-          key: "type",
+          key: "datatype",
           align: "center"
         },
         {
           title: "记录值",
-          key: "value",
+          key: "rdata",
           align: "center"
         },
         {
@@ -61,7 +61,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {
@@ -90,10 +90,10 @@ export default {
     };
   },
   created() {
-    this.viewId = this.$route.query.viewId;
-    this.zoneId = this.$route.query.zoneId;
+    this.viewId = this.$route.params.id;
+    this.zoneId = this.$route.params.zoneId;
   },
-  mounted() {
+  mounted() {    
     this.getResources();
   },
   methods: {

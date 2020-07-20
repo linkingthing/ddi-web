@@ -45,11 +45,21 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  const lessOptions = {
+    import: [
+      path.join(__dirname, "../src/assets/less/var.less")
+    ],
+    paths: [
+      path.join(__dirname, '../src/assets'),
+      path.join(__dirname, '../')
+    ]
+  };
+
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
     postcss: generateLoaders(),
-    less: generateLoaders('less'),
+    less: generateLoaders('less', lessOptions),
     sass: generateLoaders('sass', { indentedSyntax: true }),
     scss: generateLoaders('sass'),
     stylus: generateLoaders('stylus'),

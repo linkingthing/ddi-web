@@ -1,12 +1,28 @@
 <template>
-  <div class="address-pool">  
+  <div class="address-pool">
     <IviewLoading v-if="loading" />
 
-    <TablePagination 
+    <TablePagination
       title="地址池管理"
       :data="tableData"
-      :pagination-enable="false"
-      :columns="columns"/>
+      :total="tableData.length"
+      :columns="columns"
+    >
+      <template slot="top-right">
+        <Button
+          type="primary"
+          @click="handleAdd"
+          class="top-button button-add"
+        >
+          新建
+        </Button>
+      </template>
+    </TablePagination>
+    <Edit
+      :visible.sync="showEdit"
+      :links="links"
+      @success="getDataList"
+    />
   </div>
 </template>
 
@@ -16,13 +32,14 @@
 
 <script>
 import TablePagination from "@/components/TablePagination";
-import service from "@/services";
+import Edit from "./edit";
+
 import { columns } from "./define";
-import { getAddressType } from "@/util/common";
 
 export default {
   components: {
-    TablePagination
+    TablePagination,
+    Edit
   },
 
   data() {
@@ -32,84 +49,64 @@ export default {
       tableData: [],
       columns: columns(this),
       showEdit: false,
-      editData: null,
-      subnetId: null
+      links: {}
     };
   },
 
   mounted() {
-    this.subnetId = this.$route.query.subnetId;
-
-    this.handleQuery();
+    this.getDataList();
+    this.openToCreate();
   },
 
   methods: {
-    async handleQuery() {
-      this.loading = true;
+    openToCreate() {
+      const { ipnet } = this.$route.query;
+      
+      if (ipnet) {
+        this.showEdit = true;
+        this.links = {
+          create: "/apis/linkingthing.com/dhcp/v1/subnets"
+        };
+      }
+    },
+    handleAdd() {
+      this.showEdit = true;
+      this.links = {
+        create: "/apis/linkingthing.com/dhcp/v1/subnets"
+      };
+    },
 
-      try {
-        let { status, data, message } = await service.getAddressPoolSubnetList();
+    getDataList() {
+      this.$getData().then(({ data }) => {
+        this.loading = false;
+        this.tableData = data;
+      }).catch().finally(() => {
+        this.loading = false;
+      });
 
-        if (status === 200) {
-          this.tableData = data.data.map(item => {
-            item.creationTime = item.embedded.creationTimestamp ? item.embedded.creationTimestamp.replace("T", " ") : "";
-
-            return item;
+    },
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "您确定要删除当前数据吗？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(res => {
+            this.$Message.info("删除成功");
+            this.getDataList();
+          }).catch(err => {
+            this.$Message.error(err.message);
           });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
         }
-        else {
-          Promise.reject({ message: message || "查询失败！" });
-        }
-      }
-      catch (err) {
-        console.error(err);
+      });
 
-        this.$$error(err.message);
-      }
-      finally {        
-        this.loading = false;
-      }
     },
-
-    showDetail(row) {
-      this.$router.push(`/address/dhcp-service/address-pool-list?subnetId=${row.subnet_id}&address=${row.subnet}`);
-    },
-
-    async handleDelete(data) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" }); 
-        
-        this.loading = true;
-
-        const action = getAddressType(data.subnet) === "ipv4" ? "deleteIPv4ChildNet" : "deleteIPv6ChildNet";
-
-        let { status, message } = await service[action](data.subnet_id);
-
-        status = +status;
-
-        if (status === 200 || status === 204) {
-          this.$$success("删除成功！");
-
-          this.handleQuery();
-        }
-        else {
-          Promise.reject({ message });
-        }
-      }
-      catch (err) {
-        // console.log(err);
-        
-        // const text = err.message || "删除失败！";
-        // console.log(text);
-
-        console.error(err);
-
-        this.$$error(err.message || "删除失败！");
-      }
-      finally {        
-        this.loading = false;
-      }
+    handleEdit({ links }) {
+      this.links = links;
+      this.showEdit = true;
     }
+
   }
 };
 </script>

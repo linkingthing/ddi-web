@@ -4,46 +4,44 @@
       title="区域查询"
       :data="list"
       :columns="columns"
-      :pagination-enable="false">
+      :total="list.length"
+    >
       <template slot="top-right">
         <i-button
-          type="success"
-          size="large"
-          @click="handleOpenCreate(id)">新建</i-button>
+          type="primary"
+          @click="handleOpenCreate()"
+        >新建</i-button>
       </template>
     </table-page>
-    <area-app-config ref="areaRef" @onCreateSuccess="getArea"/>
+    <zone-modal
+      :links="paramsLinks"
+      :visible.sync="visible"
+      @success="getArea"
+    />
   </div>
 </template>
 
 <script>
 import services from "@/services";
-import AreaAppConfig from "./AreaAppConfig";
+import ZoneModal from "./modules/zone-modal";
 export default {
   name: "zoneQuery",
   components: {
-    AreaAppConfig
+    "zone-modal": ZoneModal
   },
-  data() {
+  data() {    
     return {
       columns: [
         {
           title: "区名称",
           key: "name",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h(
               "router-link",
               {
                 props: {
-                  to: {
-                    name: "resource-record",
-                    query: {
-                      viewId: this.viewId,
-                      zoneId: row.id,
-                      name: row.name
-                    }
-                  }
+                  to: this.$getRouteByLink(row.links.rrs, "dns")
                 }
               },
               row.name
@@ -51,32 +49,61 @@ export default {
           }
         },
         {
-          title: "资源记录数量",
+          title: "区类型",
+          key: "zonetype",
+          align: "center",
+          render: (h, { row }) => {
+            return h("div", row.isarpa ? "反向区" : "正向区");
+          }
+        },
+        {
+          title: "TTL",
+          key: "ttl",
+          align: "center"
+        },
+
+        {
+          title: "记录数",
           key: "rrsize",
+          align: "center"
+        },
+        {
+          title: "备注",
+          key: "comment",
           align: "center"
         },
         {
           title: "操作",
           key: "action",
-          width: 120,
-          align: "center",
+          width: 160,
+          align: "right",
           render: (h, { row }) => {
-            return h("btn-del", {
-              on: {
-                click: () => this.delect(row.id)
-              }
-            });
+            return h("div", [
+              h("btn-edit", {
+                on: {
+                  click: () => this.edit(row)
+                }
+              }),
+              h("btn-del", {
+                on: {
+                  click: () => this.delect(row.id)
+                }
+              })
+            ]);
           }
         }
       ],
       id: "",
       viewId: "",
       name: "",
-      list: []
+      list: [],
+      visible: false,
+      links: {},
+      paramsLinks: {}
     };
   },
   created() {
-    this.id = this.$route.query.id;
+    this.id = this.$route.params.id;
     this.viewId = this.$route.query.id;
   },
   mounted() {
@@ -87,17 +114,24 @@ export default {
       services
         .getZoneByViewId(this.id)
         .then(res => {
-          this.list = res.data.data;
+          const { links, data } = res.data;
+          this.list = data;
+          this.links = links;
         })
         .catch(err => {
           console.log(err);
         });
     },
     // 新建
-    handleOpenCreate(id2) {
-      this.$refs.areaRef.openConfig(id2);
+    handleOpenCreate() {
+      this.paramsLinks = this.links;
+      this.visible = true;
     },
 
+    edit({ links }) {
+      this.paramsLinks = links;
+      this.visible = true;
+    },
     // 删除
     delect(zoneId) {
       this.$Modal.confirm({
@@ -120,8 +154,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.table-box table a {
-  text-decoration: none;
-}
-</style>
+
