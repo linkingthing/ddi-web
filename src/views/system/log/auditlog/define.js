@@ -14,7 +14,7 @@ export const columns = (self) => [
   {
     title: "操作",
     key: "content",
-    align: "center",
+    align: "left",
     render: (h, { row }) => {
       return h("div", [
         row.content,

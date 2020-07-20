@@ -25,7 +25,7 @@ export default {
 
 <style lang="less">
 .btn-search {
-  width: 86px;
+  width: 86px!important;
   .ivu-icon {
     font-size: 18px;
   }

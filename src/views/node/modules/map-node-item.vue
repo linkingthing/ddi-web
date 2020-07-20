@@ -10,7 +10,7 @@
       <li>
         {{!value.master ? "MASTER" : "SLAVE"}}
       </li>
-      <li>
+      <li class="show-hostname" v-if="!value.hostName.startsWith('node-')">
         {{value.hostName }}
       </li>
       <li>
@@ -89,6 +89,13 @@ export default {
       line-height: 16px;
       color: #fff;
       padding: 8px 20px;
+    }
+    .show-hostname {
+      padding-left: 0;
+      padding-right: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   i {
