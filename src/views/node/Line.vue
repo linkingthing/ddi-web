@@ -75,8 +75,25 @@ export default {
       const self = this;
 
 
+      let startTime = 0;
+      let endTime = 0;
+      const dateFormatMap = {
+        general: "YYYY-MM-DD",
+        minute: "YYYY-MM-DD HH:mm:ss"
+      };
+      let dateFormat = dateFormatMap["minute"];
+      if (Array.isArray(this.values) && this.values.length) {
+        const [start] = this.values;
+        const end = this.values[this.values.length - 1];
+        if (Array.isArray(start) && Array.isArray(end)) {
+          startTime = start[0];
+          endTime = end[0];
+        }
+        if (endTime - startTime >= 604800000) {
+          dateFormat = dateFormatMap["general"];
+        }
+      }
 
-      // console.log(this.values)
 
       let series = [
         {
@@ -182,8 +199,7 @@ export default {
             showMaxLabel: true,
             margin: 16,
             formatter: function (params) {
-              // console.log(params)
-              return moment(params).format("YYYY-MM-DD HH:mm:ss").split(" ").join("\n"); // params.split(" ")[0]; .format("YYYY-MM-DD HH:mm:ss")
+              return moment(params).format(dateFormat).split(" ").join("\n");
             }
           }
         },
@@ -227,7 +243,7 @@ export default {
           // },
           formatter: function (value) {
             let title = value.length && value[0].name;
-            return `<p>${moment(title).format("YYYY-MM-DD HH:mm:ss")}</p>` + value.map(item => {
+            return `<p>${moment(title).format(dateFormat)}</p>` + value.map(item => {
               return `<p>${item.marker}${item.seriesName}:${self.isPercent ? (Number(item.value[1]) * 100).toFixed(2) + "%" : item.value[1]}</p>`;
             }).join("");
           }

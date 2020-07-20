@@ -270,6 +270,10 @@ export default {
               this.packetsLinks = item.links;
 
               this.keepShowPacketsVersion = "4";
+              this.packetsVersion = 0;
+              this.$nextTick().then(() => {
+                this.packetsVersion = this.keepShowPacketsVersion;
+              })
             }
 
             if (item.id === "subnetusedratios") {
