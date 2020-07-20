@@ -49,7 +49,7 @@
       <header class="node-map-header">
         <div>
           <h3>节点分布图</h3>
-          <span>点击节点即可查看该节点的详细数据信息</span>
+          <!-- <span>点击节点即可查看该节点的详细数据信息</span> -->
         </div>
         <div>
           <i class="success" />
@@ -673,6 +673,7 @@ export default {
     flex: 1;
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
   }
 
   .slave-node {

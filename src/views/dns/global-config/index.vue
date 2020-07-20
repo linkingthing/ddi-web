@@ -51,7 +51,6 @@ export default {
   methods: {
     getInitData() {
       this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
-        console.log(res)
         this.params = res;
         this.links = res.links;
       })

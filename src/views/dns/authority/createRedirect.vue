@@ -98,10 +98,19 @@ export default {
     };
   },
   methods: {
+    getGlobalConfig() {
+      this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
+        this.upgradeConfig.ttl = res.ttl;
+
+      }).catch(() => {
+        console.log("全局配置获取失败");
+      })
+    },
     openConfig(viewId) {
       this.viewId = viewId;
       this.ipModal = true;
       this.$refs.formValidate.resetFields();
+      this.getGlobalConfig();
     },
     update() {
       const params = this.upgradeConfig;

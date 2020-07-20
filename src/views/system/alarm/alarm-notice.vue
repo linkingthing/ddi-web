@@ -76,8 +76,10 @@ export default {
                 return h("div", `主${row.masterIp}切换到辅${row.slaveIp}`);
               }
             }
-
-            const thresholdText = row.thresholdType !== "trigger" && `超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`;
+            let thresholdText = "";
+            if (row.thresholdType !== "trigger") {
+              thresholdText = `超过${row.threshold} ${row.name.endsWith("Ratio") ? "%" : ""}`;
+            }
 
             return h("div", `节点${row.nodeIp} ${alarmConfig[row.name]} ${thresholdText}`);
 

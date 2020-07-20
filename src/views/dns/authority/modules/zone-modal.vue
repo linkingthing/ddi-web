@@ -150,6 +150,8 @@ export default {
             zonetype
           };
         }).catch();
+      } else {
+        this.getGlobalConfig();
       }
       this.dialogVisible = val;
     },
@@ -164,6 +166,13 @@ export default {
   },
 
   methods: {
+    getGlobalConfig() {
+      this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
+        this.formModel = {
+          ttl: res.ttl,
+        };
+      })
+    },
 
     handleConfirm(name) {
 
