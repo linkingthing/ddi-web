@@ -45,6 +45,7 @@ export default {
 .common-tab {
   font-size: 18px;
   .common-tab-item {
+    position: relative;
     display: inline-block;
     font-weight: bold;
     margin-right: 60px;
@@ -52,7 +53,21 @@ export default {
     cursor: pointer;
   }
   .active {
-    color: #333;
+    color: #2d8cf0;
+    &::after {
+      content: "";
+      display: block;
+      height: 2px;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: #2d8cf0;
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      z-index: 1;
+      transition: transform 0.3s ease-in-out;
+      transform-origin: 0 0;
+    }
   }
 }
 </style>

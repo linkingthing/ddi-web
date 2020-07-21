@@ -35,6 +35,7 @@ export default {
   watch: {
     selectValue(val) {
       this.$emit("input", val)
+      this.$router.push({ query: { ip: val } });
     },
     value(val) {
       this.selectValue = val;
@@ -51,7 +52,13 @@ export default {
       }
 
       if (this.nodeList.length) {
-        this.selectValue = this.nodeList[0].id;
+        const { ip } = this.$route.query;
+        if (ip) {
+          this.selectValue = ip;
+        } else {
+          this.selectValue = this.nodeList[0].id;
+        }
+
       }
     });
   },

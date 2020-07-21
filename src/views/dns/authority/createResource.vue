@@ -96,11 +96,20 @@ export default {
     }
   },
   methods: {
+    getGlobalConfig() {
+      this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
+        this.upgradeConfig.ttl = res.ttl;
+
+      }).catch(() => {
+        console.log("全局配置获取失败");
+      })
+    },
     openConfig(viewId, zoneId) {
       this.viewId = viewId;
       this.zoneId = zoneId;
       this.configModal = true;
       this.getZoneInfo();
+      this.getGlobalConfig();
     },
     getZoneInfo() {
       getParantData().then(({ data: { name } }) => {

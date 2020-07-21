@@ -10,7 +10,7 @@
     <Form
       ref="formInline"
       label-position="left"
-      :label-width="80"
+      :label-width="100"
       :label-colon="true"
       :rules="rules"
       :model="formModel"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isIp } from "@/util/common";
+import { domainReg, urlReg } from "@/util/common";
 
 export default {
   props: {
@@ -45,69 +45,29 @@ export default {
   data() {
     this.formItemList = [
       {
-        label: "区名称",
-        model: "name",
+        label: "域名",
+        model: "domain",
         type: "input",
-        placeholder: "请填写区名称"
+        placeholder: "请填写区域名"
       },
       {
-        label: "区类型",
-        model: "isarpa",
-        type: "radio",
-        placeholder: "请选择区类型",
-        children: [{
-          label: "false",
-          text: "正向区"
-        },
-        {
-          label: "true",
-          text: "反向区"
-        }]
-      },
-      {
-        label: "TTL",
-        model: "ttl",
-        type: "number",
-        placeholder: "请填写TTL",
-        max: 86400
-      },
-      {
-        label: "备注",
-        model: "comment",
+        label: "重定向URL",
+        model: "url",
         type: "input",
-        placeholder: "请填写备注"
-      }
+        placeholder: "请填写区重定向URL"
+      },
     ];
 
     this.rules = {
-      name: [
-        { required: true, message: "请填写区名称" },
-        {
-          validator: (rule, value, callback) => {
-            if (this.formModel.isarpa === "true") {
-              const [ip, len] = value.split("/");
-              const arr = [8, 16, 24];
-              if (isIp(ip)) {
-                if (arr.includes(Number(len))) {
-                  callback();
-                } else {
-                  callback("子网范围只能是8/16/24三种之一");
-                }
-              } else {
-                callback("请正确填写区名称");
-              }
+      domain: [
+        { required: true, message: "请填写域名" },
+        { pattern: domainReg, message: "请输入正确的域名" }
+      ],
+      url: [
+        { required: true, message: "请输入url" },
+        { pattern: urlReg, message: "请输入正确的url" }
+      ],
 
-            }
-            callback();
-          }
-        }
-      ],
-      isarpa: [
-        { required: true, message: "请选择区类型" }
-      ],
-      ttl: [
-        { required: true, message: "请填写TTL" }
-      ]
     };
     return {
       formModel: {
@@ -122,7 +82,7 @@ export default {
 
   computed: {
     getTitle() {
-      return (this.isEdit ? "编辑" : "新建") + "区";
+      return (this.isEdit ? "编辑" : "新建") + "URL重定向";
     },
     isEdit() {
       return !!this.links.update;
@@ -132,26 +92,16 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {
-          zonetype: "master",
-          ttl: 3600,
-          isarpa: "false"
-        };
+        this.$refs.formInline.resetFields();
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, isarpa, ttl, comment, zonetype }) => {
+        this.$get({ url: this.links.self }).then(({ domain, url }) => {
           this.formModel = {
-            name,
-            ttl,
-            comment,
-            isarpa: `${isarpa}`,
-            zonetype
+            domain, url
           };
         }).catch();
-      } else {
-        this.getGlobalConfig();
       }
       this.dialogVisible = val;
     },
@@ -166,13 +116,6 @@ export default {
   },
 
   methods: {
-    getGlobalConfig() {
-      this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
-        this.formModel = {
-          ttl: res.ttl,
-        };
-      })
-    },
 
     handleConfirm(name) {
 

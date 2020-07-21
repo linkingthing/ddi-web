@@ -1,6 +1,6 @@
 <template>
   <div class="top-list">
-    <ul>
+    <ul v-if="data && data.length">
       <li
         class="top-item"
         v-for="(item, index) in data"
@@ -23,12 +23,16 @@
 
       </li>
     </ul>
+    <NoDataFigure v-else />
+
   </div>
 </template>
 
 <script>
+import NoDataFigure from "../NoDataFigure";
+
 export default {
-  components: {},
+  components: { NoDataFigure },
   props: {
     columns: {
       type: Array,

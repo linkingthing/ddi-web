@@ -38,13 +38,10 @@ export default {
           align: "left",
           render: (h, { row }) => {
             return h(
-              "router-link",
+              "a",
               {
                 props: {
-                  to: {
-                    name: "zone-query-forward",
-                    query: { id: row.id, name: row.name }
-                  }
+                  href: "javascript:;"
                 }
               },
               row.name
@@ -54,7 +51,7 @@ export default {
         {
           title: "服务器",
           key: "ips",
-          align: "center",
+          align: "left",
           render: (h, { row }) => {
             return h("Tags", {
               props: {

@@ -18,9 +18,12 @@ Vue.component("btn-del", BaseBtnDel);
 import BaseLineEdit from "@/components/BaseLineEdit";
 Vue.component("line-edit", BaseLineEdit);
 
-
 import BaseBtnMove from "@/components/BaseBtnMove";
 Vue.component("btn-move", BaseBtnMove);
+
+import BaseBtnSearch from "@/components/BaseBtnSearch";
+Vue.component("btn-search", BaseBtnSearch);
+
 
 import TablePagination from "@/components/TablePagination";
 Vue.component("table-page", TablePagination);

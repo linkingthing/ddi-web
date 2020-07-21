@@ -74,10 +74,10 @@
           />
 
         </FormItem>
-        <Button
-          type="default"
+        <btn-search
           @click="$emit('on-search', searchParams)"
-        >搜索</Button>
+        ></btn-search>
+        
 
       </Form>
     </div>

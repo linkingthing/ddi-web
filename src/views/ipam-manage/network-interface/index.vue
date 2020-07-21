@@ -87,11 +87,11 @@
               @on-enter="getList" />
           </div>
 
-          <Button
+          <btn-search
             type="primary"
             icon="ios-search"
             @click="getList"
-            class="top-button">查询</Button>
+            class="top-button">查询</btn-search>
         </template>
       </table-page>
     </div>

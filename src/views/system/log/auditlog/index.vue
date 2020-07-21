@@ -1,13 +1,13 @@
 <template>
-  <div class="audit-log">   
+  <div class="audit-log">
     <IviewLoading v-if="loading" />
 
-    <table-page 
+    <table-page
       :data="tableData"
-      :columns="columns"  
+      :columns="columns"
       :total="tableData.length"
       :current.sync="currentPage"
-    > 
+    >
       <template slot="top-right">
         <div class="condition-item">
           <label class="condition-item-label">时间：</label>
@@ -16,25 +16,27 @@
             format="yyyy-MM-dd"
             type="daterange"
             placement="bottom"
-            placeholder="请选择时间"/>
+            placeholder="请选择时间"
+          />
         </div>
         <div class="condition-item">
           <label class="condition-item-label">IP地址：</label>
           <Input
             v-model="conditions.sourceIp"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
 
-        <Button 
-          type="primary" 
-          @click="handleQuery" 
+        <btn-search
+          type="primary"
+          @click="handleQuery"
           class="top-button"
         >
           搜索
-        </Button>
+        </btn-search>
       </template>
-    </table-page >
+    </table-page>
   </div>
 </template>
 
@@ -63,7 +65,7 @@ export default {
     };
   },
 
-  mounted() {    
+  mounted() {
     this.handleQuery();
   },
 
@@ -75,7 +77,7 @@ export default {
 
       try {
         let { data } = await this.$get({ url: this.url, params: this.getParams() });
-        
+
         this.tableData = data.map(item => {
           item.creationTime = this.$trimDate(item.creationTimestamp);
           item.content = this.formatContent(item);
@@ -84,25 +86,25 @@ export default {
           return item;
         });
       } catch (err) {
-        this.$handleError(err); 
+        this.$handleError(err);
       }
-      finally {        
+      finally {
         this.loading = false;
       }
     },
 
     getParams() {
-      const { date,sourceIp } = this.conditions;
+      const { date, sourceIp } = this.conditions;
 
       let res = {};
 
       if (sourceIp.trim()) {
         res.source_ip = sourceIp.trim();
       }
-      
+
       if (date[0]) {
-        res.from = date[0].toLocaleDateString().replace(/\//g,"-");
-        res.to = date[1].toLocaleDateString().replace(/\//g,"-");
+        res.from = date[0].toLocaleDateString().replace(/\//g, "-");
+        res.to = date[1].toLocaleDateString().replace(/\//g, "-");
       }
 
       return res;
@@ -113,8 +115,8 @@ export default {
 
       const getOpperText = opper => {
         switch (opper.toLocaleLowerCase()) {
-          case "put":return "更新";
-          case "post":return "新建";
+          case "put": return "更新";
+          case "post": return "新建";
           case "delete": return "删除";
           case "exportcsv": return "导出";
         }
@@ -122,7 +124,18 @@ export default {
       
       const opper = getOpperText(method);
 
-      return `${username}${opper}${resources[resourceKind]}${succeed ? "" : ("失败：" + errMessage)}`;
+      return `${username}${opper}${resources[resourceKind]}`;
+    },
+    handleOpenMessage(row) {
+      const message = row.succeed
+        ? JSON.stringify(JSON.parse(row.parameters), null, 2)
+        : row.errMessage;
+      this.$Modal.info({
+        scrollable: true,
+        width: 800,
+        title: "详细信息",
+        content: `<pre>${message}</pre>`
+      });
     }
   }
 };

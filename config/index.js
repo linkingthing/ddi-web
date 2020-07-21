@@ -23,7 +23,7 @@ module.exports = {
 		// View the bundle analyzer report after build finishes:
 		// `npm run build --report`
 		// Set to `true` or `false` to always turn it on or off
-		bundleAnalyzerReport: true // process.env.npm_config_report ranck
+		bundleAnalyzerReport: false// process.env.npm_config_report ranck
 	},
 	dev: {
 		env: require('./dev.env'),
@@ -37,11 +37,11 @@ module.exports = {
 		},
 		proxyTable: {
 			'/login': {
-				target: 'https://10.0.0.170:8081',
+				target: 'https://10.0.0.90:8081',
 				secure: false, // 如果是https接口，需要配置这个参数
 			},
 			'/apis': {
-				target: 'https://10.0.0.170:8081/apis',
+				target: 'https://10.0.0.170:58081/apis',
 
 				changeOrigin: true,
 				ws: true, //如果要代理 websockets，配置这个参数
@@ -53,7 +53,7 @@ module.exports = {
 			},
 
 			'/public': {
-				target: 'https://10.0.0.170:8081/public',
+				target: 'https://10.0.0.90:8081/public',
 				changeOrigin: true,
 				// ws: true,        //如果要代理 websockets，配置这个参数
 				secure: false, // 如果是https接口，需要配置这个参数
