@@ -119,7 +119,7 @@ export default {
           case "exportcsv": return "导出";
         }
       };
-
+      
       const opper = getOpperText(method);
 
       return `${username}${opper}${resources[resourceKind]}${succeed ? "" : ("失败：" + errMessage)}`;
