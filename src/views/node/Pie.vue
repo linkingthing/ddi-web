@@ -24,8 +24,20 @@ export default {
   components: { Chart, NoDataFigure },
   computed: {
     options() {
-      const labels = this.values.map(item => item.name);
-      const count = this.values.reduce((prev, result) => Number(result.value) + Number(prev), 0);
+      const innerValue = this.values; // [...this.values, { name: "rrr", value: 1.1 }, { name: "www", value: 22 }];
+      const labels = innerValue.map(item => `${item.name}`);
+
+      // 图例换行，2个一排
+      const formarLabel = [];
+      labels.forEach((item, index) => {
+        formarLabel.push(item)
+        if ((index % 2)) {
+          formarLabel.push("\n");
+        }
+      })
+
+
+      const count = innerValue.reduce((prev, result) => Number(result.value) + Number(prev), 0);
 
       return {
         color: ["#1171E7", "#0DDE79", "#F21B62", "#F1D90B", "#F79F14", "#6F20FF", "#20CDFF", "#B8E115", "#A24C22", "#D323FF", "#317EAA", "#C8A025", "#2994AB", "#B3B3B3"],
@@ -39,10 +51,20 @@ export default {
         },
         legend: {
           orient: "horizontal",
-          right: 170,
+          right: 100,
           bottom: "center",
-          data: labels,
-          itemGap: 30
+          data: formarLabel,
+          itemGap: 20,
+          formatter: function (item) {
+            return `{block|${item}}`
+          },
+          textStyle: {
+            rich: {
+              block: {
+                width: 80
+              }
+            }
+          }
         },
         series: [
           {
@@ -70,7 +92,7 @@ export default {
                 show: false
               }
             },
-            data: this.values
+            data: innerValue
           }
         ]
       };
