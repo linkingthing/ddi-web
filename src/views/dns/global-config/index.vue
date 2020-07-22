@@ -4,6 +4,8 @@
       :model="params"
       :label-width="80"
       label-position="left"
+      ref="formInline"
+      :rules="rules"
     >
       <FormItem label="DNS日志">
         <i-switch
@@ -15,9 +17,12 @@
           <span slot="close">关闭</span>
         </i-switch>
       </FormItem>
-      <FormItem label="TTL">
+      <FormItem
+        label="TTL"
+        prop="ttl"
+      >
         <Input
-          v-model.number="params.ttl"
+          v-model="params.ttl"
           style="width: 120px"
         />
         <Button
@@ -30,10 +35,24 @@
 </template>
 
 <script>
+import {
+  positiveIntegerValidate
+} from "@/util/common";
+import { ttlValidator } from "@/util/validator";
+
 export default {
   components: {},
   props: {},
   data() {
+
+    this.rules = {
+      ttl: [
+        positiveIntegerValidate,
+        {
+          validator: ttlValidator
+        }
+      ]
+    }
     return {
       params: {
         isLogOpen: false,
@@ -66,14 +85,20 @@ export default {
       });
     },
     handleSave() {
-      const params = this.params;
-      this.$put({ url: this.links.update, params }).then(() => {
-        this.getInitData();
-        this.$Message.success("保存成功");
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-        this.getInitData();
-      });
+      this.$refs.formInline.validate(valid => {
+        if (valid) {
+          const params = this.params;
+          params.ttl = Number(params.ttl);
+          this.$put({ url: this.links.update, params }).then(() => {
+            this.getInitData();
+            this.$Message.success("保存成功");
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+            this.getInitData();
+          });
+        }
+      })
+
     }
 
   }

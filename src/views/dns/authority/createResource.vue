@@ -35,8 +35,7 @@
               prop="ttl"
               style="margin-bottom: 0"
             >
-              <InputNumber
-                :max="24*60*60"
+              <Input
                 v-model="upgradeConfig.ttl"
                 placeholder="请输入延缓时间"
                 style="width: 100%"
@@ -54,6 +53,7 @@ import services from "@/services";
 import { resourceDomainValidateFunc, positiveIntegerValidate } from "@/util/common";
 import { getParantData } from "@/util/request";
 import ResourceTypeValue from "@/components/ResourceTypeValue";
+import { ttlValidator } from "@/util/validator";
 
 export default {
   name: "createResource",
@@ -85,7 +85,9 @@ export default {
         ],
         datatype: [{ required: true, message: "请选择资源类型" }],
         rdata: [{ required: true, message: "请填写记录值" }],
-        ttl: [positiveIntegerValidate]
+        ttl: [positiveIntegerValidate, {
+          validator: ttlValidator
+        }]
       }
     };
   },
@@ -123,6 +125,7 @@ export default {
       const rdataList = this.upgradeConfig.rdata.split(",");
       rdataList.forEach(rdata => {
         const params = { ...this.upgradeConfig, rdata: rdata.trim() };
+        params.ttl = +params.ttl;
         services
           .createResourceRecord(this.viewId, this.zoneId, params)
           .then(() => {

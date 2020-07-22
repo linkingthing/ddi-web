@@ -29,8 +29,7 @@
               label="TTL"
               prop="ttl"
             >
-              <InputNumber
-                :max="24*60*60"
+              <Input
                 v-model="params.ttl"
                 placeholder="请输入延缓时间"
                 style="width: 100%"
@@ -56,6 +55,7 @@
 import services from "@/services";
 import TypeValue from "@/components/TypeValue";
 import { nameValidate, positiveIntegerValidate } from "@/util/common";
+import { ttlValidator } from "@/util/validator";
 
 export default {
   name: "editRedirect",
@@ -95,7 +95,10 @@ export default {
             required: true,
             message: "请输入延缓时间"
           },
-          positiveIntegerValidate
+          positiveIntegerValidate,
+          {
+            validator: ttlValidator,
+          }
         ],
         redirecttype: [
           { required: true, message: "请选择重定向方式", trigger: "change" }

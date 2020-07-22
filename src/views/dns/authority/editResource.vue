@@ -32,8 +32,7 @@
               label="TTL"
               prop="ttl"
             >
-              <InputNumber
-                :max="24*60*60"
+              <Input
                 v-model="params.ttl"
                 placeholder="请输入延缓时间"
                 style="width: 100%"
@@ -54,6 +53,7 @@ import {
   positiveIntegerValidate
 } from "@/util/common";
 import { getParantData } from "@/util/request";
+import { ttlValidator } from "@/util/validator";
 
 export default {
   name: "WebsiteUpConfig",
@@ -84,7 +84,11 @@ export default {
         ],
         datatype: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
-        ttl: [positiveIntegerValidate]
+        ttl: [positiveIntegerValidate,
+          {
+            validator: ttlValidator
+          }
+        ]
       }
     };
   },
@@ -110,6 +114,7 @@ export default {
       });
     },
     Modify() {
+      this.params.ttl = +this.params.ttl;
       services
         .updateResource(this.viewId, this.zoneId, this.id, this.params)
         .then(res => {

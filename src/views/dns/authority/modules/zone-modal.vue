@@ -28,6 +28,7 @@
 
 <script>
 import { isIp } from "@/util/common";
+import { ttlValidator } from "@/util/validator";
 
 export default {
   props: {
@@ -67,9 +68,8 @@ export default {
       {
         label: "TTL",
         model: "ttl",
-        type: "number",
+        type: "input",
         placeholder: "请填写TTL",
-        max: 86400
       },
       {
         label: "备注",
@@ -106,7 +106,10 @@ export default {
         { required: true, message: "请选择区类型" }
       ],
       ttl: [
-        { required: true, message: "请填写TTL" }
+        { required: true, message: "请填写TTL" },
+        {
+          validator: ttlValidator
+        }
       ]
     };
     return {
@@ -178,6 +181,7 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
+          params.ttl = +params.ttl;
           params.isarpa = params.isarpa === "true";
 
           if (this.isEdit) {
