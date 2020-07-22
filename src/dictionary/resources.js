@@ -38,6 +38,8 @@ export default {
   dns: "dns",
   dhcp: "dhcp",
   dhcpconfig: "基础配置",
+  dnsglobalconfig: "全局TTL",
+  globalConfig: "DNS日志开关",
   /** 用户 */
   user: "用户信息"
 };
