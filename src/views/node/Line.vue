@@ -1,6 +1,6 @@
 <template>
   <Chart
-    v-if="values.length"
+    v-if="values && values.length"
     :options="options"
   />
   <NoDataFigure v-else />

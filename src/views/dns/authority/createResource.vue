@@ -66,11 +66,12 @@ export default {
       // 是否显示mode
       configModal: false,
       // 表单数据
+      tempttl: "",
       upgradeConfig: {
         name: "",
         datatype: "A",
         rdata: "",
-        ttl: 3600
+        ttl: 0
       },
       viewId: "",
       zoneId: "",
@@ -92,6 +93,8 @@ export default {
     configModal(val) {
       if (!val) {
         this.$refs.formValidate.resetFields();
+        this.getGlobalConfig();
+        this.upgradeConfig.ttl = this.tempttl;
       }
     }
   },
@@ -99,7 +102,7 @@ export default {
     getGlobalConfig() {
       this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
         this.upgradeConfig.ttl = res.ttl;
-
+        this.tempttl = res.ttl;
       }).catch(() => {
         console.log("全局配置获取失败");
       })

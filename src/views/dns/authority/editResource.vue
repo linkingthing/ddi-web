@@ -68,7 +68,7 @@ export default {
         name: "",
         datatype: "",
         value: "A",
-        ttl: 3600
+        ttl: 0
       },
       viewId: "",
       zoneId: "",

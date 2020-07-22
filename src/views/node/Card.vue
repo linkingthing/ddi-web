@@ -102,7 +102,7 @@ export default {
     pathParser({ path }) {
       const realPath = "/opt/website";
       const staticPath = "/public";
-      const fileName = path.slice(realPath.length);
+      const fileName = path.slice(realPath.length + 1);
       return {
         downloadPath: staticPath.concat(fileName),
         fileName

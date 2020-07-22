@@ -115,6 +115,7 @@ export default {
         ttl: 3600,
         isarpa: "false"
       },
+      tempttl: "",
       loading: false,
       dialogVisible: false
     };
@@ -132,11 +133,10 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.formModel = {
-          zonetype: "master",
-          ttl: 3600,
-          isarpa: "false"
-        };
+        this.$refs.formInline.resetFields();
+        this.formModel.zonetype = "master";
+        this.formModel.isarpa = "false";
+        this.formModel.ttl = this.tempttl;
         return;
       }
 
@@ -168,9 +168,8 @@ export default {
   methods: {
     getGlobalConfig() {
       this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
-        this.formModel = {
-          ttl: res.ttl,
-        };
+        this.formModel.ttl = res.ttl;
+        this.tempttl = res.ttl;
       })
     },
 

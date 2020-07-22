@@ -39,44 +39,49 @@
             <template slot="open">启用</template>
             <template slot="close">关闭</template>
           </i-switch>
+
         </FormItem>
-        <FormItem
-          label="发件邮箱"
-          prop="username"
-        >
-          <Input
-            v-model="alarmConfig.username"
-            placeholder="请填写发件邮箱"
-          />
-        </FormItem>
-        <FormItem
-          label="发件箱密码"
-          prop="password"
-        >
-          <Input
-            type="password"
-            v-model="alarmConfig.password"
-            placeholder="请填写发件箱密码"
-          />
-        </FormItem>
-        <FormItem
-          label="邮箱服务器"
-          prop="host"
-        >
-          <Input
-            v-model="alarmConfig.host"
-            placeholder="请填写邮箱服务器"
-          />
-        </FormItem>
-        <FormItem
-          label="邮箱服务器端口"
-          prop="port"
-        >
-          <Input
-            v-model.number="alarmConfig.port"
-            placeholder="请填写邮箱服务器端口"
-          />
-        </FormItem>
+
+        <template v-if="alarmConfig.enabled">
+          <FormItem
+            label="发件邮箱"
+            prop="username"
+          >
+            <Input
+              v-model="alarmConfig.username"
+              placeholder="请填写发件邮箱"
+            />
+          </FormItem>
+          <FormItem
+            label="发件箱密码"
+            prop="password"
+          >
+            <Input
+              type="password"
+              v-model="alarmConfig.password"
+              placeholder="请填写发件箱密码"
+            />
+          </FormItem>
+          <FormItem
+            label="邮箱服务器"
+            prop="host"
+          >
+            <Input
+              v-model="alarmConfig.host"
+              placeholder="请填写邮箱服务器"
+            />
+          </FormItem>
+          <FormItem
+            label="邮箱服务器端口"
+            prop="port"
+          >
+            <Input
+              v-model.number="alarmConfig.port"
+              placeholder="请填写邮箱服务器端口"
+            />
+          </FormItem>
+        </template>
+
         <FormItem :label-width="0">
           <Button
             style="width: 100%"
@@ -106,7 +111,9 @@ export default {
     };
     return {
       tabValue: "alarmConfig",
-      alarmConfig: {},
+      alarmConfig: {
+        enabled: true
+      },
       configUpdateLink: "",
       links: {},
       method: "$put"

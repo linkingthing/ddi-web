@@ -72,7 +72,7 @@ export default {
         name: "",
         datatype: "A",
         rdata: "",
-        ttl: 3600,
+        ttl: 0,
         redirecttype: "localzone"
       },
       viewId: "",

@@ -69,7 +69,7 @@ export default {
         name: "",
         datatype: "",
         rdata: "",
-        ttl: 3600,
+        ttl: 0,
         redirecttype: ""
       },
       viewId: "",
