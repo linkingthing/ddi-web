@@ -29,7 +29,7 @@ export default {
   components: {
     "zone-modal": ZoneModal
   },
-  data() {    
+  data() {
     return {
       columns: [
         {
@@ -75,7 +75,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          width: 160,
+          width: 220,
           align: "right",
           render: (h, { row }) => {
             return h("div", [
@@ -88,7 +88,26 @@ export default {
                 on: {
                   click: () => this.delect(row.id)
                 }
-              })
+              }),
+              h("i-switch", {
+                style: {
+                  marginLeft: "16px"
+                },
+                props: {
+                  "false-color": "#F2A16B"
+                },
+                on: {
+                  "on-change": (value) => this.handleToggleMaster(value, row)
+                }
+              }, [
+                h("span", {
+                  slot: "open"
+                }, "主"),
+                h("span", {
+                  slot: "close"
+                }, "备"),
+
+              ])
             ]);
           }
         }
@@ -148,6 +167,22 @@ export default {
               this.$Message.success("删除失败");
             });
         }
+      });
+    },
+    handleToggleMaster(value, row) {
+      const url = `${row.links.self}?action=changingRRs`;
+      const enumRoles = {
+        [true]: "main",
+        [false]: "backup"
+      }
+      const params = {
+        role: enumRoles[value]
+      };
+
+      this.$post({ url, params }).then(res => {
+        this.$Message.success("切换成功");
+      }).catch(() => {
+        this.$Message.error("切换失败");
       });
     }
   }
