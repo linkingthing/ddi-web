@@ -36,6 +36,23 @@
         placeholder="请填写资源记录"
       />
     </form-item>
+
+    <form-item
+      v-if="isrrs && ['A','AAAA'].includes(params.datatype)"
+      label="备份记录值"
+      prop="rdataBackup"
+      :rules="[ 
+               params.datatype === 'A' && isIPv4Validate,
+               params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
+               params.datatype === 'CNAME' && domainValidate,
+               params.datatype === 'URL' && urlValidate
+      ]"
+    >
+      <i-input
+        v-model="params.rdataBackup"
+        placeholder="请填写资源记录"
+      />
+    </form-item>
   </div>
 </template>
 
@@ -57,6 +74,10 @@ export default {
       })
     },
     hasAll: {
+      type: Boolean,
+      default: false
+    },
+    isrrs: {
       type: Boolean,
       default: false
     }

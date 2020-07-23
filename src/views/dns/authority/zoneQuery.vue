@@ -94,7 +94,8 @@ export default {
                   marginLeft: "16px"
                 },
                 props: {
-                  "false-color": "#F2A16B"
+                  "false-color": "#F2A16B",
+                  value: row.rrsRole === "main"
                 },
                 on: {
                   "on-change": (value) => this.handleToggleMaster(value, row)

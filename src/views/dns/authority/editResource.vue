@@ -8,7 +8,7 @@
     <i-form
       :model="params"
       label-position="right"
-      :label-width="80"
+      :label-width="100"
       :rules="ruleValidate"
       ref="formValidate"
     >
@@ -27,6 +27,7 @@
             <TypeValue
               :params="params"
               :has-all="true"
+              :isrrs="true"
             />
             <form-item
               label="TTL"

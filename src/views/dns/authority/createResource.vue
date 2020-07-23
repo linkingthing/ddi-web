@@ -8,7 +8,7 @@
     <i-form
       :model="upgradeConfig"
       label-position="left"
-      :label-width="80"
+      :label-width="100"
       :rules="ruleValidate"
       ref="formValidate"
     >
@@ -29,7 +29,11 @@
                 <span slot="append">{{recordSuffix}}</span>
               </i-input>
             </form-item>
-            <ResourceTypeValue :params="upgradeConfig" />
+            <TypeValue
+              :params="upgradeConfig"
+              :has-all="true"
+              :isrrs="true"
+            />
             <form-item
               label="TTL"
               prop="ttl"
@@ -52,13 +56,13 @@
 import services from "@/services";
 import { resourceDomainValidateFunc, positiveIntegerValidate } from "@/util/common";
 import { getParantData } from "@/util/request";
-import ResourceTypeValue from "@/components/ResourceTypeValue";
+import TypeValue from "@/components/TypeValue";
 import { ttlValidator } from "@/util/validator";
 
 export default {
   name: "createResource",
   components: {
-    ResourceTypeValue
+    TypeValue
   },
   data() {
     return {
