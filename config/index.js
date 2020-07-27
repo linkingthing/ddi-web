@@ -5,6 +5,8 @@ var fs = require('fs');
 
 let assetsPublicPath = './';
 
+const url = "https://10.0.0.185:58081"
+
 module.exports = {
 	build: {
 		env: require('./prod.env'),
@@ -37,11 +39,11 @@ module.exports = {
 		},
 		proxyTable: {
 			'/login': {
-				target: 'https://10.0.0.90:8081',
+				target: 'https://10.0.0.185:58081',
 				secure: false, // 如果是https接口，需要配置这个参数
 			},
 			'/apis': {
-				target: 'https://10.0.0.19:58081/apis',
+				target: 'https://10.0.0.185:58081/apis',
 
 				changeOrigin: true,
 				ws: true, //如果要代理 websockets，配置这个参数
@@ -53,7 +55,7 @@ module.exports = {
 			},
 
 			'/public': {
-				target: 'https://10.0.0.90:8081/public',
+				target: 'https://10.0.0.185:58081/public',
 				changeOrigin: true,
 				// ws: true,        //如果要代理 websockets，配置这个参数
 				secure: false, // 如果是https接口，需要配置这个参数

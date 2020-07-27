@@ -75,6 +75,7 @@ export default {
         name: "",
         datatype: "A",
         rdata: "",
+        rdataBackup: "",
         ttl: 0
       },
       viewId: "",

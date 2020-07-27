@@ -4,6 +4,9 @@ import { del, post, put, get, axios } from "./axios";
 import * as requestMethods from "./request";
 import router from "@/router";
 
+import moment from "moment";
+moment.locale("zh-cn");
+
 const { getApiByRoute, getRouteByLink } = requestMethods;
 
 function showMessage(type, msg, scope) {
@@ -118,8 +121,9 @@ Vue.prototype.$getViewList = async (params) => {
 /**
  * 修剪日期，将日期的多余的Z、T以及+号后面的内容去掉
  */
-Vue.prototype.$trimDate = (date) =>
-  date ? date.replace("T", " ").replace(/(Z|\+\S*)/g, "") : "";
+Vue.prototype.$trimDate = (date, format = "YYYY-MM-DD hh:mm:ss") =>
+  // date ? date.replace("T", " ").replace(/(Z|\+\S*)/g, "") : "";
+  date ? moment(date).format(format) : "";
 
 Vue.prototype.$get = get;
 Vue.prototype.$put = put;

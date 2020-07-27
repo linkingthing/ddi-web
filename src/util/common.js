@@ -200,6 +200,9 @@ export const getQueryString = (name) => {
 };
 
 export const IPv6SimpleValidateFunc = (rule, value, callback) => {
+  if (!value.trim()) {
+    callback();
+  }
   if (ipv6IsValid(value.trim())) {
     callback();
   }

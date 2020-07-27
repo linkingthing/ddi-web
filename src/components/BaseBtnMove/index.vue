@@ -35,6 +35,7 @@ export default {
   cursor: pointer;
   margin-left: 16px;
   background-size: cover;
+  vertical-align: bottom;
 }
 </style>
 
