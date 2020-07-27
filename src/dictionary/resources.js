@@ -40,6 +40,8 @@ export default {
   dhcpconfig: "基础配置",
   dnsglobalconfig: "全局TTL",
   globalConfig: "DNS日志开关",
+  dnslog: "dns日志",
+  urlredirect: "url重定向",
   /** 用户 */
   user: "用户信息"
 };
