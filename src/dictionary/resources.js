@@ -31,7 +31,7 @@ export default {
   segment: "IP地址规划",
   plannedsubnet: "规划子网",
   scannedsubnet: "扫描子网",
-  router: "设备探测",
+  networkequipment: "设备探测",
   networkinterface: "网络接口",
   /** metric */
   node: "node",

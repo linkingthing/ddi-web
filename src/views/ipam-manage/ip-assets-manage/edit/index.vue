@@ -6,27 +6,23 @@
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
-
-    <div class="ip-assets-manage-edit">
-      <Form
-        ref="form"
-        label-position="left"
-        :label-width="100"
-        :label-colon="true"
-        :rules="rules"
-        :model="formModel"
-      >
-        <common-form
-          :form-model="formModel"
-          :form-item-list="formItemList"
-        />
-      </Form>
-    </div>
+    <Form
+      ref="form"
+      label-position="left"
+      :label-width="100"
+      :label-colon="true"
+      :rules="rules"
+      :model="formModel"
+    >
+      <common-form
+        :form-model="formModel"
+        :form-item-list="formItemList"
+      />
+    </Form>
   </common-modal>
 </template>
 
 <script>
-import { ipv4IsValid, ipv6IsValid } from "@/util/common";
 import { formItemList, rules } from "./define";
 
 export default {
@@ -107,10 +103,12 @@ export default {
         mac: "",
         name: "",
         deviceType: "",
+        computerRoom: "",
+        computerRack: "",
+        switchPort: "",
         deployedService: "",
         department: "",
         responsiblePerson: "",
-        location: "",
         telephone: ""
       };
     },
@@ -155,7 +153,3 @@ export default {
   }
 };
 </script>
-
-<style lang="less">
-@import "./index.less";
-</style>

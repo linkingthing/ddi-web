@@ -39,20 +39,44 @@ export const columns = scope => [
     tooltip
   },
   {
+    title: "IP地址",
+    key: "name",
+    align: "center",
+    tooltip
+  },
+  {
     title: "终端名称",
     key: "name",
     align: "center",
     tooltip
   },
   {
-    title: "设备类型",
+    title: "终端类型",
     key: "deviceTypeText",
     align: "center",
     tooltip
   },
   {
-    title: "业务名称",
-    key: "deployedService",
+    title: "交换机名称",
+    key: "switchName",
+    align: "center",
+    tooltip
+  },
+  {
+    title: "机房",
+    key: "computerRoom",
+    align: "center",
+    tooltip
+  },
+  {
+    title: "机柜",
+    key: "computerRack",
+    align: "center",
+    tooltip
+  },
+  {
+    title: "端口",
+    key: "switchPort",
     align: "center",
     tooltip
   },
@@ -63,8 +87,8 @@ export const columns = scope => [
     tooltip
   },
   {
-    title: "地理位置",
-    key: "location",
+    title: "负责人",
+    key: "responsiblePerson",
     align: "center",
     tooltip
   },

@@ -72,9 +72,9 @@ export default {
       }
     },
     {
-      name: 'device-scan',
+      name: 'device-detect',
       path: '/address/ipam/routers',
-      component: () => import(/* webpackChuckName: "device-scan" */ "@/views/ipam-manage/device-scan"),
+      component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
         title: "设备探测"
       }
