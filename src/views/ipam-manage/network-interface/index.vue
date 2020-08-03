@@ -277,7 +277,6 @@ export default {
         { percent: percent1 },
         { percent: percent2 },
         { percent: percent3 }
-        // { percent: percent4 }
       ] = this.typeLegends;
 
       this.typeChart.setOption(generatePieOption({ 
@@ -297,10 +296,6 @@ export default {
             name: "固定地址",
             value: percent3
           }
-          // {
-          //   name: "未管理地址",
-          //   value: percent4
-          // }
         ]
       }));
     },
@@ -355,12 +350,21 @@ export default {
         let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?mac=${row.mac}`));
         
         let res = data[0] || {};
+
+        const switchName = row.switchName || res.switchName;
+        const switchPort = row.switchPort || res.switchPort;
+        const computerRack = row.computerRack || res.computerRack;
+        const computerRoom = row.computerRoom || res.computerRoom;
         
         this.$router.push({
           name: "ip-assets-manage",
           query: {
             id: res.id,
-            mac: row.mac
+            mac: row.mac,
+            switchName,
+            switchPort,
+            computerRack,
+            computerRoom
           }
         });
       } catch (err) {

@@ -105,6 +105,7 @@ export default {
         mac: "",
         name: "",
         deviceType: "",
+        switchName: "",
         computerRoom: "",
         computerRack: "",
         switchPort: "",

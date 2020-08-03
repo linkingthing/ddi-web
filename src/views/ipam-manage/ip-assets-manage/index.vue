@@ -120,19 +120,34 @@ export default {
   async mounted() {    
     this.handleQuery();
 
-    const { id, mac } = this.$route.query;
+    const { 
+      id, 
+      mac,
+      switchName,
+      switchPort,
+      computerRack,
+      computerRoom 
+    } = this.$route.query;
+
+    this.currentData = { 
+      mac,
+      switchName,
+      switchPort,
+      computerRack,
+      computerRoom 
+    };
 
     if (id) {
       try {
         let data = await this.$get({ url: this.url + "/" + id });        
 
-        this.currentData = data;
+        this.currentData = {
+          ...data,
+          ...this.currentData
+        };
       } catch (err) {
         this.$handleError(err);
       }
-    }
-    else if (mac) {
-      this.currentData = { mac };
     }
 
     if (mac) {
