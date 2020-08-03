@@ -1,5 +1,5 @@
 import { isIp, mobilePhoneReg } from "@/util/common";
-import { deviceTypes } from "../define";
+import { deviceTypes, manufacturers } from "../define";
 
 const required = true;
 
@@ -19,7 +19,7 @@ export const formItemList = isNew => [
     type: "input",
     required,
     maxlength: 50,
-    placeholder: "请输入终端名称"
+    placeholder: "请输入管理IP"
   },
   {
     label: "设备类型",
@@ -39,8 +39,8 @@ export const formItemList = isNew => [
   {
     label: "厂商",
     model: "manufacturer",
-    type: "input",
-    maxlength: 50,
+    type: "select",
+    children: manufacturers,
     placeholder: "请输入厂商"
   },
   {
@@ -129,6 +129,7 @@ export const rules = {
   ],
   administrationAddress: [
     {
+      required,
       validator: validateIP, 
       trigger: "blur"
     }
@@ -137,6 +138,12 @@ export const rules = {
     {
       required,
       message: "请选择设备类型"
+    }
+  ],
+  manufacturer: [
+    {
+      required,
+      message: "请选择厂商"
     }
   ],
   telephone: [

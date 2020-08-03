@@ -1,27 +1,23 @@
 <template>
-  <common-modal  
+  <common-modal
     :visible.sync="dialogVisible"
     :width="415"
     :title="getTitle"
+    custom-class="device-detect-edit"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
 
-    <div class="device-detect-edit">
-      <Form
-        ref="form"
-        label-position="left"
-        :label-width="100"
-        :label-colon="true"
-        :rules="rules"
-        :model="formModel"
-      >
-        <common-form
-          :form-model="formModel"
-          :form-item-list="formItemList"
-        />
-      </Form>
-    </div>
+    <Form
+      ref="form"
+      label-position="left"
+      :label-width="100"
+      :label-colon="true"
+      :rules="rules"
+      :model="formModel"
+    >
+      <common-form :form-model="formModel" :form-item-list="formItemList" />
+    </Form>
   </common-modal>
 </template>
 
@@ -46,9 +42,9 @@ export default {
       loading: false,
       dialogVisible: false,
       isEdit: false,
-      url: this.$getApiByRoute().url,      
+      url: this.$getApiByRoute().url,
 
-      formModel: this.initForm(),      
+      formModel: this.initForm(),
       formItemList: [],
       rules
     };
@@ -63,7 +59,7 @@ export default {
   watch: {
     visible(val) {
       if (!val) return;
-      
+
       this.dialogVisible = val;
     },
 
@@ -89,10 +85,12 @@ export default {
 
   methods: {
     setValue(val) {
-      if (!val) val = {};
-      
-      this.formModel = { 
-        ...val
+      let value = val;
+
+      if (!val) value = {};
+
+      this.formModel = {
+        ...value
       };
 
       this.formItemList = formItemList(!val);
@@ -132,19 +130,23 @@ export default {
         }
 
         await this[action]({ url, params: this.getParams() });
-        
+
         this.$$success("保存成功！");
 
         this.$emit("saved");
 
         this.dialogVisible = false;
-      } 
-      catch (err) {
+      } catch (err) {
         this.$handleError(err);
-      }
-      finally {
+      } finally {
         this.loading = false;
       }
+    },
+
+    getParams() {
+      return {
+        ...this.formModel
+      };
     },
 
     validate() {

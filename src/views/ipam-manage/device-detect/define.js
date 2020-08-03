@@ -2,72 +2,86 @@ export const columns = scope => [
   {
     title: "设备名称",
     key: "name",
-    align: "left"
+    align: "left",
+    width: 200
   },
   {
     title: "管理地址",
     key: "administrationAddress",
-    align: "left"
+    align: "center",
+    width: 220
   },
   {
     title: "设备类型",
     key: "equipmentType",
-    align: "left"
+    align: "center",
+    width: 140
   },
   {
     title: "序列号",
     key: "serialNumber",
-    align: "left"
+    align: "center",
+    width: 160
   },
   {
     title: "厂商",
     key: "manufacturer",
-    align: "left"
+    align: "center",
+    width: 120
   },
   {
     title: "固件版本",
     key: "firmwareVersion",
-    align: "left"
+    align: "center",
+    width: 140
   },
   {
     title: "上联地址",
     key: "uplinkAddress",
-    align: "left"
+    align: "center",
+    width: 180
   },
   {
     title: "下联地址",
     key: "downlinkAddress",
-    align: "left"
+    align: "center",
+    width: 180
   },
   {
     title: "机房",
     key: "computerRoom",
-    align: "left"
+    align: "center",
+    width: 120
   },
   {
     title: "机柜",
     key: "computerRack",
-    align: "left"
+    align: "center",
+    width: 120
   },
   {
     title: "所属部门",
     key: "department",
-    align: "left"
+    align: "center",
+    width: 140
   },
   {
     title: "地理位置",
     key: "location",
-    align: "left"
+    align: "center",
+    width: 180
   },
   {
     title: "负责人",
     key: "responsiblePerson",
-    align: "left"
+    align: "center",
+    width: 120
   },
   {
     title: "联系电话",
     key: "telephone",
-    align: "left"
+    align: "center",
+    width: 140
   },
   {
     title: "操作",
@@ -125,5 +139,20 @@ export const deviceTypes = [
   {
     text: "其他",
     label: "other"
+  }
+];
+
+export const manufacturers = [
+  {
+    text: "cisco",
+    label: "cisco"
+  },
+  {
+    text: "huawei",
+    label: "huawei"
+  },
+  {
+    text: "h3c",
+    label: "h3c"
   }
 ];

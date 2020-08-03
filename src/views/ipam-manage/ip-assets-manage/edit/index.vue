@@ -3,9 +3,11 @@
     :visible.sync="dialogVisible"
     :width="415"
     :title="getTitle"
+    custom-class="ip-assets-edit"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
+
     <Form
       ref="form"
       label-position="left"

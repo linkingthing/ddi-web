@@ -73,7 +73,7 @@ export default {
     },
     {
       name: 'device-detect',
-      path: '/address/ipam/routers',
+      path: '/address/ipam/networkequipments',
       component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
         title: "设备探测"
