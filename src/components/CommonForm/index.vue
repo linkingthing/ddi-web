@@ -91,6 +91,7 @@
         :size="item.size"
         :placeholder="item.placeholder"
         :multiple="item.multiple"
+        :clearable="item.clearable"
       >
         <Option
           v-for="e in item.children"
@@ -197,13 +198,14 @@ export default {
         }
         formItemList.push(item);
       });
+
       return formItemList;
     }
   },
   created() {
   },
   mounted() { },
-  methods: {},
+  methods: {}
 };
 </script>
 

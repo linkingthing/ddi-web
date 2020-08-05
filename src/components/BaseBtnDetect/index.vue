@@ -11,7 +11,7 @@ export default {};
 
 <style lang="less">
 .btn-detect {
-  font-size: 21px;
+  font-size: 21px !important;
   margin-left: 16px;
   color: #6a94ea !important;
   cursor: pointer;

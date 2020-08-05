@@ -33,6 +33,7 @@
             style="width: 160px"
             v-model="condition.equipmentType"
             @on-change="handleQuery"
+            clearable
           >
             <Option
               v-for="item in deviceTypes"

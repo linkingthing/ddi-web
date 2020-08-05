@@ -111,7 +111,8 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 130,
+    width: 140,
+    fixed: "right",
     render: (h, { row }) => 
       h("div", [
         h("btn-edit", {

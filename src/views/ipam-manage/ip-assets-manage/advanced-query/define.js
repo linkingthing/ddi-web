@@ -6,6 +6,7 @@ export const formItemList = [
     model: "deviceType",
     type: "select",
     placeholder: "请选择终端类型",
+    clearable: true,
     children: JSON.parse(JSON.stringify(deviceTypes))
   },
   {

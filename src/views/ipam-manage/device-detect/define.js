@@ -87,6 +87,7 @@ export const columns = scope => [
     title: "操作",
     width: 180,
     className: "operate-column",
+    fixed: "right",
     render: (h, { row }) => 
       h("div", [
         h("btn-edit", {
