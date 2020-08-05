@@ -1,5 +1,5 @@
 <template>
-  <div class="ip-assets-manage">   
+  <div class="device-detect">   
     <IviewLoading v-if="loading" />
 
     <table-page 
@@ -10,37 +10,42 @@
     > 
       <template slot="top-left">
         <div class="condition-item">
-          <label class="condition-item-label">MAC</label>
-          <Input
-            v-model="condition.mac"
-            placeholder="请输入MAC地址"
-            class="top-input"
-            @on-enter="handleQuery" />
-        </div>
-        
-        <div class="condition-item">
-          <label class="condition-item-label">IP地址</label>
-          <Input
-            v-model="condition.mac"
-            placeholder="请输入IP地址"
-            class="top-input"
-            @on-enter="handleQuery" />
-        </div>
-        
-        <div class="condition-item">
-          <label class="condition-item-label">终端名称</label>
+          <label class="condition-item-label">设备名称</label>
           <Input
             v-model="condition.name"
-            placeholder="请输入终端名称"
+            placeholder="请输入设备名称"
             class="top-input"
             @on-enter="handleQuery" />
         </div>
         
         <div class="condition-item">
-          <label class="condition-item-label">交换机名称</label>
+          <label class="condition-item-label">管理地址</label>
           <Input
-            v-model="condition.switchName"
-            placeholder="请输入交换机名称"
+            v-model="condition.administrationAddress"
+            placeholder="请输入管理地址"
+            class="top-input"
+            @on-enter="handleQuery" />
+        </div>
+
+        <div class="condition-item">
+          <label class="condition-item-label">设备类型</label>
+          <Select
+            style="width: 160px"
+            v-model="condition.equipmentType"
+            @on-change="handleQuery"
+          >
+            <Option
+              v-for="item in deviceTypes"
+              :key="item.label"
+              :value="item.label">{{item.text}}</Option>
+          </Select>
+        </div>
+        
+        <div class="condition-item">
+          <label class="condition-item-label">厂商</label>
+          <Input
+            v-model="condition.manufacturer"
+            placeholder="请输入厂商"
             class="top-input"
             @on-enter="handleQuery" />
         </div>
@@ -77,6 +82,12 @@
       @saved="handleSaved"
     />
 
+    <Detect 
+      :visible.sync="showDetect"
+      :data="currentData"
+      @saved="handleSaved"
+    />
+
     <AdvancedSearch 
       :visible.sync="showAdvance"
       @comfirmed="handleAdvancedQuery" 
@@ -84,12 +95,9 @@
   </div>
 </template>
 
-<style lang="less">
-@import "index.less";
-</style>
-
 <script>
 import Edit from "./edit";
+import Detect from "./detect";
 import AdvancedSearch from "./advanced-query";
 
 import { columns, deviceTypes } from "./define";
@@ -97,6 +105,7 @@ import { columns, deviceTypes } from "./define";
 export default {
   components: {
     Edit,
+    Detect,
     AdvancedSearch
   },
 
@@ -104,55 +113,24 @@ export default {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      deviceTypes: [{ text: "全部", label: "全部" },...deviceTypes],
+      deviceTypes,
       condition: {
-        mac: "",
-        deviceType: "全部"
+        name: "",
+        administrationAddress: "",
+        equipmentType: "gateway",
+        manufacturer: ""
       },
       tableData: [],
       columns: columns(this),
       showAdvance: false,
       showEdit: false,
+      showDetect: false,
       currentData: null
     };
   },
 
-  async mounted() {    
+  mounted() {    
     this.handleQuery();
-
-    const { 
-      id, 
-      mac,
-      switchName,
-      switchPort,
-      computerRack,
-      computerRoom 
-    } = this.$route.query;
-
-    this.currentData = { 
-      mac,
-      switchName,
-      switchPort,
-      computerRack,
-      computerRoom 
-    };
-
-    if (id) {
-      try {
-        let data = await this.$get({ url: this.url + "/" + id });        
-
-        this.currentData = {
-          ...data,
-          ...this.currentData
-        };
-      } catch (err) {
-        this.$handleError(err);
-      }
-    }
-
-    if (mac) {
-      this.showEdit = true;
-    }
   },
 
   methods: {
@@ -171,24 +149,10 @@ export default {
       this.loading = true;
 
       try {
-        let { url, condition } = this;
-
-        let { deviceType } = condition;
-
-        if (deviceType === "全部") {
-          deviceType = "";
-        }
-
-        let { data } = await this.$get({ url: this.$formatQuerys({ ...params, deviceType }, url) });
+        let res = await this.$get({ url: this.url, params });
         
-        this.tableData = data.map(item => {
-          const type = deviceTypes.find(({ label }) => label === item.deviceType);
-
-          item.deviceTypeText = type ? type.text : "";
-
-          return item;
-        });
-      } catch (err) {
+        this.tableData = res.data;
+      } catch (err) { 
         this.$handleError(err);
       }
       finally {        
@@ -206,7 +170,14 @@ export default {
       this.currentData = { ...res };
     },
 
+    handleDetect(res) {
+      this.showDetect = true;
+      this.currentData = { ...res };
+    },
+
     handleSaved() {
+      this.showCreate = false;
+
       this.handleQuery();
     },
 
@@ -232,3 +203,7 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+@import "./index.less";
+</style>

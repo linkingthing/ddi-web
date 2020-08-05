@@ -1,36 +1,28 @@
 <template>
-  <common-modal  
+  <common-modal
     :visible.sync="dialogVisible"
     :width="415"
     :title="getTitle"
+    custom-class="device-detect-edit"
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
 
-    <div class="device-scan-edit">
-      <div class="info-row-inline">
-        <div class="info-row-label">探测设备IP</div>
-        <Input
-          maxlength="50"
-          v-model="address"
-          placeholder="请输入探测设备IP"
-          class="info-row-input" />
-      </div>
-
-      <div class="info-row-inline">
-        <div class="info-row-label">SNMP团体名</div>
-        <Input
-          maxlength="255"
-          v-model="community"
-          placeholder="请输入SNMP团体名"
-          class="info-row-input" />
-      </div>
-    </div>
+    <Form
+      ref="form"
+      label-position="left"
+      :label-width="100"
+      :label-colon="true"
+      :rules="rules"
+      :model="formModel"
+    >
+      <common-form :form-model="formModel" :form-item-list="formItemList" />
+    </Form>
   </common-modal>
 </template>
 
 <script>
-import { ipv4IsValid, ipv6IsValid } from "@/util/common";
+import { formItemList, rules } from "./define";
 
 export default {
   props: {
@@ -51,8 +43,10 @@ export default {
       dialogVisible: false,
       isEdit: false,
       url: this.$getApiByRoute().url,
-      address: "",
-      community: "public"
+
+      formModel: this.initForm(),
+      formItemList: [],
+      rules
     };
   },
 
@@ -65,13 +59,15 @@ export default {
   watch: {
     visible(val) {
       if (!val) return;
-      
+
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
       if (!val) {
-        this.setValue();
+        this.$refs.form.resetFields();
+
+        this.formModel = this.initForm();
       }
 
       this.$emit("update:visible", val);
@@ -89,10 +85,34 @@ export default {
 
   methods: {
     setValue(val) {
-      if (!val) val = {};
+      let value = val;
 
-      this.address = val.address || "";
-      this.community = val.community || "public";
+      if (!val) value = {};
+
+      this.formModel = {
+        ...value
+      };
+
+      this.formItemList = formItemList(!val);
+    },
+
+    initForm() {
+      return {
+        name: "",
+        administrationAddress: "",
+        equipmentType: "",
+        serialNumber: "",
+        manufacturer: "",
+        firmwareVersion: "",
+        uplinkAddress: "",
+        downlinkAddress: "",
+        computerRoom: "",
+        computerRack: "",
+        location: "",
+        department: "",
+        responsiblePerson: "",
+        telephone: ""
+      };
     },
 
     async handleConfirm() {
@@ -110,48 +130,32 @@ export default {
         }
 
         await this[action]({ url, params: this.getParams() });
-        
+
         this.$$success("保存成功！");
 
         this.$emit("saved");
 
         this.dialogVisible = false;
-      } 
-      catch (err) {
+      } catch (err) {
         this.$handleError(err);
-      }
-      finally {
+      } finally {
         this.loading = false;
       }
     },
 
-    validate() {
-      let { address, community } = this;
-
-      address = address.trim();
-      community = community.trim();
-      
-      if (!ipv4IsValid(address) && !ipv6IsValid(address)) {
-        return Promise.reject({ message: "请输入正确的探测设备IP！" });
-      }
-
-      if (!/^[a-zA-Z0-9]+$/g.test(community)) {
-        return Promise.reject({ message: "请输入正确的SNMP团体名！" });
-      }
-
-      return Promise.resolve();
-    },
-
     getParams() {
       return {
-        address: this.address.trim(),
-        community: this.community.trim()
+        ...this.formModel
       };
+    },
+
+    validate() {
+      return new Promise((resolve, reject) => {
+        this.$refs.form.validate(valid => {
+          return valid ? resolve() : reject();
+        });
+      });
     }
   }
 };
 </script>
-
-<style lang="less">
-@import "./index.less";
-</style>

@@ -31,15 +31,17 @@ export default {
   segment: "IP地址规划",
   plannedsubnet: "规划子网",
   scannedsubnet: "扫描子网",
-  router: "设备探测",
+  networkequipment: "设备探测",
   networkinterface: "网络接口",
   /** metric */
   node: "node",
-  dns: "dns",
-  dhcp: "dhcp",
+  dns: "DNS",
+  dhcp: "DHCP",
   dhcpconfig: "基础配置",
-  dnsglobalconfig: "全局TTL",
+  dnsglobalconfig: "DNS全局配置",
   globalConfig: "DNS日志开关",
+  dnslog: "DNS日志",
+  urlredirect: "url重定向",
   /** 用户 */
   user: "用户信息"
 };

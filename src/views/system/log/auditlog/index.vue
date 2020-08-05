@@ -119,10 +119,11 @@ export default {
           case "post": return "新建";
           case "delete": return "删除";
           case "exportcsv": return "导出";
+          case "changingrrs": return "A和AAAA记录切换";
         }
       };
       
-      const opper = getOpperText(method);
+      const opper = getOpperText(method) + "-";
 
       return `${username}${opper}${resources[resourceKind]}`;
     },

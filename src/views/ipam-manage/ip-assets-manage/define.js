@@ -36,42 +36,77 @@ export const columns = scope => [
     title: "MAC",
     key: "mac",
     align: "left",
+    width: 180,
+    tooltip
+  },
+  {
+    title: "IP地址",
+    key: "name",
+    align: "center",
+    width: 180,
     tooltip
   },
   {
     title: "终端名称",
     key: "name",
     align: "center",
+    width: 180,
     tooltip
   },
   {
-    title: "设备类型",
+    title: "终端类型",
     key: "deviceTypeText",
     align: "center",
+    width: 140,
     tooltip
   },
   {
-    title: "业务名称",
-    key: "deployedService",
+    title: "交换机名称",
+    key: "switchName",
     align: "center",
+    width: 160,
+    tooltip
+  },
+  {
+    title: "机房",
+    key: "computerRoom",
+    align: "center",
+    width: 140,
+    tooltip
+  },
+  {
+    title: "机柜",
+    key: "computerRack",
+    align: "center",
+    width: 140,
+    tooltip
+  },
+  {
+    title: "端口",
+    key: "switchPort",
+    align: "center",
+    width: 120,
     tooltip
   },
   {
     title: "所属部门",
     key: "department",
     align: "center",
+    width: 150,
     tooltip
   },
   {
-    title: "地理位置",
-    key: "location",
+    title: "负责人",
+    key: "responsiblePerson",
     align: "center",
+    width: 150,
     tooltip
   },
   {
     title: "联系电话",
     key: "telephone",
     align: "center",
+    width: 150,
     tooltip
   },
   {
