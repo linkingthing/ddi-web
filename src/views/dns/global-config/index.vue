@@ -28,7 +28,7 @@
         <Button
           type="primary"
           @click="handleSave"
-        >保持</Button>
+        >保存</Button>
       </FormItem>
     </Form>
   </div>
