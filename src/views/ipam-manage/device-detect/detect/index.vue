@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { ipv4IsValid, ipv6IsValid, portIsValidate } from "@/util/common";
+import { portIsValidate } from "@/util/common";
 
 export default {
   props: {
@@ -106,10 +106,10 @@ export default {
         await this.validate();
 
         this.loading = true;
+        
+        let url = this.url + "/" + this.data.id + "?action=snmp";
 
-        let url = this.url + "/" + this.data.id;
-
-        await this.$put({ url, params: this.getParams() });
+        await this.$post({ url, params: this.getParams() });
         
         this.$$success("保存成功！");
 
@@ -126,15 +126,10 @@ export default {
     },
 
     validate() {
-      let { administrationAddress, snmpCommunity, snmpPort } = this;
+      let { snmpCommunity, snmpPort } = this;
 
-      administrationAddress = administrationAddress.trim();
       snmpCommunity = snmpCommunity.trim();
-      snmpPort = +snmpPort.trim();
-      
-      if (!ipv4IsValid(administrationAddress) && !ipv6IsValid(administrationAddress)) {
-        return Promise.reject({ message: "请输入正确的探测设备IP！" });
-      }
+      snmpPort = snmpPort.toString().trim();
 
       if (!portIsValidate(snmpPort)) {
         return Promise.reject({ message: "请输入正确的SNMP探测端口号！" });
@@ -149,9 +144,8 @@ export default {
 
     getParams() {
       return {
-        administrationAddress: this.administrationAddress.trim(),
-        snmpCommunity: this.snmpCommunity.trim(),
-        snmpPort: this.snmpPort.trim()
+        community: this.snmpCommunity.trim(),
+        port: parseInt(this.snmpPort.toString().trim())
       };
     }
   }

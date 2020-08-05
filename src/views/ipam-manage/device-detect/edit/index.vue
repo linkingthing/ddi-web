@@ -64,9 +64,9 @@ export default {
     },
 
     dialogVisible(val) {
-      if (!val) {
-        this.$refs.form.resetFields();
+      this.$refs.form.resetFields();
 
+      if (!val) {
         this.formModel = this.initForm();
       }
 

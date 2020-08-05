@@ -85,7 +85,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 140,
+    width: 180,
     className: "operate-column",
     render: (h, { row }) => 
       h("div", [
@@ -96,7 +96,7 @@ export const columns = scope => [
             }
           }
         }),
-        h("btn-edit", {
+        h("btn-detect", {
           on: {
             click: () => {
               scope.handleDetect(row);

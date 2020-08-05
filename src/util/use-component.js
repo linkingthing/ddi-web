@@ -24,6 +24,8 @@ Vue.component("btn-move", BaseBtnMove);
 import BaseBtnSearch from "@/components/BaseBtnSearch";
 Vue.component("btn-search", BaseBtnSearch);
 
+import BaseBtnDetect from "@/components/BaseBtnDetect";
+Vue.component("btn-detect", BaseBtnDetect);
 
 import TablePagination from "@/components/TablePagination";
 Vue.component("table-page", TablePagination);
