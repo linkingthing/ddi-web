@@ -29,7 +29,7 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
-              {{item.title}}
+            {{item.title}}
             </MenuItem>
           </Menu>
         </div>
@@ -46,20 +46,17 @@
             @on-click="handleClickMenu"
           >
             <a href="javascript:void(0)">
-              <i class="avatar icon-header-avatar"></i>
+              <i class="avatar icon-header-avatar" />
               Admin
               <Icon type="md-arrow-dropdown" />
             </a>
             <DropdownMenu slot="list">
+              <DropdownItem
+                v-for="item in userDropdownMenu"
+                :name="item.key"
+                :key="item.key"
+              >{{item.label}}</DropdownItem>
 
-              <DropdownItem
-                name="password"
-                key="password"
-              >修改密码</DropdownItem>
-              <DropdownItem
-                name="out"
-                key="out"
-              >退出系统</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -103,7 +100,6 @@
 
 <script>
 import { mapMutations } from "vuex";
-import services from "@/services";
 import alarmWs from "@/util/ws";
 
 import logoSrc from "@/assets/images/logo.png";
@@ -125,6 +121,23 @@ export default {
       title: "系统管理",
       url: "/system"
     }];
+
+    this.userDropdownMenu = [
+      {
+        label: "修改密码",
+        key: "password"
+      },
+      {
+        label: "访问控制",
+        key: "permissions"
+      },
+      {
+        label: "退出系统",
+        key: "out"
+      }
+    ];
+
+
     return {
       logoSrc,
       currentMainMenu: "/monitor",
@@ -148,7 +161,6 @@ export default {
   created() {
 
     alarmWs.getMessage = ({ count }) => {
-      console.log(count);
       this.alarmCount = count;
     };
   },
@@ -168,6 +180,11 @@ export default {
         self.setToken("");
         self.$router.push({
           path: "/login"
+        });
+      }
+      if (name === "permissions") {
+        self.$router.push({
+          path: "/auth/auth/user/group"
         });
       }
       if (name === "password") {
@@ -196,7 +213,7 @@ export default {
         this.$Message.error("两次密码输入不一致");
       }
     },
-    
+
     cancel() {
       this.visible = false;
     }

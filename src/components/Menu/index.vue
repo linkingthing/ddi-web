@@ -17,11 +17,11 @@
                 @click.native="handleJump(child.path)"
                 class="sigle-menu"
               >
-                <i
-                  class="menu-icon"
-                  :class="child.icon"
-                />
-                {{ child.meta.title }}
+              <i
+                class="menu-icon"
+                :class="child.icon"
+              />
+              {{ child.meta.title }}
               </MenuItem>
             </template>
           </template>
@@ -34,12 +34,12 @@
               @click.native="handleJump(item.path)"
               class="single-node"
             >
-              <i
-                v-if="item.icon"
-                class="menu-icon"
-                :class="item.icon"
-              />
-              {{ item.meta.title }}
+            <i
+              v-if="item.icon"
+              class="menu-icon"
+              :class="item.icon"
+            />
+            {{ item.meta.title }}
             </MenuItem>
 
             <Submenu
@@ -64,7 +64,7 @@
                   :name="child.name"
                   @click.native="handleJump(child.path)"
                 >
-                  {{ child.meta.title }}
+                {{ child.meta.title }}
                 </MenuItem>
               </template>
             </Submenu>
@@ -85,8 +85,6 @@ export default {
   data() {
 
     return {
-      // eslint-disable-next-line no-undef
-      PACK_SYSTEM,
       theme: "dark",
       ops: {
         vuescroll: {
@@ -105,7 +103,8 @@ export default {
         "forward",
         "dhcp-dhcp",
         "system-log",
-        "system-alarms"
+        "system-alarms",
+        "auth-user"
       ],
       routes: [],
       tab: "" // 路由tab
@@ -157,7 +156,7 @@ export default {
           return item;
         }
       }).filter(item => {
-        return "dns,monitor,address,system".includes(item.meta.range);
+        return "dns,monitor,address,system,auth".includes(item.meta.range);
       });
 
       // this.openNames = this.routes.map(item => item.name);      
@@ -165,7 +164,6 @@ export default {
 
     hasShowMenu(range) {
       const [, moduleName] = this.$route.path.split("/");
-
       return moduleName === range;
     }
 

@@ -5,11 +5,13 @@
       v-for="(item) in formItemListParser"
       :key="item.name"
       :prop="item.model"
+      :style="item.style"
     >
       <component
         :is="item.component"
         v-model="formModel[item.model]"
         v-if="item.type === 'component'"
+        v-bind="item.props"
       />
       <i-input
         v-if="item.type === 'input'"
@@ -126,9 +128,17 @@
         v-if="item.type==='number2'"
         v-model="formModel[item.model]"
         :maxlength="16"
-        placeholder=""
+        :placeholder="item.placeholder"
         type="text"
         @on-focus="inputFocus(item.model)"
+      />
+      <Input
+        v-if="item.type==='password'"
+        v-model="formModel[item.model]"
+        :maxlength="16"
+        password
+        :placeholder="item.placeholder"
+        type="password"
       />
 
       <div
