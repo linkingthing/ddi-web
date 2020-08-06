@@ -152,7 +152,13 @@ export default {
       try {
         let res = await this.$get({ url: this.url, params });
         
-        this.tableData = res.data;
+        this.tableData = res.data.map(item => {
+          const equipmentType = deviceTypes.find(({ label }) => label === item.equipmentType);
+
+          item.equipmentTypeText = equipmentType ? equipmentType.text : "";
+
+          return item;
+        });
       } catch (err) { 
         this.$handleError(err);
       }

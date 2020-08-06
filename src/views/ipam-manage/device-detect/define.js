@@ -13,7 +13,7 @@ export const columns = scope => [
   },
   {
     title: "设备类型",
-    key: "equipmentType",
+    key: "equipmentTypeText",
     align: "center",
     width: 140
   },
