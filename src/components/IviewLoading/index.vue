@@ -3,6 +3,7 @@
     fix
     size="large"
     class="loading-custom"
+    :class="{'is-global': global}"
   >
     <Icon
       type="ios-loading"
@@ -20,6 +21,11 @@ export default {
     text: {
       type: String,
       default: "加载中"
+    },
+
+    global: {
+      type: Boolean,
+      default: true
     }
   }
 };
