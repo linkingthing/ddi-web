@@ -69,8 +69,6 @@ export default {
     dialogVisible(val) {
       if (!val) {
         this.$refs.form.resetFields();
-
-        this.formModel = this.initForm();
         
         if (this.$route.query.mac) {
           this.$refresh();
@@ -89,15 +87,17 @@ export default {
   },
 
   methods: {
-    setValue(val) {
+    async setValue(val) {
       let value = val || {};
+
+      this.formItemList = formItemList(!val);
+
+      await this.$nextTick();
       
       this.formModel = { 
         ...value,
         deviceType: value.deviceType || "pc"
       };
-
-      this.formItemList = formItemList(!val);
     },
 
     initForm() {

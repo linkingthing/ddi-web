@@ -8,7 +8,6 @@ export const formItemList = isNew => [
     label: "设备名称",
     model: "name",
     type: "input",
-    required,
     disabled: !isNew,
     maxlength: 50,
     placeholder: "请输入设备名称"
@@ -17,7 +16,6 @@ export const formItemList = isNew => [
     label: "管理IP",
     model: "administrationAddress",
     type: "input",
-    required,
     maxlength: 50,
     placeholder: "请输入管理IP"
   },
@@ -26,7 +24,6 @@ export const formItemList = isNew => [
     model: "equipmentType",
     type: "select",
     children: deviceTypes,
-    required,
     placeholder: "请选择设备类型"
   },
   {
@@ -124,7 +121,8 @@ export const rules = {
   name: [
     {
       required,
-      message: "请输入设备名称"
+      message: "请输入设备名称",
+      trigger: "change,blur"
     }
   ],
   administrationAddress: [

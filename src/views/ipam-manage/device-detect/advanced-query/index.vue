@@ -7,6 +7,7 @@
   >
     <Form
       ref="form"
+      key="advanced-query"
       label-position="left"
       :label-width="120"
       :label-colon="true"

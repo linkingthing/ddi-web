@@ -64,10 +64,8 @@ export default {
     },
 
     dialogVisible(val) {
-      this.$refs.form.resetFields();
-
       if (!val) {
-        this.formModel = this.initForm();
+        this.$refs.form.resetFields();
       }
 
       this.$emit("update:visible", val);
@@ -84,16 +82,18 @@ export default {
   },
 
   methods: {
-    setValue(val) {
+    async setValue(val) {
       let value = val;
 
-      if (!val) value = {};
+      if (!val) value = {};      
+
+      this.formItemList = formItemList(!val);
+
+      await this.$nextTick();
 
       this.formModel = {
         ...value
       };
-
-      this.formItemList = formItemList(!val);
     },
 
     initForm() {
