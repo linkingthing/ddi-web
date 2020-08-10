@@ -124,7 +124,7 @@ export default {
   created() {
   },
   methods: {
-    ...mapMutations(["SET_TOKEN"]),
+    ...mapMutations(["SET_TOKEN", "SET_USERINFO"]),
 
     login() {
       this.$refs["formLogin"].validate(valid => {
@@ -134,12 +134,14 @@ export default {
             .then(res => {
               if (res.data.code === "200") {
                 this.SET_TOKEN(res.data.token);
+                this.SET_USERINFO(false);
                 this.$router.push({
                   path: "/"
                 });
               }
             })
             .catch(err => {
+              console.dir(err)
               this.$Message.error(err.message);
             });
         }

@@ -1,4 +1,4 @@
-import Layout from '@/views/layout';
+import Layout from "@/views/layout";
 
 /**
  * meta.notInMenu：表示不在菜单中显示
@@ -7,23 +7,27 @@ import Layout from '@/views/layout';
  */
 
 export default {
-	path: '/dns/dns/config',
-	component: Layout,
-	meta: {
-		title: '全局配置',
-		range: 'dns',
-		isFlat: true
-	},
-	children: [
-		{
-			icon: 'icon-global-config',
-			name: 'global-config',
+  path: "/dns/dns/config",
+  component: Layout,
+  meta: {
+    title: "全局配置",
+    range: "dns",
+    isFlat: true
+  },
+  name: "global-config-content",
+  children: [
+    {
+      icon: "icon-global-config",
+      name: "global-config",
       meta: {
-        title: '全局配置',
-        range: 'dns',
+        title: "全局配置",
+        range: "dns"
       },
-			path: '/dns/dns/config',
-			component: () => import(/* webpackChuckName: "option-config" */ '@/views/dns/global-config')
-		}
-	]
+      path: "/dns/dns/config",
+      component: () =>
+        import(
+          /* webpackChuckName: "option-config" */ "@/views/dns/global-config"
+        )
+    }
+  ]
 };

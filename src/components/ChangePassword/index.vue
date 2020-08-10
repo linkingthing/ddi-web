@@ -90,13 +90,6 @@ export default {
 
     username(val) {
       this.formModel.username = val;
-    },
-
-    formModel: {
-      deep: true,
-      handler(val) {
-        console.log(val)
-      }
     }
   },
 

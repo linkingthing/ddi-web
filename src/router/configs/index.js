@@ -9,30 +9,59 @@ import systemAlarms from "./system-alarms";
 import systemLog from "./system-log";
 import authControl from "./auth-control";
 
-let res = [
+const constRouter = [ipam, dns, forword, accessControl, dhcp];
+
+const superUserRouter = [
   node,
-  ipam,
-  dns,
-  forword,
-  accessControl,
-  dnsGlobalConfig,
-  dhcp,
   systemLog,
   systemAlarms,
+  dnsGlobalConfig,
   authControl
 ];
 
-res.forEach((item) => {
-  if (!item.meta) {
-    item.meta = {};
-  }
+function addMeta(arr) {
+  arr.forEach(item => {
+    if (!item.meta) {
+      item.meta = {};
+    }
 
-  item.children &&
-    item.children.forEach((child) => {
-      if (!child.meta) {
-        child.meta = {};
-      }
-    });
-});
+    item.children &&
+      item.children.forEach(child => {
+        if (!child.meta) {
+          child.meta = {};
+        }
+      });
+  });
+  return arr;
+}
 
-export default res;
+
+export default addMeta(constRouter);
+
+export const asyncRouter = addMeta(superUserRouter);
+
+export const superUserAllowList = [
+  "monitor",
+  "DNSDashboard",
+  "DHCPDashboard",
+  "ControllerDashboard",
+  
+
+  "global-config-content",
+  "global-config",
+  "concurrency-control",
+
+  "system-log",
+  "system-alarms",
+  "operate-logs",
+  "parse-logs",
+
+  "alarm-config",
+  "alarm-notice",
+  "alarm-info",
+
+  "auth-user",
+  "auth-user-group",
+  "auth-user-list",
+  "auth-role-list"
+];

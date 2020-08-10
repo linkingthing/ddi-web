@@ -77,7 +77,8 @@
 </template>
 
 <script>
-import routes from "@/router/configs";
+
+import configs, { asyncRouter, superUserAllowList } from "@/router/configs";
 
 export default {
   name: "menuNav",
@@ -145,21 +146,58 @@ export default {
       this.$router.push(res);
     },
 
-    formatMenus() {
-      this.routes = routes.map(item => {
-        if (item.meta.isSingle) {
-          let res = item.children.filter(item => !item.notInMenu)[0];
-          res.meta.isSingle = true;
-          return res;
+    flatTree(tree) {
+      let result = [];
+
+      tree.forEach(item => {
+
+        if (item.children) {
+          const innerResult = this.flatTree(item.children);
+          result = result.concat(innerResult);
         }
-        else {
-          return item;
-        }
-      }).filter(item => {
-        return "dns,monitor,address,system,auth".includes(item.meta.range);
+        result.push(item);
+
       });
 
-      // this.openNames = this.routes.map(item => item.name);      
+      return result;
+
+    },
+    formatMenus() {
+
+      const routeFlat = [...configs, ...asyncRouter];
+
+      this.routes = routeFlat
+        .map(item => {
+          if (item.meta.isSingle) {
+            let res = item.children.filter(item => !item.notInMenu)[0];
+            res.meta.isSingle = true;
+            return res;
+          }
+          else {
+            return item;
+          }
+        }).filter(item => {
+          return "dns,monitor,address,system,auth".includes(item.meta.range);
+        }).filter(item => {
+          const { userInfo } = this.$store.state.global;
+
+          if (userInfo) {
+            const { userType } = userInfo;
+
+            if (userType === "superUser") {
+              return item;
+            }
+
+            if (userType === "normalUser") {
+              console.log(item.name)
+              
+              return !superUserAllowList.includes(item.name);
+            }
+
+          }
+          return item;
+        });
+
     },
 
     hasShowMenu(range) {

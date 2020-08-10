@@ -76,7 +76,7 @@ export default {
       path: '/address/ipam/networkequipments',
       component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
-        title: "设备探测"
+        title: "设备管理"
       }
     }
   ]

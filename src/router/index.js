@@ -3,7 +3,10 @@ import Router from "vue-router";
 import Login from "../views/login";
 import DefaultLayout from "../views/default-layout";
 
-import configs from "./configs";
+import configs, { asyncRouter } from "./configs";
+
+import store from "@/store";
+
 
 const packMaterial = configs
   // eslint-disable-next-line no-undef
@@ -18,33 +21,43 @@ const router = new Router({
       path: "/",
       name: "Index",
       component: DefaultLayout,
-      children: packMaterial,
+      children: packMaterial
     },
     {
       // 登陆页
       path: "/login",
       name: "Login",
-      component: Login,
-    },
-  ],
+      component: Login
+    }
+  ]
 });
 
+let isAddRouter = false;
 router.beforeEach((to, from, next) => {
   if (to.path === "/login") {
     next();
-  } else if (to.path === "/") {
-    next("/monitor");
   } else {
-    next();
+    const { token } = store.getters;
+    if (token) {
+      store
+        .dispatch("getUserInfo")
+        .then(userInfo => {
+          const { userType } = userInfo;
+          if (userType === "superUser") {
+            if (!isAddRouter) {
+              router.addRoutes(asyncRouter);
+              isAddRouter = true;
+              next({ ...to, replace: true });
+            }
+          }
+        })
+        .catch(err => {
+          throw new Error(err, "err info");
+        });
+    }
   }
-  // else {
-  //     let token = Cache.get('token');
-  //     if (token === null || token === '') {
-  //         next('/login');
-  //     } else {
-  //         next();
-  //     }
-  // }
+
+  next();
 });
 
 export default router;

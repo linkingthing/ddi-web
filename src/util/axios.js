@@ -23,12 +23,10 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (res) => {
-    console.log(res)
     let { headers } =  res;
     if (headers["set-token"]) {
       const setToken = headers["set-token"];
       store.commit("SET_TOKEN", setToken);
-      console.log("set token")
     }
     return res;
   },

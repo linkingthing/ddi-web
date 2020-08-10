@@ -66,38 +66,6 @@
       :username="username"
       :visible.sync="visible"
     />
-    <!-- <Modal
-      v-model="visible"
-      title="修改密码"
-    >
-      <Form
-        :label-width="80"
-        style="width: 400px;margin:0 auto"
-      >
-        <FormItem label="账号">admin</FormItem>
-        <FormItem label="密码">
-          <Input
-            v-model="password"
-            type="password"
-            placeholder="请输入密码"
-          />
-        </FormItem>
-        <FormItem label="再次输入">
-          <Input
-            v-model="rePassword"
-            type="password"
-            placeholder="请在此输入密码"
-          />
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button
-          type="primary"
-          size="large"
-          @click="handleSubmit"
-        >确认</Button>
-      </div>
-    </Modal> -->
   </div>
 </template>
 
@@ -105,10 +73,52 @@
 import { mapMutations } from "vuex";
 import store from "@/store";
 import alarmWs from "@/util/ws";
-
 import logoSrc from "@/assets/images/logo.png";
 
 import ChangePassword from "@/components/ChangePassword";
+
+const mainMenuList = [
+  {
+    title: "系统状态",
+    url: "/monitor",
+    userType: "superUser"
+  },
+  {
+    title: "DNS管理",
+    url: "/dns",
+    userType: "normalUser"
+  },
+  {
+    title: "地址管理",
+    url: "/address",
+    userType: "normalUser"
+  },
+  {
+    title: "系统管理",
+    url: "/system",
+    userType: "superUser"
+  }
+];
+
+const userDropdownMenu = [
+  {
+    label: "修改密码",
+    key: "password",
+    userType: "normalUser"
+  },
+  {
+    label: "访问控制",
+    key: "permissions",
+    userType: "superUser"
+  },
+  {
+    label: "退出系统",
+    key: "out",
+    userType: "normalUser"
+  }
+];
+
+
 
 export default {
   name: "Header",
@@ -118,35 +128,6 @@ export default {
   },
 
   data() {
-    this.mainMenuList = [{
-      title: "系统状态",
-      url: "/monitor"
-    }, {
-      title: "DNS管理",
-      url: "/dns"
-    }, {
-      title: "地址管理",
-      url: "/address"
-    }, {
-      title: "系统管理",
-      url: "/system"
-    }];
-
-    this.userDropdownMenu = [
-      {
-        label: "修改密码",
-        key: "password"
-      },
-      {
-        label: "访问控制",
-        key: "permissions"
-      },
-      {
-        label: "退出系统",
-        key: "out"
-      }
-    ];
-
 
     return {
       logoSrc,
@@ -155,8 +136,35 @@ export default {
       password: "",
       rePassword: "",
       alarmCount: 0,
-      username: ""
+      username: "",
+      userType: "",
     };
+  },
+  computed: {
+    mainMenuList() {
+      const userType = this.userType;
+      if (userType) {
+        if (userType === "superUser") {
+          return mainMenuList;
+        } else {
+          return mainMenuList.filter(item => {
+            return item.userType === userType;
+          });
+        }
+      }
+      return [];
+
+    },
+    userDropdownMenu() {
+      const userType = this.userType;
+      if (userType === "superUser") {
+        return userDropdownMenu;
+      } else {
+        return userDropdownMenu.filter(item => {
+          return item.userType === userType;
+        });
+      }
+    }
   },
 
   watch: {
@@ -167,10 +175,31 @@ export default {
         const [, moduleName] = val.path.split("/");
         this.currentMainMenu = `/${moduleName}`;
       }
+    },
+    "$store.state.global": {
+      deep: true,
+      immediate: true,
+      handler({ userInfo }) {
+        if (userInfo) {
+          const { user, userType } = userInfo;
+          this.username = user;
+          this.userType = userType;
+
+
+          if (userType === "superUser") {
+            this.$router.push("/monitor");
+          }
+
+          if (userType === "normalUser") {
+            this.$router.push("/dns/dns/views_zones");
+          }
+        }
+      }
     }
   },
+
   created() {
-    this.getUserInfo();
+
     alarmWs.getMessage = ({ count }) => {
       this.alarmCount = count;
     };
@@ -180,18 +209,6 @@ export default {
     ...mapMutations({
       setToken: "SET_TOKEN"
     }),
-
-    getUserInfo() {
-      const token = store.getters.token;
-      const params = {
-        token
-      };
-      this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser", params }).then(res => {
-        this.username = res.user;
-        console.log(this.username)
-      });
-
-    },
 
     handleClickMainMenu(menu) {
       this.$router.push({ path: menu });
@@ -224,29 +241,8 @@ export default {
     handleClickMessage() {
       this.currentMainMenu = "/system";
       this.$router.push({ name: "alarm-notice", query: { state: "untreated" } });
-    },
-
-    handleSubmit() {
-      if (this.password === this.rePassword) {
-        const username = "admin";
-        const params = {
-          username,
-          password: this.password
-        };
-        this.$put({ url: `/apis/linkingthing.com/auth/v1/users/${username}`, params })
-          .then(res => {
-            this.$Message.success("修改成功");
-            this.visible = false;
-          });
-      } else {
-        this.visible = true;
-        this.$Message.error("两次密码输入不一致");
-      }
-    },
-
-    cancel() {
-      this.visible = false;
     }
+
   }
 };
 </script>

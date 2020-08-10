@@ -1,16 +1,17 @@
-import services from "@/services";
-
-const Cache = require("@/util/store").default("localStorage");
+import { post } from "@/util/axios";
+import store from "@/util/store";
+const Cache = store("localStorage");
 
 const state = {
   token: "" || Cache.get("token"),
-  userInfo: {},
-  viewList: []
+  userType: "",
+  userInfo: null
 };
 
 const getters = {
   token: state => state.token,
-  getViewList: state => state.viewList
+  userType: state => state.userType,
+  userInfo: state => state.userInfo
 };
 
 const mutations = {
@@ -18,38 +19,38 @@ const mutations = {
     Cache.set("token", token);
     state.token = token;
   },
-  SET_USER_INFO(state, { data }) {
-    state.userInfo = data;
+  SET_USERTYPE(state, userType) {
+    state.userType = userType;
   },
-  SET_VIEW_LIST(state, { data }) {
-    state.viewList = data;
+  SET_USERINFO(state, userInfo) {
+    state.userInfo = userInfo;
   }
 };
 
 const actions = {
-  async getViewList({ commit }) {
-    try {
-      const { status, data } = await services.getViewList();
-
-      if (+status === 200) {
-        const res = data.data.map(item => ({ 
-          ...item,
-          label: item.name, 
-          value: item.id
-        }));
-
-        commit("SET_VIEW_LIST",{ 
-          viewList: res
-        });
-
-        return res;
+  getUserInfo({ commit }) {
+    const { token, userInfo } = state;
+    const params = {
+      token
+    };
+    return new Promise((resolve, reject) => {
+      if (userInfo) {
+        resolve(userInfo);
+      } else {
+        post({
+          url:
+            "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser",
+          params
+        })
+          .then(userInfo => {
+            commit("SET_USERINFO", userInfo);
+            resolve(userInfo);
+          })
+          .catch(err => {
+            reject(err);
+          });
       }
-      else {
-        Promise.reject({ message: "" });
-      }
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    });
   }
 };
 
