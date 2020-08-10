@@ -90,7 +90,7 @@ export default {
       this.$getData({}, "/auth/auth/ddiusers").then(({ data, links }) => {
         this.links = links;
         this.list = data;
-      })
+      });
     },
     handleOpenCreate() {
       this.visible = true;
@@ -106,8 +106,7 @@ export default {
         title: "提示",
         content: "如果删除该用户，所有授权将移除，您确定要删除该用户吗？",
         onOk: () => {
-          console.log(links)
-          this.$delete({ url: links.remove }).then(res => {
+          this.$delete({ url: links.remove }).then(() => {
             this.$Message.info("删除成功");
             this.getDataList();
           }).catch(err => {

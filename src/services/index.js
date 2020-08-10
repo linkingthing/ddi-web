@@ -1,42 +1,8 @@
-import axios from "axios";
+import { axios } from "@/util/axios";
 import store from "@/store";
 import router from "@/router";
-import { LoadingBar, Message } from "view-design";
 
 const baseUrl = "/apis/linkingthing.com/dns/v1";
-
-axios.interceptors.request.use(
-  config => {
-    // LoadingBar.start();
-
-    const token = store.getters.token;
-    if (token) {
-      config.headers.Authorization = `${token}`;
-    }
-    return config;
-  },
-  error => {    
-    return Promise.reject(error);
-  },
-);
-
-axios.interceptors.response.use(
-  res => {
-    // LoadingBar.finish();
-    return res;
-  }, err => {
-    console.error(err);
-
-    if (err.response.data.code === 401) {
-      // Message.error(err.response.data.message);
-      router.push("/login");
-    }
-
-    // LoadingBar.error();
-
-    return Promise.reject(err.response.data);
-  },
-);
 
 export default {
   getCaptcha() {
@@ -106,7 +72,10 @@ export default {
     return axios.get(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs/${id}`);
   },
   updateResource(viewId, zoneId, id, params) {
-    return axios.put(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs/${id}`, params);
+    return axios.put(
+      `${baseUrl}/views/${viewId}/zones/${zoneId}/rrs/${id}`,
+      params
+    );
   },
 
   getAccessById(id) {
@@ -130,15 +99,19 @@ export default {
     return axios.get(`${baseUrl}/views/${viewId}/redirections`);
   },
   deleteRedirection(viewId, redirectionId) {
-    return axios.delete(`${baseUrl}/views/${viewId}/redirections/${redirectionId}`);
+    return axios.delete(
+      `${baseUrl}/views/${viewId}/redirections/${redirectionId}`
+    );
   },
   createRedirect(viewId, params) {
     return axios.post(`${baseUrl}/views/${viewId}/redirections`, params);
   },
   updateRedirect(viewId, redirectionId, params) {
-    return axios.put(`${baseUrl}/views/${viewId}/redirections/${redirectionId}`, params);
+    return axios.put(
+      `${baseUrl}/views/${viewId}/redirections/${redirectionId}`,
+      params
+    );
   },
-
 
   // 递归管理
 
@@ -158,8 +131,6 @@ export default {
     return axios.put(`${baseUrl}/defaultdns64s/${id}`, params);
   },
 
-
-
   getDNS64sByViewId(viewId) {
     return axios.get(`${baseUrl}/views/${viewId}/dns64s`);
   },
@@ -176,7 +147,6 @@ export default {
     return axios.put(`${baseUrl}/views/${viewId}/dns64s/${dns64Id}`, params);
   },
 
-
   // 转发
   getDefaultForward() {
     return axios.get(`${baseUrl}/forwards`);
@@ -190,17 +160,25 @@ export default {
   },
 
   getForwardList(viewId, zoneId, params) {
-    return axios.post(`${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`, params);
+    return axios.post(
+      `${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`,
+      params
+    );
   },
 
   deleteForward(viewId, zoneId, params) {
-    return axios.post(`${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`, params);
+    return axios.post(
+      `${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`,
+      params
+    );
   },
 
   updateForward(viewId, zoneId, params) {
-    return axios.post(`${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`, params);
+    return axios.post(
+      `${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`,
+      params
+    );
   },
-
 
   // 安全管理
 
@@ -319,14 +297,20 @@ export default {
    * 拆分IPv4子网
    */
   splitIPv4ChildNet(params, subnetId) {
-    return axios.post(`${baseUrl}/restsubnetv4s/${subnetId}?action=mergesplit`, params);
+    return axios.post(
+      `${baseUrl}/restsubnetv4s/${subnetId}?action=mergesplit`,
+      params
+    );
   },
 
   /**
    * 拆分IPv6子网
    */
   splitIPv6ChildNet(params, subnetId) {
-    return axios.post(`${baseUrl}/restsubnetv6s/${subnetId}?action=mergesplit`, params);
+    return axios.post(
+      `${baseUrl}/restsubnetv6s/${subnetId}?action=mergesplit`,
+      params
+    );
   },
 
   /**
@@ -354,20 +338,26 @@ export default {
    * IP地址扩展属性设置
    * @param {String|Number} subnetId 子网ID
    * @param {String|Number} id IP的ID
-   * @param {Object} params 
+   * @param {Object} params
    */
   editSubnetConfig(subnetId, id, params) {
-    return axios.put(`${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}/ipattrappends/ipattrappend`, params);
+    return axios.put(
+      `${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}/ipattrappends/ipattrappend`,
+      params
+    );
   },
 
   /**
    * IP地址属性设置
    * @param {String|Number} subnetId 子网ID
    * @param {String|Number} id IP的ID
-   * @param {Object} params 
+   * @param {Object} params
    */
   editIpInfo(subnetId, id, params) {
-    return axios.put(`${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}`, params);
+    return axios.put(
+      `${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}`,
+      params
+    );
   },
 
   /**
@@ -390,7 +380,10 @@ export default {
    * @param {String|Number} id IP的ID
    */
   changeToFixOrKeep(subnetId, id, parmas) {
-    return axios.post(`${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}?action=change`, parmas);
+    return axios.post(
+      `${baseUrl}/restsubnetv4s/${subnetId}/ipaddresses/${id}?action=change`,
+      parmas
+    );
   },
 
   /**
@@ -441,14 +434,18 @@ export default {
    * 删除IPv4地址池
    */
   deleteIPv4AddressPool(subnetId, poolId) {
-    return axios.delete(`${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`);
+    return axios.delete(
+      `${baseUrl}/restsubnetv4s/${subnetId}/restpools/${poolId}`
+    );
   },
 
   /**
    * 删除IPv6地址池
    */
   deleteIPv6AddressPool(subnetId, poolId) {
-    return axios.delete(`${baseUrl}/restsubnetv6s/${subnetId}/restpoolv6s/${poolId}`);
+    return axios.delete(
+      `${baseUrl}/restsubnetv6s/${subnetId}/restpoolv6s/${poolId}`
+    );
   },
 
   /** 子网管理 end */
@@ -481,7 +478,7 @@ export default {
    */
   editOption(params, id) {
     return axios.put(`${baseUrl}/restoptionnames/${id}`, params);
-  }
+  },
 
   /** OPTOIN配置 end */
 };

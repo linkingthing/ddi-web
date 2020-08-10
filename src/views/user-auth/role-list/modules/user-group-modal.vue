@@ -190,11 +190,11 @@ export default {
     },
 
     handleConfirm(name) {
-      this.$refs[name].validate((valid) => {
+      this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
           if (this.isEdit) {
-            this.$put({ url: this.links.update, params }).then(res => {
+            this.$put({ url: this.links.update, params }).then(() => {
               this.$$success("编辑成功");
               this.$emit("success");
               this.dialogVisible = false;
@@ -202,7 +202,7 @@ export default {
               this.$$error(err.response.data.message);
             });
           } else {
-            this.$post({ url: this.links.self, params }).then(res => {
+            this.$post({ url: this.links.self, params }).then(() => {
               this.$$success("新建成功");
               this.$emit("success");
               this.dialogVisible = false;

@@ -47,7 +47,7 @@
           >
             <a href="javascript:void(0)">
               <i class="avatar icon-header-avatar" />
-              Admin
+              {{username}}
               <Icon type="md-arrow-dropdown" />
             </a>
             <DropdownMenu slot="list">
@@ -62,8 +62,11 @@
         </div>
       </div>
     </div>
-
-    <Modal
+    <change-password
+      :username="username"
+      :visible.sync="visible"
+    />
+    <!-- <Modal
       v-model="visible"
       title="修改密码"
     >
@@ -94,18 +97,25 @@
           @click="handleSubmit"
         >确认</Button>
       </div>
-    </Modal>
+    </Modal> -->
   </div>
 </template>
 
 <script>
 import { mapMutations } from "vuex";
+import store from "@/store";
 import alarmWs from "@/util/ws";
 
 import logoSrc from "@/assets/images/logo.png";
 
+import ChangePassword from "@/components/ChangePassword";
+
 export default {
   name: "Header",
+
+  components: {
+    "change-password": ChangePassword
+  },
 
   data() {
     this.mainMenuList = [{
@@ -144,7 +154,8 @@ export default {
       visible: false,
       password: "",
       rePassword: "",
-      alarmCount: 0
+      alarmCount: 0,
+      username: ""
     };
   },
 
@@ -159,7 +170,7 @@ export default {
     }
   },
   created() {
-
+    this.getUserInfo();
     alarmWs.getMessage = ({ count }) => {
       this.alarmCount = count;
     };
@@ -170,6 +181,18 @@ export default {
       setToken: "SET_TOKEN"
     }),
 
+    getUserInfo() {
+      const token = store.getters.token;
+      const params = {
+        token
+      };
+      this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser", params }).then(res => {
+        this.username = res.user;
+        console.log(this.username)
+      });
+
+    },
+
     handleClickMainMenu(menu) {
       this.$router.push({ path: menu });
     },
@@ -177,10 +200,17 @@ export default {
     handleClickMenu(name) {
       const self = this;
       if (name === "out") {
-        self.setToken("");
-        self.$router.push({
-          path: "/login"
+        const token = store.getters.token;
+        const params = {
+          token
+        };
+        this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=logout", params }).finally(() => {
+          self.setToken("");
+          self.$router.push({
+            path: "/login"
+          });
         });
+
       }
       if (name === "permissions") {
         self.$router.push({

@@ -122,71 +122,17 @@ export default {
     };
   },
   created() {
-    // this.getCaptcha();
   },
   methods: {
     ...mapMutations(["SET_TOKEN"]),
-    getCaptcha() {
-      const self = this;
-      fetch("/apis/linkingthing.com/example/v1/getcheckimage.jpeg").then(
-        res => {
-          console.log(res.body);
 
-          this.checkvaluetoken = res.headers.get("checkvaluetoken");
-
-          const reader = res.body.getReader();
-          console.log(reader);
-          const imageArr = [];
-          const stream = new ReadableStream({
-            start(controller) {
-              function push() {
-                // "done"是一个布尔型，"value"是一个Unit8Array
-                reader.read().then(({ done, value }) => {
-                  if (done) {
-                    console.log("ok");
-                    const blob = new Blob(imageArr);
-                    const file = new FileReader();
-                    file.onload = function (e) {
-                      self.img = e.target.result;
-                    };
-                    file.readAsDataURL(blob);
-                    return;
-                  }
-                  imageArr.push(value);
-                  push();
-                });
-              }
-              push();
-            },
-            pull() {
-              console.log("pull");
-            }
-          });
-        }
-      );
-    },
     login() {
       this.$refs["formLogin"].validate(valid => {
         if (valid) {
-          // services
-          //   .verifyCaptcha({
-          //     CheckValueToken: this.checkvaluetoken,
-          //     CheckValue: this.captcha
-          //   })
-          //   .then(res => {
-          //     if (res.data !== "check value fail!" || true) {
-          //     } else {
-          //       this.$Message.error("图片验证失败");
-          //       this.getCaptcha();
-          //       throw "";
-          //     }
-          //   })
-          //   .finally(() => {
           services
             .login(this.params)
             .then(res => {
               if (res.data.code === "200") {
-                // this.$Message.success("Success!");
                 this.SET_TOKEN(res.data.token);
                 this.$router.push({
                   path: "/"
@@ -196,8 +142,6 @@ export default {
             .catch(err => {
               this.$Message.error(err.message);
             });
-          // });
-          // .catch(err => err);
         }
       });
     }

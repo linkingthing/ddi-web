@@ -1,6 +1,0 @@
-const mixin = {
-  methods: {
-    getRoleList() {},
-    
-  },
-};

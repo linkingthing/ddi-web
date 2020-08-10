@@ -90,7 +90,7 @@ export default {
       this.$getData({}, "/auth/auth/usergroups").then(({ data, links }) => {
         this.links = links;
         this.list = data;
-      })
+      });
     },
     handleOpenCreate() {
       this.visible = true;

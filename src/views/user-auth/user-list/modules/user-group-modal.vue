@@ -165,14 +165,6 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    },
-
-    "formModel.lineType"(val) {
-      if (val === "custom") {
-        this.formModel.isp = "";
-      } else {
-        this.formModel.ips = "";
-      }
     }
   },
 
@@ -198,8 +190,6 @@ export default {
     },
     reset() {
       this.$refs["formInline"].resetFields();
-      this.formModel.status = "allow";
-      this.formModel.lineType = "isp";
     },
 
     handleConfirm(name) {

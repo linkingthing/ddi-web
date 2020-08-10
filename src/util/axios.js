@@ -1,7 +1,6 @@
 import axios from "axios";
 import store from "@/store";
 import router from "@/router";
-import { LoadingBar, Message } from "view-design";
 
 export const baseUrl = "/apis/linkingthing.com/{block}/v1";
 
@@ -12,11 +11,9 @@ const instance = axios.create();
 instance.interceptors.request.use(
   (config) => {
     const token = store.getters.token;
-
     if (token) {
       config.headers.Authorization = `${token}`;
     }
-
     return config;
   },
   (error) => {
@@ -24,23 +21,33 @@ instance.interceptors.request.use(
   }
 );
 
-async function netCall(request) {
-  // LoadingBar.start();
+instance.interceptors.response.use(
+  (res) => {
+    console.log(res)
+    let { headers } =  res;
+    if (headers["set-token"]) {
+      const setToken = headers["set-token"];
+      store.commit("SET_TOKEN", setToken);
+      console.log("set token")
+    }
+    return res;
+  },
+  (err) => {
+    return Promise.reject(err);
+  }
+);
 
+async function netCall(request) {
   try {
     const response = await request;
     let { data, status, message, code } = await response;
-
+   
     if (successCode.includes(status)) {
       // 请求成功
-      // LoadingBar.finish();
 
       return data;
     } else if (status === 401 || code === 401) {
       // 验证失败
-      // LoadingBar.error();
-
-      // Message.error(data.message);
 
       router.push("/login");
     } else {

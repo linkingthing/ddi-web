@@ -99,14 +99,13 @@ export default {
       handler(value, old) {
         // value不存在于 dataList时， value id 和 name 默认为本身
         if (JSON.stringify(value) !== JSON.stringify(old)) {
-          this.selectedList = value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item }); // TODO : 根据具体数据结构map
+          this.selectedList = value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item });
         }
       }
     },
     selectedList: {
       deep: true,
       handler(value) {
-        console.log(value.map(item => item.id))
         this.$emit("on-change", value.map(item => item.id));
       }
     }
