@@ -28,6 +28,8 @@
 
 <script>
 import MultipleSelect from "../../modules/MultipleSelect";
+import ShowPassword from "@/components/BaseShowPassword";
+import InputPassword from "@/components/BaseInputPassword";
 
 export default {
   props: {
@@ -43,7 +45,7 @@ export default {
   },
 
   data() {
-
+    const self = this;
     this.rules = {
       username: [
         { required: true, message: "请填用户名称" }
@@ -51,8 +53,11 @@ export default {
       repassword: [
         {
           validator: function (rule, value, callback) {
-            console.log(value)
-            callback()
+            if (value === self.formModel.password) {
+              callback();
+            } else {
+              callback("两次输入的密码不一致");
+            }
           }
         }
       ]
@@ -61,13 +66,16 @@ export default {
     return {
       formModel: {
         name: "",
+        password: "",
+        repassword: "",
         userGroupIDs: [],
         roleIDs: []
       },
       loading: false,
       dialogVisible: false,
       userGroup: [],
-      roleList: []
+      roleList: [],
+      isEditPassword: false
     };
   },
 
@@ -79,7 +87,43 @@ export default {
       return !!this.links.update;
     },
     formItemList() {
-      
+
+
+      let com = [{
+        label: "登录密码",
+        model: "password",
+        type: "component",
+        placeholder: "请输入密码",
+        component: InputPassword,
+        style: "width: 380px"
+
+      },
+
+      {
+        label: "确认密码",
+        model: "repassword",
+        type: "component",
+        placeholder: "请确认密码",
+        component: InputPassword,
+        style: "width: 380px"
+      }];
+
+      if (!this.isEditPassword && this.isEdit) {
+        com = [{
+          label: "登录密码",
+          model: "password",
+          type: "component",
+          placeholder: "请输入密码",
+          component: ShowPassword,
+          style: "width: 380px",
+          props: {
+            click: () => this.isEditPassword = true
+          }
+        }
+
+        ];
+      }
+
       return [
         {
           label: "用户名称",
@@ -88,24 +132,7 @@ export default {
           placeholder: "请填写前缀长度",
           style: "width: 380px"
         },
-
-        {
-          label: "登录密码",
-          model: "password",
-          type: "password",
-          placeholder: "请输入密码",
-          style: "width: 380px"
-
-        },
-        {
-          label: "确认密码",
-          model: "repassword",
-          type: "password",
-          placeholder: "请确认密码",
-          style: "width: 380px"
-
-        },
-
+        ...com,
         {
           label: "选择用户组",
           type: "component",
@@ -145,8 +172,9 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then((res) => {
-          this.formModel = res;
+        this.$get({ url: this.links.self }).then(({ password, comment, username, userGroupIDs, roleIDs }) => {
+          this.formModel = { password, comment, username, userGroupIDs, roleIDs, repassword: password || "" };
+
         }).catch();
       }
       this.dialogVisible = val;
@@ -178,6 +206,7 @@ export default {
       });
     },
     reset() {
+      this.isEditPassword = false;
       this.$refs["formInline"].resetFields();
     },
 

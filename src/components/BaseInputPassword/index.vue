@@ -6,7 +6,7 @@
     />
     <Icon
       class="icon-eye"
-      :class="type === 'password' ? 'icon-xianshi': 'icon-yincang'"
+      :class="type === 'password' ? 'icon-show': 'icon-hide'"
       @click="handleToggleType"
     />
   </div>
@@ -14,8 +14,6 @@
 
 <script>
 export default {
-  
-  components: {},
   model: {
     prop: "value",
     event: "change"
@@ -38,7 +36,6 @@ export default {
       this.innerValue = val;
     },
     innerValue(val) {
-      console.log(val)
       this.$emit("change", val);
     }
   },

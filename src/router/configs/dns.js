@@ -9,7 +9,7 @@ import Layout from "@/views/layout";
 export default {
   path: "/dns",
   component: Layout,
-  icon: "icon-authority",
+  icon: "icon-power",
   meta: {
     title: "权威服务",
     range: "dns",

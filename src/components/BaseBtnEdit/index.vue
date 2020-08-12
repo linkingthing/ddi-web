@@ -1,6 +1,6 @@
 <template>
   <i
-    class="icon-edit btn-edit"
+    class="icon-m-edit btn-edit"
     @click="$emit('click')"
   />
 </template>
@@ -16,7 +16,7 @@ export default {};
   color: #6a94ea !important;
   cursor: pointer;
 }
-.icon-edit {
+.icon-m-edit {
   display: inline-block;
   vertical-align: middle;
   width: 20px;

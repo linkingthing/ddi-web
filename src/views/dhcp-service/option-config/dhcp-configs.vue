@@ -139,8 +139,7 @@ export default {
         }
       });
     }
-  },
-  watch: {},
+  }
 };
 </script>
 
