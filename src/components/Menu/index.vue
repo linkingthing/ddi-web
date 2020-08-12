@@ -7,8 +7,8 @@
         :active-name="tab"
         :open-names="openNames"
       >
-        <template v-for="(item, idx) in routes">
-          <template v-if="item.meta.isFlat && hasShowMenu(item.meta.range) ">
+        <template v-for="(item, idx) in routeList">
+          <template v-if="item.meta.isFlat && hasShowMenu(item) ">
             <template v-for="child in item.children">
               <MenuItem
                 v-if="!child.meta.notInMenu"
@@ -28,7 +28,7 @@
 
           <template v-else>
             <MenuItem
-              v-if="item.meta.isSingle && hasShowMenu(item.meta.range)"
+              v-if="item.meta.isSingle && hasShowMenu(item)"
               :key="idx"
               :name="item.name"
               @click.native="handleJump(item.path)"
@@ -44,7 +44,7 @@
 
             <Submenu
               :key="idx"
-              v-else-if="hasShowMenu(item.meta.range)"
+              v-else-if="hasShowMenu(item)"
               :name="item.name"
               class="level-menu"
             >
@@ -59,7 +59,7 @@
 
               <template v-for="child in item.children">
                 <MenuItem
-                  v-if="!child.meta.notInMenu"
+                  v-if="!child.meta.notInMenu && hasPermisssion(child)"
                   :key="child.path"
                   :name="child.name"
                   @click.native="handleJump(child.path)"
@@ -112,6 +112,42 @@ export default {
     };
   },
 
+  computed: {
+    routeList() {
+      const routeFlat = [...configs, ...asyncRouter];
+      const result = routeFlat
+        .map(item => {
+          if (item.meta.isSingle) {
+            let res = item.children.filter(item => !item.notInMenu)[0];
+            res.meta.isSingle = true;
+            return res;
+          }
+          else {
+            return item;
+          }
+        })
+        .filter(item => {
+          return "dns,monitor,address,system,auth".includes(item.meta.range);
+        })
+        .filter(item => {
+          const { userInfo } = this.$store.getters;
+          if (userInfo) {
+            const { userType } = userInfo;
+            if (userType === "superUser") {
+              return true;
+            }
+
+            if (userType === "normalUser") {
+              return !superUserAllowList.includes(item.name);
+            }
+
+          }
+        });
+      return result;
+
+    }
+
+  },
   watch: {
     $route: {
       immediate: true,
@@ -137,9 +173,7 @@ export default {
     }
   },
 
-  created() {
-    this.formatMenus();
-  },
+
 
   methods: {
     handleJump(res) {
@@ -162,47 +196,15 @@ export default {
       return result;
 
     },
-    formatMenus() {
 
-      const routeFlat = [...configs, ...asyncRouter];
 
-      this.routes = routeFlat
-        .map(item => {
-          if (item.meta.isSingle) {
-            let res = item.children.filter(item => !item.notInMenu)[0];
-            res.meta.isSingle = true;
-            return res;
-          }
-          else {
-            return item;
-          }
-        }).filter(item => {
-          return "dns,monitor,address,system,auth".includes(item.meta.range);
-        }).filter(item => {
-          const { userInfo } = this.$store.state.global;
-
-          if (userInfo) {
-            const { userType } = userInfo;
-
-            if (userType === "superUser") {
-              return item;
-            }
-
-            if (userType === "normalUser") {
-              console.log(item.name)
-              
-              return !superUserAllowList.includes(item.name);
-            }
-
-          }
-          return item;
-        });
-
-    },
-
-    hasShowMenu(range) {
+    hasShowMenu({ meta: { range } }) {
       const [, moduleName] = this.$route.path.split("/");
       return moduleName === range;
+    },
+
+    hasPermisssion({ name }) {
+      return !this.$store.getters.hasPermissionToCreate && !superUserAllowList.includes(name);
     }
 
   }

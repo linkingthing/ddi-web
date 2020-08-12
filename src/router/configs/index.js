@@ -40,6 +40,8 @@ export default addMeta(constRouter);
 
 export const asyncRouter = addMeta(superUserRouter);
 
+export const allConfig = [... addMeta(constRouter), ...asyncRouter]
+
 export const superUserAllowList = [
   "monitor",
   "DNSDashboard",

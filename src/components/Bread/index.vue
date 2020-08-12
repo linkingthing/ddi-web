@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import configs from "@/router/configs";
+import {allConfig as configs} from "@/router/configs";
 
 export default {
   name: "Bread",

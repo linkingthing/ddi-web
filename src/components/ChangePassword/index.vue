@@ -88,8 +88,12 @@ export default {
       this.$emit("update:visible", val);
     },
 
-    username(val) {
-      this.formModel.username = val;
+    username: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        this.formModel.username = val;
+      }
     }
   },
 

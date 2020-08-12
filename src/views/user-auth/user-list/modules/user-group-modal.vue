@@ -44,38 +44,26 @@ export default {
 
   data() {
 
-    // this.rules = {
-    //   name: [
-    //     { required: true, message: "请填访问控制名称" },
-    //     commonNameValidate,
-    //     {
-    //       pattern: /^.*[^\d].*$/,
-    //       message: "访问控制列表名称不能为纯数字"
-    //     }
-    //   ],
-    //   ips: [
-    //     { required: true, message: "请填写网络地址" },
-    //     {
-    //       validator: function (rule, value, callback) {
-    //         if (isIp(value)) {
-    //           callback();
-    //         }
-    //         if ("cmcc,cucc,ctcc".includes(value)) {
-    //           callback();
-    //         }
-    //         callback("请正确填写网络地址");
+    this.rules = {
+      username: [
+        { required: true, message: "请填用户名称" }
+      ],
+      repassword: [
+        {
+          validator: function (rule, value, callback) {
+            console.log(value)
+            callback()
+          }
+        }
+      ]
+    };
 
-    //       }
-
-    //     }
-
-    //   ]
-
-    // };
-
-    this.rules = {};
     return {
-      formModel: {},
+      formModel: {
+        name: "",
+        userGroupIDs: [],
+        roleIDs: []
+      },
       loading: false,
       dialogVisible: false,
       userGroup: [],
@@ -91,6 +79,7 @@ export default {
       return !!this.links.update;
     },
     formItemList() {
+      
       return [
         {
           label: "用户名称",
