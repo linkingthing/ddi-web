@@ -204,7 +204,11 @@ export default {
     },
 
     hasPermisssion({ name }) {
-      return !this.$store.getters.hasPermissionToCreate && !superUserAllowList.includes(name);
+      if (this.$store.getters.hasPermissionToCreate) {
+        return true;
+      } else {
+        return !superUserAllowList.includes(name);
+      }
     }
 
   }

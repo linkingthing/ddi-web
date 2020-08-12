@@ -134,7 +134,7 @@ export default {
             this.$Message.success("保存成功!");
 
           }).catch(err => {
-            this.$$error(err.message);
+            this.$$error(err.response.data.message);
           });
         }
       });
