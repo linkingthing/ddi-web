@@ -3,7 +3,8 @@
 .header {
 	position: relative;
 	height: @headerH;
-	box-sizing: border-box;
+  box-sizing: border-box;
+  margin-bottom: 16px;
 
 	.header-inner {
 		position: relative;
@@ -18,12 +19,14 @@
 		align-items: center;
 		width: @menuWidth;
 		vertical-align: middle;
-		background-color: @menuBackgroundActive;
-		border-bottom: 1px solid #556494;
-
+	
 		.logo-image {
-			flex: 1;
-			text-align: center;
+      text-align: center;
+      background-color: #E23330;
+      height: 60px;
+      width: 60px;
+      padding: 10px 0;
+      margin-right: 10px;
 		}
 
 		img {
@@ -46,7 +49,8 @@
 	.logo-text {
 		display: inline-block;
 		vertical-align: middle;
-		padding: 4px 0;
+    padding: 4px 0;
+    width: 166px;
 	}
 
 	.main-menu {

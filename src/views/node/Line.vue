@@ -97,6 +97,7 @@ export default {
 
       let series = [
         {
+          animation: false,
           name: self.seriesName || (self.isPercent ? "百分比" : "值"),
 
           data: this.values,
@@ -138,6 +139,7 @@ export default {
         series = this.values.map(item => {
 
           return {
+            animation: false,
             name: self.seriesName || item.packetType || item.rcode || item.type || "值",
             data: (item.values && item.values.map(({ timestamp, value }) => [timestamp, value])) || (item.ratios && item.ratios.map(({ timestamp, ratio }) => [timestamp, ratio])),
             type: "line",

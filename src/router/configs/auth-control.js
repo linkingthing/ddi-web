@@ -8,7 +8,7 @@ export default {
     title: "访问控制",
   },
   name: "auth-user",
-  icon: "icon-alarm",
+  icon: "icon-access",
   children: [
     {
       name: "auth-user-group",

@@ -26,7 +26,7 @@ export const columns = (self) => [
             cursor: "pointer"
           },
           props: {
-            custom: "icon-info",
+            custom: "icon-detail"
           },
           on: {
             click: () => self.handleOpenMessage(row),

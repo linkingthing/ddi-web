@@ -17,7 +17,7 @@ export default {
   name: "global-config-content",
   children: [
     {
-      icon: "icon-global-config",
+      icon: "icon-config",
       name: "global-config",
       meta: {
         title: "全局配置",

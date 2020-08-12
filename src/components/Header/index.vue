@@ -9,14 +9,12 @@
               alt
             >
           </div>
-          <h1>DDI配置管理平台</h1>
-        </div>
-        <!-- <div class="logo-text">
           <img
-            :src="logoTextSrc"
-            alt
+            class="logo-text"
+            :src="require('@/assets/images/logo-words.png')"
+            alt=""
           >
-        </div> -->
+        </div>
         <div class="main-menu">
           <Menu
             mode="horizontal"
@@ -36,7 +34,7 @@
         <div class="user">
           <Badge :count="alarmCount">
             <i
-              class="icon-header-notifications"
+              class="icon-notice"
               style="font-size: 20px;cursor: pointer;color: #CFCFCF;vertical-align: middle;"
               @click="handleClickMessage"
             />
@@ -137,7 +135,7 @@ export default {
       rePassword: "",
       alarmCount: 0,
       username: "",
-      userType: "",
+      userType: ""
     };
   },
   computed: {
@@ -184,15 +182,6 @@ export default {
           const { user, userType } = userInfo;
           this.username = user;
           this.userType = userType;
-
-
-          // if (userType === "superUser") {
-          //   this.$router.push("/monitor");
-          // }
-
-          // if (userType === "normalUser") {
-          //   this.$router.push("/dns/dns/views_zones");
-          // }
         }
       }
     }
