@@ -1,13 +1,13 @@
 <template>
-  <div class="device-detect">   
+  <div class="device-detect">
     <IviewLoading v-if="loading" />
 
-    <table-page 
+    <table-page
       :data="tableData"
-      :columns="columns"  
+      :columns="columns"
       :total="tableData.length"
       :is-padding-top="true"
-    > 
+    >
       <template slot="top-left">
         <div class="condition-item">
           <label class="condition-item-label">设备名称</label>
@@ -15,16 +15,18 @@
             v-model="condition.name"
             placeholder="请输入设备名称"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
-        
+
         <div class="condition-item">
           <label class="condition-item-label">管理地址</label>
           <Input
             v-model="condition.administrationAddress"
             placeholder="请输入管理地址"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
 
         <div class="condition-item">
@@ -38,38 +40,41 @@
             <Option
               v-for="item in deviceTypes"
               :key="item.label"
-              :value="item.label">{{item.text}}</Option>
+              :value="item.label"
+            >{{item.text}}</Option>
           </Select>
         </div>
-        
+
         <div class="condition-item">
           <label class="condition-item-label">厂商</label>
           <Input
             v-model="condition.manufacturer"
             placeholder="请输入厂商"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
 
-        <btn-search 
-          type="primary" 
-          @click="handleQuery" 
+        <btn-search
+          type="primary"
+          @click="handleQuery"
         >
           搜索
         </btn-search>
       </template>
 
       <template slot="top-right">
-        <Button 
+        <Button
           class="top-button"
-          @click="showAdvance = true" 
+          @click="showAdvance = true"
         >
           高级搜索
         </Button>
 
-        <Button 
-          type="primary" 
-          @click="handleAdd" 
+        <Button
+          v-if="$store.getters.hasPermissionToCreate"
+          type="primary"
+          @click="handleAdd"
           class="top-button"
         >
           新建
@@ -77,21 +82,21 @@
       </template>
     </table-page>
 
-    <Edit 
+    <Edit
       :visible.sync="showEdit"
       :data="currentData"
       @saved="handleSaved"
     />
 
-    <Detect 
+    <Detect
       :visible.sync="showDetect"
       :data="currentData"
       @saved="handleSaved"
     />
 
-    <AdvancedSearch 
+    <AdvancedSearch
       :visible.sync="showAdvance"
-      @comfirmed="handleAdvancedQuery" 
+      @comfirmed="handleAdvancedQuery"
     />
   </div>
 </template>
@@ -130,7 +135,7 @@ export default {
     };
   },
 
-  mounted() {    
+  mounted() {
     this.handleQuery();
   },
 
@@ -151,7 +156,7 @@ export default {
 
       try {
         let res = await this.$get({ url: this.url, params });
-        
+
         this.tableData = res.data.map(item => {
           const equipmentType = deviceTypes.find(({ label }) => label === item.equipmentType);
 
@@ -159,10 +164,10 @@ export default {
 
           return item;
         });
-      } catch (err) { 
+      } catch (err) {
         this.$handleError(err);
       }
-      finally {        
+      finally {
         this.loading = false;
       }
     },
@@ -193,9 +198,9 @@ export default {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
-        
+
         await this.$delete({ url: this.url + "/" + id });
-        
+
         this.$$success("删除成功！");
 
         this.handleQuery();

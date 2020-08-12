@@ -9,28 +9,37 @@ const successCode = [200, 201, 202, 204];
 const instance = axios.create();
 
 instance.interceptors.request.use(
-  (config) => {
+  config => {
     const token = store.getters.token;
     if (token) {
       config.headers.Authorization = `${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
 
 instance.interceptors.response.use(
-  (res) => {
-    let { headers } =  res;
+  res => {
+    let { headers } = res;
     if (headers["set-token"]) {
       const setToken = headers["set-token"];
       store.commit("SET_TOKEN", setToken);
     }
     return res;
   },
-  (err) => {
+  err => {
+    let { headers, status } = err.response;
+    if (headers["set-token"]) {
+      const setToken = headers["set-token"];
+      store.commit("SET_TOKEN", setToken);
+    }
+
+    if (status === 401) {
+      router.push("/login");
+    }
     return Promise.reject(err);
   }
 );
@@ -39,7 +48,7 @@ async function netCall(request) {
   try {
     const response = await request;
     let { data, status, message, code } = await response;
-   
+
     if (successCode.includes(status)) {
       // 请求成功
 
@@ -54,19 +63,10 @@ async function netCall(request) {
 
       return Promise.reject({
         status,
-        message,
+        message
       });
     }
   } catch (error) {
-    // LoadingBar.error();
-    const { status } = error.response;
-    if (status === 401) {
-      // Message.error(error.response.data.message);
-
-      router.push("/login");
-    }
-
-    console.error("request exception -> error", error);
 
     return Promise.reject(error);
   }

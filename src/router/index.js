@@ -7,7 +7,6 @@ import configs, { asyncRouter } from "./configs";
 
 import store from "@/store";
 
-
 const packMaterial = configs
   // eslint-disable-next-line no-undef
   // .filter((item) => PACK_SYSTEM.includes(item.meta.range))
@@ -28,6 +27,14 @@ const router = new Router({
       path: "/login",
       name: "Login",
       component: Login
+    },
+    {
+      path: "*",
+      redirect: () => {
+        Vue.nextTick().then(() => {
+          return "/dns/dns/views_zones";
+        })
+      }
     }
   ]
 });
@@ -48,16 +55,21 @@ router.beforeEach((to, from, next) => {
               router.addRoutes(asyncRouter);
               isAddRouter = true;
               next({ ...to, replace: true });
+              // next("/monitor");
             }
+            next();
+          } else {
+            next();
           }
         })
         .catch(err => {
+          
           throw new Error(err, "err info");
         });
+    } else {
+      next("/login");
     }
   }
-
-  next();
 });
 
 export default router;

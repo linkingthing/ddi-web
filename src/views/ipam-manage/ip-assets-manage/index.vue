@@ -1,13 +1,13 @@
 <template>
-  <div class="ip-assets-manage">   
+  <div class="ip-assets-manage">
     <IviewLoading v-if="loading" />
 
-    <table-page 
+    <table-page
       :data="tableData"
-      :columns="columns"  
+      :columns="columns"
       :total="tableData.length"
       :is-padding-top="true"
-    > 
+    >
       <template slot="top-left">
         <div class="condition-item">
           <label class="condition-item-label">MAC</label>
@@ -15,55 +15,60 @@
             v-model="condition.mac"
             placeholder="请输入MAC地址"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
-        
+
         <div class="condition-item">
           <label class="condition-item-label">IP地址</label>
           <Input
             v-model="condition.mac"
             placeholder="请输入IP地址"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
-        
+
         <div class="condition-item">
           <label class="condition-item-label">终端名称</label>
           <Input
             v-model="condition.name"
             placeholder="请输入终端名称"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
-        
+
         <div class="condition-item">
           <label class="condition-item-label">交换机名称</label>
           <Input
             v-model="condition.switchName"
             placeholder="请输入交换机名称"
             class="top-input"
-            @on-enter="handleQuery" />
+            @on-enter="handleQuery"
+          />
         </div>
 
-        <btn-search 
-          type="primary" 
-          @click="handleQuery" 
+        <btn-search
+          type="primary"
+          @click="handleQuery"
         >
           搜索
         </btn-search>
       </template>
 
       <template slot="top-right">
-        <Button 
+        <Button
           class="top-button"
-          @click="showAdvance = true" 
+          @click="showAdvance = true"
         >
           高级搜索
         </Button>
 
-        <Button 
-          type="primary" 
-          @click="handleAdd" 
+        <Button
+          v-if="$store.getters.hasPermissionToCreate"
+          type="primary"
+          @click="handleAdd"
           class="top-button"
         >
           新建
@@ -71,15 +76,15 @@
       </template>
     </table-page>
 
-    <Edit 
+    <Edit
       :visible.sync="showEdit"
       :data="currentData"
       @saved="handleSaved"
     />
 
-    <AdvancedSearch 
+    <AdvancedSearch
       :visible.sync="showAdvance"
-      @comfirmed="handleAdvancedQuery" 
+      @comfirmed="handleAdvancedQuery"
     />
   </div>
 </template>
@@ -104,7 +109,7 @@ export default {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      deviceTypes: [{ text: "全部", label: "全部" },...deviceTypes],
+      deviceTypes: [{ text: "全部", label: "全部" }, ...deviceTypes],
       condition: {
         mac: "",
         deviceType: "全部"
@@ -117,29 +122,29 @@ export default {
     };
   },
 
-  async mounted() {    
+  async mounted() {
     this.handleQuery();
 
-    const { 
-      id, 
+    const {
+      id,
       mac,
       switchName,
       switchPort,
       computerRack,
-      computerRoom 
+      computerRoom
     } = this.$route.query;
 
-    this.currentData = { 
+    this.currentData = {
       mac,
       switchName,
       switchPort,
       computerRack,
-      computerRoom 
+      computerRoom
     };
 
     if (id) {
       try {
-        let data = await this.$get({ url: this.url + "/" + id });        
+        let data = await this.$get({ url: this.url + "/" + id });
 
         this.currentData = {
           ...data,
@@ -180,7 +185,7 @@ export default {
         }
 
         let { data } = await this.$get({ url: this.$formatQuerys({ ...params, deviceType }, url) });
-        
+
         this.tableData = data.map(item => {
           const type = deviceTypes.find(({ label }) => label === item.deviceType);
 
@@ -191,7 +196,7 @@ export default {
       } catch (err) {
         this.$handleError(err);
       }
-      finally {        
+      finally {
         this.loading = false;
       }
     },
@@ -215,9 +220,9 @@ export default {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
-        
+
         await this.$delete({ url: this.url + "/" + id });
-        
+
         this.$$success("删除成功！");
 
         this.handleQuery();

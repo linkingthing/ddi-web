@@ -186,13 +186,13 @@ export default {
           this.userType = userType;
 
 
-          if (userType === "superUser") {
-            this.$router.push("/monitor");
-          }
+          // if (userType === "superUser") {
+          //   this.$router.push("/monitor");
+          // }
 
-          if (userType === "normalUser") {
-            this.$router.push("/dns/dns/views_zones");
-          }
+          // if (userType === "normalUser") {
+          //   this.$router.push("/dns/dns/views_zones");
+          // }
         }
       }
     }

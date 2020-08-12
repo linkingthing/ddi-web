@@ -1,4 +1,4 @@
-export const columns = scope => [  
+export const columns = scope => [
   {
     title: "设备名称",
     key: "name",
@@ -88,30 +88,39 @@ export const columns = scope => [
     width: 180,
     className: "operate-column",
     fixed: "right",
-    render: (h, { row }) => 
-      h("div", [
-        h("btn-edit", {
-          on: {
-            click: () => {
-              scope.handleEdit(row);
+    render: (h, { row }) => {
+      if (scope.$store.getters.hasPermissionToCreate) {
+        h("div", [
+          h("btn-edit", {
+            on: {
+              click: () => {
+                scope.handleEdit(row);
+              }
             }
-          }
-        }),
-        h("btn-detect", {
-          on: {
-            click: () => {
-              scope.handleDetect(row);
+          }),
+          h(
+            "btn-detect",
+            {
+              on: {
+                click: () => {
+                  scope.handleDetect(row);
+                }
+              }
+            },
+            "网络探测"
+          ),
+          h("btn-del", {
+            on: {
+              click: () => {
+                scope.handleDelete(row);
+              }
             }
-          }
-        }, "网络探测"),
-        h("btn-del", {
-          on: {
-            click: () => {
-              scope.handleDelete(row);
-            }
-          }
-        })
-      ]),
+          })
+        ]);
+      } else {
+        return h("div");
+      }
+    },
     align: "center"
   }
 ];
