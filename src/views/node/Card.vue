@@ -95,13 +95,14 @@ export default {
 
       this.$post({ url, params }).then(res => {
         const { downloadPath, fileName } = this.pathParser(res);
+        console.log(downloadPath)
         this.downloadFile(downloadPath, fileName);
       });
 
     },
     pathParser({ path }) {
       const realPath = "/opt/website";
-      const staticPath = "/public";
+      const staticPath = "/public/";
       const fileName = path.slice(realPath.length + 1);
       return {
         downloadPath: staticPath.concat(fileName),
