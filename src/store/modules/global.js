@@ -48,12 +48,6 @@ const actions = {
             resolve(userInfo);
           })
           .catch(err => {
-
-            // todo: 需要删掉
-            commit("SET_USERINFO", {userType: "superUser"});
-            resolve({userType: "superUser"});
-
-
             reject(err);
           });
       }
