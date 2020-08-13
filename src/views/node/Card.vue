@@ -95,7 +95,6 @@ export default {
 
       this.$post({ url, params }).then(res => {
         const { downloadPath, fileName } = this.pathParser(res);
-        console.log(downloadPath)
         this.downloadFile(downloadPath, fileName);
       });
 

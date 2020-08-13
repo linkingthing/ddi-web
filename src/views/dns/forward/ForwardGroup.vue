@@ -120,7 +120,7 @@ export default {
           this.$delete({ url: links.remove }).then(() => {
             this.getDataList();
           }).catch(err => {
-            this.$Message.error(err.data.message);
+            this.$Message.error(err.response.data.message);
           });
         }
       });
