@@ -1,6 +1,6 @@
 <template>
   <span
-    class="btn-del icon-edit"
+    class="btn-del icon-m-del"
     @click="$emit('click')"
   />
 
@@ -17,7 +17,7 @@ export default {};
   color: #fd8f64 !important;
   cursor: pointer;
 }
-.icon-edit {
+.icon-m-del {
   display: inline-block;
   width: 20px;
   height: 20px;
