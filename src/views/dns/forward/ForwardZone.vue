@@ -10,6 +10,7 @@
         <i-button
           type="primary"
           @click="handleOpenCreate"
+          v-if="$store.getters.hasPermissionToCreate"
         >新建</i-button>
       </template>
     </table-page>

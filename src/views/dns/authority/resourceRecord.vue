@@ -93,7 +93,7 @@ export default {
     this.viewId = this.$route.params.id;
     this.zoneId = this.$route.params.zoneId;
   },
-  mounted() {    
+  mounted() {
     this.getResources();
   },
   methods: {
@@ -125,8 +125,8 @@ export default {
               this.$Message.success("删除成功");
               this.getResources();
             })
-            .catch(() => {
-              this.$Message.success("删除失败");
+            .catch((err) => {
+              this.$Message.error(err.response.data.message);
             });
         }
       });

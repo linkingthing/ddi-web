@@ -7,6 +7,7 @@
     >
       <template slot="top-right">
         <i-button
+          v-if="$store.getters.hasPermissionToCreate"
           type="primary"
           @click="handleOpenCreate"
         >新建</i-button>
@@ -152,7 +153,7 @@ export default {
               this.getView();
             })
             .catch(err => {
-              this.$Message.success(err.message);
+              this.$Message.error(err.response.data.message);
             });
         }
       });

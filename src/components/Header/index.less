@@ -62,7 +62,13 @@
 			display: none;
 		}
 		.ivu-menu-item {
-			border-width: 0;
+      border-top: 0;
+      border-bottom: 0;
+      &:hover ,&.ivu-menu-item-active{
+        background:rgba(69,134,254,.1);
+        border-top: 4px solid #4586FE;
+      }
+
 		}
 
 		.ivu-menu-item {

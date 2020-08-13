@@ -29,6 +29,7 @@
           v-for="(e, i) in item.children"
           :key="i"
           :label="e.label"
+          :disabled="item.disabled"
         >
           {{ e.text }}
         </Radio>

@@ -44,40 +44,6 @@ export default {
   },
 
   data() {
-    this.formItemList = [
-      {
-        label: "区名称",
-        model: "name",
-        type: "input",
-        placeholder: "请填写区名称"
-      },
-      {
-        label: "区类型",
-        model: "isarpa",
-        type: "radio",
-        placeholder: "请选择区类型",
-        children: [{
-          label: "false",
-          text: "正向区"
-        },
-        {
-          label: "true",
-          text: "反向区"
-        }]
-      },
-      {
-        label: "TTL",
-        model: "ttl",
-        type: "input",
-        placeholder: "请填写TTL",
-      },
-      {
-        label: "备注",
-        model: "comment",
-        type: "input",
-        placeholder: "请填写备注"
-      }
-    ];
 
     this.rules = {
       name: [
@@ -130,6 +96,43 @@ export default {
     },
     isEdit() {
       return !!this.links.update;
+    },
+    formItemList() {
+      return [
+        {
+          label: "区名称",
+          model: "name",
+          type: "input",
+          placeholder: "请填写区名称"
+        },
+        {
+          label: "区类型",
+          model: "isarpa",
+          type: "radio",
+          disabled: this.isEdit,
+          placeholder: "请选择区类型",
+          children: [{
+            label: "false",
+            text: "正向区"
+          },
+          {
+            label: "true",
+            text: "反向区"
+          }]
+        },
+        {
+          label: "TTL",
+          model: "ttl",
+          type: "input",
+          placeholder: "请填写TTL",
+        },
+        {
+          label: "备注",
+          model: "comment",
+          type: "input",
+          placeholder: "请填写备注"
+        }
+      ];
     }
   },
 

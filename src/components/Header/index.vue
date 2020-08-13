@@ -27,6 +27,10 @@
               v-for="item in mainMenuList"
               :key="item.url"
             >
+            <Icon
+              :class="item.icon"
+              style="font-size: 24px"
+            />
             {{item.title}}
             </MenuItem>
           </Menu>
@@ -79,22 +83,29 @@ const mainMenuList = [
   {
     title: "系统状态",
     url: "/monitor",
-    userType: "superUser"
+    userType: "superUser",
+    icon: "icon-statistics"
   },
   {
     title: "DNS管理",
     url: "/dns",
-    userType: "normalUser"
+    userType: "normalUser",
+    icon: "icon-dns"
+
   },
   {
     title: "地址管理",
     url: "/address",
-    userType: "normalUser"
+    userType: "normalUser",
+    icon: "icon-computer"
+
   },
   {
     title: "系统管理",
     url: "/system",
-    userType: "superUser"
+    userType: "superUser",
+    icon: "icon-system"
+
   }
 ];
 

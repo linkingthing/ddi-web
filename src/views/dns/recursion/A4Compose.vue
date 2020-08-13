@@ -111,8 +111,8 @@ export default {
               this.$Message.success("删除成功");
               this.getView();
             })
-            .catch(() => {
-              this.$Message.success("删除失败");
+            .catch((err) => {
+              this.$Message.error(err.response.data.message);
             });
         }
       });

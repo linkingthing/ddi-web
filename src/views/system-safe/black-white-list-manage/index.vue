@@ -98,7 +98,7 @@ export default {
               this.getView();
             })
             .catch(err => {
-              this.$Message.success("删除失败");
+              this.$Message.error(err.response.data.message);
             });
         }
       });
