@@ -83,7 +83,7 @@ const mainMenuList = [
   {
     title: "系统状态",
     url: "/monitor",
-    userType: "superUser",
+    userType: "normalUser",
     icon: "icon-statistics"
   },
   {

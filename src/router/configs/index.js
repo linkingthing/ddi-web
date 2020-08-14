@@ -9,10 +9,10 @@ import systemAlarms from "./system-alarms";
 import systemLog from "./system-log";
 import authControl from "./auth-control";
 
-const constRouter = [ipam, dns, forword, accessControl, dhcp];
+const constRouter = [node, ipam, dns, forword, accessControl, dhcp];
 
 const superUserRouter = [
-  node,
+  // node,
   systemLog,
   systemAlarms,
   dnsGlobalConfig,
@@ -35,19 +35,16 @@ function addMeta(arr) {
   return arr;
 }
 
-
 export default addMeta(constRouter);
 
 export const asyncRouter = addMeta(superUserRouter);
 
-export const allConfig = [... addMeta(constRouter), ...asyncRouter]
+export const allConfig = [...addMeta(constRouter), ...asyncRouter];
 
 export const superUserAllowList = [
-  "monitor",
   "DNSDashboard",
   "DHCPDashboard",
   "ControllerDashboard",
-  
 
   "global-config-content",
   "global-config",

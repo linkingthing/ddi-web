@@ -23,7 +23,7 @@ export default {
 			icon: 'icon-node',
 			meta: {
 				range: 'monitor',
-				title: '概览'
+				title: '概览',
 			}
 		},
 		{

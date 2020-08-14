@@ -11,7 +11,7 @@
           <template v-if="item.meta.isFlat && hasShowMenu(item) ">
             <template v-for="child in item.children">
               <MenuItem
-                v-if="!child.meta.notInMenu"
+                v-if="!child.meta.notInMenu && hasPermisssion(child)"
                 :key="child.path"
                 :name="child.name"
                 @click.native="handleJump(child.path)"
