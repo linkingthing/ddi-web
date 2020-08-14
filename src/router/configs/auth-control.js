@@ -39,6 +39,16 @@ export default {
         range: "auth",
         title: "角色",
       },
+    },
+    {
+      name: "white-list",
+      path: "/auth/auth/whitelists",
+      component: () => import("@/views/user-auth/white-list"),
+      icon: "icon-node",
+      meta: {
+        range: "auth",
+        title: "访问白名单",
+      },
     }
   ],
 };

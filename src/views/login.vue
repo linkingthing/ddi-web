@@ -141,8 +141,7 @@ export default {
               }
             })
             .catch(err => {
-              console.dir(err)
-              this.$Message.error(err.message);
+              this.$Message.error(err.response.data.message);
             });
         }
       });
