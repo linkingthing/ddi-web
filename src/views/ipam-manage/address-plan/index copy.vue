@@ -1,40 +1,51 @@
 <template>
-  <div class="plan">
-    <div
-      style=""
-      class="plan-content"
-    >
-      <PlanProcess />
+  <div class="plan-list">   
+    <IviewLoading v-if="loading" />
 
-      <PlanStepCreatePrefix />
-      <PlanStepSemantic />
-    </div>
+    <no-data-list
+      v-if="!tableData.length"
+      @add="handleAdd"
+      top="212" 
+    />
 
+    <TablePagination 
+      v-else
+      :data="tableData"
+      :columns="columns"  
+      :total="tableData.length"
+    > 
+      <template slot="top-right">
+        <Button 
+          type="primary" 
+          @click="handleAdd" 
+          class="top-button"
+        >
+          新建网络
+        </Button>
+      </template>
+    </TablePagination>
+
+    <Create 
+      :visible.sync="showCreate"
+      @saved="handleSaved"
+    />
   </div>
 </template>
 
 <style lang="less">
-.plan {
-  padding-top: 60px;
-}
-.plan-content {
-  padding: 24px;
-  border-top: 1px solid #efefef;
-}
+@import "./index.less";
 </style>
 
 <script>
 import TablePagination from "@/components/TablePagination";
-import PlanProcess from "./modules/PlanProcess";
-import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
-import PlanStepSemantic from "./modules/PlanStepSemantic";
+import Create from "./create";
+
 import { columns } from "./define";
 
 export default {
   components: {
-    PlanProcess,
-    PlanStepCreatePrefix,
-    PlanStepSemantic
+    TablePagination,
+    Create
   },
 
   data() {
@@ -47,7 +58,7 @@ export default {
     };
   },
 
-  mounted() {
+  mounted() {    
     this.handleQuery();
   },
 
@@ -57,16 +68,16 @@ export default {
 
       try {
         let { data } = await this.$get({ url: this.url });
-
+        
         this.tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
 
           return item;
         });
       } catch (err) {
-        this.$handleError(err);
+        this.$handleError(err); 
       }
-      finally {
+      finally {        
         this.loading = false;
       }
     },
@@ -90,9 +101,9 @@ export default {
         await this.$$confirm({ content: "您确定要删除当前数据吗？" });
 
         this.loading = true;
-
+        
         await this.$delete({ url: this.url + "/" + id });
-
+        
         this.$$success("删除成功！");
 
         this.handleQuery();
