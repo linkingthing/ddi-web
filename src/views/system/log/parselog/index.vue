@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import qs from "qs";
 import resources from "@/dictionary/resources";
 
 export default {
@@ -156,12 +157,15 @@ export default {
     },
     handleExportLog() {
       const link = this.links.self || "/apis/linkingthing.com/log/v1/dnslogs";
-      const url = `${link}/dnslog?action=exportcsv`;
       const params = this.getParams();
+      let url = `${link}/dnslog?action=exportcsv`;
+      const query = qs.stringify(params);
+      if (query) {
+        url += `&${query}`;
+      }
 
       this.$post({ url, params }).then(res => {
         const { downloadPath, fileName } = this.pathParser(res);
-        // console.log(downloadPath, fileName)
         this.downloadFile(downloadPath, fileName);
       });
     },
@@ -169,18 +173,15 @@ export default {
       const realPath = "/opt/website/";
       const staticPath = "/public/";
       const fileName = path.replace(realPath, "");
-      console.log(fileName)
       return {
         downloadPath: staticPath.concat(fileName),
         fileName
       };
     },
     downloadFile(path, fileName) {
-      console.log(path)
       let a = document.createElement("a");
       a.href = path;
       a.download = fileName;
-      document.body.append(a)
       a.click();
     }
   }
