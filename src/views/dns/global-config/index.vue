@@ -11,12 +11,25 @@
         <i-switch
           @on-change="handleToggle"
           :value="params.isLogOpen"
+          :loading="logLoading"
           size="large"
         >
           <span slot="open">开启</span>
           <span slot="close">关闭</span>
         </i-switch>
       </FormItem>
+      <FormItem label="DNSSEC">
+        <i-switch
+          @on-change="handleSECToggle"
+          :value="params.isDnssecOpen"
+          :loading="secLoading"
+          size="large"
+        >
+          <span slot="open">开启</span>
+          <span slot="close">关闭</span>
+        </i-switch>
+      </FormItem>
+
       <FormItem
         label="TTL"
         prop="ttl"
@@ -26,6 +39,7 @@
           style="width: 120px"
         />
         <Button
+          :loading="ttlLoading"
           type="primary"
           @click="handleSave"
         >保存</Button>
@@ -52,13 +66,16 @@ export default {
           validator: ttlValidator
         }
       ]
-    }
+    };
     return {
       params: {
         isLogOpen: false,
         ttl: 3600
       },
-      links: null
+      links: null,
+      logLoading: false,
+      secLoading: false,
+      ttlLoading: false
     };
   },
   computed: {},
@@ -75,18 +92,35 @@ export default {
       })
     },
     handleToggle(isLogOpen) {
-      const params = { ...this.params, isLogOpen }
+      this.logLoading = true;
+      const params = { ...this.params, isLogOpen };
       this.$put({ url: this.links.update, params }).then(() => {
         this.getInitData();
         this.$Message.success("切换成功");
       }).catch(err => {
         this.$Message.error(err.response.data.message);
         this.getInitData();
+      }).finally(() => {
+        this.logLoading = false;
+      });
+    },
+    handleSECToggle(isDnssecOpen) {
+      const params = { ...this.params, isDnssecOpen };
+      this.secLoading = true;
+      this.$put({ url: this.links.update, params }).then(() => {
+        this.getInitData();
+        this.$Message.success("切换成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+        this.getInitData();
+      }).finally(() => {
+        this.secLoading = false;
       });
     },
     handleSave() {
       this.$refs.formInline.validate(valid => {
         if (valid) {
+          this.ttlLoading = true;
           const params = this.params;
           params.ttl = Number(params.ttl);
           this.$put({ url: this.links.update, params }).then(() => {
@@ -95,6 +129,8 @@ export default {
           }).catch(err => {
             this.$Message.error(err.response.data.message);
             this.getInitData();
+          }).finally(() => {
+            this.ttlLoading = false;
           });
         }
       })
