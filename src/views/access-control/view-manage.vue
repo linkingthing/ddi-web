@@ -162,6 +162,7 @@ export default {
       let count = priority;
       if (type === "up") {
         count -= 1;
+        count = count || 1;
       } else {
         count += 1;
       }

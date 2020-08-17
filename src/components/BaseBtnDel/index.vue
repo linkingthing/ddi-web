@@ -22,6 +22,7 @@ export default {};
   width: 20px;
   height: 20px;
   background-image: url(./icon-delete.png);
+  vertical-align: bottom;
 }
 </style>
 
