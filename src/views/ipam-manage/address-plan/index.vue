@@ -4,6 +4,7 @@
       style=""
       class="plan-content"
     >
+      <PlanTab />
       <PlanProcess />
 
       <PlanStepCreatePrefix />
@@ -24,7 +25,7 @@
 </style>
 
 <script>
-import TablePagination from "@/components/TablePagination";
+import PlanTab from "./modules/PlanTab";
 import PlanProcess from "./modules/PlanProcess";
 import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
 import PlanStepSemantic from "./modules/PlanStepSemantic";
@@ -32,6 +33,7 @@ import { columns } from "./define";
 
 export default {
   components: {
+    PlanTab,
     PlanProcess,
     PlanStepCreatePrefix,
     PlanStepSemantic

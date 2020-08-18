@@ -57,7 +57,6 @@ export default {
         id: 3,
         title: "数据中心",
         isEdit: false
-
       }]
     };
   },
