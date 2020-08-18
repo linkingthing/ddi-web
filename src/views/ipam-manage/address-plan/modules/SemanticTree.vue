@@ -7,15 +7,21 @@
     <Button
       type="primary"
       long
+      @click="visible = true"
     > 语义规划完成</Button>
+
+    <ChoosePlanWayModal :visible.sync="visible" />
   </div>
 </template>
 
 <script>
 import SemanticTreeHeader from "./SemanticTreeHeader";
+import ChoosePlanWayModal from "./ChoosePlanWayModal";
+
 export default {
   components: {
-    SemanticTreeHeader
+    SemanticTreeHeader,
+    ChoosePlanWayModal
   },
   props: {
     prefix: {
@@ -42,7 +48,8 @@ export default {
           title: "dassd",
           expand: true
         }]
-      }]
+      }],
+      visible: false
     };
   },
   computed: {},

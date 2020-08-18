@@ -42,7 +42,6 @@ export default {
   mounted() { },
   methods: {
     handleTab({ id }) {
-      console.log("zhong")
       this.active = id;
     },
     handleRemoveTab(id) {
