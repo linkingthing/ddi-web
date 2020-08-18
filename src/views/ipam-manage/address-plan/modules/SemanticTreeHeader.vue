@@ -39,6 +39,7 @@ export default {
   .prefix {
     font-size: 16px;
     color: #333;
+    line-height: 32px;
   }
   .search {
     width: 200px;

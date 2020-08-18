@@ -1,7 +1,7 @@
 <template>
   <div class="PlanStepSemantic">
     <SemanticTree prefix="21/98:rt5623/::ee" />
-    <SemanticList />
+    <SemanticList title="业务" />
   </div>
 </template>
 

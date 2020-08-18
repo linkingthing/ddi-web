@@ -2,8 +2,12 @@
   <div class="SemanticTree">
     <SemanticTreeHeader :prefix="prefix" />
 
-    <p class="">请在右侧进行规划布局</p>
-    SemanticTree
+    <Tree :data="treeData" />
+
+    <Button
+      type="primary"
+      long
+    > 语义规划完成</Button>
   </div>
 </template>
 
@@ -21,6 +25,24 @@ export default {
   },
   data() {
     return {
+      treeData: [{
+
+        title: "parent 1",
+        expand: true,
+        children: [{
+          title: "dassd",
+          expand: true
+        }, {
+          title: "dassd",
+          expand: true
+        }, {
+          title: "dassd",
+          expand: true
+        }, {
+          title: "dassd",
+          expand: true
+        }]
+      }]
     };
   },
   computed: {},

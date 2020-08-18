@@ -25,22 +25,22 @@ export default {
     return {
       planProcessList: [{
         title: "前缀设置",
-        icon: "icon-system",
+        icon: "icon-process-prefix",
         type: "visited",
         id: "prefix"
       }, {
         title: "语义规划",
-        icon: "icon-edit",
+        icon: "icon-process-plan",
         type: "active",
         id: "semantic"
       }, {
         title: "划分地址段",
-        icon: "icon-organ",
+        icon: "icon-process-branch",
         type: "",
         id: "address"
       }, {
         title: "地址分配",
-        icon: "",
+        icon: "icon-process-distribution",
         type: "",
         id: "assign"
       }]
