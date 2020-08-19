@@ -50,6 +50,20 @@ export default {
       username: [
         { required: true, message: "请填用户名称" }
       ],
+      password: [{
+        validator: function (rule, value, callback) {
+
+          if (value.trim()) {
+            callback();
+          } else {
+            if (self.isEdit) {
+              callback();
+            } else {
+              callback("请输入密码");
+            }
+          }
+        }
+      }],
       repassword: [
         {
           validator: function (rule, value, callback) {
