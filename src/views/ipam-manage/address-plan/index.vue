@@ -9,6 +9,8 @@
 
       <PlanStepCreatePrefix />
       <PlanStepSemantic />
+
+      <PlanStepTree />
     </div>
 
   </div>
@@ -29,6 +31,7 @@ import PlanTab from "./modules/PlanTab";
 import PlanProcess from "./modules/PlanProcess";
 import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
 import PlanStepSemantic from "./modules/PlanStepSemantic";
+import PlanStepTree from "./modules/PlanStepTree";
 import { columns } from "./define";
 
 export default {
@@ -36,7 +39,8 @@ export default {
     PlanTab,
     PlanProcess,
     PlanStepCreatePrefix,
-    PlanStepSemantic
+    PlanStepSemantic,
+    PlanStepTree
   },
 
   data() {
