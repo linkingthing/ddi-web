@@ -36,7 +36,10 @@
           </Menu>
         </div>
         <div class="user">
-          <Badge :count="alarmCount">
+          <Badge
+            :count="alarmCount"
+            v-if="$store.getters.hasPermissionToCreate"
+          >
             <i
               class="icon-notice"
               style="font-size: 20px;cursor: pointer;color: #CFCFCF;vertical-align: middle;"
