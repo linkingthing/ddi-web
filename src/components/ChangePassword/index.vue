@@ -118,7 +118,7 @@ export default {
           this.$put({ url: `/apis/linkingthing.com/auth/v1/ddiusers/${username}`, params })
             .then(() => {
               this.$Message.success("修改成功");
-              this.visible = false;
+              this.dialogVisible = false;
             });
 
         }
