@@ -10,7 +10,6 @@
         <i-button
           type="primary"
           @click="handleOpenCreate"
-          v-if="$store.getters.hasPermissionToCreate"
         >新建</i-button>
       </template>
     </table-page>
@@ -23,7 +22,6 @@
 </template>
 
 <script>
-import services from "@/services";
 import zoneModal from "./modules/zone-modal";
 
 export default {
