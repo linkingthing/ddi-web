@@ -90,7 +90,7 @@ export default {
       // 剩余可规划长度
       startSegment: {
         color: "#EDEDED",
-        value: 0
+        value: 20
       },
       endSegment: {
         color: "rgba(69,134,254, .2)",
@@ -117,7 +117,7 @@ export default {
       this.sections = new Array(this.maskLen + 1).fill("").map(() => ++count);
 
       this.endSegment.value = this.canPlanLength;
-    },
+    }
   }
 };
 </script>

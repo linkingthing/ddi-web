@@ -1,7 +1,7 @@
 <template>
   <div class="PlanTree">
     <VueTree
-      style="width: 800px; height: 600px; border: 1px solid gray;"
+      style="height: 600px; border: 1px solid gray;"
       :dataset="treeData"
       :config="config"
       direction="horizontal"
