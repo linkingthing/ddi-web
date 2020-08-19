@@ -1,6 +1,7 @@
 import axios from "axios";
 import store from "@/store";
 import router from "@/router";
+import { Message } from "view-design";
 
 export const baseUrl = "/apis/linkingthing.com/{block}/v1";
 
@@ -39,6 +40,10 @@ instance.interceptors.response.use(
 
     if (status === 401) {
       router.push("/login");
+    }
+    if (status === 403) {
+      Message.error("您当前没有执行权限，请与超级管理员联系");
+      throw "403 您当前没有执行权限，请与超级管理员联系";
     }
     return Promise.reject(err);
   }

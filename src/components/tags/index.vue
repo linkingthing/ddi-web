@@ -2,6 +2,7 @@
   <div class="myTag">
     <template v-if="list && list.length>3">
       <Tag
+        style="height: auto"
         color="default"
         v-for="value in unfold ? list : list.slice(0, 3) "
         :key="value.id"
@@ -12,6 +13,7 @@
       />
     </template>
     <Tag
+      style="height: auto"
       v-else
       color="default"
       v-for="value in list"
