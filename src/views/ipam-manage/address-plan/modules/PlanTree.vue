@@ -1,7 +1,7 @@
 <template>
   <div class="PlanTree">
     <VueTree
-      style="height: 600px; border: 1px solid gray;"
+      style="min-height: 580px;"
       :dataset="treeData"
       :config="config"
       direction="horizontal"
@@ -17,6 +17,10 @@
         </div>
       </template>
     </VueTree>
+
+    <div style="text-align:center;padding: 20px">
+      <Button type="primary">地址段划分完成</Button>
+    </div>
   </div>
 </template>
 

@@ -11,6 +11,7 @@
       <PlanStepSemantic />
 
       <PlanStepTree />
+      <PlanStepAddressAssign />
     </div>
 
   </div>
@@ -32,6 +33,7 @@ import PlanProcess from "./modules/PlanProcess";
 import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
 import PlanStepSemantic from "./modules/PlanStepSemantic";
 import PlanStepTree from "./modules/PlanStepTree";
+import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
 import { columns } from "./define";
 
 export default {
@@ -40,7 +42,8 @@ export default {
     PlanProcess,
     PlanStepCreatePrefix,
     PlanStepSemantic,
-    PlanStepTree
+    PlanStepTree,
+    PlanStepAddressAssign
   },
 
   data() {

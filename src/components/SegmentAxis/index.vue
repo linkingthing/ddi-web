@@ -41,12 +41,12 @@
           :key="segment.flag"
           :style="{ flex:segment.value, backgroundColor:segment.color }"
         >
-          <div
+          <!-- <div
             class="segment-section-item-name"
             v-if="showSegmentName"
           >
             {{segment.value}}位
-          </div>
+          </div> -->
         </div>
       </template>
       <div
@@ -55,12 +55,12 @@
         key="end-segment"
         :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
       >
-        <div
+        <!-- <div
           class="segment-section-item-name"
           v-if="showSegmentName"
         >
           {{endSegment.value}}位
-        </div>
+        </div> -->
       </div>
 
       <div

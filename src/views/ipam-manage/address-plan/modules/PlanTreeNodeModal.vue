@@ -13,7 +13,7 @@
       <SegmentAxis />
       <Form
         style="padding-top: 36px"
-        label-width="60"
+        :label-width="60"
         label-position="left"
         :label-colon="true"
       >
