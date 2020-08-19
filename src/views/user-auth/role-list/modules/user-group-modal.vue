@@ -44,36 +44,46 @@ export default {
 
   data() {
 
-    // this.rules = {
-    //   name: [
-    //     { required: true, message: "请填访问控制名称" },
-    //     commonNameValidate,
-    //     {
-    //       pattern: /^.*[^\d].*$/,
-    //       message: "访问控制列表名称不能为纯数字"
-    //     }
-    //   ],
-    //   ips: [
-    //     { required: true, message: "请填写网络地址" },
-    //     {
-    //       validator: function (rule, value, callback) {
-    //         if (isIp(value)) {
-    //           callback();
-    //         }
-    //         if ("cmcc,cucc,ctcc".includes(value)) {
-    //           callback();
-    //         }
-    //         callback("请正确填写网络地址");
 
-    //       }
+    this.rules = {
+      name: [
+        {
+          validator: function (rule, value, callback) {
+            if (value.trim()) {
+              callback();
+            } else {
+              callback("请输入角色名");
+            }
+          }
+        }
+      ],
+      plans: [
+        {
+          validator: (rule, value, callback) => {
+            const planLen = this.formModel.views.length;
+            if (value.length + planLen) {
+              callback();
+            } else {
+              callback("请选择至少一个DNS资源或者IP前缀资源");
+            }
+          }
+        }
+      ],
+      views: [
+        {
+          validator: (rule, value, callback) => {
+            const planLen = this.formModel.plans.length;
+            if (value.length + planLen) {
+              callback();
+            } else {
+              callback("请选择至少一个DNS资源或者IP前缀资源");
+            }
+          }
+        }
+      ]
 
-    //     }
+    };
 
-    //   ]
-
-    // };
-
-    this.rules = {};
     return {
       formModel: {
         name: "",
