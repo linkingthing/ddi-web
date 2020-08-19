@@ -145,7 +145,7 @@ export default {
   watch: {
     visible(val) {
       if (!val) return;
-
+      console.log(this.$route)
       this.dialogVisible = val;
     },
 
@@ -194,6 +194,10 @@ export default {
           this.$$success("保存成功！");
           this.$emit("success");
           this.dialogVisible = false;
+
+          // 清楚path的query参数
+          const { path } = this.$route;
+          this.$router.push({path});
         }).catch(err => {
           this.$$error(err.response.data.message);
         }).finally(() => {
