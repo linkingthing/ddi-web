@@ -101,7 +101,7 @@ export default {
           label: "角色名称",
           model: "name",
           type: "input",
-          placeholder: "请填写前缀长度",
+          placeholder: "请填写角色名称",
           style: "width: 380px"
 
         },

@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name'] : []"
+        :show-fields="isEdit ? ['username'] : []"
       />
 
     </Form>
