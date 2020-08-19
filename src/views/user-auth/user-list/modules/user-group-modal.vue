@@ -58,6 +58,9 @@ export default {
             } else {
               callback("两次输入的密码不一致");
             }
+            setTimeout(() => {
+              self.$refs["formInline"].validateField("repassword");
+            });
           }
         }
       ]
