@@ -5,8 +5,9 @@
   >
     <div class="multiple-select-search multiple-select-card">
       <div class="multiple-search multiple-select-head">
-        <Icon class="icon-input-search multiple-searc-icon" />
+        <Icon class="icon-search-btn multiple-searc-icon" />
         <Input
+          :placeholder="placeholder"
           class="multiple-select-search-input"
           v-model="keywords"
         />
@@ -37,7 +38,7 @@
     </div>
     <div class="multiple-select-show multiple-select-card">
       <div class="multiple-select-head">
-        <h3 class="multiple-select-card-title">已选:</h3>
+        <h3 class="multiple-select-card-title">{{tips}}:</h3>
       </div>
       <div class=" multiple-select-body">
         <div
@@ -77,6 +78,14 @@ export default {
     value: {
       type: Array,
       default: () => ([])
+    },
+    placeholder: {
+      type: String,
+      default: "请输入关键字搜索"
+    },
+    tips: {
+      type: String,
+      default: "已选"
     }
 
   },

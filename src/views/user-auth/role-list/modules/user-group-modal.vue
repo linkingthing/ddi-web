@@ -111,7 +111,8 @@ export default {
           model: "views",
           component: MultipleSelect,
           props: {
-            dataList: this.viewList
+            dataList: this.viewList,
+            tips: "已选DNS"
           }
         },
         {
@@ -121,7 +122,8 @@ export default {
           component: MultipleSelect,
           props: {
             height: 150,
-            dataList: this.planList
+            dataList: this.planList,
+            tips: "已选择IP前缀"
           }
         },
         {

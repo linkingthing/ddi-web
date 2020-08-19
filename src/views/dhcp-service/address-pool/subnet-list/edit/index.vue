@@ -197,7 +197,7 @@ export default {
 
           // 清楚path的query参数
           const { path } = this.$route;
-          this.$router.push({path});
+          this.$router.push({ path });
         }).catch(err => {
           this.$$error(err.response.data.message);
         }).finally(() => {

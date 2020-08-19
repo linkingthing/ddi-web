@@ -110,7 +110,8 @@ export default {
           model: "userIDs",
           component: MultipleSelect,
           props: {
-            dataList: this.userList
+            dataList: this.userList,
+            tips: "已选用户"
           }
         },
         {
@@ -120,7 +121,8 @@ export default {
           component: MultipleSelect,
           props: {
             height: 150,
-            dataList: this.roleList
+            dataList: this.roleList,
+            tips: "已选角色"
           }
         },
         {
