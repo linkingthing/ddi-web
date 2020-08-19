@@ -1,7 +1,5 @@
 <template>
   <div class="AddressAssignSubnetList">
-    AddressAssignSubnetList
-
     <table-page
       :data="tableData"
       :total="tableData.length"

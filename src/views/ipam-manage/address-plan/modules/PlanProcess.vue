@@ -26,23 +26,23 @@ export default {
       planProcessList: [{
         title: "前缀设置",
         icon: "icon-process-prefix",
-        type: "visited",
-        id: "prefix"
+        type: "active",
+        id: "PlanStepCreatePrefix"
       }, {
         title: "语义规划",
         icon: "icon-process-plan",
-        type: "active",
-        id: "semantic"
+        type: "",
+        id: "PlanStepSemantic"
       }, {
         title: "划分地址段",
         icon: "icon-process-branch",
         type: "",
-        id: "address"
+        id: "PlanStepTree"
       }, {
         title: "地址分配",
         icon: "icon-process-distribution",
         type: "",
-        id: "assign"
+        id: "PlanStepAddressAssign"
       }]
     };
   },

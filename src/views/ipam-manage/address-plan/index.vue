@@ -4,28 +4,23 @@
       style=""
       class="plan-content"
     >
-      <PlanTab />
-      <PlanProcess />
+      <PlanTab
+        @onDeletePlan="handleDelete"
+        @change="handlePlanChange"
+        :plan-list="tableData"
+        @currentPlan="currentPlan => currentPlan = currentPlan"
+      />
+      <PlanProcess @change="stepComponent => stepComponent = stepComponent" />
 
-      <PlanStepCreatePrefix />
+      <component :is="stepComponent" />
+      <!-- <PlanStepCreatePrefix />
       <PlanStepSemantic />
-
       <PlanStepTree />
-      <PlanStepAddressAssign />
+      <PlanStepAddressAssign /> -->
     </div>
 
   </div>
 </template>
-
-<style lang="less">
-.plan {
-  padding-top: 60px;
-}
-.plan-content {
-  padding: 24px;
-  border-top: 1px solid #efefef;
-}
-</style>
 
 <script>
 import PlanTab from "./modules/PlanTab";
@@ -34,7 +29,6 @@ import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
 import PlanStepSemantic from "./modules/PlanStepSemantic";
 import PlanStepTree from "./modules/PlanStepTree";
 import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
-import { columns } from "./define";
 
 export default {
   components: {
@@ -51,8 +45,9 @@ export default {
       url: this.$getApiByRoute().url,
       loading: true,
       tableData: [],
-      columns: columns(this),
-      showCreate: false
+      currentPlan: {},
+
+      stepComponent: "PlanStepCreatePrefix"
     };
   },
 
@@ -69,7 +64,7 @@ export default {
 
         this.tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
-
+          item.title = item.description;
           return item;
         });
       } catch (err) {
@@ -84,35 +79,28 @@ export default {
       this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}&maskLen=${data.maskLen}`);
     },
 
-    handleAdd() {
-      this.showCreate = true;
-    },
+    handleDelete(id) {
 
-    handleSaved() {
-      this.showCreate = false;
-
-      this.handleQuery();
-    },
-
-    async handleDelete({ id }) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
-
-        this.loading = true;
-
-        await this.$delete({ url: this.url + "/" + id });
-
+      this.$delete({ url: this.url + "/" + id }).then(() => {
         this.$$success("删除成功！");
-
         this.handleQuery();
-      }
-      catch (err) {
-        this.$handleError(err);
-      }
-      finally {
-        this.loading = false;
-      }
+      });
+
+    },
+
+    handlePlanChange(id) {
+      console.log(id)
     }
   }
 };
 </script>
+
+<style lang="less">
+.plan {
+  padding-top: 60px;
+}
+.plan-content {
+  padding: 24px;
+  border-top: 1px solid #efefef;
+}
+</style>

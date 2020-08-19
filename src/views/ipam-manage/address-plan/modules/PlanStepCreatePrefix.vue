@@ -2,11 +2,20 @@
   <div class="PlanCreatePrefix">
     <Form
       :colon="true"
-      :label-width="60"
+      :label-width="80"
       label-position="left"
+      :model="formData"
     >
+      <FormItem label="规划名称">
+        <Input
+          v-model="formData.description"
+          size="large"
+          placeholder="请填写规划名称"
+        />
+      </FormItem>
       <FormItem label="前缀">
         <Input
+          v-model="formData.prefix"
           size="large"
           placeholder="请填写前缀"
         />
@@ -16,6 +25,7 @@
           size="large"
           type="primary"
           long
+          @click="handleClickSubmit"
         >确认</Button>
       </div>
     </Form>
@@ -28,13 +38,22 @@ export default {
   props: {},
   data() {
     return {
+      formData: {
+        prefix: "",
+        description: "",
+        maxLen: 64
+      }
     };
   },
   computed: {},
   watch: {},
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    handleClickSubmit() {
+
+    }
+  }
 };
 </script>
 

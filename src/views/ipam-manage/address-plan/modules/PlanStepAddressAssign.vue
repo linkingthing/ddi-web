@@ -6,16 +6,19 @@
     />
     PlanStepAddressAssign
 
+    <AddressAssignList />
     <AddressAssignSubnetList />
   </div>
 </template>
 
 <script>
 import AddressTypeTab from "./AddressTypeTab";
+import AddressAssignList from "./AddressAssignList";
 import AddressAssignSubnetList from "./AddressAssignSubnetList";
 export default {
   components: {
     AddressTypeTab,
+    AddressAssignList,
     AddressAssignSubnetList
   },
   props: {},

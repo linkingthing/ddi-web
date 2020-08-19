@@ -20,31 +20,46 @@ export default {
   components: {
     PlanTabItem
   },
-  props: {},
+  props: {
+    planList: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
-      active: 1,
-      planList: [{
-        id: 1,
-        title: "计划1"
-      }, {
-        id: 2,
-        title: "计划2"
-      }, {
-        id: 3,
-        title: "计划3"
-      }]
+      active: 1
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    planList: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        if (val.length) {
+          this.active = val[0].id;
+        }
+      }
+    },
+    active(id) {
+      this.$emit("currentPlan", this.planList.find(item => item.id === id));
+    }
+  },
   created() { },
   mounted() { },
   methods: {
     handleTab({ id }) {
       this.active = id;
+      this.$emit("change", id);
     },
     handleRemoveTab(id) {
+      this.$$confirm({ content: "您确定要删除当前数据吗？" }).then(() => {
+        this.exacuteDelete(id);
+        this.$emit("onDeletePlan", id);
+      });
+    },
+    exacuteDelete(id) {
       this.planList = this.planList.filter(item => item.id !== id);
 
       this.$nextTick().then(() => {
@@ -57,6 +72,7 @@ export default {
         }
       });
     }
+
   }
 };
 </script>
