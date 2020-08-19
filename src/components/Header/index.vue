@@ -77,7 +77,6 @@
 <script>
 import { mapMutations } from "vuex";
 import store from "@/store";
-import alarmWs from "@/util/ws";
 import logoSrc from "@/assets/images/logo.png";
 
 import ChangePassword from "@/components/ChangePassword";
@@ -202,10 +201,41 @@ export default {
   },
 
   created() {
-
-    alarmWs.getMessage = ({ count }) => {
-      this.alarmCount = count;
+    const self = this;
+    let ws = null;
+    const baseConfig = {
+      timer: null,
+      baseUrl: "/apis/ws.linkingthing.com/v1",
+      resource: "alarm",
+      reconnectNumber: 3,
+      reconnectDelay: 0
     };
+    const { port, protocol, hostname } = document.location;
+    const wsProtocol = protocol.includes("s") ? "wss" : "ws";
+    const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.172" : hostname;
+    const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
+    const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
+
+    ws = new WebSocket(`${wsUrl}`);
+
+    ws.onopen = function () {
+      console.log("连接成功 初始化");
+    };
+    ws.onmessage = function (e) {
+      if (ws.getMessage) {
+        const { count } = JSON.parse(e.data);
+        self.alarmCount = count;
+      } else {
+        setTimeout(() => {
+          console.log("再次连接");
+          ws.getMessage && ws.getMessage(JSON.parse(e.data));
+        }, 600);
+      }
+    };
+    ws.onerror = function (e) {
+      console.log(e);
+    };
+
   },
 
   methods: {
