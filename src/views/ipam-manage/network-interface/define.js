@@ -110,6 +110,12 @@ export const typeLegends = [
     label: "未管理地址",
     color: typeColors[3],
     type: "unmanagered"
+  },
+  {
+    percent: 0,
+    label: "静态地址",
+    color: typeColors[4],
+    type: "static"
   }
 ];
 
