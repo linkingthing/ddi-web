@@ -106,23 +106,11 @@ export default {
   methods: {
     getDataList() {
       this.$getData().then(({ data, links }) => {
-        console.log(data, links)
         this.dsliteList = data;
         this.links = links;
       }).catch(err => {
         this.$Message.error(err.message);
       });
-      // services
-      //   .getZoneByViewId(this.viewId, {
-      //     zonetype: "forward"
-      //   })
-      //   .then(res => {
-      //     this.dsliteList = res.data.data;
-      //     this.links = res.data.links;
-      //   })
-      //   .catch(err => {
-      //     this.$Message.error(err.message);
-      //   });
     },
     handleOpenCreate() {
       this.visible = true;
