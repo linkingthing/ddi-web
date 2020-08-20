@@ -18,7 +18,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: ""
+      default: ""  // "", visited, active
     },
     icon: {
       type: String,

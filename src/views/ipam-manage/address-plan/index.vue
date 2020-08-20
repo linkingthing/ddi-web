@@ -1,28 +1,56 @@
 <template>
   <div class="plan">
     <div
+      class="top-right"
+      v-if="tableData.length"
+    >
+      <Button
+        type="primary"
+        style="margin-right: 20px"
+        @click="handleAddPlan"
+      >手动添加规划</Button>
+      <Button
+        type="primary"
+        @click="handleImport"
+      >导入规划</Button>
+    </div>
+    <div
       style=""
       class="plan-content"
     >
-      <PlanTab
-        @onDeletePlan="handleDelete"
-        @change="handlePlanChange"
-        :plan-list="tableData"
-        @currentPlan="currentPlan => currentPlan = currentPlan"
-      />
-      <PlanProcess @change="stepComponent => stepComponent = stepComponent" />
 
-      <component :is="stepComponent" />
-      <!-- <PlanStepCreatePrefix />
-      <PlanStepSemantic />
-      <PlanStepTree />
-      <PlanStepAddressAssign /> -->
+      <NoDataList
+        style="margin-top: 100px"
+        v-if="!tableData.length"
+        button-text="手动添加规划"
+        @add="handleAddPlan"
+        :buttons="[{
+          text:'导入规划',
+          event: handleImport
+        }]"
+      />
+      <template v-else>
+        <PlanTab
+          @onDeletePlan="handleDelete"
+          @change="handlePlanChange"
+          :plan-list="tableData"
+          @currentPlan="currentPlan => currentPlan = currentPlan"
+        />
+        <PlanProcess />
+
+        <component :is="stepComponent" />
+      </template>
+
     </div>
 
   </div>
 </template>
 
 <script>
+
+import { mapGetters, mapMutations } from "vuex";
+
+import NoDataList from "@/components/NoDataList";
 import PlanTab from "./modules/PlanTab";
 import PlanProcess from "./modules/PlanProcess";
 import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
@@ -32,6 +60,7 @@ import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
 
 export default {
   components: {
+    NoDataList,
     PlanTab,
     PlanProcess,
     PlanStepCreatePrefix,
@@ -47,15 +76,25 @@ export default {
       tableData: [],
       currentPlan: {},
 
-      stepComponent: "PlanStepCreatePrefix"
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      stepComponent: "currentPlanProcessId"
+    })
   },
 
   mounted() {
     this.handleQuery();
   },
 
+
   methods: {
+    ...mapMutations([
+      "setPlanList",
+      "addPlan"
+    ]),
     async handleQuery() {
       this.loading = true;
 
@@ -67,6 +106,9 @@ export default {
           item.title = item.description;
           return item;
         });
+
+        this.setPlanList(this.tableData);
+
       } catch (err) {
         this.$handleError(err);
       }
@@ -90,7 +132,17 @@ export default {
 
     handlePlanChange(id) {
       console.log(id)
-    }
+    },
+    handleAddPlan() {
+      this.addPlan({
+        prefix: "",
+        description: "",
+        maxLen: 64
+      });
+    },
+    handleImport() { }
+
+
   }
 };
 </script>
@@ -102,5 +154,10 @@ export default {
 .plan-content {
   padding: 24px;
   border-top: 1px solid #efefef;
+}
+.top-right {
+  position: absolute;
+  right: 10px;
+  top: 16px;
 }
 </style>

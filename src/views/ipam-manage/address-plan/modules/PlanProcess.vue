@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 import PlanProcessItem from "./PlanProcessItem";
 export default {
   components: {
@@ -23,34 +24,31 @@ export default {
   props: {},
   data() {
     return {
-      planProcessList: [{
-        title: "前缀设置",
-        icon: "icon-process-prefix",
-        type: "active",
-        id: "PlanStepCreatePrefix"
-      }, {
-        title: "语义规划",
-        icon: "icon-process-plan",
-        type: "",
-        id: "PlanStepSemantic"
-      }, {
-        title: "划分地址段",
-        icon: "icon-process-branch",
-        type: "",
-        id: "PlanStepTree"
-      }, {
-        title: "地址分配",
-        icon: "icon-process-distribution",
-        type: "",
-        id: "PlanStepAddressAssign"
-      }]
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters([
+      "planProcessList"
+    ])
+  },
+  watch: {
+    "planProcessList": {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        const { id } = val.find(item => item.type === "active");
+
+        this.$emit("onchange", id);
+        this.setCurrentPlanProcessId(id);
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {
+    ...mapMutations([
+      "setCurrentPlanProcessId"
+    ]),
     handleChange(id) {
       this.planProcessList.forEach(item => {
         if (item.id === id) {
@@ -68,6 +66,7 @@ export default {
 <style lang="less" scoped>
 .PlanProcess {
   border-bottom: 1px dashed rgba(69, 134, 254, 0.3);
+  margin-bottom: 40px;
   ul {
     display: inline-flex;
     padding-bottom: 30px;

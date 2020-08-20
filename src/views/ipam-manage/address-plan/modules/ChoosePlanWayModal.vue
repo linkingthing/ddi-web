@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   components: {},
   props: {
@@ -82,10 +83,16 @@ export default {
   created() { },
   mounted() { },
   methods: {
+    ...mapMutations([
+      "nextPlanStep"
+    ]),
+
     handleCustom() {
+      this.nextPlanStep();
 
     },
     handleIntellect() {
+      this.nextPlanStep();
 
     }
   }

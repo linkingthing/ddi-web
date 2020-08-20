@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   components: {},
   props: {},
@@ -50,8 +51,11 @@ export default {
   created() { },
   mounted() { },
   methods: {
+    ...mapMutations([
+      "nextPlanStep"
+    ]),
     handleClickSubmit() {
-
+      this.nextPlanStep();
     }
   }
 };
@@ -60,6 +64,5 @@ export default {
 <style lang="less" scoped>
 .PlanCreatePrefix {
   width: 310px;
-  padding: 40px 0;
 }
 </style>

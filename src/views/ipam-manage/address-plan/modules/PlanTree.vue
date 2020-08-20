@@ -19,12 +19,16 @@
     </VueTree>
 
     <div style="text-align:center;padding: 20px">
-      <Button type="primary">地址段划分完成</Button>
+      <Button
+        type="primary"
+        @click="handleAddressPlanFinish"
+      >地址段划分完成</Button>
     </div>
   </div>
 </template>
 
 <script>
+import {mapMutations} from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
 export default {
@@ -56,7 +60,15 @@ export default {
   watch: {},
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    ...mapMutations([
+      "nextPlanStep"
+    ]),
+
+    handleAddressPlanFinish() {
+      this.nextPlanStep();
+    }
+  }
 };
 </script>
 
