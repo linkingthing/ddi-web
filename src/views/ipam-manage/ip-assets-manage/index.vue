@@ -58,12 +58,12 @@
       </template>
 
       <template slot="top-right">
-        <Button
+        <!-- <Button
           class="top-button"
           @click="showAdvance = true"
         >
           高级搜索
-        </Button>
+        </Button> -->
 
         <Button
           v-if="$store.getters.hasPermissionToCreate"
@@ -99,6 +99,8 @@ import AdvancedSearch from "./advanced-query";
 
 import { columns, deviceTypes } from "./define";
 
+import { ipv4IsValid } from "@/util/common";
+
 export default {
   components: {
     Edit,
@@ -127,11 +129,13 @@ export default {
 
     const {
       id,
+      ip,
       mac,
       switchName,
       switchPort,
       computerRack,
-      computerRoom
+      computerRoom,
+      subnetv6Ids
     } = this.$route.query;
 
     this.currentData = {
@@ -141,6 +145,13 @@ export default {
       computerRack,
       computerRoom
     };
+
+    if (ipv4IsValid(ip)) {
+      this.currentData.ipv4 = ip;
+    } else {
+      this.currentData.ipv6s = [ip];
+      this.currentData.subnetv6Ids = [subnetv6Ids];
+    }
 
     if (id) {
       try {

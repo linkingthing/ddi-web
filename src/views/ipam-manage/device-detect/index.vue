@@ -64,12 +64,12 @@
       </template>
 
       <template slot="top-right">
-        <Button
+        <!-- <Button
           class="top-button"
           @click="showAdvance = true"
         >
           高级搜索
-        </Button>
+        </Button> -->
 
         <Button
           v-if="$store.getters.hasPermissionToCreate"

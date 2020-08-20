@@ -35,18 +35,19 @@ export const columns = scope => [
     align: "center",
     width: 140
   },
-  {
-    title: "上联地址",
-    key: "uplinkAddress",
-    align: "center",
-    width: 180
-  },
-  {
-    title: "下联地址",
-    key: "downlinkAddress",
-    align: "center",
-    width: 180
-  },
+  // {
+  //   title: "上联地址",
+  //   key: "uplinkAddress",
+  //   align: "center",
+  //   width: 180,
+
+  // },
+  // {
+  //   title: "下联地址",
+  //   key: "downlinkAddress",
+  //   align: "center",
+  //   width: 180
+  // },
   {
     title: "机房",
     key: "computerRoom",

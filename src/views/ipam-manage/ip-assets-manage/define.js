@@ -40,12 +40,20 @@ export const columns = scope => [
     tooltip
   },
   {
-    title: "IP地址",
-    key: "name",
+    title: "IPv4地址",
+    key: "ipv4",
     align: "center",
     width: 180,
     tooltip
   },
+  {
+    title: "IPv6地址",
+    key: "ipv6s",
+    align: "center",
+    width: 180,
+    tooltip
+  },
+  
   {
     title: "终端名称",
     key: "name",
