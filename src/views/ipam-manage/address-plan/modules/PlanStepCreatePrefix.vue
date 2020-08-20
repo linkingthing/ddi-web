@@ -55,7 +55,12 @@ export default {
       "nextPlanStep"
     ]),
     handleClickSubmit() {
-      this.nextPlanStep();
+      const params = { ...this.formData };
+      this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then((res) => {
+        console.log(res)
+        this.nextPlanStep();
+
+      })
     }
   }
 };
