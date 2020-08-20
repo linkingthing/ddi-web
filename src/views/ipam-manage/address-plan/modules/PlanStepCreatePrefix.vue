@@ -42,7 +42,7 @@ export default {
       formData: {
         prefix: "",
         description: "",
-        maxLen: 64
+        maskLen: 64
       }
     };
   },
