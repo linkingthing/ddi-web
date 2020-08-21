@@ -60,8 +60,15 @@ export default {
       plans: [
         {
           validator: (rule, value, callback) => {
-            const planLen = this.formModel.views.length;
-            if (value.length + planLen) {
+            let AllLen = 0;
+            if (value) {
+              AllLen += value.length;
+            }
+            if (this.formModel && this.formModel.views) {
+              AllLen += this.formModel.views.length;
+            }
+
+            if (AllLen) {
               callback();
             } else {
               callback("请选择至少一个DNS资源或者IP前缀资源");
@@ -72,8 +79,15 @@ export default {
       views: [
         {
           validator: (rule, value, callback) => {
-            const planLen = this.formModel.plans.length;
-            if (value.length + planLen) {
+            let AllLen = 0;
+            if (value) {
+              AllLen += value.length;
+            }
+            if (this.formModel && this.formModel.plans) {
+              AllLen += this.formModel.plans.length;
+            }
+
+            if (AllLen) {
               callback();
             } else {
               callback("请选择至少一个DNS资源或者IP前缀资源");

@@ -107,8 +107,8 @@ export default {
       immediate: true,
       handler(value, old) {
         // value不存在于 dataList时， value id 和 name 默认为本身
-        if (JSON.stringify(value) !== JSON.stringify(old)) {
-          this.selectedList = value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item });
+        if (Array.isArray(value) && JSON.stringify(value) !== JSON.stringify(old)) {
+          this.selectedList =  value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item });
         }
       }
     },
