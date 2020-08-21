@@ -83,7 +83,7 @@
                 class="chart-legend-item-percent"
                 :class="{'percent-no-data': statusPieNoData}"
               >
-                {{statusPieNoData ? "暂无数据" : `${item.percent}%`}}
+                {{statusPieNoData ? "--" : `${item.percent}%`}}
               </div>
               <div class="chart-legend-item-info is-clickable">
                 <div

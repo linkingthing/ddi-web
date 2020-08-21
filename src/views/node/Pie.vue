@@ -70,9 +70,9 @@ export default {
           {
             name: "解析类型",
             type: "pie",
-            center: [250, "center"],
+            center: [200, "center"],
 
-            radius: ["62%", "85%"],
+            radius: [72, 86],
             avoidLabelOverlap: false,
             label: {
               normal: {

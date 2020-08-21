@@ -12,7 +12,7 @@ export default {};
 <style lang="less">
 .btn-edit {
   font-size: 18px;
-  margin-left: 16px;
+  // margin-left: 16px;
   color: #6a94ea !important;
   cursor: pointer;
 }

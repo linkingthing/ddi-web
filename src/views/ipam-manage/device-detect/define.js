@@ -82,13 +82,14 @@ export const columns = scope => [
     title: "联系电话",
     key: "telephone",
     align: "center",
-    width: 140
+    width: 150
   },
   {
     title: "操作",
     width: 180,
     className: "operate-column",
     fixed: "right",
+    align: "center",
     render: (h, { row }) => {
       if (scope.$store.getters.hasPermissionToCreate) {
         return h("div", [
