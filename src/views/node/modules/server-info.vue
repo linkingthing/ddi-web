@@ -7,30 +7,30 @@
       <div class="useage">
         <dl>
           <dt class="error">
-            <!-- {{
-              server.cpuRatio
-            }} -->
             {{
+              (100 * Number(server.cpuRatio)).toFixed(2)
+            }}
+            <!-- {{
               (Array.isArray(server.cpuUsage) && server.cpuUsage.length) 
                 ? (100 * Number(server.cpuUsage[server.cpuUsage.length - 1].ratio)).toFixed(2)
                 : 0
-            }}
+            }} -->
             <span>%</span>
-            
+
           </dt>
           <dd>cpu使用率</dd>
         </dl>
         <dl>
           <dt class="warn">
-            <!-- {{
-              server.memRatio            
-            }} -->
+            {{
+              (100 * Number(server.memRatio)).toFixed(2)
+            }}
 
-            {{              
+            <!-- {{              
               (Array.isArray(server.memoryUsage) && server.memoryUsage.length)
                 ? (100 * Number(server.memoryUsage[server.memoryUsage.length - 1].ratio)).toFixed(2)
                 : 0
-            }}
+            }} -->
             <span>%</span>
           </dt>
           <dd>内存占用率</dd>
