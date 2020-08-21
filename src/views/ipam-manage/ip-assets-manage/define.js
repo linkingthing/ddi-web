@@ -31,7 +31,7 @@ export const deviceTypes = [
   }
 ];
 
-export const columns = scope => [  
+export const columns = scope => [
   {
     title: "MAC",
     key: "mac",
@@ -53,7 +53,7 @@ export const columns = scope => [
     width: 180,
     tooltip
   },
-  
+
   {
     title: "终端名称",
     key: "name",
@@ -102,7 +102,7 @@ export const columns = scope => [
     align: "center",
     width: 150,
     tooltip
-  }, 
+  },
   {
     title: "所属部门",
     key: "department",
@@ -129,23 +129,27 @@ export const columns = scope => [
     width: 110,
     fixed: "right",
     align: "center",
-    render: (h, { row }) => 
-      h("div", [
-        h("btn-edit", {
-          on: {
-            click: () => {
-              scope.handleEdit(row);
+    render: (h, { row }) => {
+      if (scope.$store.getters.hasPermissionToCreate) {
+        return h("div", [
+          h("btn-edit", {
+            on: {
+              click: () => {
+                scope.handleEdit(row);
+              }
             }
-          }
-        }),
-        h("btn-del", {
-          on: {
-            click: () => {
-              scope.handleDelete(row);
+          }),
+          h("btn-del", {
+            on: {
+              click: () => {
+                scope.handleDelete(row);
+              }
             }
-          }
-        })
-      ]),
-    align: "center"
+          })
+        ]);
+      } else {
+        return h("div");
+      }
+    }
   }
 ];

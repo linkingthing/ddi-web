@@ -73,18 +73,23 @@ export default {
           align: "right",
           width: 160,
           render: (h, { row }) => {
-            return h("div", [
-              h("btn-edit", {
-                on: {
-                  click: () => this.handleOpenEdit(row)
-                }
-              }),
-              h("btn-del", {
-                on: {
-                  click: () => this.handleDelete(row)
-                }
-              })
-            ]);
+
+            if (this.$store.getters.hasPermissionToCreate) {
+              return h("div", [
+                h("btn-edit", {
+                  on: {
+                    click: () => this.handleOpenEdit(row)
+                  }
+                }),
+                h("btn-del", {
+                  on: {
+                    click: () => this.handleDelete(row)
+                  }
+                })
+              ]);
+            } else {
+              return h("div");
+            }
           }
         }
       ],
