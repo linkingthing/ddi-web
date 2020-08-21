@@ -157,7 +157,8 @@ export default {
           component: MultipleSelect,
           props: {
             dataList: this.userGroup,
-            tips: "已选用户组"
+            tips: "已选用户组",
+            clearKeywords: this.visible
           }
         },
         {
@@ -168,7 +169,8 @@ export default {
           props: {
             height: 150,
             dataList: this.roleList,
-            tips: "已选角色"
+            tips: "已选角色",
+            clearKeywords: this.visible
           }
         },
         {

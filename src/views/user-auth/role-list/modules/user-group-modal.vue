@@ -136,7 +136,8 @@ export default {
           component: MultipleSelect,
           props: {
             dataList: this.viewList,
-            tips: "已选DNS"
+            tips: "已选DNS",
+            clearKeywords: this.visible
           }
         },
         {
@@ -147,7 +148,9 @@ export default {
           props: {
             height: 150,
             dataList: this.planList,
-            tips: "已选择IP前缀"
+            tips: "已选择IP前缀",
+            clearKeywords: this.visible
+
           }
         },
         {

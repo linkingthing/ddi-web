@@ -86,6 +86,10 @@ export default {
     tips: {
       type: String,
       default: "已选"
+    },
+    clearKeywords: {
+      type: Boolean,
+      default: false
     }
 
   },
@@ -102,6 +106,9 @@ export default {
     }
   },
   watch: {
+    clearKeywords() {
+      this.keywords = "";
+    },
     value: {
       deep: true,
       immediate: true,
