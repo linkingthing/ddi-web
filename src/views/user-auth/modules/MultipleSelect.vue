@@ -21,10 +21,10 @@
           >
             <div
               class="ellipsis"
-              v-if="item.name.length > 10"
+              v-if="item.name.length > 20"
             >
               <Tooltip :content="item.name">
-                {{item.name.slice(0, 10)}}...
+                {{item.name.slice(0, 20)}}...
               </Tooltip>
             </div>
             <div v-else>
