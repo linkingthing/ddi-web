@@ -51,7 +51,7 @@ export default {
         },
         legend: {
           orient: "horizontal",
-          right: 100,
+          left: 320,
           bottom: "center",
           data: formarLabel,
           itemGap: 20,

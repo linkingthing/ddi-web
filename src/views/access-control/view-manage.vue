@@ -92,7 +92,7 @@ export default {
                 h("btn-move", {
                   props: {
                     type: "up",
-                    disabled: row.name === "default"
+                    disabled: row.name === "default" || row.priority === 1
                   },
                   on: {
                     click: () => this.handleMove(row, "up")
@@ -101,7 +101,7 @@ export default {
                 h("btn-move", {
                   props: {
                     type: "down",
-                    disabled: row.name === "default"
+                    disabled: row.name === "default" || ((row.priority + 1) === this.default.priority)
                   },
                   on: {
                     click: () => this.handleMove(row, "down")
@@ -118,7 +118,8 @@ export default {
       list: [],
       visible: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      default: {}
     };
   },
   mounted() {
@@ -139,6 +140,8 @@ export default {
         .then(res => {
           this.list = res.data.data;
           this.links = res.data.links;
+
+          this.default = this.list.find(item => item.id === "default") || {};
         })
         .catch(function (err) {
           console.log(err);
