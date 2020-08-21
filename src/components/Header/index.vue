@@ -212,7 +212,7 @@ export default {
     };
     const { port, protocol, hostname } = document.location;
     const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-    const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.172" : hostname;
+    const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.8" : hostname;
     const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
     const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
 
@@ -222,15 +222,8 @@ export default {
       console.log("连接成功 初始化");
     };
     ws.onmessage = function (e) {
-      if (ws.getMessage) {
-        const { count } = JSON.parse(e.data);
-        self.alarmCount = count;
-      } else {
-        setTimeout(() => {
-          console.log("再次连接");
-          ws.getMessage && ws.getMessage(JSON.parse(e.data));
-        }, 600);
-      }
+      const { count } = JSON.parse(e.data);
+      self.alarmCount = count;
     };
     ws.onerror = function (e) {
       console.log(e);
