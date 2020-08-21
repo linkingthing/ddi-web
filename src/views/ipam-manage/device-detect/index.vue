@@ -121,10 +121,10 @@ export default {
       loading: true,
       deviceTypes,
       condition: {
-        name: "",
-        administrationAddress: "",
-        equipmentType: "gateway",
-        manufacturer: ""
+        // name: "",
+        // administrationAddress: "",
+        // equipmentType: "",
+        // manufacturer: ""
       },
       tableData: [],
       columns: columns(this),
@@ -151,11 +151,23 @@ export default {
       this.queryData();
     },
 
-    async queryData(params = this.condition) {
+    async queryData(params = { ...this.condition }) {
       this.loading = true;
 
+      if (params.administrationAddress) {
+        params.administration_address = params.administrationAddress;
+      }
+
+      if (params.equipmentType) {
+        params.equipment_type = params.equipmentType;
+      }
+
+
+      Reflect.deleteProperty(params, "administrationAddress");
+      Reflect.deleteProperty(params, "equipmentType");
+
       try {
-        let res = await this.$get({ url: this.url, params });
+        let res = await this.$get({ url: this.$formatQuerys(params, this.url) });
 
         this.tableData = res.data.map(item => {
           const equipmentType = deviceTypes.find(({ label }) => label === item.equipmentType);

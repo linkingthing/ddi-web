@@ -3,7 +3,7 @@ export const columns = scope => [
     title: "IP地址",
     key: "ip",
     minWidth: 160,
-    align: "center"
+    align: "left"
   },
   {
     title: "MAC地址",
@@ -37,7 +37,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    align: "right",
+    align: "center",
     width: 300,
     render: (h, { row }) => {
       let buttons = [
@@ -64,12 +64,12 @@ export const columns = scope => [
           {
             class: "table-row-button",
             style: {
-              width: "60px",
-              display: showFix(row)
+              width: "60px"
+              // display: showFix(row)
             },
             props: {
               type: "default",
-              disabled: row.ipType === "reservation"
+              disabled: row.ipType === "reservation" || !showFix(row)
             },
             on: {
               click: () => {
@@ -84,16 +84,18 @@ export const columns = scope => [
           {
             class: "table-row-button",
             style: {
-              width: "60px",
-              display: `${
-                row.ipState === "conflict" && row.ipType === "unmanagered"
-                  ? "inline-block"
-                  : "none"
-              } `
+              width: "60px"
+              // display: `${
+              //   row.ipState === "conflict" && row.ipType === "unmanagered"
+              //     ? "inline-block"
+              //     : "none"
+              // } `
             },
             props: {
               type: "default",
-              disabled: row.ipType === "reservation"
+              disabled:
+                row.ipType === "reservation" ||
+                !(row.ipState === "conflict" && row.ipType === "unmanagered")
             },
             on: {
               click: () => {
@@ -110,27 +112,25 @@ export const columns = scope => [
   }
 ];
 
-
 // 三种情况显示转固定
 function showFix(row) {
-
   if (row.ipState === "conflict") {
     if (["unmanagered", "unassigned"].includes(row.ipType)) {
-      return "inline-block";
+      return true;
     }
   }
 
   if (row.ipState === "active") {
     if (row.ipType === "unassigned") {
-      return "inline-block";
+      return true;
     }
   }
 
-  return "none";
+  return false;
 }
 
-export const typeColors = ["#4586FE", "#f9904a", "#63D58B", "#76DCEB"];
-export const statusColors = ["#4586FE", "#f9904a", "#e84141", "#CBCBCB"];
+export const typeColors = ["#f9904a", "#4586FE", "#63D58B", "#76DCEB"];
+export const statusColors = ["#f9904a", "#4586FE", "#e84141", "#CBCBCB"];
 
 const noDataColors = ["#ebebeb"];
 
@@ -204,7 +204,7 @@ export const generatePieOption = ({ data, title, color, noData }) => {
   return {
     tooltip: {
       show: !noData,
-      trigger: "item",
+      // trigger: "item",
       formatter: "{a} <br/>{b}: {c}%"
     },
     legend: {
@@ -220,8 +220,8 @@ export const generatePieOption = ({ data, title, color, noData }) => {
         color: noData ? noDataColors : color,
         name: title,
         type: "pie",
-        center: [110, 170],
-        radius: [60, 86],
+        center: [110, 176],
+        radius: [72, 86],
         hoverAnimation: !noData,
         avoidLabelOverlap: false,
         label: {

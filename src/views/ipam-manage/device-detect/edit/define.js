@@ -36,8 +36,7 @@ export const formItemList = isNew => [
   {
     label: "厂商",
     model: "manufacturer",
-    type: "select",
-    children: manufacturers,
+    type: "input",
     placeholder: "请输入厂商"
   },
   {
@@ -140,7 +139,6 @@ export const rules = {
   ],
   manufacturer: [
     {
-      required,
       message: "请选择厂商"
     }
   ],

@@ -97,6 +97,13 @@ export const columns = scope => [
     tooltip
   },
   {
+    title: "业务名称",
+    key: "deployedService",
+    align: "center",
+    width: 150,
+    tooltip
+  }, 
+  {
     title: "所属部门",
     key: "department",
     align: "center",

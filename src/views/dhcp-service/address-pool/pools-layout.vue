@@ -36,12 +36,17 @@ export default {
       if (value === 4) {
         this.tabList.unshift({
           name: "pools",
-          label: "地址池",
+          label: "动态地址池",
           route: "address-pool-list"
         }, {
           name: "reservations",
           label: "固定地址",
           route: "address-reservations-list"
+        });
+        this.tabList.push({
+          name: "staticaddress",
+          label: "静态地址",
+          route: "static-address"
         });
       }
     },
@@ -50,12 +55,17 @@ export default {
         if (Number(value) === 64) {
           this.tabList.unshift({
             name: "pools",
-            label: "地址池",
+            label: "动态地址池",
             route: "address-pool-list"
           }, {
             name: "reservations",
             label: "固定地址",
             route: "address-reservations-list"
+          });
+          this.tabList.push({
+            name: "staticaddress",
+            label: "静态地址",
+            route: "static-address"
           });
         } else {
           this.tab = "pdpools";

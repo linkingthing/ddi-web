@@ -5,7 +5,19 @@
     <section class="chart-wrapper">
       <div class="chart-item">
         <div class="chart-item-content">
-          <div class="chart-item-title">已使用地址类型</div>
+          <div class="chart-item-title">已使用地址类型
+            <Tooltip
+              :content="`已使用地址数量占比为${usedRatio}，未使用地址数量为${notUsedRatio}`"
+              placement="right"
+            >
+              <img
+                style="width: 16px;margin-bottom: 1px;vertical-align: bottom;"
+                :src="require('./icon-ques-mark.png')"
+                alt=""
+              >
+            </Tooltip>
+
+          </div>
 
           <div class="chart-legend">
             <template v-for="(item, idx) in typeLegends">
@@ -37,8 +49,26 @@
 
       <div class="chart-item">
         <div class="chart-item-content">
-          <div class="chart-item-title">地址状态 <Button
+          <div class="chart-item-title">地址状态
+            <Tooltip
+              content="针对ip地址当前状态的监控统计"
+              placement="right"
+            >
+              <img
+                style="width: 16px;margin-bottom: 1px;vertical-align: bottom;"
+                :src="require('./icon-ques-mark.png')"
+                alt=""
+              >
+            </Tooltip>
+
+            <Button
+              style="height: 26px;
+                padding: 0px 10px;
+                vertical-align: bottom;
+                margin-bottom: -4px;
+                margin-left: 8px;"
               type="primary"
+              size="small"
               @click="handleDownloadCsv"
             >导出csv</Button></div>
 
@@ -145,8 +175,19 @@ export default {
       condition: {
         ipAddress: "",
         mac: ""
-      }
+      },
+      unmanagedRatio: ""
     };
+  },
+
+  computed: {
+    usedRatio() {
+      return ((1 - Number(this.unmanagedRatio)) * 100).toFixed(2) + "%";
+    },
+    notUsedRatio() {
+      return (Number(this.unmanagedRatio) * 100).toFixed(2) + "%";
+    }
+
   },
 
   mounted() {
@@ -220,6 +261,8 @@ export default {
           reservationRatio,
           staticAddressRatio
         } = data;
+
+        this.unmanagedRatio = unmanagedRatio;
 
         let typeLegends = [...this.typeLegends];
         let statusLegends = [...this.statusLegends];
@@ -450,3 +493,14 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+.chart-wrapper {
+  .ivu-tooltip-inner {
+    max-width: none;
+    min-height: 30px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+</style>

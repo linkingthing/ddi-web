@@ -22,7 +22,7 @@
         <div class="condition-item">
           <label class="condition-item-label">IP地址</label>
           <Input
-            v-model="condition.mac"
+            v-model="condition.ip"
             placeholder="请输入IP地址"
             class="top-input"
             @on-enter="handleQuery"
@@ -183,7 +183,20 @@ export default {
       this.queryData();
     },
 
-    async queryData(params = this.condition) {
+    async queryData(params = { ...this.condition }) {
+
+      if (params.ip) {
+        if (ipv4IsValid(params.ip)) {
+          params.ipv4 = params.ip;
+        } else {
+          params.ipv6 = params.ip;
+        }
+      }
+
+      if (params.switchName) {
+        params.switch_name = params.switchName;
+      }
+
       this.loading = true;
 
       try {
