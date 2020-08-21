@@ -128,8 +128,13 @@ export default {
       this.$refs[name].validate(valid => {
 
         if (valid) {
-          const params = this.formModel;
-          params.domainServers = (typeof params.domainServers === "string" && params.domainServers.length) ? params.domainServers.split(",") : [];
+          const params = { ...this.formModel };
+
+          if (!Array.isArray(params.domainServers)) {
+            params.domainServers = (typeof params.domainServers === "string" && params.domainServers.length) ? params.domainServers.split(",") : [];
+          }
+
+
           this.$axios.put(this.formModel.links.update, params).then(res => {
             this.$Message.success("保存成功!");
 
