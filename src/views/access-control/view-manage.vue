@@ -76,37 +76,42 @@ export default {
           align: "right",
           width: 220,
           render: (h, { row }) => {
-            return h("div", [
-              h("btn-edit", {
-                on: {
-                  click: () => this.handleEdit(row)
-                }
-              }),
-              row.name !== "default" &&
-              h("btn-del", {
-                on: {
-                  click: () => this.delect(row.id)
-                }
-              }),
-              h("btn-move", {
-                props: {
-                  type: "up",
-                  disabled: row.name === "default"
-                },
-                on: {
-                  click: () => this.handleMove(row, "up")
-                }
-              }),
-              h("btn-move", {
-                props: {
-                  type: "down",
-                  disabled: row.name === "default"
-                },
-                on: {
-                  click: () => this.handleMove(row, "down")
-                }
-              })
-            ]);
+            if (this.$store.getters.hasPermissionToCreate) {
+              return h("div", [
+                h("btn-edit", {
+                  on: {
+                    click: () => this.handleEdit(row)
+                  }
+                }),
+                row.name !== "default" &&
+                h("btn-del", {
+                  on: {
+                    click: () => this.delect(row.id)
+                  }
+                }),
+                h("btn-move", {
+                  props: {
+                    type: "up",
+                    disabled: row.name === "default"
+                  },
+                  on: {
+                    click: () => this.handleMove(row, "up")
+                  }
+                }),
+                h("btn-move", {
+                  props: {
+                    type: "down",
+                    disabled: row.name === "default"
+                  },
+                  on: {
+                    click: () => this.handleMove(row, "down")
+                  }
+                })
+              ]);
+            } else {
+              h("div");
+            }
+
           }
         }
       ],

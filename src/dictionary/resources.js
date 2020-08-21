@@ -43,5 +43,7 @@ export default {
   dnslog: "DNS日志",
   urlredirect: "url重定向",
   /** 用户 */
-  user: "用户信息"
+  user: "用户信息",
+  ddiuser: "普通用户",
+  role: "角色信息"
 };

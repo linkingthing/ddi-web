@@ -101,20 +101,25 @@ export default {
           align: "right",
           width: 160,
           render: (h, { row }) => {
-            return h("div", [
-              !["any", "none"].includes(row.name) &&
-              h("btn-edit", {
-                on: {
-                  click: () => this.handleOpenEdit(row)
-                }
-              }),
-              !["any", "none"].includes(row.name) &&
-              h("btn-del", {
-                on: {
-                  click: () => this.delete(row.id)
-                }
-              })
-            ]);
+            if (this.$store.getters.hasPermissionToCreate) {
+
+              return h("div", [
+                !["any", "none"].includes(row.name) &&
+                h("btn-edit", {
+                  on: {
+                    click: () => this.handleOpenEdit(row)
+                  }
+                }),
+                !["any", "none"].includes(row.name) &&
+                h("btn-del", {
+                  on: {
+                    click: () => this.delete(row.id)
+                  }
+                })
+              ]);
+            } else {
+              h("div");
+            }
           }
         }
       ],
