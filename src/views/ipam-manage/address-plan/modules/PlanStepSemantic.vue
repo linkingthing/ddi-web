@@ -1,11 +1,12 @@
 <template>
   <div class="PlanStepSemantic">
-    <SemanticTree prefix="21/98:rt5623/::ee" />
+    <SemanticTree :prefix="currentPrefix" />
     <SemanticList title="业务" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import SemanticTree from "./SemanticTree";
 import SemanticList from "./SemanticList";
 export default {
@@ -18,7 +19,11 @@ export default {
     return {
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters([
+      "currentPrefix"
+    ])
+  },
   watch: {},
   created() { },
   mounted() { },

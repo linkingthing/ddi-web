@@ -36,6 +36,8 @@
         <PlanProcess />
 
         <component :is="stepComponent" />
+
+        <PlanStepSemantic />
       </template>
 
     </div>
@@ -70,8 +72,7 @@ export default {
   data() {
     return {
       url: this.$getApiByRoute().url,
-      loading: true,
-      currentPlan: {}
+      loading: true
 
     };
   },
@@ -85,17 +86,16 @@ export default {
   },
 
   watch: {
-    currentPlan: {
+    "currentPlan": {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val)
-        // if (links) {
-        //   this.getLayout(links);
-
-        // }
+        if (val && val.links) {
+          this.getLayout(val.links);
+        }
       }
     }
+
   },
 
   mounted() {
@@ -108,7 +108,10 @@ export default {
       "setCurrentPlanId",
       "setPlanList",
       "addPlan",
-      "clearTempPlan"
+      "clearTempPlan",
+
+      "setLayoutList",
+      "setCurrentLayoutId"
     ]),
     async handleQuery() {
       this.loading = true;
@@ -138,11 +141,17 @@ export default {
     },
 
     getLayout({ layouts }) {
-      if (this.currentPlan.links) {
-        this.$get({ url: layouts }).then(res => {
-          console.log(res)
-        })
-      }
+      this.$get({ url: layouts }).then(({ data }) => {
+
+
+        this.setLayoutList(data);
+
+        if (data.length) {
+          this.setCurrentLayoutId(data[0].id);
+        }
+
+      });
+
     },
 
     handleDelete(id) {
@@ -169,7 +178,12 @@ export default {
       this.setCurrentPlanId(id);
     },
     handleImport() {
-      this.clearTempPlan("temp");
+      // 正式做导入功能之前，这个操作都用于测试store
+      // this.clearTempPlan("temp");
+
+      console.log(this.$store.getters.currentPlan)
+
+
     }
 
 

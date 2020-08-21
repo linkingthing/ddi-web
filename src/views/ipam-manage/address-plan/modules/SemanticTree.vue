@@ -2,7 +2,12 @@
   <div class="SemanticTree">
     <SemanticTreeHeader :prefix="prefix" />
 
-    <Tree :data="treeData" />
+    <Tree
+      :data="layoutList"
+      children-key="nodes"
+      @on-select-change="handleSelectNode"
+      :render="renderContent"
+    />
 
     <Button
       type="primary"
@@ -15,6 +20,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 
@@ -52,11 +59,43 @@ export default {
       visible: false
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapState([
+      "layoutList"
+    ]),
+    ...mapGetters([
+      "currentLayout"
+    ])
+  },
+  watch: {
+    layoutList: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log(val)
+      }
+    }
+  },
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    handleSelectNode(nodes, node) {
+      console.log(nodes, node)
+    },
+    renderContent(h, { root, node, data }) {
+      console.log(data)
+      return h("span", {
+        style: {
+          display: "inline-block",
+          width: "100%"
+        }
+      },
+        data.name
+      );
+    }
+
+
+  }
 };
 </script>
 

@@ -80,9 +80,11 @@ export default {
     handleClickSubmit() {
       const params = { ...this.formData };
       if (this.currentPlan.links) {
-        this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
-          this.nextPlanStep();
-        });
+        // this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+        //   this.nextPlanStep();
+        // });
+        this.nextPlanStep();
+
       } else {
         this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(res => {
           this.addPlan(res);

@@ -37,6 +37,9 @@ const getters = {
   currentPlan: state => {
     return state.planList.find(item => item.id === state.currentPlanId);
   },
+  currentPrefix: (state, getters) => {
+    return getters.currentPlan.prefix;
+  },
   planProcessList: state => state.planProcessList,
   currentPlanProcessId: state => state.currentPlanProcessId
 };
