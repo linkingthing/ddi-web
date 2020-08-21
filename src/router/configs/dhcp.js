@@ -64,7 +64,20 @@ export default {
 						from: 'subnet-pool-subnet',
 						title: ':ipnet'
 					}
-				}
+        },
+        {
+					name: 'static-address',
+					path: '/address/dhcp/subnets/:id/staticaddresses',
+					component: () =>
+						import(/* webpackChuckName: "static-address" */ '@/views/dhcp-service/address-pool/static-address'),
+					meta: {
+						notInMenu: true,
+						from: 'subnet-pool-subnet',
+						title: ':ipnet'
+					}
+        }
+        
+        
 			]
 		},
 		{

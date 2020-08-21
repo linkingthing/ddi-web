@@ -3,7 +3,7 @@ export const columns = scope => [
     title: "IP地址",
     key: "ip",
     minWidth: 160,
-    align: "center"
+    align: "left"
   },
   {
     title: "MAC地址",
@@ -37,52 +37,100 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    align: "center",  
-    width: 210,    
+    align: "center",
+    width: 300,
     render: (h, { row }) => {
       let buttons = [
-        h("Button", {
-          class: "table-row-button",
-          style: {
-            width: "70px"
-          },
-          props: {
-            type: "default"
-          },
-          on: {
-            click: () => {              
-              scope.handleEdit(row);
+        h(
+          "Button",
+          {
+            class: "table-row-button",
+            style: {
+              width: "70px"
+            },
+            props: {
+              type: "default"
+            },
+            on: {
+              click: () => {
+                scope.handleEdit(row);
+              }
             }
-          }
-        }, "终端登记"),
-        h("Button", {
-          class: "table-row-button",
-          style: {
-            width: "60px"
           },
-          props: {
-            type: "default",
-            disabled: row.ipType === "reservation"
-          },
-          on: {
-            click: () => {              
-              scope.handleFix(row);
+          "终端登记"
+        ),
+        h(
+          "Button",
+          {
+            class: "table-row-button",
+            style: {
+              width: "60px"
+              // display: showFix(row)
+            },
+            props: {
+              type: "default",
+              disabled: row.ipType === "reservation" || !showFix(row)
+            },
+            on: {
+              click: () => {
+                scope.handleFix(row);
+              }
             }
-          }
-        }, "转固定")
+          },
+          "转固定"
+        ),
+        h(
+          "Button",
+          {
+            class: "table-row-button",
+            style: {
+              width: "60px"
+              // display: `${
+              //   row.ipState === "conflict" && row.ipType === "unmanagered"
+              //     ? "inline-block"
+              //     : "none"
+              // } `
+            },
+            props: {
+              type: "default",
+              disabled:
+                row.ipType === "reservation" ||
+                !(row.ipState === "conflict" && row.ipType === "unmanagered")
+            },
+            on: {
+              click: () => {
+                scope.handleStatic(row);
+              }
+            }
+          },
+          "转静态"
+        )
       ];
-
-      // if (row.ipType === "reservation") {
-      //   buttons.splice(1,1);
-      // }
 
       return buttons;
     }
   }
 ];
 
-export const typeColors = ["#4586FE", "#f9904a", "#63D58B", "#76DCEB"];
-export const statusColors = ["#4586FE", "#f9904a", "#e84141", "#CBCBCB"];
+// 三种情况显示转固定
+function showFix(row) {
+  if (row.ipState === "conflict") {
+    if (["unmanagered", "unassigned"].includes(row.ipType)) {
+      return true;
+    }
+  }
+
+  if (row.ipState === "active") {
+    if (row.ipType === "unassigned") {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export const typeColors = ["#f9904a", "#4586FE", "#63D58B", "#76DCEB"];
+export const statusColors = ["#f9904a", "#4586FE", "#e84141", "#CBCBCB"];
 
 const noDataColors = ["#ebebeb"];
 
@@ -105,10 +153,17 @@ export const typeLegends = [
     color: typeColors[2],
     type: "reservation"
   },
+
+  {
+    percent: 0,
+    label: "静态地址",
+    color: typeColors[3],
+    type: "static"
+  },
   {
     percent: 0,
     label: "未管理地址",
-    color: typeColors[3],
+    color: typeColors[4],
     type: "unmanagered"
   }
 ];
@@ -149,7 +204,7 @@ export const generatePieOption = ({ data, title, color, noData }) => {
   return {
     tooltip: {
       show: !noData,
-      trigger: "item",
+      // trigger: "item",
       formatter: "{a} <br/>{b}: {c}%"
     },
     legend: {
@@ -165,8 +220,8 @@ export const generatePieOption = ({ data, title, color, noData }) => {
         color: noData ? noDataColors : color,
         name: title,
         type: "pie",
-        center: [110,170],
-        radius: [60, 86],
+        center: [110, 176],
+        radius: [72, 86],
         hoverAnimation: !noData,
         avoidLabelOverlap: false,
         label: {

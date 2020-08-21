@@ -5,22 +5,38 @@
     <section class="chart-wrapper">
       <div class="chart-item">
         <div class="chart-item-content">
-          <div class="chart-item-title">地址类型分类</div>
-        
+          <div class="chart-item-title">已使用地址类型
+            <Tooltip
+              :content="`已使用地址数量占比为${usedRatio}，未使用地址数量为${notUsedRatio}`"
+              placement="right"
+            >
+              <img
+                style="width: 16px;margin-bottom: 1px;vertical-align: bottom;"
+                :src="require('./icon-ques-mark.png')"
+                alt=""
+              >
+            </Tooltip>
+
+          </div>
+
           <div class="chart-legend">
             <template v-for="(item, idx) in typeLegends">
               <div
                 class="chart-legend-item"
-                v-if="idx < 3"
-                :key="item.label">
-                <div 
-                  class="chart-legend-item-percent" 
+                v-if="idx < 4"
+                :key="item.label"
+              >
+                <div
+                  class="chart-legend-item-percent"
                   :class="{'percent-no-data': typePieNoData}"
                 >
                   {{typePieNoData ? "暂无数据" : `${item.percent}%`}}
                 </div>
                 <div class="chart-legend-item-info">
-                  <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
+                  <div
+                    class="chart-legend-item-color"
+                    :style="{backgroundColor:item.color}"
+                  />
                   <div class="chart-legend-item-label">{{item.label}}</div>
                 </div>
               </div>
@@ -33,22 +49,47 @@
 
       <div class="chart-item">
         <div class="chart-item-content">
-          <div class="chart-item-title">地址状态分类</div>
-        
+          <div class="chart-item-title">地址状态
+            <Tooltip
+              content="针对ip地址当前状态的监控统计"
+              placement="right"
+            >
+              <img
+                style="width: 16px;margin-bottom: 1px;vertical-align: bottom;"
+                :src="require('./icon-ques-mark.png')"
+                alt=""
+              >
+            </Tooltip>
+
+            <Button
+              style="height: 26px;
+                padding: 0px 10px;
+                vertical-align: bottom;
+                margin-bottom: -4px;
+                margin-left: 8px;"
+              type="primary"
+              size="small"
+              @click="handleDownloadCsv"
+            >导出csv</Button></div>
+
           <div class="chart-legend">
             <div
               @click="handleLegendClick(item)"
               class="chart-legend-item"
               v-for="item in statusLegends"
-              :key="item.label">
-              <div 
-                class="chart-legend-item-percent" 
+              :key="item.label"
+            >
+              <div
+                class="chart-legend-item-percent"
                 :class="{'percent-no-data': statusPieNoData}"
               >
                 {{statusPieNoData ? "暂无数据" : `${item.percent}%`}}
               </div>
               <div class="chart-legend-item-info is-clickable">
-                <div class="chart-legend-item-color" :style="{backgroundColor:item.color}"/>
+                <div
+                  class="chart-legend-item-color"
+                  :style="{backgroundColor:item.color}"
+                />
                 <div class="chart-legend-item-label">{{item.label}}</div>
               </div>
             </div>
@@ -58,10 +99,10 @@
         <div class="chart-container-status" />
       </div>
     </section>
-    
+
     <div style="position:relative">
       <IviewLoading v-if="tableLoading" />
-    
+
       <table-page
         :columns="columns"
         :data="tableData"
@@ -76,7 +117,8 @@
               v-model="condition.ipAddress"
               placeholder="请输入IP地址"
               class="top-input"
-              @on-enter="getList" />
+              @on-enter="getList"
+            />
           </div>
           <div class="condition-item">
             <label class="condition-item-label">MAC：</label>
@@ -84,14 +126,16 @@
               v-model="condition.mac"
               placeholder="请输入MAC"
               class="top-input"
-              @on-enter="getList" />
+              @on-enter="getList"
+            />
           </div>
 
           <btn-search
             type="primary"
             icon="ios-search"
             @click="getList"
-            class="top-button">查询</btn-search>
+            class="top-button"
+          >查询</btn-search>
         </template>
       </table-page>
     </div>
@@ -103,13 +147,13 @@
 </style>
 
 <script>
-import { 
-  columns, 
-  typeLegends, 
-  statusLegends, 
-  generatePieOption, 
-  typeColors, 
-  statusColors 
+import {
+  columns,
+  typeLegends,
+  statusLegends,
+  generatePieOption,
+  typeColors,
+  statusColors
 } from "./define";
 import echarts from "echarts";
 
@@ -131,13 +175,24 @@ export default {
       condition: {
         ipAddress: "",
         mac: ""
-      }
+      },
+      unmanagedRatio: ""
     };
+  },
+
+  computed: {
+    usedRatio() {
+      return ((1 - Number(this.unmanagedRatio)) * 100).toFixed(2) + "%";
+    },
+    notUsedRatio() {
+      return (Number(this.unmanagedRatio) * 100).toFixed(2) + "%";
+    }
+
   },
 
   mounted() {
     this.initChart();
-    this.getData();      
+    this.getData();
   },
 
   methods: {
@@ -147,9 +202,9 @@ export default {
     },
 
     bindPieEvent() {
-      this.statusChart.on("click", res => {  
+      this.statusChart.on("click", res => {
         if (this.statusPieNoData) return;
-        
+
         this.handleLegendClick({
           type: this.getAttributeByArrayAndKeyValue({ array: this.statusLegends, key: "label", value: res.name, attr: "type" }),
           label: res.name
@@ -160,12 +215,12 @@ export default {
     dispatchPieAction(name) {
       this.statusChart.dispatchAction({
         type: "pieUnSelect",
-        seriesName: "地址类型分类"
+        seriesName: "已使用地址类型"
       });
 
       this.statusChart.dispatchAction({
         type: "pieToggleSelect",
-        seriesName: "地址类型分类",
+        seriesName: "已使用地址类型",
         name
       });
     },
@@ -178,7 +233,7 @@ export default {
           this.getPieData(),
           this.getList("active")
         ]);
-        
+
         this.renderTypeChart();
         this.renderStatusChart();
 
@@ -193,7 +248,7 @@ export default {
     },
 
     async getPieData() {
-      try {        
+      try {
         const { data } = await this.$getParantData();
         const {
           activeRatio,
@@ -203,17 +258,22 @@ export default {
           unassignedRatio,
           unmanagedRatio,
           zombieRatio,
-          reservationRatio
+          reservationRatio,
+          staticAddressRatio
         } = data;
+
+        this.unmanagedRatio = unmanagedRatio;
 
         let typeLegends = [...this.typeLegends];
         let statusLegends = [...this.statusLegends];
-        
+
         typeLegends[0].percent = parseFloat(parseFloat(+assignedRatio * 100).toFixed(2));
         typeLegends[1].percent = parseFloat(parseFloat(+unassignedRatio * 100).toFixed(2));
         typeLegends[2].percent = parseFloat(parseFloat(+reservationRatio * 100).toFixed(2));
-        // typeLegends[3].percent = parseFloat(parseFloat(+unmanagedRatio * 100).toFixed(2));
-        
+        typeLegends[3].percent = parseFloat(parseFloat(+staticAddressRatio * 100).toFixed(2));
+
+        // typeLegends[4].percent = parseFloat(parseFloat(+unmanagedRatio * 100).toFixed(2));
+
         statusLegends[0].percent = parseFloat(parseFloat(+activeRatio * 100).toFixed(2));
         statusLegends[1].percent = parseFloat(parseFloat(+inactiveRatio * 100).toFixed(2));
         statusLegends[2].percent = parseFloat(parseFloat(+conflictRatio * 100).toFixed(2));
@@ -223,7 +283,7 @@ export default {
         this.statusLegends = [...statusLegends];
 
         this.typePieNoData = typeLegends.every(({ percent }) => !parseFloat(percent));
-        this.statusPieNoData = statusLegends.every(({ percent }) => !parseFloat(percent));        
+        this.statusPieNoData = statusLegends.every(({ percent }) => !parseFloat(percent));
       } catch (err) {
         return Promise.reject(err);
       }
@@ -241,7 +301,7 @@ export default {
 
         let { data } = await this.$get({ url });
 
-        this.handleFilter(data);      
+        this.handleFilter(data);
       } catch (err) {
         return Promise.reject(err);
       }
@@ -250,12 +310,12 @@ export default {
       }
     },
 
-    handleFilter(data) {        
+    handleFilter(data) {
       let { ipAddress, mac } = this.condition;
 
       ipAddress = ipAddress.trim();
       mac = mac.trim();
-      
+
       this.tableData = data.filter(item => item.mac.indexOf(mac) >= 0 && item.ip.indexOf(ipAddress) >= 0)
         .map(item => {
           item.ipTypeText = this.getAttributeByArrayAndKeyValue({ array: this.typeLegends, key: "type", value: item.ipType, attr: "label" });
@@ -263,7 +323,7 @@ export default {
           item.expire = this.$trimDate(item.expire);
 
           return item;
-        });        
+        });
     },
 
     getAttributeByArrayAndKeyValue({ array, key, value, attr }) {
@@ -276,11 +336,13 @@ export default {
       const [
         { percent: percent1 },
         { percent: percent2 },
-        { percent: percent3 }
+        { percent: percent3 },
+        { percent: percent4 }
+
       ] = this.typeLegends;
 
-      this.typeChart.setOption(generatePieOption({ 
-        title: "地址类型分类",
+      this.typeChart.setOption(generatePieOption({
+        title: "已使用地址类型",
         color: typeColors,
         noData: this.typePieNoData,
         data: [
@@ -295,6 +357,10 @@ export default {
           {
             name: "固定地址",
             value: percent3
+          },
+          {
+            name: "静态地址",
+            value: percent4
           }
         ]
       }));
@@ -308,8 +374,8 @@ export default {
         { percent: percent4 }
       ] = this.statusLegends;
 
-      this.statusChart.setOption(generatePieOption({ 
-        title: "地址类型分类",
+      this.statusChart.setOption(generatePieOption({
+        title: "已使用地址类型",
         color: statusColors,
         noData: this.statusPieNoData,
         data: [
@@ -337,34 +403,36 @@ export default {
       const { label, type } = item;
 
       this.tableTitle = label;
-      
+
       this.dispatchPieAction(label);
 
       this.currentType = type;
-      
+
       this.getList(type);
     },
 
     async handleEdit(row) {
       try {
         let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?mac=${row.mac}`));
-        
+
         let res = data[0] || {};
 
         const switchName = row.switchName || res.switchName;
         const switchPort = row.switchPort || res.switchPort;
         const computerRack = row.computerRack || res.computerRack;
         const computerRoom = row.computerRoom || res.computerRoom;
-        
+        const scannedsubnetsId = this.$route.params.scannedsubnetsId;
         this.$router.push({
           name: "ip-assets-manage",
           query: {
             id: res.id,
+            ip: row.ip,
             mac: row.mac,
             switchName,
             switchPort,
             computerRack,
-            computerRoom
+            computerRoom,
+            subnetv6Ids: scannedsubnetsId
           }
         });
       } catch (err) {
@@ -379,14 +447,14 @@ export default {
       this.loading = true;
 
       let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/reservations`).url;
-        
+
       try {
-        await this.$post({ 
-          url, 
+        await this.$post({
+          url,
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
             ipAddress: row.ip
-          } 
+          }
         });
 
         this.$$success("操作成功！");
@@ -398,7 +466,41 @@ export default {
       finally {
         this.loading = false;
       }
+    },
+    handleStatic(row) {
+      let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/staticaddresses`).url;
+      const params = {
+        hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
+        ipAddress: row.ip
+      };
+      this.$post({ url, params }).then(() => {
+        this.$$success("操作成功！");
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleDownloadCsv() {
+      let { url } = this.$getApiByRoute(`/address/ipam/scannedsubnets/${this.$route.params.scannedsubnetsId}`);
+      this.$post({ url: `${url}?action=exportcsv` }).then(({ path }) => {
+        const pathname = path.substr("/opt/website".length + 1);
+        const downloadPath = `/public/${pathname}`;
+        let a = document.createElement("a");
+        a.download = pathname;
+        a.href = downloadPath;
+        a.click();
+      });
     }
   }
 };
 </script>
+
+<style lang="less">
+.chart-wrapper {
+  .ivu-tooltip-inner {
+    max-width: none;
+    min-height: 30px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+</style>

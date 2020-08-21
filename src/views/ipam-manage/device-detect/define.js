@@ -35,18 +35,19 @@ export const columns = scope => [
     align: "center",
     width: 140
   },
-  {
-    title: "上联地址",
-    key: "uplinkAddress",
-    align: "center",
-    width: 180
-  },
-  {
-    title: "下联地址",
-    key: "downlinkAddress",
-    align: "center",
-    width: 180
-  },
+  // {
+  //   title: "上联地址",
+  //   key: "uplinkAddress",
+  //   align: "center",
+  //   width: 180,
+
+  // },
+  // {
+  //   title: "下联地址",
+  //   key: "downlinkAddress",
+  //   align: "center",
+  //   width: 180
+  // },
   {
     title: "机房",
     key: "computerRoom",
@@ -127,12 +128,24 @@ export const columns = scope => [
 
 export const deviceTypes = [
   {
-    text: "交换机",
-    label: "switch"
+    text: "核心交换机",
+    label: "core_switch"
   },
   {
-    text: "网关",
-    label: "gateway"
+    text: "汇聚交换机",
+    label: "convergence_switch"
+  },
+  {
+    text: "接入交换机",
+    label: "access_switch"
+  },
+  {
+    text: "路由器",
+    label: "router"
+  },
+  {
+    text: "安全网关",
+    label: "security_gateway"
   },
   {
     text: "防火墙",

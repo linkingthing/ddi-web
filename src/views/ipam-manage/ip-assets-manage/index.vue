@@ -22,7 +22,7 @@
         <div class="condition-item">
           <label class="condition-item-label">IP地址</label>
           <Input
-            v-model="condition.mac"
+            v-model="condition.ip"
             placeholder="请输入IP地址"
             class="top-input"
             @on-enter="handleQuery"
@@ -58,12 +58,12 @@
       </template>
 
       <template slot="top-right">
-        <Button
+        <!-- <Button
           class="top-button"
           @click="showAdvance = true"
         >
           高级搜索
-        </Button>
+        </Button> -->
 
         <Button
           v-if="$store.getters.hasPermissionToCreate"
@@ -99,6 +99,8 @@ import AdvancedSearch from "./advanced-query";
 
 import { columns, deviceTypes } from "./define";
 
+import { ipv4IsValid } from "@/util/common";
+
 export default {
   components: {
     Edit,
@@ -127,11 +129,13 @@ export default {
 
     const {
       id,
+      ip,
       mac,
       switchName,
       switchPort,
       computerRack,
-      computerRoom
+      computerRoom,
+      subnetv6Ids
     } = this.$route.query;
 
     this.currentData = {
@@ -141,6 +145,13 @@ export default {
       computerRack,
       computerRoom
     };
+
+    if (ipv4IsValid(ip)) {
+      this.currentData.ipv4 = ip;
+    } else {
+      this.currentData.ipv6s = [ip];
+      this.currentData.subnetv6Ids = [subnetv6Ids];
+    }
 
     if (id) {
       try {
@@ -172,7 +183,20 @@ export default {
       this.queryData();
     },
 
-    async queryData(params = this.condition) {
+    async queryData(params = { ...this.condition }) {
+
+      if (params.ip) {
+        if (ipv4IsValid(params.ip)) {
+          params.ipv4 = params.ip;
+        } else {
+          params.ipv6 = params.ip;
+        }
+      }
+
+      if (params.switchName) {
+        params.switch_name = params.switchName;
+      }
+
       this.loading = true;
 
       try {
