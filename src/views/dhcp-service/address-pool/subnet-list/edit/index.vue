@@ -145,13 +145,15 @@ export default {
   watch: {
     visible(val) {
       if (!val) return;
-      console.log(this.$route)
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
       if (!val) {
         this.formModel = {};
+        // 清楚path的query参数
+        const { path } = this.$route;
+        this.$router.push({ path });
       } else {
         if (this.isCreate) {
           const { ipnet, tags } = this.$route.query;
@@ -195,9 +197,6 @@ export default {
           this.$emit("success");
           this.dialogVisible = false;
 
-          // 清楚path的query参数
-          const { path } = this.$route;
-          this.$router.push({ path });
         }).catch(err => {
           this.$$error(err.response.data.message);
         }).finally(() => {
