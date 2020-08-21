@@ -115,7 +115,7 @@ export default {
 
     visible(val) {
       if (!val) {
-
+        this.$refs["formInline"].resetFields();
         return;
       }
 
