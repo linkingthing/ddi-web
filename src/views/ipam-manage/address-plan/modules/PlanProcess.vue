@@ -47,16 +47,11 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "setCurrentPlanProcessId"
+      "setCurrentPlanProcessId",
+      "nextPlanStep"
     ]),
     handleChange(id) {
-      this.planProcessList.forEach(item => {
-        if (item.id === id) {
-          item.type = "active";
-        } else if (item.type === "active") {
-          item.type = "visited";
-        }
-      });
+      this.nextPlanStep(id);
       this.$emit("onchange", id);
     }
   }

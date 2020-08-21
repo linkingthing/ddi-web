@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 export default {
   components: {},
   props: {},
@@ -46,21 +46,52 @@ export default {
       }
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters([
+      "currentPlan"
+    ])
+  },
+  watch: {
+    currentPlan: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        if (val) {
+          const { prefix, description, maskLen } = val;
+          this.formData = {
+            prefix,
+            description,
+            maskLen: maskLen || 64
+          };
+        }
+
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {
     ...mapMutations([
-      "nextPlanStep"
+      "nextPlanStep",
+      "setCurrentPlanId",
+      "addPlan",
+      "clearTempPlan"
     ]),
     handleClickSubmit() {
       const params = { ...this.formData };
-      this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then((res) => {
-        console.log(res)
-        this.nextPlanStep();
+      if (this.currentPlan.links) {
+        this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+          this.nextPlanStep();
+        });
+      } else {
+        this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(res => {
+          this.addPlan(res);
+          this.clearTempPlan();
+          this.setCurrentPlanId(res.id);
+          this.nextPlanStep();
+        });
+      }
 
-      })
     }
   }
 };

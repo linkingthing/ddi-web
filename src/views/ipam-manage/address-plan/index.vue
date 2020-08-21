@@ -2,7 +2,7 @@
   <div class="plan">
     <div
       class="top-right"
-      v-if="tableData.length"
+      v-if="planList.length"
     >
       <Button
         type="primary"
@@ -14,14 +14,11 @@
         @click="handleImport"
       >导入规划</Button>
     </div>
-    <div
-      style=""
-      class="plan-content"
-    >
+    <div class="plan-content">
 
       <NoDataList
         style="margin-top: 100px"
-        v-if="!tableData.length"
+        v-if="!planList.length"
         button-text="手动添加规划"
         @add="handleAddPlan"
         :buttons="[{
@@ -33,7 +30,7 @@
         <PlanTab
           @onDeletePlan="handleDelete"
           @change="handlePlanChange"
-          :plan-list="tableData"
+          :plan-list="planList"
           @currentPlan="currentPlan => currentPlan = currentPlan"
         />
         <PlanProcess />
@@ -49,6 +46,7 @@
 <script>
 
 import { mapGetters, mapMutations } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 
 import NoDataList from "@/components/NoDataList";
 import PlanTab from "./modules/PlanTab";
@@ -73,16 +71,31 @@ export default {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      tableData: [],
-      currentPlan: {},
+      currentPlan: {}
 
     };
   },
 
   computed: {
     ...mapGetters({
+      planList: "planList",
+      currentPlan: "currentPlan",
       stepComponent: "currentPlanProcessId"
     })
+  },
+
+  watch: {
+    currentPlan: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log(val)
+        // if (links) {
+        //   this.getLayout(links);
+
+        // }
+      }
+    }
   },
 
   mounted() {
@@ -92,8 +105,10 @@ export default {
 
   methods: {
     ...mapMutations([
+      "setCurrentPlanId",
       "setPlanList",
-      "addPlan"
+      "addPlan",
+      "clearTempPlan"
     ]),
     async handleQuery() {
       this.loading = true;
@@ -101,13 +116,18 @@ export default {
       try {
         let { data } = await this.$get({ url: this.url });
 
-        this.tableData = data.map(item => {
+        const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
           item.title = item.description;
           return item;
         });
 
-        this.setPlanList(this.tableData);
+        this.setPlanList(tableData);
+
+        if (tableData.length) {
+          this.setCurrentPlanId(tableData[0].id);
+        }
+
 
       } catch (err) {
         this.$handleError(err);
@@ -117,8 +137,12 @@ export default {
       }
     },
 
-    handleViewLayouts(data) {
-      this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}&maskLen=${data.maskLen}`);
+    getLayout({ layouts }) {
+      if (this.currentPlan.links) {
+        this.$get({ url: layouts }).then(res => {
+          console.log(res)
+        })
+      }
     },
 
     handleDelete(id) {
@@ -131,16 +155,22 @@ export default {
     },
 
     handlePlanChange(id) {
-      console.log(id)
+      // console.log(id)
     },
     handleAddPlan() {
+      const id = uuidv4();
       this.addPlan({
+        id,
         prefix: "",
-        description: "",
-        maxLen: 64
+        description: "New Plan",
+        maxLen: 64,
+        planType: "temp"
       });
+      this.setCurrentPlanId(id);
     },
-    handleImport() { }
+    handleImport() {
+      this.clearTempPlan("temp");
+    }
 
 
   }

@@ -33,24 +33,28 @@ const state = {
 };
 
 const getters = {
+  planList: state => state.planList,
   currentPlan: state => {
     return state.planList.find(item => item.id === state.currentPlanId);
   },
-  planProcessList: () => {
-    return planProcessList;
-  },
+  planProcessList: state => state.planProcessList,
   currentPlanProcessId: state => state.currentPlanProcessId
 };
 
 const mutations = {
   setPlanList(state, planList) {
-    state.planList = planList;
+    if (Array.isArray(planList)) {
+      state.planList = planList;
+    }
   },
   addPlan(state, plan) {
-    state.planList.push(plan);
+    state.planList.unshift(plan);
   },
-  setCurrentPlanId(state, userType) {
-    state.userType = userType;
+  clearTempPlan(state, type = "temp") {
+    state.planList = state.planList.filter(item => item.planType !== type);
+  },
+  setCurrentPlanId(state, currentPlanId) {
+    state.currentPlanId = currentPlanId;
   },
   nextPlanStep(state, id) {
     if (id) {
@@ -66,7 +70,6 @@ const mutations = {
         item => item.type === "active"
       );
       state.planProcessList[currentPlanProcessIndex].type = "visited";
-
       state.planProcessList[currentPlanProcessIndex + 1].type = "active";
     }
   },

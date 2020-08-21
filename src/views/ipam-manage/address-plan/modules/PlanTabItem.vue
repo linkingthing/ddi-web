@@ -3,7 +3,7 @@
     class="PlanTabItem"
     :class="{active: id === active}"
   >
-    {{title}}
+    {{description}}
     <Icon
       type="md-close"
       class="tab-close"
@@ -21,7 +21,7 @@ export default {
       type: String | Number,
       default: ""
     },
-    title: {
+    description: {
       type: String,
       default: ""
     },

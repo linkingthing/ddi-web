@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import PlanTabItem from "./PlanTabItem";
 export default {
   components: {
@@ -49,9 +50,13 @@ export default {
   created() { },
   mounted() { },
   methods: {
+    ...mapMutations([
+      "setCurrentPlanId"
+    ]),
     handleTab({ id }) {
       this.active = id;
       this.$emit("change", id);
+      this.setCurrentPlanId(id);
     },
     handleRemoveTab(id) {
       this.$$confirm({ content: "您确定要删除当前数据吗？" }).then(() => {
