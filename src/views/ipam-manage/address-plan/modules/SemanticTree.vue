@@ -3,7 +3,7 @@
     <SemanticTreeHeader :prefix="prefix" />
 
     <Tree
-      :data="layoutList"
+      :data="[treeData]"
       children-key="nodes"
       @on-select-change="handleSelectNode"
       :render="renderContent"
@@ -21,7 +21,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-
+import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 
@@ -38,41 +38,28 @@ export default {
   },
   data() {
     return {
-      treeData: [{
-
-        title: "parent 1",
-        expand: true,
-        children: [{
-          title: "dassd",
-          expand: true
-        }, {
-          title: "dassd",
-          expand: true
-        }, {
-          title: "dassd",
-          expand: true
-        }, {
-          title: "dassd",
-          expand: true
-        }]
-      }],
+      treeData: [],
       visible: false
     };
   },
   computed: {
-    ...mapState([
-      "layoutList"
-    ]),
+    ...mapState({
+      "layoutList": (state) => {
+        return state.layout.layoutList;
+      }
+    }
+
+    ),
     ...mapGetters([
       "currentLayout"
     ])
   },
   watch: {
-    layoutList: {
+    currentLayout: {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val)
+        this.treeData =  _.cloneDeep(val) ;
       }
     }
   },
@@ -80,17 +67,19 @@ export default {
   mounted() { },
   methods: {
     handleSelectNode(nodes, node) {
-      console.log(nodes, node)
+      console.log(1, nodes, node)
     },
     renderContent(h, { root, node, data }) {
-      console.log(data)
+      console.log("render tree", data)
       return h("span", {
+        props: {
+        },
         style: {
           display: "inline-block",
           width: "100%"
         }
       },
-        data.name
+      data.name
       );
     }
 
