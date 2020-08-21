@@ -45,5 +45,7 @@ export default {
   /** 用户 */
   user: "用户信息",
   ddiuser: "普通用户",
-  role: "角色信息"
+  role: "角色信息",
+  usergroup: "用户组",
+  whitelist: "白名单"
 };

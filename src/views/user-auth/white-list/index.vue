@@ -80,7 +80,9 @@ export default {
       this.$getData().then(({ data }) => {
         if (Array.isArray(data) && data.length) {
           const { ips, isEnable, links } = data[0]
-          this.formData = { ips, isEnable };
+          this.formData.ips = ips || [];
+          this.formData.isEnable = isEnable;
+
           this.links = links;
         }
       });
