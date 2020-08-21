@@ -6,7 +6,7 @@ var fs = require("fs");
 let assetsPublicPath = "./";
 
 // const url = "https://10.0.0.185:58081"
-const url = "https://10.0.0.110:58081"
+const url = "https://10.0.0.8:58081"
 // const url = "https://10.0.0.19:58081"
 // const url = "https://10.0.0.172:58081";
 

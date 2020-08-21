@@ -91,7 +91,7 @@ export const columns = scope => [
     fixed: "right",
     render: (h, { row }) => {
       if (scope.$store.getters.hasPermissionToCreate) {
-        h("div", [
+        return h("div", [
           h("btn-edit", {
             on: {
               click: () => {
