@@ -44,7 +44,7 @@ export default {
   urlredirect: "url重定向",
   /** 用户 */
   user: "用户信息",
-  ddiuser: "普通用户",
+  ddiuser: "当前用户信息",
   role: "角色信息",
   usergroup: "用户组",
   whitelist: "白名单"
