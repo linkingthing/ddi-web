@@ -8,6 +8,7 @@
     >
       <template slot="top-right">
         <Button
+          v-if="$store.getters.hasPermissionToCreate"
           type="primary"
           @click="handleAdd"
           class="top-button button-add"
@@ -55,19 +56,23 @@ export default {
           title: "操作",
           align: "right",
           render: (h, { row }) => {
-            return h("div", [h("btn-edit", {
-              on: {
-                click: () => {
-                  this.handleEdit(row);
+            if (this.$store.getters.hasPermissionToCreate) {
+              return h("div", [h("btn-edit", {
+                on: {
+                  click: () => {
+                    this.handleEdit(row);
+                  }
                 }
-              }
-            }), h("btn-del", {
-              on: {
-                click: () => {
-                  this.handleDel(row);
+              }), h("btn-del", {
+                on: {
+                  click: () => {
+                    this.handleDel(row);
+                  }
                 }
-              }
-            })]);
+              })]);
+            } else {
+              h("div");
+            }
           }
         }
       ],

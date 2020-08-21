@@ -91,6 +91,9 @@ export const rules = {
   mac: [
     {
       required,
+      message: "请输入MAC地址"
+    },
+    {
       pattern: macReg,
       message: "请输入正确的MAC地址"
     }
