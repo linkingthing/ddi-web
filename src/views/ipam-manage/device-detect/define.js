@@ -86,7 +86,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 180,
+    width: 150,
     className: "operate-column",
     fixed: "right",
     align: "center",

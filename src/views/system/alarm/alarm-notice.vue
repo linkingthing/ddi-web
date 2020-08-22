@@ -118,6 +118,9 @@ export default {
 
             }, [
               h("i-button", {
+                class: {
+                  "operate-label": true
+                },
                 on: {
                   click: () => this.handleDeal(row, { state: "ignored" })
                 },
@@ -128,6 +131,9 @@ export default {
 
               }, "忽略"),
               h("Button", {
+                class: {
+                  "operate-label": true
+                },
                 on: {
                   click: () => this.handleDeal(row, { state: "solved" })
                 },
@@ -187,7 +193,6 @@ export default {
     },
 
     handleSearch(query) {
-      console.log(query)
       this.$router.replace({
         query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
       });
