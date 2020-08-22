@@ -184,10 +184,10 @@ export default {
       }).catch().finally(() => {
         this.loading = false;
       });
-
     },
 
     handleSearch(query) {
+      console.log(query)
       this.$router.replace({
         query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
       });

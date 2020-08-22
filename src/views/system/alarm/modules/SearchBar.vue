@@ -65,19 +65,18 @@
           label="告警时间"
         >
           <DatePicker
+            :value="initDateArr"
             format="yyyy-MM-dd"
             type="daterange"
             placement="bottom-end"
             placeholder="起止时间"
             class="m-date"
             @on-change="handleDateChange"
+            @on-clear="handleClear"
           />
 
         </FormItem>
-        <btn-search
-          @click="$emit('on-search', searchParams)"
-        ></btn-search>
-        
+        <btn-search @click="$emit('on-search', searchParams)" />
 
       </Form>
     </div>
@@ -122,6 +121,9 @@ export default {
       deep: true,
       handler(val) {
         this.searchParams = val;
+        if (val.from && val.to) {
+          this.initDateArr = [val.from, val.to];
+        }
       }
     }
   },
@@ -133,9 +135,13 @@ export default {
         this.searchParams.from = from;
         this.searchParams.to = to;
       } else {
-        delete this.searchParams.from;
-        delete this.searchParams.to;
+        this.searchParams.from = undefined;
+        this.searchParams.to = undefined;
       }
+    },
+    handleClear() {
+      this.searchParams.from = undefined;
+      this.searchParams.to = undefined;
     }
   }
 };
