@@ -155,6 +155,10 @@ export default {
     flex: 1;
   }
   .search-operate {
+    padding: 0 26px;
+    & > * {
+      margin-left: 10px;
+    }
   }
   .m-select {
     width: 140px;

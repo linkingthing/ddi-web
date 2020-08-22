@@ -30,7 +30,7 @@
                   class="chart-legend-item-percent"
                   :class="{'percent-no-data': typePieNoData}"
                 >
-                  {{typePieNoData ? "暂无数据" : `${item.percent}%`}}
+                  {{typePieNoData ? "--" : `${item.percent}%`}}
                 </div>
                 <div class="chart-legend-item-info">
                   <div
