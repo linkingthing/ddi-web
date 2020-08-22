@@ -4,13 +4,13 @@
       :total="list.length"
       :data="executeList"
       :columns="columns"
-      :current.sync="initParams.current"
+      :current.sync="query.current"
       @on-selection-change="handleMutipleSelect"
     >
       <template slot="neck">
         <div>
           <SearchBar
-            :params="initParams"
+            :params="query"
             @on-mutiple="handleMutipleDeal"
             @on-search="handleSearch"
           />
@@ -22,6 +22,9 @@
 </template>
 
 <script>
+
+import _ from "lodash";
+
 import SearchBar from "./modules/SearchBar";
 import { alarmConfig, alarmLevel, alarmState } from "@/dictionary";
 
@@ -120,7 +123,7 @@ export default {
                 },
                 props: {
                   disabled: row.state !== "untreated",
-                  size: "small",
+                  size: "small"
                 }
 
               }, "忽略"),
@@ -130,7 +133,7 @@ export default {
                 },
                 props: {
                   disabled: row.state !== "untreated",
-                  size: "small",
+                  size: "small"
                 }
 
               }, "已处理")
@@ -140,9 +143,7 @@ export default {
       ],
       list: [],
       mutipleList: [],
-      initParams: { current: 1 },
-      query: {}
-
+      query: { current: 1 }
     };
   },
   computed: {
@@ -154,31 +155,24 @@ export default {
         };
       });
     }
+
   },
   watch: {
     "$route.query": {
       deep: true,
       immediate: true,
       handler(value) {
-        this.initParams = value;
+        this.query = _.cloneDeep(value);
         this.getData(value);
-      }
-    },
-    query: {
-      deep: true,
-      immediate: true,
-      handler(value) {
-
-        // this.getData(value);
       }
     }
   },
 
   created() {
     const { query } = this.$route;
-    this.initParams = { ...query };
+    this.query = _.cloneDeep(query);
     if (query.current) {
-      this.initParams.current = Number(query.current);
+      this.query.current = Number(query.current);
     }
   },
   mounted() { },
@@ -193,11 +187,10 @@ export default {
 
     },
 
-    handleSearch(aquery) {
-      const { path, query } = this.$route;
-      this.$router.push({ path, query: { "_": "ranck" } }); // 哥用名字镇压的bug，你删一个试试
-      this.$router.push({ path, query: { ...query, ...aquery } });
-      // 尝试 window.location + 定时器成功过但不稳定
+    handleSearch(query) {
+      this.$router.replace({
+        query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
+      });
     },
     handleDeal({ links, ...params }, state) {
       this.$put({ url: links.update, params: { ...params, ...state } }).then(() => {
