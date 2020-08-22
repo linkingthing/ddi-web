@@ -121,6 +121,11 @@ export default {
   created() {
     this.$getData().then(({ data: [formModel] }) => {
       this.formModel = formModel;
+      if (Array.isArray(formModel.domainServers)) {
+        this.formModel.domainServers = formModel.domainServers.join(",");
+      } else {
+        this.formModel.domainServers = "";
+      }
     });
   },
   mounted() { },

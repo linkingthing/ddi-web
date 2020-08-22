@@ -2,14 +2,18 @@ export const columns = scope => [
   {
     title: "子网",
     render: (h, { row }) => {
-      return h("a", {
-        class: "is-link",
-        on: {
-          click: () => {
-            scope.handleViewNet(row);
+      return h(
+        "a",
+        {
+          class: "is-link",
+          on: {
+            click: () => {
+              scope.handleViewNet(row);
+            }
           }
-        }
-      }, row.ipnet);
+        },
+        row.ipnet
+      );
     },
     width: "440",
     align: "left"
@@ -25,9 +29,9 @@ export const columns = scope => [
     align: "right",
     width: "180",
     render: (h, { row }) => {
-      return h("common-process",{
+      return h("common-process", {
         props: {
-          percent: row.usedRatio 
+          percent: row.usedRatio
         }
       });
     }

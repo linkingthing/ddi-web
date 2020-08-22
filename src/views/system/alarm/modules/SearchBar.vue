@@ -109,6 +109,7 @@ export default {
     this.alarmLevel = alarmLevel;
     this.alarmState = alarmState;
     return {
+      initDateArr: [],
       searchParams: {
 
       }

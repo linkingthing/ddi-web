@@ -1,99 +1,103 @@
 [class^="icon-"],
 [class*=" icon-"] {
-	font-family: "iconfont" !important;
-	font-size: 14px;
-	font-style: normal;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  font-family: "iconfont" !important;
+  font-size: 14px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
-	color: #000;
-	background-color: #f5f5f5;
-	-webkit-text-size-adjust: 100%;
-	-ms-text-size-adjust: 100%;
-	position: relative;
-	height: 100%;
-	min-width: 1366px;
+  color: #000;
+  background-color: #f5f5f5;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  position: relative;
+  height: 100%;
+  min-width: 1366px;
 }
 
 body {
-	overflow-x: auto;
+  overflow-x: auto;
   height: 100%;
   font-size: 16px;
 }
 
 #app {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 a {
-	color: inherit;
-	background: transparent;
-	text-decoration: none;
-	outline: none;
-	cursor: pointer;
-	transition: color 0.2s ease;
+  color: inherit;
+  background: transparent;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
 
-	&:link,
-	&:visited,
-	&:hover,
-	&:active {
-		color: #000;
-	}
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    color: #000;
+  }
 
-	/* 如果a元素为超链接，或者需要设置为超链接样式的，可以设置class为is-link */
-	&.is-link{
-		color: #2d8cf0;
+  /* 如果a元素为超链接，或者需要设置为超链接样式的，可以设置class为is-link */
+  &.is-link {
+    color: #2d8cf0;
 
-		&:link,
-		&:visited,
-		&:hover,
-		&:active {
-			color: #1d7ce0;
-		}
-	}
+    &:link,
+    &:visited,
+    &:hover,
+    &:active {
+      color: #1d7ce0;
+    }
+  }
 }
-
 
 * ::-webkit-scrollbar {
-	width: 12px;
-	height: 12px;
-	background-color: #e8e8e8;
+  display: none;
+  width: 12px;
+  height: 12px;
+  background-color: #e8e8e8;
 }
-  
+
+*:hover > ::-webkit-scrollbar {
+  display: block;
+}
+
 * ::-webkit-scrollbar-thumb,
 .el-scrollbar__thumb {
-	border-radius: 4px;
-	background-color: #bbb;
+  border-radius: 4px;
+  background-color: #bbb;
 
-	&:hover {
-		background-color: #aaa;
-	}
+  &:hover {
+    background-color: #aaa;
+  }
 
-	&:active {
-		background-color: #999;
-	}
+  &:active {
+    background-color: #999;
+  }
 }
 
 * ::-webkit-scrollbar-track {
-	border-radius: 4px;
-	background-color: transparent;
+  border-radius: 4px;
+  background-color: transparent;
 }
 
 /* chrome第三方插件注入html，造成部分样式不能正常显示 */
-#fatkun-drop-panel{
-	display: none !important;
+#fatkun-drop-panel {
+  display: none !important;
 }
 
 /* 表格操作列内容的样式 */
-.operate-column{
-	.ivu-table-cell{
-		&>div{
-			display: flex;
-			align-items: center;
-			justify-content: flex-end;
-		}
-	}
+.operate-column {
+  .ivu-table-cell {
+    & > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
 }

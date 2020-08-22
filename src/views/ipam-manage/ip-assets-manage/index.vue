@@ -146,7 +146,7 @@ export default {
       computerRoom
     };
 
-    if (ipv4IsValid(ip)) {
+    if (ip && ipv4IsValid(ip)) {
       this.currentData.ipv4 = ip;
     } else {
       this.currentData.ipv6s = [ip];

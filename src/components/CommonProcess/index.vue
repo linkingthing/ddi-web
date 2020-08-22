@@ -1,8 +1,8 @@
 <template>
   <div class="common-process">
-    <div class="process-text">{{(percent*100).toFixed(2)}}%</div>
+    <div class="process-text">{{(Number(percent)*100).toFixed(2)}}%</div>
     <Progress
-      :percent="(percent*100).toFixed(2)"
+      :percent="Number((Number(percent)*100).toFixed(2))"
       hide-info
     />
 
@@ -14,7 +14,8 @@ export default {
   components: {},
   props: {
     percent: {
-      type: Number,
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: Number | String,
       default: 0
     }
   },
