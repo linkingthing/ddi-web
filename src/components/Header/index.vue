@@ -277,5 +277,110 @@ export default {
 <style lang="less" scoped>
 @import "../../assets/less/var.less";
 
-@import "./index.less";
+@import "./../../assets/less/var.less";
+
+.header {
+  position: relative;
+  height: @headerH;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+
+  .header-inner {
+    position: relative;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 100;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    width: @menuWidth;
+    vertical-align: middle;
+
+    .logo-image {
+      text-align: center;
+      height: 60px;
+      width: 60px;
+      padding: 10px 0;
+      margin-right: 10px;
+      border-right: 1px solid #E8E8E8;
+      img {
+        width: 36px;
+        height: 44px;
+      }
+    }
+
+    img {
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    h1 {
+      display: inline-block;
+      width: 185px;
+      text-align: center;
+      font-size: 18px;
+      color: #fff;
+      line-height: 20px;
+      padding: 20px;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .logo-text {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 4px 0;
+    width: 166px;
+  }
+
+  .main-menu {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 20px;
+
+    .ivu-menu-horizontal.ivu-menu-light:after {
+      display: none;
+    }
+    .ivu-menu-item {
+      border-top: 0;
+      border-bottom: 0;
+      &:hover,
+      &.ivu-menu-item-active {
+        background: rgba(69, 134, 254, 0.1);
+        border-top: 4px solid #4586fe;
+      }
+    }
+
+    .ivu-menu-item {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+
+  .user {
+    font-size: 16px;
+    float: right;
+    margin-top: 12px;
+    margin-right: 40px;
+
+    .avatar {
+      height: 36px;
+      padding-right: 20px;
+      vertical-align: middle;
+      color: #cfcfcf;
+      background: #f0f0f0;
+      width: 36px;
+      font-size: 20px;
+      padding: 5px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background: url(./../../assets/images/avatar.png);
+      background-size: cover;
+      display: inline-block;
+    }
+  }
+}
 </style>

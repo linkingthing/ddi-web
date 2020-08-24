@@ -156,3 +156,12 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+.ip-assets-edit {
+  .ivu-modal-body { 
+    max-height: 520px;
+    overflow: auto;
+  }
+}
+</style>

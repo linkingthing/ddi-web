@@ -7,7 +7,6 @@
     @confirm="handleConfirm"
   >
     <IviewLoading v-if="loading" />
-
     <Form
       ref="form"
       label-position="left"
@@ -15,6 +14,7 @@
       :label-colon="true"
       :rules="rules"
       :model="formModel"
+      style="height: 750px"
     >
       <common-form :form-model="formModel" :form-item-list="formItemList" />
     </Form>
@@ -159,3 +159,12 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+.device-detect-edit {
+  .ivu-modal-body { 
+    max-height: 520px;
+    overflow: auto;
+  }
+}
+</style>
