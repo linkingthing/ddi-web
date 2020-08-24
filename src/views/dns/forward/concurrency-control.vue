@@ -26,7 +26,7 @@
           <span>pps</span>
 
         </form-item>
-        <form-item
+        <!-- <form-item
           label="单一域递归并发数"
           prop="fetchesperzone"
           style="font-size:20px;"
@@ -38,7 +38,7 @@
           />
           <span>pps</span>
 
-        </form-item>
+        </form-item> -->
 
         <div>
           <i-button
