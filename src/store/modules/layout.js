@@ -22,31 +22,15 @@ const initLayout = [
 const state = {
   layoutList: [],
   currentLayoutId: "",
+  currentLayout: {},
   currentNodeId: "",
   currentNode: {}
 };
 
 const getters = {
-  currentLayout: state => {
-    const layout = state.layoutList.find(
-      item => item.id === state.currentLayoutId
-    );
-    const _layout = _.cloneDeep(layout);
-
-    if (layout) {
-      _layout.nodeKey = null;
-
-      _layout.expand = true;
-      if (!layout.nodes) {
-        _layout.nodes = _.cloneDeep(initLayout);
-      }
-    }
-
-    return _layout || {};
-  },
-
   currentNodeChildrenList: state => {
-    return state.currentNode.nodes;
+    console.log("currentNodeChildrenList", state.currentNode.nodes);
+    return state.currentNode.nodes || [];
   }
 };
 
@@ -58,6 +42,27 @@ const mutations = {
   },
   setCurrentLayoutId(state, currentLayoutId) {
     state.currentLayoutId = currentLayoutId;
+  },
+  setCurrentLayout(state, layout) {
+    const _layout = _.cloneDeep(layout);
+    if (layout) {
+      _layout.expand = true;
+      if (!layout.nodes) {
+        _layout.nodes = _.cloneDeep(initLayout);
+      }
+    }
+    state.currentLayout = _layout || {};
+  },
+  setCurrentNode(state, node) {
+    state.currentNode = node;
+  },
+  setCurrentNodeChildrenList(state, currentNodeChildrenList) {
+    state.currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
+
+    const layout = state.currentLayout;
+    const currentNodeId = state.currentNode.id;
+    const currentNode = findNodeById(layout, currentNodeId);
+    currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
   }
 };
 
@@ -69,3 +74,16 @@ export default {
   mutations,
   actions
 };
+
+function findNodeById(tree, id) {
+  if (tree.id === id) {
+    return tree;
+  } else {
+    return (
+      Array.isArray(tree.nodes) &&
+      tree.nodes.find(item => {
+        return findNodeById(item, id);
+      })
+    );
+  }
+}

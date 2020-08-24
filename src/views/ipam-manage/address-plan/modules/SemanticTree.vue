@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
@@ -46,30 +46,34 @@ export default {
     ...mapState({
       "layoutList": (state) => {
         return state.layout.layoutList;
+      },
+      "currentLayout": state => {
+        console.log(22, state, state.currentLayout)
+        return state.layout.currentLayout || {};
       }
-    }
+    })
 
-    ),
-    ...mapGetters([
-      "currentLayout"
-    ])
   },
   watch: {
     currentLayout: {
       deep: true,
       immediate: true,
       handler(val) {
-        this.treeData =  _.cloneDeep(val) ;
+        console.log("watch")
+        this.treeData = _.cloneDeep(val);
       }
     }
   },
   created() { },
   mounted() { },
   methods: {
-    handleSelectNode(nodes, node) {
-      console.log(1, nodes, node)
+    ...mapMutations([
+      "setCurrentNode"
 
-      
+    ]),
+    handleSelectNode(nodes, node) {
+      console.log("current node", node)
+      this.setCurrentNode(_.cloneDeep(node));
     },
     renderContent(h, { root, node, data }) {
       console.log("render tree", data)
@@ -80,12 +84,8 @@ export default {
           display: "inline-block",
           width: "100%"
         }
-      },
-      data.name
-      );
+      }, data.name);
     }
-
-
   }
 };
 </script>

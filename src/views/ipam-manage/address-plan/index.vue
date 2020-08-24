@@ -111,7 +111,8 @@ export default {
       "clearTempPlan",
 
       "setLayoutList",
-      "setCurrentLayoutId"
+      "setCurrentLayoutId",
+      "setCurrentLayout"
     ]),
     async handleQuery() {
       this.loading = true;
@@ -148,6 +149,7 @@ export default {
 
         if (data.length) {
           this.setCurrentLayoutId(data[0].id);
+          this.setCurrentLayout(data[0]);
         }
 
       });
@@ -181,7 +183,7 @@ export default {
       // 正式做导入功能之前，这个操作都用于测试store
       // this.clearTempPlan("temp");
 
-      console.log(this.$store.getters.currentPlan)
+      console.log(this.$store)
 
 
     }

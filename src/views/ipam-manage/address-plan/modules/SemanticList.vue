@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 import SemanticListItem from "./SemanticListItem";
 export default {
   components: {
@@ -43,42 +44,52 @@ export default {
   },
   data() {
     return {
-      semanticList: [{
-        id: 1,
-        title: "机构",
-        isEdit: false
-      },
-      {
-        id: 2,
-        title: "业务",
-        isEdit: false
-      },
-      {
-        id: 3,
-        title: "数据中心",
-        isEdit: false
-      }]
+      semanticList: []
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters([
+      "currentNodeChildrenList"
+    ])
+
+  },
+  watch: {
+    currentNodeChildrenList: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        this.semanticList = val.map(item => {
+          return {
+            id: item.id,
+            name: item.name,
+            isEdit: false,
+            expand: true
+          };
+        });
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {
+    ...mapMutations([
+      "setCurrentNodeChildrenList"
+    ]),
     handleAdd() {
       this.semanticList.push({
         id: new Date().getTime(),
-        title: "",
+        name: "",
         isEdit: true
       });
     },
-    handleSave(id, title) {
+    handleSave(id, name) {
       this.semanticList.forEach(item => {
         if (item.id === id) {
-          item.title = title;
+          item.name = name;
           item.isEdit = false;
         }
       });
+      this.setCurrentNodeChildrenList(this.semanticList);
     },
     handleEdit(id) {
       this.semanticList.forEach(item => {

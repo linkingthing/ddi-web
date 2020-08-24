@@ -8,7 +8,7 @@
       />
     </span>
 
-    <span v-else>{{title}}</span>
+    <span v-else>{{name}}</span>
 
     <span
       class="right-deal"
@@ -42,7 +42,7 @@ export default {
       type: String | Number,
       default: ""
     },
-    title: {
+    name: {
       type: String,
       default: ""
     },
@@ -58,7 +58,7 @@ export default {
   },
   computed: {},
   watch: {
-    title(val) {
+    name(val) {
       this.innerTitle = val;
     }
   },
@@ -69,7 +69,7 @@ export default {
       this.$emit("onFinish", this.id, this.innerTitle);
     },
     handleClickEdit() {
-      this.innerTitle = this.title;
+      this.innerTitle = this.name;
       this.$emit("onEdit", this.id);
     },
     handleClickDelete() {
