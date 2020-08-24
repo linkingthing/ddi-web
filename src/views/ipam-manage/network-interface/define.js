@@ -162,7 +162,7 @@ export const typeLegends = [
   },
   {
     percent: 0,
-    label: "未管理地址",
+    label: "未使用地址",
     color: typeColors[4],
     type: "unmanagered"
   }
