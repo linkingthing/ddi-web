@@ -38,6 +38,7 @@
         <component :is="stepComponent" />
 
         <PlanStepSemantic />
+        <PlanStepTree />
       </template>
 
     </div>
@@ -114,7 +115,7 @@ export default {
       "setCurrentLayoutId",
       "setCurrentLayout",
 
-      "setCurrentNode"
+      "setCurrentNodeId"
     ]),
     async handleQuery() {
       this.loading = true;
@@ -152,7 +153,7 @@ export default {
         if (data.length) {
           this.setCurrentLayoutId(data[0].id);
           this.setCurrentLayout(data[0]);
-          this.setCurrentNode(data[0]);
+          this.setCurrentNodeId(data[0].id);
         }
 
       });

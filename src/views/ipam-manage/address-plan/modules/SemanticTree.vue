@@ -44,11 +44,10 @@ export default {
   },
   computed: {
     ...mapState({
-      "layoutList": (state) => {
+      "layoutList": state => {
         return state.layout.layoutList;
       },
       "currentLayout": state => {
-        console.log(22, state, state.currentLayout)
         return state.layout.currentLayout || {};
       }
     })
@@ -68,12 +67,11 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "setCurrentNode"
+      "setCurrentNodeId"
 
     ]),
     handleSelectNode(nodes, node) {
-      console.log("current node", node)
-      this.setCurrentNode(_.cloneDeep(node));
+      this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
       // console.log("render tree", data)

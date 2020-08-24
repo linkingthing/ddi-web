@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
+import { mapState, mapMutations } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
 export default {
@@ -56,8 +56,23 @@ export default {
 
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapState({
+      "currentLayout": state => state.layout.currentLayout
+
+    }
+    )
+  },
+  watch: {
+    "currentLayout": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log("currentLayout", val)
+        this.treeData = val;
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {

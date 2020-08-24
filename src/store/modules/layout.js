@@ -29,8 +29,10 @@ const state = {
 
 const getters = {
   currentNodeChildrenList: state => {
-    console.log("currentNodeChildrenList", state.currentNode.nodes);
-    return state.currentNode.nodes || [];
+    return _.cloneDeep(getCurrentNode(state)).nodes || [];
+  },
+  currentNode: state => {
+    return _.cloneDeep(getCurrentNode(state));
   }
 };
 
@@ -53,24 +55,16 @@ const mutations = {
     }
     state.currentLayout = _layout || {};
   },
-  setCurrentNode(state, node) {
-    state.currentNode = node;
+  setCurrentNodeId(state, id) {
+    state.currentNodeId = id;
   },
   setCurrentNodeChildrenList(state, currentNodeChildrenList) {
-    state.currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
-
-    const layout = state.currentLayout;
-    const currentNodeId = state.currentNode.id;
-    const currentNode = findNodeById(layout, currentNodeId);
+    const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
   },
   setCurrentNodeBitWidth(state, bitWidth) {
-    state.currentNode.bitWidth = bitWidth;
-
-    const layout = state.currentLayout;
-    const currentNodeId = state.currentNode.id;
-    const currentNode = findNodeById(layout, currentNodeId);
+    const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.bitWidth = bitWidth;
   }
@@ -96,4 +90,11 @@ function findNodeById(tree, id) {
       })
     );
   }
+}
+
+function getCurrentNode(state) {
+  const layout = state.currentLayout;
+  const currentNodeId = state.currentNodeId;
+  const currentNode = findNodeById(layout, currentNodeId);
+  return currentNode || {};
 }

@@ -6,7 +6,7 @@
       <Input
         placeholder="期望分支数量（选填）"
         style="width:260px"
-        v-model="bitWidth"
+        v-model.number="bitWidth"
       />
     </div>
 
@@ -35,6 +35,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { mapState, mapGetters, mapMutations } from "vuex";
 import SemanticListItem from "./SemanticListItem";
+import { defaultBitWidth } from "./helper";
 export default {
   components: {
     SemanticListItem
@@ -48,15 +49,13 @@ export default {
   data() {
     return {
       semanticList: [],
-      bitWidth: 4
+      bitWidth: defaultBitWidth
     };
   },
   computed: {
-    ...mapState({
-      currentNode: state => state.layout.currentNode
-    }),
     ...mapGetters([
-      "currentNodeChildrenList"
+      "currentNodeChildrenList",
+      "currentNode"
     ])
 
   },
@@ -82,11 +81,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log("whatch cnode", val);
-        this.bitWidth = val;
-        // if (val.bitWidth) {
-        //   this.bitWidth = val.bitWidth || 4;
-        // }
+        this.bitWidth = val || defaultBitWidth;
       }
     }
   },
