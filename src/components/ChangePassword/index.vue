@@ -41,7 +41,32 @@ export default {
 
   data() {
 
-    this.rules = {};
+    const self = this;
+    this.rules = {
+      password: [{
+        validator: function (rule, value, callback) {
+          if (value.trim() && value.trim().length) {
+            callback();
+          } else {
+            callback("请输入密码");
+          }
+        }
+      }],
+      repassword: [
+        {
+          validator: function (rule, value, callback) {
+            if (value === self.formModel.password) {
+              callback();
+            } else {
+              callback("两次输入的密码不一致");
+            }
+            setTimeout(() => {
+              self.$refs["formInline"].validateField("repassword");
+            });
+          }
+        }
+      ]
+    };
 
     this.formItemList = [{
       label: "用户名称",
@@ -68,10 +93,11 @@ export default {
     return {
       formModel: {
         username: "",
-        password: ""
+        password: "",
+        repassword: ""
       },
       loading: false,
-      dialogVisible: false,
+      dialogVisible: false
     };
   },
 
