@@ -60,7 +60,8 @@
                 v-for="item in userDropdownMenu"
                 :name="item.key"
                 :key="item.key"
-              >{{item.label}}</DropdownItem>
+              >{{item.label}}
+              </DropdownItem>
 
             </DropdownMenu>
           </Dropdown>
