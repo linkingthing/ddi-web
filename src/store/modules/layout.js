@@ -21,7 +21,9 @@ const initLayout = [
 
 const state = {
   layoutList: [],
-  currentLayoutId: ""
+  currentLayoutId: "",
+  currentNodeId: "",
+  currentNode: {}
 };
 
 const getters = {
@@ -41,6 +43,10 @@ const getters = {
     }
 
     return _layout || {};
+  },
+
+  currentNodeChildrenList: state => {
+    return state.currentNode.nodes;
   }
 };
 

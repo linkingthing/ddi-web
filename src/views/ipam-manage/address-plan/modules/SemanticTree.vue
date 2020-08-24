@@ -68,6 +68,8 @@ export default {
   methods: {
     handleSelectNode(nodes, node) {
       console.log(1, nodes, node)
+
+      
     },
     renderContent(h, { root, node, data }) {
       console.log("render tree", data)
