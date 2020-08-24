@@ -6,6 +6,7 @@
       <Input
         placeholder="期望分支数量（选填）"
         style="width:260px"
+        v-model="bitWidth"
       />
     </div>
 
@@ -30,7 +31,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { v4 as uuidv4 } from "uuid";
+
+import { mapState, mapGetters, mapMutations } from "vuex";
 import SemanticListItem from "./SemanticListItem";
 export default {
   components: {
@@ -44,10 +47,14 @@ export default {
   },
   data() {
     return {
-      semanticList: []
+      semanticList: [],
+      bitWidth: 4
     };
   },
   computed: {
+    ...mapState({
+      currentNode: state => state.layout.currentNode
+    }),
     ...mapGetters([
       "currentNodeChildrenList"
     ])
@@ -67,17 +74,34 @@ export default {
           };
         });
       }
+    },
+    bitWidth(val) {
+      this.setCurrentNodeBitWidth(val);
+    },
+    "currentNode.bitWidth": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log("whatch cnode", val);
+        this.bitWidth = val;
+        // if (val.bitWidth) {
+        //   this.bitWidth = val.bitWidth || 4;
+        // }
+      }
     }
   },
   created() { },
   mounted() { },
   methods: {
     ...mapMutations([
-      "setCurrentNodeChildrenList"
+      "setCurrentNode",
+      "setCurrentNodeChildrenList",
+      "setCurrentNodeBitWidth"
     ]),
     handleAdd() {
       this.semanticList.push({
-        id: new Date().getTime(),
+        id: uuidv4(),
+        pid: this.currentNode.id,
         name: "",
         isEdit: true
       });

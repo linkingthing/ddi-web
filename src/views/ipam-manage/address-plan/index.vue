@@ -112,7 +112,9 @@ export default {
 
       "setLayoutList",
       "setCurrentLayoutId",
-      "setCurrentLayout"
+      "setCurrentLayout",
+
+      "setCurrentNode"
     ]),
     async handleQuery() {
       this.loading = true;
@@ -150,6 +152,7 @@ export default {
         if (data.length) {
           this.setCurrentLayoutId(data[0].id);
           this.setCurrentLayout(data[0]);
+          this.setCurrentNode(data[0]);
         }
 
       });

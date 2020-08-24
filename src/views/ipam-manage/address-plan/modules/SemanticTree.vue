@@ -76,7 +76,7 @@ export default {
       this.setCurrentNode(_.cloneDeep(node));
     },
     renderContent(h, { root, node, data }) {
-      console.log("render tree", data)
+      // console.log("render tree", data)
       return h("span", {
         props: {
         },

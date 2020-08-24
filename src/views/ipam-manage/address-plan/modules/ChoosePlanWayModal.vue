@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   components: {},
   props: {
@@ -67,7 +67,11 @@ export default {
       dialogVisible: false
     };
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      "currentLayout": state => state.layout.currentLayout
+    })
+  },
   watch: {
     visible: {
       deep: true,
@@ -78,6 +82,13 @@ export default {
     },
     dialogVisible(val) {
       this.$emit("update:visible", val);
+    },
+    currentLayout: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log(123, val)
+      }
     }
   },
   created() { },
@@ -92,7 +103,14 @@ export default {
 
     },
     handleIntellect() {
-      this.nextPlanStep();
+
+      const params = {}
+      this.$put({ url: this.currentLayout.links.self }).then(res => {
+        console.log("re", res)
+      }).catch(err => {
+        console.log(err)
+      })
+      // this.nextPlanStep();
 
     }
   }

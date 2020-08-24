@@ -62,7 +62,17 @@ const mutations = {
     const layout = state.currentLayout;
     const currentNodeId = state.currentNode.id;
     const currentNode = findNodeById(layout, currentNodeId);
+    currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
+  },
+  setCurrentNodeBitWidth(state, bitWidth) {
+    state.currentNode.bitWidth = bitWidth;
+
+    const layout = state.currentLayout;
+    const currentNodeId = state.currentNode.id;
+    const currentNode = findNodeById(layout, currentNodeId);
+    currentNode.expand = true;
+    currentNode.bitWidth = bitWidth;
   }
 };
 
