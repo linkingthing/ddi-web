@@ -183,7 +183,7 @@ export default {
   },
   mounted() { },
   methods: {
-    getData(params = this.initParams) {
+    getData(params = this.query) {
       this.$getData(params).then(({ data }) => {
         this.loading = false;
         this.list = data;
