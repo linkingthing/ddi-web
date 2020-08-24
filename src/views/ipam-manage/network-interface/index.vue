@@ -476,8 +476,8 @@ export default {
       this.$post({ url, params }).then(() => {
         this.$$success("操作成功！");
       }).catch(err => {
-        console.log(err)
-      })
+        this.$Message.error(err.response.data.message);
+      });
     },
     handleDownloadCsv() {
       let { url } = this.$getApiByRoute(`/address/ipam/scannedsubnets/${this.$route.params.scannedsubnetsId}`);
