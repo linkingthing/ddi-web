@@ -1,10 +1,11 @@
 <template>
-  <div class="child-net-manage">   
+  <div class="child-net-manage">
     <IviewLoading v-if="loading" />
 
-    <table-page 
+    <table-page
+      :total="tableData.length"
       :data="tableData"
-      :columns="columns"  
+      :columns="columns"
       @on-selection-change="handleSelecChange"
     />
   </div>
@@ -32,8 +33,8 @@ export default {
     };
   },
 
-  mounted() {    
-    this.handleQuery();    
+  mounted() {
+    this.handleQuery();
   },
 
   methods: {
@@ -44,17 +45,17 @@ export default {
 
       try {
         let { data } = await this.$get({ url: this.url });
-        
+
         this.tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
           item.usedRatio = parseFloat(parseFloat((1 - (item.unmanagedRatio || 0))).toFixed(2));
           return item;
         });
-        
+
       } catch (err) {
         this.$handleError(err);
       }
-      finally {        
+      finally {
         this.loading = false;
       }
     },
