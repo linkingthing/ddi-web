@@ -120,6 +120,7 @@ export default {
           case "delete": return "删除";
           case "exportcsv": return "导出";
           case "changingrrs": return "A和AAAA记录切换";
+          case "snmp": return "更新地址探测";
         }
       };
       

@@ -24,6 +24,7 @@ export default {
   ipblackhole: "IP黑名单",
   recursivecurrent: "递归安全",
   log: "DNS日志",
+  urlredirect: "url重定向",
   /** IPAM */
   asset: "IP资产",
   plan: "IP地址规划",
@@ -33,6 +34,8 @@ export default {
   scannedsubnet: "扫描子网",
   networkequipment: "设备管理",
   networkinterface: "网络接口",
+  staticaddress: "静态地址",
+
   /** metric */
   node: "node",
   dns: "DNS",
