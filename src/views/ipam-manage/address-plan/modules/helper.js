@@ -1,3 +1,5 @@
+import { Address6 } from "ip-address";
+
 import _ from "lodash";
 export const defaultBitWidth = 4;
 
@@ -11,3 +13,14 @@ export function treeEach(tree, fn) {
   }
   return _tree;
 }
+
+
+
+
+export function executeNextIpv6Segment(prefix, bitWidth = defaultBitWidth, offset) {
+  const prefixLeft = prefix.split("/");
+}
+const prefix = "2001:503::/32";
+const ipv6 = new Address6(prefix);
+console.log(Address6)
+console.log(ipv6)

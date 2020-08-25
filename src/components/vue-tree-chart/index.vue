@@ -59,12 +59,12 @@ const MATCH_SCALE_REGEX = /scale\((\S*)\)/i;
 const LinkStyle = {
   CURVE: "curve",
   STRAIGHT: "straight"
-}
+};
 
 const DIRECTION = {
   VERTICAL: "vertical",
   HORIZONTAL: "horizontal"
-}
+};
 
 const DEFAULT_NODE_WIDTH = 100;
 const DEFAULT_NODE_HEIGHT = 100;
@@ -73,22 +73,22 @@ const DEFAULT_LEVEL_HEIGHT = 200;
 const ANIMATION_DURATION = 800;
 
 function uuid() {
-  const s = []
-  const hexDigits = "0123456789abcdef"
+  const s = [];
+  const hexDigits = "0123456789abcdef";
   for (let i = 0; i < 36; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
   }
-  s[14] = "4"
-  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1)
-  s[8] = s[13] = s[18] = s[23] = "-"
-  return s.join("")
+  s[14] = "4";
+  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
+  s[8] = s[13] = s[18] = s[23] = "-";
+  return s.join("");
 }
 
 function rotatePoint({ x, y }) {
   return {
     x: y,
     y: x
-  }
+  };
 }
 
 export default {
@@ -101,7 +101,7 @@ export default {
           nodeWidth: DEFAULT_NODE_WIDTH,
           nodeHeight: DEFAULT_NODE_HEIGHT,
           levelHeight: DEFAULT_LEVEL_HEIGHT
-        }
+        };
       }
     },
     linkStyle: {
@@ -127,47 +127,47 @@ export default {
       initTransformX: 0,
       initTransformY: 0,
       DIRECTION
-    }
+    };
   },
   computed: {
     initialTransformStyle() {
       return {
         transform: `translate(${this.initTransformX}px, ${this.initTransformY}px)`
-      }
+      };
     }
-  },
-  created() {
-    this.addUniqueKey(this.dataset)
   },
   watch: {
     dataset() {
       this.draw();
     }
   },
+  created() {
+    this.addUniqueKey(this.dataset);
+  },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init() {
-      this.draw()
-      this.enableDrag()
-      this.initTransform()
+      this.draw();
+      this.enableDrag();
+      this.initTransform();
     },
     zoomIn() {
-      const originTransformStr = this.$refs.domContainer.style.transform
+      const originTransformStr = this.$refs.domContainer.style.transform;
       // 如果已有scale属性, 在原基础上修改
-      let targetScale = 1 * 1.2
-      const scaleMatchResult = originTransformStr.match(MATCH_SCALE_REGEX)
+      let targetScale = 1 * 1.2;
+      const scaleMatchResult = originTransformStr.match(MATCH_SCALE_REGEX);
       if (scaleMatchResult && scaleMatchResult.length > 0) {
         const originScale = parseFloat(scaleMatchResult[1]);
         targetScale *= originScale;
       }
-      this.setScale(targetScale)
+      this.setScale(targetScale);
     },
     zoomOut() {
       const originTransformStr = this.$refs.domContainer.style.transform;
       // 如果已有scale属性, 在原基础上修改
-      let targetScale = 1 / 1.2
+      let targetScale = 1 / 1.2;
       const scaleMatchResult = originTransformStr.match(MATCH_SCALE_REGEX);
       if (scaleMatchResult && scaleMatchResult.length > 0) {
         const originScale = parseFloat(scaleMatchResult[1]);
@@ -176,7 +176,7 @@ export default {
       this.setScale(targetScale);
     },
     restoreScale() {
-      this.setScale(1)
+      this.setScale(1);
     },
     setScale(scaleNum) {
       if (typeof scaleNum !== "number") return;
@@ -186,7 +186,7 @@ export default {
         targetTransform = originTransformStr.replace(
           MATCH_SCALE_REGEX,
           `scale(${scaleNum})`
-        )
+        );
       } else {
         targetTransform = originTransformStr + ` scale(${scaleNum})`;
       }
@@ -197,25 +197,25 @@ export default {
       return this.direction === DIRECTION.VERTICAL;
     },
     addUniqueKey(rootNode) {
-      const queue = [rootNode]
+      const queue = [rootNode];
       while (queue.length !== 0) {
-        const node = queue.pop()
-        node._key = uuid()
+        const node = queue.pop();
+        node._key = uuid();
         if (node.children) {
-          queue.push(...node.children)
+          queue.push(...node.children);
         }
       }
-      return rootNode
+      return rootNode;
     },
     initTransform() {
-      const containerWidth = this.$refs.container.offsetWidth
-      const containerHeight = this.$refs.container.offsetHeight
+      const containerWidth = this.$refs.container.offsetWidth;
+      const containerHeight = this.$refs.container.offsetHeight;
       if (this.isVertial()) {
-        this.initTransformX = Math.floor(containerWidth / 2)
-        this.initTransformY = Math.floor(this.config.nodeHeight)
+        this.initTransformX = Math.floor(containerWidth / 2);
+        this.initTransformY = Math.floor(this.config.nodeHeight);
       } else {
-        this.initTransformX = Math.floor(this.config.nodeWidth)
-        this.initTransformY = Math.floor(containerHeight / 2)
+        this.initTransformX = Math.floor(this.config.nodeWidth);
+        this.initTransformY = Math.floor(containerHeight / 2);
       }
     },
     /**
@@ -247,11 +247,11 @@ export default {
             const targetPoint = {
               x: d.target.x,
               y: d.target.y
-            }
+            };
             return self.direction === self.DIRECTION.VERTICAL
               ? targetPoint
               : rotatePoint(targetPoint);
-          })
+          });
         return linkPath(d);
       }
       if (this.linkStyle === LinkStyle.STRAIGHT) {
@@ -275,19 +275,19 @@ export default {
         linkPath.lineTo(secondPoint.x, secondPoint.y);
         linkPath.lineTo(thirdPoint.x, thirdPoint.y);
         linkPath.lineTo(targetPoint.x, targetPoint.y);
-        return linkPath.toString()
+        return linkPath.toString();
       }
     },
     // 使用扇形数据开始绘图
     draw() {
-      const [nodeDataList, linkDataList] = this.buildTree(this.dataset)
+      const [nodeDataList, linkDataList] = this.buildTree(this.dataset);
       this.linkDataList = linkDataList;
       this.svg = this.d3.select(this.$refs.svg);
 
       const self = this;
       const links = this.svg.selectAll(".link").data(linkDataList, (d) => {
         return `${d.source._key}-${d.target._key}`;
-      })
+      });
 
       links
         .enter()
@@ -339,14 +339,14 @@ export default {
         startX = event.clientX;
         startY = event.clientY;
         isDrag = true;
-      }
+      };
       container.onmousemove = (event) => {
         if (!isDrag) return;
         const originTransform = mouseDownTransform;
         let originOffsetX = 0;
         let originOffsetY = 0;
         if (originTransform) {
-          const result = originTransform.match(MATCH_TRANSLATE_REGEX)
+          const result = originTransform.match(MATCH_TRANSLATE_REGEX);
           if (result !== null && result.length !== 0) {
             const [offsetX, offsetY] = result[1]
               .split(",")
@@ -368,25 +368,25 @@ export default {
         // console.log("transformStr: "  + transformStr)
         svgElement.style.transform = transformStr;
         this.$refs.domContainer.style.transform = transformStr;
-      }
+      };
 
       container.onmouseup = (event) => {
         startX = 0;
         startY = 0;
         isDrag = false;
-      }
+      };
     },
     onClickNode(index) {
-      const curNode = this.nodeDataList[index];
-      if (curNode.data.children) {
-        curNode.data._children = curNode.data.children;
-        curNode.data.children = null;
-        curNode.data._collapsed = true;
-      } else {
-        curNode.data.children = curNode.data._children;
-        curNode.data._children = null;
-        curNode.data._collapsed = false;
-      }
+      // const curNode = this.nodeDataList[index];
+      // if (curNode.data.children) {
+      //   curNode.data._children = curNode.data.children;
+      //   curNode.data.children = null;
+      //   curNode.data._collapsed = true;
+      // } else {
+      //   curNode.data.children = curNode.data._children;
+      //   curNode.data._children = null;
+      //   curNode.data._collapsed = false;
+      // }
       this.draw();
     },
     formatDimension(dimension) {
