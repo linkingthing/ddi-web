@@ -1,7 +1,7 @@
 @import "./../../assets/less/var.less";
 
 .menu {
-	width: 240px;
+	width: @menuWidth;
 	background-color: @menuBackground;
 	overflow: hidden;
   flex: none;
@@ -49,8 +49,6 @@
 
 		.ivu-menu-submenu-title {
 			padding-left: 37px;
-			font-size: 16px;
-			// color: #D1D0CE;
 
 			&:hover {
 				background: @menuBackgroundActive;
@@ -60,8 +58,7 @@
 
 		.ivu-menu-item {
 			line-height: 26px;
-			padding: 12px 0 12px 68px !important;
-			font-size: 16px;
+			padding: 12px 0 12px 74px !important;
 			color: #d1d0ce;
 			// margin-right: 31px;
 			&.sigle-menu {

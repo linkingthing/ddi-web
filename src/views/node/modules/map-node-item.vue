@@ -30,7 +30,6 @@
       >
         {{item.toLocaleUpperCase()}}
       </li>
-      <span v-if="value.vip" style="line-height: 20px;margin-left: 12px">vip: {{value.vip}}</span>
     </ul>
   </div>
 </template>

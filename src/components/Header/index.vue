@@ -339,7 +339,7 @@ export default {
   .main-menu {
     display: inline-block;
     vertical-align: middle;
-    margin-left: 20px;
+    margin-left: 14px;
 
     .ivu-menu-horizontal.ivu-menu-light:after {
       display: none;
@@ -349,14 +349,15 @@ export default {
       border-bottom: 0;
       &:hover,
       &.ivu-menu-item-active {
-        background: rgba(69, 134, 254, 0.1);
-        border-top: 4px solid #4586fe;
+        // background: rgba(69, 134, 254, 0.1);
+        // border-top: 4px solid #4586fe;
       }
     }
 
     .ivu-menu-item {
       font-size: 16px;
-      font-weight: bold;
+      // font-weight: bold;
+      margin-right: 30px;
     }
   }
 
