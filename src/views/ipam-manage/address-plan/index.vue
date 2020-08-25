@@ -152,7 +152,7 @@ export default {
 
         if (data.length) {
           this.setCurrentLayoutId(data[0].id);
-          this.setCurrentLayout(data[0]);
+          this.setCurrentLayout({ layout: data[0], prefix: this.currentPlan.prefix });
           this.setCurrentNodeId(data[0].id);
         }
 

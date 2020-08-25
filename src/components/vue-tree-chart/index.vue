@@ -22,7 +22,7 @@
           class="node-slot"
           v-for="(node, index) of nodeDataList"
           @click="onClickNode(index)"
-          :key="node.data._key"
+          :key="node.data.id"
           :style="{
             left: formatDimension(
               direction === DIRECTION.VERTICAL ? node.x : node.y
@@ -36,8 +36,10 @@
         >
           <slot
             name="node"
-            v-bind:node="node.data"
+            v-bind:data="node.data"
             v-bind:collapsed="node.data._collapsed"
+            v-bind:node="node"
+            v-bind:nodeDataList="nodeDataList"
           >
             <!-- 默认展示value字段 -->
             <span>{{ node.data.value }}</span>
@@ -64,11 +66,11 @@ const DIRECTION = {
   HORIZONTAL: "horizontal"
 }
 
-const DEFAULT_NODE_WIDTH = 100
-const DEFAULT_NODE_HEIGHT = 100
-const DEFAULT_LEVEL_HEIGHT = 200
+const DEFAULT_NODE_WIDTH = 100;
+const DEFAULT_NODE_HEIGHT = 100;
+const DEFAULT_LEVEL_HEIGHT = 200;
 
-const ANIMATION_DURATION = 800
+const ANIMATION_DURATION = 800;
 
 function uuid() {
   const s = []
@@ -136,6 +138,11 @@ export default {
   },
   created() {
     this.addUniqueKey(this.dataset)
+  },
+  watch: {
+    dataset() {
+      this.draw();
+    }
   },
   mounted() {
     this.init()
@@ -215,26 +222,26 @@ export default {
      * 根据link数据,生成svg path data
      */
     generateLinkPath(d) {
-      const self = this
+      const self = this;
       if (this.linkStyle === LinkStyle.CURVE) {
         const linkPath = this.isVertial()
           ? d3.linkVertical()
-          : d3.linkHorizontal()
+          : d3.linkHorizontal();
         linkPath
           .x(function (d) {
-            return d.x
+            return d.x;
           })
           .y(function (d) {
-            return d.y
+            return d.y;
           })
           .source(function (d) {
             const sourcePoint = {
               x: d.source.x,
               y: d.source.y
-            }
+            };
             return self.direction === self.DIRECTION.VERTICAL
               ? sourcePoint
-              : rotatePoint(sourcePoint)
+              : rotatePoint(sourcePoint);
           })
           .target(function (d) {
             const targetPoint = {
@@ -243,9 +250,9 @@ export default {
             }
             return self.direction === self.DIRECTION.VERTICAL
               ? targetPoint
-              : rotatePoint(targetPoint)
+              : rotatePoint(targetPoint);
           })
-        return linkPath(d)
+        return linkPath(d);
       }
       if (this.linkStyle === LinkStyle.STRAIGHT) {
         // the link path is: source -> secondPoint -> thirdPoint -> target
@@ -292,33 +299,32 @@ export default {
         .style("opacity", 1)
         .attr("class", "link")
         .attr("d", function (d, i) {
-          return self.generateLinkPath(d)
-        })
+          return self.generateLinkPath(d);
+        });
       links
         .transition()
         .duration(ANIMATION_DURATION)
         .ease(d3.easeCubicInOut)
         .attr("d", function (d) {
-          return self.generateLinkPath(d)
-        })
+          return self.generateLinkPath(d);
+        });
       links
         .exit()
         .transition()
         .duration(ANIMATION_DURATION / 2)
         .ease(d3.easeCubicInOut)
         .style("opacity", 0)
-        .remove()
+        .remove();
 
-      this.nodeDataList = nodeDataList
-      console.log("nodeDataList", nodeDataList)
+      this.nodeDataList = nodeDataList;
 
     },
     buildTree(rootNode) {
       const treeBuilder = this.d3
         .tree()
-        .nodeSize([this.config.nodeWidth, this.config.levelHeight])
-      const tree = treeBuilder(this.d3.hierarchy(rootNode))
-      return [tree.descendants(), tree.links()]
+        .nodeSize([this.config.nodeWidth, this.config.levelHeight]);
+      const tree = treeBuilder(this.d3.hierarchy(rootNode));
+      return [tree.descendants(), tree.links()];
     },
     enableDrag() {
       const svgElement = this.$refs.svg;
@@ -329,7 +335,6 @@ export default {
       // 保存鼠标点下时的位移
       let mouseDownTransform = "";
       container.onmousedown = (event) => {
-        console.log(event)
         mouseDownTransform = svgElement.style.transform;
         startX = event.clientX;
         startY = event.clientY;
@@ -345,19 +350,20 @@ export default {
           if (result !== null && result.length !== 0) {
             const [offsetX, offsetY] = result[1]
               .split(",")
-              .map(this.parseDimensionNumber)
+              .map(this.parseDimensionNumber);
             originOffsetX = offsetX;
             originOffsetY = offsetY;
           }
         }
-        let transformStr = `translate(${
-          event.clientX - startX + originOffsetX
-          }px, ${event.clientY - startY + originOffsetY}px)`
+        let transformStr = `translate(
+            ${event.clientX - startX + originOffsetX}px,
+            ${event.clientY - startY + originOffsetY}px
+          )`;
         if (originTransform) {
           transformStr = originTransform.replace(
             MATCH_TRANSLATE_REGEX,
             transformStr
-          )
+          );
         }
         // console.log("transformStr: "  + transformStr)
         svgElement.style.transform = transformStr;
@@ -365,13 +371,13 @@ export default {
       }
 
       container.onmouseup = (event) => {
-        startX = 0
-        startY = 0
-        isDrag = false
+        startX = 0;
+        startY = 0;
+        isDrag = false;
       }
     },
     onClickNode(index) {
-      const curNode = this.nodeDataList[index]
+      const curNode = this.nodeDataList[index];
       if (curNode.data.children) {
         curNode.data._children = curNode.data.children;
         curNode.data.children = null;
@@ -381,7 +387,7 @@ export default {
         curNode.data._children = null;
         curNode.data._collapsed = false;
       }
-      this.draw()
+      this.draw();
     },
     formatDimension(dimension) {
       if (typeof dimension === "number") return `${dimension}px`;
@@ -396,11 +402,6 @@ export default {
         return dimension;
       }
       return parseInt(dimension.replace("px", ""));
-    }
-  },
-  watch: {
-    dataset() {
-      this.draw();
     }
   }
 };

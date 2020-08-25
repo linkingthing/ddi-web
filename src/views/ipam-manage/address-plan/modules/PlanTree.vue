@@ -7,13 +7,16 @@
       direction="horizontal"
       link-style="straight"
     >
-      <template v-slot:node="{ node, collapsed }">
+      <template v-slot:node="{ data, node, collapsed ,nodeDataList}">
         <div
+          @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
           class="rich-node"
           :style="{ border: collapsed ? '2px solid grey' : '' }"
         >
 
-          <span style="padding: 4px 0; font-weight: bold;">{{ node.name }}</span>
+          <h3 class="name">{{ data.name }}</h3>
+          <p class="ipv6">{{data.prefix}}</p>
+          <div class="ipv4">ipv4</div>
         </div>
       </template>
     </VueTree>
@@ -74,14 +77,16 @@ export default {
         let newTree = JSON.stringify(val);
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
-        console.log("currentLayout", newTree)
+        console.log("newTree", newTree)
 
-        newTree = treeEach(newTree, (item) => {
+        newTree = treeEach(newTree, item => {
           delete item.creationTimestamp;
           delete item.deletionTimestamp;
           delete item.expand;
           delete item.links;
+          delete item.type;
         });
+        console.log("newTree", newTree)
 
         this.treeData = newTree;
       }
@@ -93,7 +98,9 @@ export default {
     ...mapMutations([
       "nextPlanStep"
     ]),
-
+    handleSelectTreeNode(data, node, collapsed, nodeDataList) {
+      console.log(data, node, collapsed, nodeDataList)
+    },
     handleAddressPlanFinish() {
       this.nextPlanStep();
     }
@@ -108,7 +115,20 @@ export default {
   .rich-node {
     width: 148px;
     height: 68px;
+    text-align: center;
     background: #ededed;
+
+    .name {
+      font-size: 14px;
+      font-weight: normal;
+      color: #333;
+    }
+    .ipv6 {
+
+    }
+    .ipv4 {
+
+    }
   }
 }
 </style>

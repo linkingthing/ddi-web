@@ -1,21 +1,25 @@
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
+import { defaultBitWidth } from "@/views/ipam-manage/address-plan/modules/helper";
 
 const initLayout = [
   {
     id: uuidv4(),
     name: "机构",
-    nodes: []
+    nodes: [],
+    bitWidth: defaultBitWidth
   },
   {
     id: uuidv4(),
     name: "业务",
-    nodes: []
+    nodes: [],
+    bitWidth: defaultBitWidth
   },
   {
     id: uuidv4(),
     name: "数据中心",
-    nodes: []
+    nodes: [],
+    bitWidth: defaultBitWidth
   }
 ];
 
@@ -24,7 +28,7 @@ const state = {
   currentLayoutId: "",
   currentLayout: {},
   currentNodeId: "",
-  currentNode: {}
+  currentNode: {} // 目测可以不要
 };
 
 const getters = {
@@ -45,12 +49,23 @@ const mutations = {
   setCurrentLayoutId(state, currentLayoutId) {
     state.currentLayoutId = currentLayoutId;
   },
-  setCurrentLayout(state, layout) {
+  setCurrentLayout(state, {layout, prefix}) {
     const _layout = _.cloneDeep(layout);
+
     if (layout) {
       _layout.expand = true;
+      _layout.bitWidth = defaultBitWidth;
+      console.log(prefix, "pppp")
+      _layout.prefix = prefix;
       if (!layout.nodes) {
-        _layout.nodes = _.cloneDeep(initLayout);
+        _layout.nodes = _.cloneDeep(
+          initLayout.map(item => {
+            return {
+              ...item,
+              pid: state.currentLayoutId
+            };
+          })
+        );
       }
     }
     state.currentLayout = _layout || {};
