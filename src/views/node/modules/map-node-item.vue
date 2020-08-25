@@ -30,6 +30,7 @@
       >
         {{item.toLocaleUpperCase()}}
       </li>
+      <span v-if="value.vip" style="line-height: 20px;margin-left: 12px">vip: {{value.vip}}</span>
     </ul>
   </div>
 </template>
@@ -87,7 +88,8 @@ export default {
   height: 124px;
   border-radius: 6px;
   background-size: cover;
-
+  text-align: left;
+  
   .top-info {
     display: flex;
     justify-content: space-between;

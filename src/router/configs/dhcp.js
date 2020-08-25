@@ -9,7 +9,7 @@ import Layout from '@/views/layout';
 export default {
 	path: '',
 	component: Layout,
-	icon: 'icon-recursive',
+	icon: 'icon-dhcp',
 	name: 'dhcp-dhcp',
 	meta: {
 		title: 'DHCP服务',

@@ -20,7 +20,7 @@ export default {
 			name: 'nodeManage',
 			path: '/monitor',
 			component: () => import('@/views/node'),
-			icon: 'icon-node',
+			icon: 'icon-node-monitor',
 			meta: {
 				range: 'monitor',
 				title: '概览',
@@ -30,7 +30,7 @@ export default {
 			name: 'DNSDashboard',
 			path: '/monitor/dns',
 			component: () => import('@/views/node/DNSDashboard'),
-			icon: 'icon-dns',
+			icon: 'icon-dns-monitor',
 			meta: {
 				title: 'DNS统计'
 			}
@@ -39,7 +39,7 @@ export default {
 			name: 'DHCPDashboard',
 			path: '/monitor/dhcp',
 			component: () => import('@/views/node/DHCPDashboard'),
-			icon: 'icon-dhcp',
+			icon: 'icon-dhcp-monitor',
 			meta: {
 				from: 'monitor',
 				title: 'DHCP统计'
@@ -49,7 +49,7 @@ export default {
 			name: 'ControllerDashboard',
 			path: '/monitor/controller',
 			component: () => import('@/views/node/ControllerDashboard'),
-			icon: 'icon-controller',
+			icon: 'icon-controller-monitor',
 			meta: {
 				range: 'nodeManage',
 				title: '节点监控'
