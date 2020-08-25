@@ -2,6 +2,7 @@
   <div
     :key="value.ip"
     class="node-map-server"
+    :class="{'node-off': !value.nodeIsAlive}"
     :style="`background-image: url(${require('../../../assets/images/monitor-group.png')})`"
     @mouseenter="(e) => $emit('mouseenter', value, e)"
     @mouseleave="(e) => $emit('mouseleave', value, e)"
@@ -10,7 +11,10 @@
       <li>
         {{!value.master ? "MASTER" : "SLAVE"}}
       </li>
-      <li class="show-hostname" v-if="!value.hostName.startsWith('node-')">
+      <li
+        class="show-hostname"
+        v-if="!value.hostName.startsWith('node-')"
+      >
         {{value.hostName }}
       </li>
       <li>
@@ -73,6 +77,10 @@ export default {
 </script>
 
 <style lang="less">
+.node-off {
+  opacity: 0.5;
+}
+
 .node-map-server {
   position: relative;
   width: 300px;

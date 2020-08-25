@@ -12,7 +12,7 @@ const { getApiByRoute, getRouteByLink } = requestMethods;
 function showMessage(type, msg, scope) {
   let options = {
     content: msg,
-    duration: 3,
+    duration: 3
   };
 
   if (typeof msg === "object") {
@@ -27,15 +27,15 @@ Vue.prototype.$vuescrollConfig = {
   bar: {
     size: "8px",
     background: "#4796FF",
-    keepShow: true,
+    keepShow: true
   },
   rail: {
     background: "#EEEEEE",
     opacity: 1,
     size: "8px",
     gutterOfEnds: "0px",
-    gutterOfSide: "0px",
-  },
+    gutterOfSide: "0px"
+  }
 };
 
 Vue.prototype.$$success = function (msg) {
@@ -58,7 +58,7 @@ Vue.prototype.$$confirm = function ({
   title = "消息",
   content,
   onOk,
-  onCancel,
+  onCancel
 }) {
   return new Promise((resolve, reject) => {
     this.$Modal.confirm({
@@ -73,7 +73,7 @@ Vue.prototype.$$confirm = function ({
         onCancel && onCancel();
 
         reject();
-      },
+      }
     });
   });
 };
@@ -114,7 +114,7 @@ Vue.prototype.$getRouteByLink = getRouteByLink;
 /**
  * 获取视图列表
  */
-Vue.prototype.$getViewList = async (params) => {
+Vue.prototype.$getViewList = async params => {
   return await getStateByKey("getViewList", params);
 };
 
@@ -132,13 +132,13 @@ Vue.prototype.$delete = del;
 Vue.prototype.$axios = axios;
 Vue.prototype.$getData = (params, path) =>
   get({ ...getApiByRoute(path), params });
-Vue.prototype.$createEntity = (params) => post({ ...getApiByRoute(), params });
+Vue.prototype.$createEntity = params => post({ ...getApiByRoute(), params });
 
 for (const method in requestMethods) {
   Vue.prototype[`$${method}`] = requestMethods[method];
 }
 
-Vue.prototype.$wait = (time) => new Promise((r) => setTimeout(() => r(), time));
+Vue.prototype.$wait = time => new Promise(r => setTimeout(() => r(), time));
 
 Vue.directive("scroll", {
   // 当绑定元素插入到 DOM 中
@@ -149,13 +149,13 @@ Vue.directive("scroll", {
       var direction = e.deltaY > 0 ? "down" : "up";
       cb(direction, child, e);
     });
-  },
+  }
 });
 
 Vue.directive("position", {
   // 当绑定元素插入到 DOM 中
   inserted: function (el, binding) {
-    const { ip, master, type, hasSlave, getPosition } = binding.value;
+    const { ip, master, type, hasSlave, getPosition, node } = binding.value;
 
     const { offsetTop, offsetLeft, offsetHeight, offsetWidth } = el;
 
@@ -168,15 +168,16 @@ Vue.directive("position", {
       offsetLeft,
       offsetHeight,
       offsetWidth,
+      node
     });
-  },
+  }
 });
 
 Vue.prototype.$refresh = ({ keeps = [] } = {}) => {
   let { query = {}, path } = router.currentRoute;
   const temp = {};
 
-  keeps.forEach((item) => {
+  keeps.forEach(item => {
     if (query[item]) {
       temp[item] = query[item];
     }

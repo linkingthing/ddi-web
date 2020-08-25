@@ -67,16 +67,47 @@
         <div class="node-map-inner">
           <!-- <VueDragResize :is-resizable="false"> -->
           <svg ref="nodeMapRef">
-            <path
+            <g
               v-for="(item, index) in curve"
               :key="index"
-              :d="item.d"
-              stroke="#7BAFFD"
-              :data-slave="`${item.isSalve}`"
-              :stroke-dasharray="item.isSalve ? '10,10': 'false' "
-              fill="none"
-              style="stroke-width: 2px;"
-            />
+            >
+              <path
+                :d="item.d"
+                stroke="#7BAFFD"
+                :data-slave="`${item.isSalve}`"
+                :stroke-dasharray="item.isSalve ? '10,10': 'false' "
+                fill="none"
+                style="stroke-width: 2px;"
+              />
+              <text
+                :x="item.x"
+                :y="item.y"
+                v-if="item.isSalve"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                fill="#333"
+                font-size="12"
+              >
+                <tspan
+                  dy="0"
+                  :title="item.vip"
+                >{{item.vip}}</tspan>
+
+              </text>
+              <text
+                :x="item.x"
+                :y="item.y"
+                v-if="item.isSalve"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                fill="#333"
+                font-size="12"
+              >
+                <tspan dy="25">VIP</tspan>
+
+              </text>
+
+            </g>
           </svg>
           <div
             class="node-group"
@@ -87,7 +118,7 @@
               <div class="controller-item ">
                 <div class="controller-master node-item">
                   <map-node-item
-                    v-position="{ip: controllerItem.ip, type: 'controller', getPosition}"
+                    v-position="{ip: controllerItem.ip, type: 'controller', node: controllerItem, getPosition}"
                     :value="controllerItem"
                     :key="controllerItem.ip"
                     @mouseenter="handleMouseenter"
@@ -101,7 +132,7 @@
                     :key="slave.ip"
                   >
                     <map-node-item
-                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', getPosition}"
+                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', node: slave, getPosition}"
                       :value="slave"
                       :key="slave.ip"
                       @mouseenter="handleMouseenter"
@@ -124,7 +155,7 @@
                 <div class="node-item">
                   <map-node-item
                     :value="item"
-                    v-position="{ip: item.ip, master: item.controllerIP, type: 'child',hasSlave: !!(item.slave&& item.slave.length), getPosition}"
+                    v-position="{ip: item.ip, master: item.controllerIP, type: 'child',hasSlave: !!(item.slave&& item.slave.length),node: item, getPosition}"
                     :key="item.ip"
                     @mouseenter="handleMouseenter"
                     @mouseleave="handleMouseleave"
@@ -138,7 +169,7 @@
                     :key="slave.ip"
                   >
                     <map-node-item
-                      v-position="{ip: slave.ip, master: slave.master,type: 'slave', getPosition}"
+                      v-position="{ip: slave.ip, master: slave.master,type: 'slave',node: slave, getPosition}"
                       :value="slave"
                       :key="slave.ip"
                       @mouseenter="handleMouseenter"
@@ -215,6 +246,7 @@ export default {
 
     curve() {
       const svgCurveList = this.svgPathGroup.map(item => {
+        console.log(item)
 
         const qox = item.startX + (item.endX - item.startX) / 2;
         const qoy = item.startY + (item.endY - item.startY) / 4;
@@ -225,7 +257,10 @@ export default {
         const d = `M${item.startX} ${item.startY} Q${qox} ${qoy} ${qtx} ${qty} T${item.endX} ${item.endY}`;
         return {
           d,
-          isSalve: item.slave
+          isSalve: item.slave,
+          vip: item.vip,
+          x: (item.startX + item.endX) / 2,
+          y: (item.startY + item.endY) / 2 - 10
         };
       });
 
@@ -242,6 +277,7 @@ export default {
         let lineGroup = [];
 
         value.forEach(item => {
+          console.log(item)
           if (item.type === "child") {
             startXPointMap[item.ip] = item;
           }
@@ -458,6 +494,7 @@ export default {
     },
 
     point2Path(pointList) {
+      console.log(1, pointList)
       const pathList = pointList.map(({ startPoint, endPoint, slave }) => {
 
         let startX = 0;
@@ -475,7 +512,8 @@ export default {
           startY: startPoint.offsetTop + startPoint.offsetHeight / 2,
           endX,
           endY: endPoint.offsetTop + endPoint.offsetHeight / 2,
-          slave
+          slave,
+          vip: startPoint.node.vip || endPoint.node.vip
         };
       });
 
@@ -619,6 +657,7 @@ export default {
       position: absolute;
       width: 100%;
       height: 100%;
+      text-align: center;
       // background: #ddd;
 
       svg {
@@ -634,12 +673,13 @@ export default {
 
 .node-group {
   height: 100%;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
 
   .node-item {
-    padding: 40px;
+    padding: 40px 60px;
+    text-align: left;
   }
   .controller-box,
   .common-node-box {
@@ -666,7 +706,7 @@ export default {
   .common-node-item-slave {
     // flex: 1;
 
-    width: 300px;
+    // width: 300px;
   }
 
   .common-node-item {
@@ -679,8 +719,7 @@ export default {
   .slave-node {
     // height: 104px;
     // background: #f20;
-    margin: 20px 0;
-    opacity: 0.5;
+    margin: 20px 30px;
   }
 }
 
