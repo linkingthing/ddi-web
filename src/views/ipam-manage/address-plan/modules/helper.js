@@ -1,4 +1,5 @@
 import { Address6 } from "ip-address";
+import ipaddr from "ipaddr.js";
 
 import _ from "lodash";
 export const defaultBitWidth = 4;
@@ -14,13 +15,64 @@ export function treeEach(tree, fn) {
   return _tree;
 }
 
-
-
-
-export function executeNextIpv6Segment(prefix, bitWidth = defaultBitWidth, offset) {
-  const prefixLeft = prefix.split("/");
-}
 const prefix = "2001:503::/32";
 const ipv6 = new Address6(prefix);
-console.log(Address6)
-console.log(ipv6)
+console.dir(Address6);
+console.log(ipv6);
+console.log(ipv6.binaryZeroPad());
+
+console.log(ipv6.parsedAddress);
+console.log(ipv6.toByteArray());
+
+console.log(ipv6.bigInteger());
+
+const ipv6ToBigInt = ip => {
+  const ipArr = ipaddr.parse(ip).parts;
+  let len = ipArr.length;
+  let bigNum = BigInt(0);
+  for (let i = 0; i < len; i++) {
+    bigNum += BigInt(ipArr[i] * Math.pow(2, 2 * (len - i - 1) * 8));
+  }
+  return bigNum;
+};
+
+// n 偏移位数，默认为一
+const excutePrefixIncrement = (ipv6BigInt, prefix, bitWidth, n = 1) => {
+  return ipv6BigInt + BigInt(n * Math.pow(2, 128 - (prefix + bitWidth)));
+};
+
+const bigIntToIPv6 = bigInt => {
+  const fullIPv6 = Address6.fromBigInteger(bigInt);
+  return fullIPv6.correctForm();
+};
+
+// 计算下一个节点的IPv6起始
+export const excuteNextIPv6 = (ip, prefix, subtreebitnum, n = 1) => {
+  const bigNum = ipv6ToBigInt(ip);
+  const newIpBigInt = excutePrefixIncrement(
+    bigNum,
+    Number(prefix),
+    Number(subtreebitnum),
+    n
+  );
+  console.log("newIpBigInt", newIpBigInt);
+  return bigIntToIPv6(newIpBigInt);
+};
+
+export function executeNextIpv6Segment(
+  prefix,
+  bitWidth = defaultBitWidth,
+  offset
+) {
+  const ipv6 = new Address6(prefix);
+  const { addressMinusSuffix, parsedSubnet } = ipv6;
+  return excuteNextIPv6(
+    addressMinusSuffix,
+    parsedSubnet,
+    bitWidth,
+    (offset = 1)
+  );
+}
+
+export const binary = (nodecode, bitWidth) =>
+  (Array(bitWidth).join("0") + nodecode.toString(2)).slice(-bitWidth);
