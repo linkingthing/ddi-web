@@ -2,7 +2,7 @@
   <div class="login-content">
     <div class="login">
       <div class="login-head">
-        <h1>{{isDNS ? "DNS": "DDI"}} 配置管理系统</h1>
+        <h1>数字资产管理平台</h1>
       </div>
       <div>
         <Form
@@ -81,7 +81,6 @@ export default {
   name: "login",
 
   data() {
-    this.isDNS = PACK_SYSTEM === "dns,node";
 
     return {
       params: {
@@ -181,7 +180,8 @@ export default {
   .login-head h1 {
     color: #59a2ec;
     font-size: 33px;
-    padding: 0 70px;
+    padding: 20px 70px 0;
+    text-align: center;
   }
 
   .header-text {
