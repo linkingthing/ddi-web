@@ -310,6 +310,8 @@ export default {
         .remove()
 
       this.nodeDataList = nodeDataList
+      console.log("nodeDataList", nodeDataList)
+
     },
     buildTree(rootNode) {
       const treeBuilder = this.d3

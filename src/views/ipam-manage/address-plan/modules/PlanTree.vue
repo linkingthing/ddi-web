@@ -31,6 +31,8 @@
 import { mapState, mapMutations } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
+import { treeEach } from "./helper";
+
 export default {
   components: {
     VueTree
@@ -69,7 +71,19 @@ export default {
       immediate: true,
       handler(val) {
         console.log("currentLayout", val)
-        this.treeData = val;
+        let newTree = JSON.stringify(val);
+        newTree = newTree.replace(/nodes/g, "children");
+        newTree = JSON.parse(newTree);
+        console.log("currentLayout", newTree)
+
+        newTree = treeEach(newTree, (item) => {
+          delete item.creationTimestamp;
+          delete item.deletionTimestamp;
+          delete item.expand;
+          delete item.links;
+        });
+
+        this.treeData = newTree;
       }
     }
   },
