@@ -302,19 +302,17 @@ export default {
     .logo-image {
       text-align: center;
       height: 60px;
-      width: 60px;
-      padding: 10px 0;
+      width: 56px;
+      padding: 12px 0;
       margin-right: 10px;
       border-right: 1px solid #E8E8E8;
       img {
-        width: 36px;
-        height: 44px;
+        width: 30px;
       }
     }
 
     img {
       vertical-align: middle;
-      margin-left: 4px;
     }
 
     h1 {
@@ -333,7 +331,7 @@ export default {
     display: inline-block;
     vertical-align: middle;
     padding: 4px 0;
-    width: 166px;
+    width: 136px;
   }
 
   .main-menu {

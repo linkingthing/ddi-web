@@ -32,5 +32,29 @@ export default {
 </script>
 
 <style lang="less">
-@import "./index.less";
+.main-content {
+  background: #f6f6f6;
+  height: 100%;
+
+  .content-box {
+    width: 100%;
+    height: calc(~"100% - 76px");
+    overflow: auto;
+    display: flex;
+  }
+
+  .bread {
+    padding: 20px;
+  }
+
+  .content-padding {
+    background: #fff;
+    height: calc(~"100% - 16px");
+    margin: 0 16px;
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    border-radius: 6px;
+  }
+}
 </style>
