@@ -4,17 +4,17 @@
     <section class="segment-axis">
       <div class="segment-axis-detail">
         <div
-          v-for="(item, idx) in sections"
-          :key="idx"
+          v-for="item in sections"
+          :key="item"
           class="axis-unit"
           :class="{
-            'axis-unit-long': !(item % 8) || !item,
-            'axis-unit-inuse': item > canPlanLength
+            'axis-unit-long': !(item % unit) || !item,
+            'axis-unit-inuse': item > prefixLen
           }"
         >
           <a
             class="axis-label"
-            v-if="!(item % 8)"
+            v-if="!(item % unit)"
           >{{item}}</a>
         </div>
       </div>
@@ -23,49 +23,18 @@
     <!-- 分段显示 -->
     <section class="segment-section">
       <div
-        class="segment-section-item is-begin"
+        class="segment-section-item "
         key="begin-segment"
-        :style="{ flex:startSegment.value, backgroundColor:startSegment.color }"
-      >
-        <!-- <div
-          class="segment-section-item-name"
-          v-if="showSegmentName"
-        >
-          前缀
-        </div> -->
-      </div>
-      <template v-if="endSegment.value >= 0">
-        <div
-          v-for="segment in segmentWidths"
-          class="segment-section-item"
-          :key="segment.flag"
-          :style="{ flex:segment.value, backgroundColor:segment.color }"
-        >
-          <!-- <div
-            class="segment-section-item-name"
-            v-if="showSegmentName"
-          >
-            {{segment.value}}位
-          </div> -->
-        </div>
-      </template>
+        :style="{ flex: prefixLen , backgroundColor: startSegment.color }"
+      />
       <div
-        v-if="endSegment.value"
-        class="segment-section-item is-end"
+        class="segment-section-item"
         key="end-segment"
-        :style="{ flex:endSegment.value, backgroundColor:endSegment.color }"
-      >
-        <!-- <div
-          class="segment-section-item-name"
-          v-if="showSegmentName"
-        >
-          {{endSegment.value}}位
-        </div> -->
-      </div>
-
+        :style="{ flex: maskLen - prefixLen, backgroundColor:endSegment.color }"
+      />
       <div
-        class="section-cursor"
-        :style="{ left: cursorLeft }"
+        class="segment-section-item segment-section-item-active"
+        :style="{width: ( Number(bitWidth)/maskLen)*100+ '%' ,left: Number(prefix)/maskLen*100 +'%' }"
       />
     </section>
   </div>
@@ -74,23 +43,31 @@
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    // 总体可划分地址段前缀
+    prefixLen: {
+      type: Number,
+      default: 32
+    },
+    prefix: {
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: Number | String,
+      default: 36
+    },
+    bitWidth: {
+      type: Number,
+      default: 4
+    }
+
+  },
   data() {
     return {
-      mask: 0,
       maskLen: 64,
       sections: [],
-      segmentWidths: [],
-      // 总可规划长度
-      canPlanLength: 0,
-      // 可规划地址的起始长度
-      prefixPos: 0,
-      cursorLeft: 0,
       unit: 8,
-      // 剩余可规划长度
       startSegment: {
         color: "#EDEDED",
-        value: 20
+        value: 32
       },
       endSegment: {
         color: "rgba(69,134,254, .2)",
@@ -106,17 +83,8 @@ export default {
   },
   methods: {
     init() {
-      // 总可规划长度
-      this.canPlanLength = this.maskLen - this.mask;
-
-      // 可规划地址的起始长度
-      this.prefixPos = this.mask + 1;
-
       let count = -1;
-
       this.sections = new Array(this.maskLen + 1).fill("").map(() => ++count);
-
-      this.endSegment.value = this.canPlanLength;
     }
   }
 };
@@ -161,35 +129,20 @@ export default {
 }
 
 .segment-section {
+  position: relative;
   display: flex;
   margin-top: 5px;
+  border-radius: 3px;
+  overflow: hidden;
 
   &-item {
     height: 10px;
-    border-radius: 3px;
     display: flex;
     justify-content: center;
-    position: relative;
-
-    &.is-begin {
-      border-radius: 3px 0 0 3px;
-    }
-
-    &.is-end {
-      border-radius: 0 3px 3px 0;
-    }
   }
-
-  &-item-name {
-    color: #999;
-    font-size: 14px;
-    line-height: 1;
-    margin-top: 16px;
+  &-item-active {
     position: absolute;
-    white-space: nowrap;
-  }
-
-  .section-cursor {
+    background: #4bc02f;
   }
 }
 </style>

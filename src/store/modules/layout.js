@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
-import { defaultBitWidth } from "@/views/ipam-manage/address-plan/modules/helper";
+import {
+  defaultBitWidth,
+  getCurrentNode
+} from "@/views/ipam-manage/address-plan/modules/helper";
 
 const initLayout = [
   {
@@ -49,13 +52,12 @@ const mutations = {
   setCurrentLayoutId(state, currentLayoutId) {
     state.currentLayoutId = currentLayoutId;
   },
-  setCurrentLayout(state, {layout, prefix}) {
+  setCurrentLayout(state, { layout, prefix }) {
     const _layout = _.cloneDeep(layout);
 
     if (layout) {
       _layout.expand = true;
       _layout.bitWidth = defaultBitWidth;
-      console.log(prefix, "pppp")
       _layout.prefix = prefix;
       if (!layout.nodes) {
         _layout.nodes = _.cloneDeep(
@@ -93,23 +95,3 @@ export default {
   mutations,
   actions
 };
-
-function findNodeById(tree, id) {
-  if (tree.id === id) {
-    return tree;
-  } else {
-    return (
-      Array.isArray(tree.nodes) &&
-      tree.nodes.find(item => {
-        return findNodeById(item, id);
-      })
-    );
-  }
-}
-
-function getCurrentNode(state) {
-  const layout = state.currentLayout;
-  const currentNodeId = state.currentNodeId;
-  const currentNode = findNodeById(layout, currentNodeId);
-  return currentNode || {};
-}

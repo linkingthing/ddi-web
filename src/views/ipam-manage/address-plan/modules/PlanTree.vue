@@ -34,7 +34,7 @@
 import { mapState, mapMutations } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
-import { treeEach } from "./helper";
+import { treeEach, findNodeById, executeNextIpv6Segment } from "./helper";
 
 export default {
   components: {
@@ -64,7 +64,6 @@ export default {
   computed: {
     ...mapState({
       "currentLayout": state => state.layout.currentLayout
-
     }
     )
   },
@@ -73,18 +72,24 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log("currentLayout", val)
         let newTree = JSON.stringify(val);
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
-        console.log("newTree", newTree)
 
-        newTree = treeEach(newTree, item => {
+        newTree = treeEach(newTree, "children", (item, index) => {
+          console.log(22, item, index)
           delete item.creationTimestamp;
           delete item.deletionTimestamp;
           delete item.expand;
           delete item.links;
           delete item.type;
+
+          if (item.pid) {
+            const parentNode = findNodeById(newTree, item.pid);
+            const parentNodePrefix = parentNode.prefix;
+            item.prefix = executeNextIpv6Segment(parentNodePrefix, index + 1); // 位偏移，自定义需要调整
+          }
+
         });
         console.log("newTree", newTree)
 
@@ -124,10 +129,8 @@ export default {
       color: #333;
     }
     .ipv6 {
-
     }
     .ipv4 {
-
     }
   }
 }

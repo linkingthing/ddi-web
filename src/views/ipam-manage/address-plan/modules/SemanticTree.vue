@@ -58,7 +58,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log("watch")
+        // console.log("watch")
         this.treeData = _.cloneDeep(val);
       }
     }

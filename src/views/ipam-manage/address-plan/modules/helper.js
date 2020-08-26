@@ -4,27 +4,34 @@ import ipaddr from "ipaddr.js";
 import _ from "lodash";
 export const defaultBitWidth = 4;
 
-export function treeEach(tree, fn) {
+export function findNodeById(tree, id) {
+  if (tree.id === id) {
+    return tree;
+  } else {
+    return (
+      Array.isArray(tree.nodes) &&
+      tree.nodes.find(item => {
+        return findNodeById(item, id);
+      })
+    );
+  }
+}
+
+export function getCurrentNode(state) {
+  const layout = state.currentLayout;
+  const currentNodeId = state.currentNodeId;
+  const currentNode = findNodeById(layout, currentNodeId);
+  return currentNode || {};
+}
+
+export function treeEach(tree, children, fn) {
   const _tree = _.cloneDeep(tree);
   fn(_tree);
-  if (_tree.nodes && Array.isArray(_tree.nodes)) {
-    _tree.nodes.forEach(item => {
-      fn(item);
-    });
+  if (_tree[children] && Array.isArray(_tree[children])) {
+    _tree[children].forEach(fn);
   }
   return _tree;
 }
-
-const prefix = "2001:503::/32";
-const ipv6 = new Address6(prefix);
-console.dir(Address6);
-console.log(ipv6);
-console.log(ipv6.binaryZeroPad());
-
-console.log(ipv6.parsedAddress);
-console.log(ipv6.toByteArray());
-
-console.log(ipv6.bigInteger());
 
 const ipv6ToBigInt = ip => {
   const ipArr = ipaddr.parse(ip).parts;
@@ -55,24 +62,27 @@ export const excuteNextIPv6 = (ip, prefix, subtreebitnum, n = 1) => {
     Number(subtreebitnum),
     n
   );
-  console.log("newIpBigInt", newIpBigInt);
   return bigIntToIPv6(newIpBigInt);
 };
 
 export function executeNextIpv6Segment(
   prefix,
+  offset,
   bitWidth = defaultBitWidth,
-  offset
+  
 ) {
   const ipv6 = new Address6(prefix);
   const { addressMinusSuffix, parsedSubnet } = ipv6;
-  return excuteNextIPv6(
+  return `${excuteNextIPv6(
     addressMinusSuffix,
     parsedSubnet,
     bitWidth,
-    (offset = 1)
-  );
+    offset,
+  )}/${Number(parsedSubnet) + Number(bitWidth)}`;
 }
+const prefix = "2001:503::/32";
+
+console.log(executeNextIpv6Segment(prefix));
 
 export const binary = (nodecode, bitWidth) =>
   (Array(bitWidth).join("0") + nodecode.toString(2)).slice(-bitWidth);
