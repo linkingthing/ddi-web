@@ -6,11 +6,15 @@
     <div class="PlanTreeNodeModal-content">
 
       <div class="prefix-range">
-        <strong>33-64</strong>
+        <strong>{{currentNodePrefixLen}}-{{Number(currentNodePrefixLen)+currentNodeParentBitWidth}}</strong>
         <span>当前规划区段</span>
       </div>
 
-      <SegmentAxis />
+      <SegmentAxis
+        :enable-prefix-len="+prefixLen"
+        :prefix-len="currentNodePrefixLen"
+        :bit-width="currentNodeParentBitWidth"
+      />
       <Form
         style="padding-top: 36px"
         :label-width="60"
@@ -54,6 +58,9 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+import { findNodeById } from "./helper";
+
 import SegmentAxis from "@/components/SegmentAxis";
 export default {
   components: {
@@ -62,10 +69,50 @@ export default {
   props: {},
   data() {
     return {
+      prefixLen: "",
+      currentNodePrefixLen: 0,
+      currentNodeParentBitWidth: 0
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapState({
+      "currentLayout": state => state.layout.currentLayout
+    }),
+    ...mapGetters([
+      "currentPrefix",
+      "currentNode"
+    ])
+  },
+  watch: {
+    currentPrefix: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log(333, val)
+        if (val) {
+          const [, prefixLen] = val.split("/");
+          this.prefixLen = prefixLen;
+        }
+      }
+    },
+    currentNode: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        if (val.pid) {
+          const parentNode = findNodeById(this.currentLayout, val.pid);
+          const { prefix, bitWidth } = parentNode;
+          const [, prefixLen] = prefix.split("/");
+
+          this.currentNodePrefixLen = prefixLen;
+          this.currentNodeParentBitWidth = bitWidth;
+        } else {
+          this.currentNodePrefixLen = 0;
+          this.currentNodeParentBitWidth = 0;
+        }
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {}

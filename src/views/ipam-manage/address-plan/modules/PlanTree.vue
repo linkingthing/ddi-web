@@ -4,12 +4,14 @@
       style="min-height: 580px;"
       :dataset="treeData"
       :config="config"
+      :active="active"
       direction="horizontal"
       link-style="straight"
     >
       <template v-slot:node="{ data, node, collapsed ,nodeDataList}">
         <div
           @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
+          :class="{activeNode:data.id ===active.id, activeDepth: node.depth === active.depth }"
           class="rich-node"
           :style="{ border: collapsed ? '2px solid grey' : '' }"
         >
@@ -31,7 +33,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapGetters } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
 import { treeEach, findNodeById, executeNextIpv6Segment } from "./helper";
@@ -57,15 +59,23 @@ export default {
         nodeWidth: 148,
         nodeHeight: 68,
         levelHeight: 200
-      }
+      },
+
+      active: {}
+
+
 
     };
   },
   computed: {
     ...mapState({
       "currentLayout": state => state.layout.currentLayout
-    }
-    )
+    },
+
+    ),
+    ...mapGetters([
+      "currentNode"
+    ])
   },
   watch: {
     "currentLayout": {
@@ -77,7 +87,6 @@ export default {
         newTree = JSON.parse(newTree);
 
         newTree = treeEach(newTree, "children", (item, index) => {
-          console.log(22, item, index)
           delete item.creationTimestamp;
           delete item.deletionTimestamp;
           delete item.expand;
@@ -85,15 +94,22 @@ export default {
           delete item.type;
 
           if (item.pid) {
-            const parentNode = findNodeById(newTree, item.pid);
+            const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
             const parentNodePrefix = parentNode.prefix;
             item.prefix = executeNextIpv6Segment(parentNodePrefix, index + 1); // 位偏移，自定义需要调整
           }
 
         });
-        console.log("newTree", newTree)
 
         this.treeData = newTree;
+      }
+    },
+    "currentNode": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+
+
       }
     }
   },
@@ -101,10 +117,16 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "nextPlanStep"
+      "nextPlanStep",
+      "setCurrentNodeId"
     ]),
     handleSelectTreeNode(data, node, collapsed, nodeDataList) {
-      console.log(data, node, collapsed, nodeDataList)
+      // console.log(data, node, collapsed, nodeDataList)
+      this.setCurrentNodeId(data.id);
+      this.active = {
+        id: data.id,
+        depth: node.depth
+      };
     },
     handleAddressPlanFinish() {
       this.nextPlanStep();
@@ -132,6 +154,14 @@ export default {
     }
     .ipv4 {
     }
+  }
+
+  .activeNode{
+    background: #4BC02F;
+  }
+  .activeDepth {
+    box-shadow: 0 0 20px #f80;
+
   }
 }
 </style>

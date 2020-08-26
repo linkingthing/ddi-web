@@ -9,7 +9,7 @@
           class="axis-unit"
           :class="{
             'axis-unit-long': !(item % unit) || !item,
-            'axis-unit-inuse': item > prefixLen
+            'axis-unit-inuse': item > enablePrefixLen
           }"
         >
           <a
@@ -25,16 +25,16 @@
       <div
         class="segment-section-item "
         key="begin-segment"
-        :style="{ flex: prefixLen , backgroundColor: startSegment.color }"
+        :style="{ flex: enablePrefixLen , backgroundColor: startSegment.color }"
       />
       <div
         class="segment-section-item"
         key="end-segment"
-        :style="{ flex: maskLen - prefixLen, backgroundColor:endSegment.color }"
+        :style="{ flex: maskLen - enablePrefixLen, backgroundColor:endSegment.color }"
       />
       <div
         class="segment-section-item segment-section-item-active"
-        :style="{width: ( Number(bitWidth)/maskLen)*100+ '%' ,left: Number(prefix)/maskLen*100 +'%' }"
+        :style="{width: ( Number(bitWidth)/maskLen)*100+ '%' ,left: Number(prefixLen)/maskLen*100 +'%' }"
       />
     </section>
   </div>
@@ -45,18 +45,18 @@ export default {
   components: {},
   props: {
     // 总体可划分地址段前缀
-    prefixLen: {
+    enablePrefixLen: {
       type: Number,
-      default: 32
+      default: 0
     },
-    prefix: {
+    prefixLen: {
       // eslint-disable-next-line vue/require-prop-type-constructor
       type: Number | String,
-      default: 36
+      default: 0
     },
     bitWidth: {
       type: Number,
-      default: 4
+      default: 0
     }
 
   },

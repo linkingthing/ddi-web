@@ -30,7 +30,8 @@ const state = {
   layoutList: [],
   currentLayoutId: "",
   currentLayout: {},
-  currentNodeId: "",
+  currentNodeId: "", // 语义规划部分
+  // currentTreeNodeId: "", // 地址段部分
   currentNode: {} // 目测可以不要
 };
 
@@ -84,7 +85,10 @@ const mutations = {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.bitWidth = bitWidth;
-  }
+  },
+  // setCurrentTreeNodeId(state, id) {
+  //   state.currentTreeNodeId = id;
+  // }
 };
 
 const actions = {};

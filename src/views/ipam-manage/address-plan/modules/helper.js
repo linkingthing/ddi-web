@@ -80,9 +80,6 @@ export function executeNextIpv6Segment(
     offset,
   )}/${Number(parsedSubnet) + Number(bitWidth)}`;
 }
-const prefix = "2001:503::/32";
-
-console.log(executeNextIpv6Segment(prefix));
 
 export const binary = (nodecode, bitWidth) =>
   (Array(bitWidth).join("0") + nodecode.toString(2)).slice(-bitWidth);

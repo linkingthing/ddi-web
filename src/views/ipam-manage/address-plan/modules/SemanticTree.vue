@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
