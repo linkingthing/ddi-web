@@ -144,6 +144,7 @@ export default {
     height: 68px;
     text-align: center;
     background: #ededed;
+    border-radius: 4px;
 
     .name {
       font-size: 14px;
@@ -156,12 +157,11 @@ export default {
     }
   }
 
-  .activeNode{
-    background: #4BC02F;
+  .activeNode {
+    // background: #4bc02f;
   }
   .activeDepth {
-    box-shadow: 0 0 20px #f80;
-
+    background: #a7d0f3;
   }
 }
 </style>

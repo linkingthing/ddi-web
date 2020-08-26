@@ -23,10 +23,12 @@
       >
         <FormItem label="起始值">
           <Input
+            v-model="startValue"
             placeholder="请输入起始值"
             style="width: 220px;margin-right: 20px;float:left"
           />
           <Button
+            @click="handleAutoCreate"
             type="primary"
             style="width: 110px"
           >自动生成</Button>
@@ -40,9 +42,17 @@
         <FormItem label="生成值（双击可修改）">
           <div class="branch-list">
             <ul>
-              <li>
-                <span v-if="1">1001</span>
-                <Input v-else />
+              <li
+                v-for="item in createValueList"
+                :key="item.value"
+                @dblclick="handledblclick(item)"
+              >
+                <Input
+                  v-model="item.value"
+                  v-if="item.isEdit"
+                />
+                <span v-else>{{item.value}}</span>
+
               </li>
             </ul>
           </div>
@@ -52,13 +62,14 @@
       <Button
         type="primary"
         long
+        @click="handleSaveValue"
       >确定</Button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import { findNodeById } from "./helper";
 
 import SegmentAxis from "@/components/SegmentAxis";
@@ -71,7 +82,10 @@ export default {
     return {
       prefixLen: "",
       currentNodePrefixLen: 0,
-      currentNodeParentBitWidth: 0
+      currentNodeParentBitWidth: 0,
+      startValue: "",
+      currentParentNode: {},
+      createValueList: []
     };
   },
   computed: {
@@ -106,6 +120,9 @@ export default {
 
           this.currentNodePrefixLen = prefixLen;
           this.currentNodeParentBitWidth = bitWidth;
+
+          console.log(parentNode)
+          this.currentParentNode = parentNode;
         } else {
           this.currentNodePrefixLen = 0;
           this.currentNodeParentBitWidth = 0;
@@ -115,7 +132,43 @@ export default {
   },
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    ...mapMutations([
+      "setCurrentNodeChildrenList"
+    ]),
+    handleAutoCreate() {
+
+      let startValue = this.startValue || 1;
+      this.createValueList = [];
+
+      if (Array.isArray(this.currentParentNode.nodes)) {
+        this.currentParentNode.nodes.forEach(item => {
+
+          this.createValueList.push({
+            isEdit: false,
+            value: startValue
+          });
+
+          item.value = startValue++;
+
+        });
+
+      }
+    },
+
+    handledblclick({ value }) {
+      this.createValueList.forEach(item => {
+        if (item.value === value) {
+          item.isEdit = true;
+        }
+      });
+    },
+
+    handleSaveValue() {
+      console.log(22, this.currentParentNode.nodes)
+      this.setCurrentNodeChildrenList(this.currentParentNode.nodes);
+    }
+  }
 };
 </script>
 
@@ -151,9 +204,14 @@ export default {
   }
 
   .branch-list {
-    margin-top: 32px;
+    margin-top: 34px;
+
+    ul {
+      overflow: hidden;
+    }
 
     li {
+      float: left;
       display: block;
       width: 70px;
       height: 36px;
