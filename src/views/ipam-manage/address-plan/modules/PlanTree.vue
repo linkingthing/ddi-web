@@ -18,7 +18,13 @@
 
           <h3 class="name">{{ data.name }}</h3>
           <p class="ipv6">{{data.prefix}}</p>
-          <div class="ipv4">ipv4</div>
+          <div class="ipv4">
+            <a
+              href="javascript:;"
+              class="btn-ipv4"
+              @click.stop="(e) => handleClickIpv4(e, data, node, collapsed ,nodeDataList) "
+            >+ ipv4</a>
+          </div>
         </div>
       </template>
     </VueTree>
@@ -86,20 +92,20 @@ export default {
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
 
-        newTree = treeEach(newTree, "children", (item, index) => {
-          delete item.creationTimestamp;
-          delete item.deletionTimestamp;
-          delete item.expand;
-          delete item.links;
-          delete item.type;
+        // newTree = treeEach(newTree, "children", (item, index) => {
+        //   delete item.creationTimestamp;
+        //   delete item.deletionTimestamp;
+        //   delete item.expand;
+        //   delete item.links;
+        //   delete item.type;
 
-          if (item.pid) {
-            const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
-            const parentNodePrefix = parentNode.prefix;
-            item.prefix = executeNextIpv6Segment(parentNodePrefix, index + 1); // 位偏移，自定义需要调整
-          }
+        //   if (item.pid) {
+        //     const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
+        //     const parentNodePrefix = parentNode.prefix;
+        //     item.prefix = executeNextIpv6Segment(parentNodePrefix, index + 1); // 位偏移，自定义需要调整
+        //   }
 
-        });
+        // });
 
         this.treeData = newTree;
       }
@@ -128,8 +134,18 @@ export default {
         depth: node.depth
       };
     },
+    handleClickIpv4(e) {
+      console.log(e)
+    },
     handleAddressPlanFinish() {
-      this.nextPlanStep();
+      // this.nextPlanStep();
+      console.log(this.currentLayout)
+      const { update } = this.currentLayout.links;
+      const params = this.currentLayout;
+      this.$put({ url: update, params }).then(() => {
+        console.log()
+      })
+
     }
   }
 };
@@ -140,8 +156,13 @@ export default {
   flex: 1;
 
   .rich-node {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
     width: 148px;
-    height: 68px;
+    // height: 68px;
     text-align: center;
     background: #ededed;
     border-radius: 4px;
@@ -154,6 +175,16 @@ export default {
     .ipv6 {
     }
     .ipv4 {
+    }
+    .btn-ipv4 {
+      display: block;
+      width: 50px;
+      height: 22px;
+      line-height: 22px;
+      font-size: 12px;
+      color: #9a9a9a;
+      background: #d8d8d8;
+      border-radius: 3px;
     }
   }
 

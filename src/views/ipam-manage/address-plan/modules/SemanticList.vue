@@ -98,7 +98,8 @@ export default {
         id: uuidv4(),
         pid: this.currentNode.id,
         name: "",
-        isEdit: true
+        isEdit: true,
+        modified: 1
       });
     },
     handleSave(id, name) {

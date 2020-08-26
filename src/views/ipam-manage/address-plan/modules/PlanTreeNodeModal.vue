@@ -166,6 +166,7 @@ export default {
 
     handleSaveValue() {
       console.log(22, this.currentParentNode.nodes)
+      this.setCurrentNodeId(this.currentParentNode.id);
       this.setCurrentNodeChildrenList(this.currentParentNode.nodes);
     }
   }

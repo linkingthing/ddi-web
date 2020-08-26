@@ -10,19 +10,22 @@ const initLayout = [
     id: uuidv4(),
     name: "机构",
     nodes: [],
-    bitWidth: defaultBitWidth
+    bitWidth: defaultBitWidth,
+    modified: 1
   },
   {
     id: uuidv4(),
     name: "业务",
     nodes: [],
-    bitWidth: defaultBitWidth
+    bitWidth: defaultBitWidth,
+    modified: 1
   },
   {
     id: uuidv4(),
     name: "数据中心",
     nodes: [],
-    bitWidth: defaultBitWidth
+    bitWidth: defaultBitWidth,
+    modified: 1
   }
 ];
 
@@ -31,7 +34,6 @@ const state = {
   currentLayoutId: "",
   currentLayout: {},
   currentNodeId: "", // 语义规划部分
-  // currentTreeNodeId: "", // 地址段部分
   currentNode: {} // 目测可以不要
 };
 
@@ -85,10 +87,7 @@ const mutations = {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.bitWidth = bitWidth;
-  },
-  // setCurrentTreeNodeId(state, id) {
-  //   state.currentTreeNodeId = id;
-  // }
+  }
 };
 
 const actions = {};
