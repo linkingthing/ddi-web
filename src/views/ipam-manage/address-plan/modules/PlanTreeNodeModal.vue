@@ -102,7 +102,6 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(333, val)
         if (val) {
           const [, prefixLen] = val.split("/");
           this.prefixLen = prefixLen;
@@ -116,12 +115,14 @@ export default {
         if (val.pid) {
           const parentNode = findNodeById(this.currentLayout, val.pid);
           const { prefix, bitWidth } = parentNode;
-          const [, prefixLen] = prefix.split("/");
+          if (prefix) {
+            const [, prefixLen] = prefix.split("/");
 
-          this.currentNodePrefixLen = prefixLen;
+            this.currentNodePrefixLen = prefixLen;
+          }
+
           this.currentNodeParentBitWidth = bitWidth;
 
-          console.log(parentNode)
           this.currentParentNode = parentNode;
         } else {
           this.currentNodePrefixLen = 0;

@@ -109,14 +109,6 @@ export default {
 
         this.treeData = newTree;
       }
-    },
-    "currentNode": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-
-
-      }
     }
   },
   created() { },

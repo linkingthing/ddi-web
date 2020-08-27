@@ -33,15 +33,19 @@ const state = {
   layoutList: [],
   currentLayoutId: "",
   currentLayout: {},
-  currentNodeId: "", // 语义规划部分
-  currentNode: {} // 目测可以不要
+  currentNodeId: "" // 语义规划部分
 };
 
 const getters = {
   currentNodeChildrenList: state => {
-    return _.cloneDeep(getCurrentNode(state)).nodes || [];
+    console.log("currentNodeChildrenList", getCurrentNode(state))
+    const currentNode = getCurrentNode(state) || {};
+    console.log(currentNode, 888)
+    return _.cloneDeep(currentNode).nodes || [];
   },
   currentNode: state => {
+    console.log("gettyer", getCurrentNode(state))
+
     return _.cloneDeep(getCurrentNode(state));
   }
 };
@@ -80,6 +84,8 @@ const mutations = {
   },
   setCurrentNodeChildrenList(state, currentNodeChildrenList) {
     const currentNode = getCurrentNode(state);
+    console.log('set', currentNode)
+    
     currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
   },

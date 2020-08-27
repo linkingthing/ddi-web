@@ -71,6 +71,7 @@ export default {
 
     ]),
     handleSelectNode(nodes, node) {
+      console.log(node.name, node.id, node)
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
@@ -82,7 +83,19 @@ export default {
           display: "inline-block",
           width: "100%"
         }
-      }, data.name);
+      }, [
+        h("span", [
+          h("Icon", {
+            props: {
+              type: "ios-paper-outline"
+            },
+            style: {
+              marginRight: "8px"
+            }
+          }),
+          h("span", data.name)
+        ])
+      ]);
     }
   }
 };

@@ -4,23 +4,38 @@ import ipaddr from "ipaddr.js";
 import _ from "lodash";
 export const defaultBitWidth = 4;
 
-export function findNodeById(tree, id) {
+export function findParentNodeById(tree, id) {
   if (tree.id === id) {
     return tree;
   } else {
     return (
       Array.isArray(tree.nodes) &&
       tree.nodes.find(item => {
-        return findNodeById(item, id);
+        return findParentNodeById(item, id);
       })
     );
+  }
+}
+
+export function findNodeById(tree, id) {
+  if (tree.id === id) {
+    return tree;
+  } else {
+    if (Array.isArray(tree.nodes)) {
+      for (const node of tree.nodes) {
+        const res = findNodeById(node, id);
+        if (res) {
+          return res;
+        }
+      }
+    }
   }
 }
 
 export function getCurrentNode(state) {
   const layout = state.currentLayout;
   const currentNodeId = state.currentNodeId;
-  const currentNode = findNodeById(layout, currentNodeId);
+  var currentNode = findNodeById(layout, currentNodeId);
   return currentNode || {};
 }
 
@@ -68,8 +83,7 @@ export const excuteNextIPv6 = (ip, prefix, subtreebitnum, n = 1) => {
 export function executeNextIpv6Segment(
   prefix,
   offset,
-  bitWidth = defaultBitWidth,
-  
+  bitWidth = defaultBitWidth
 ) {
   const ipv6 = new Address6(prefix);
   const { addressMinusSuffix, parsedSubnet } = ipv6;
@@ -77,7 +91,7 @@ export function executeNextIpv6Segment(
     addressMinusSuffix,
     parsedSubnet,
     bitWidth,
-    offset,
+    offset
   )}/${Number(parsedSubnet) + Number(bitWidth)}`;
 }
 

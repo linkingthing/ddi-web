@@ -64,24 +64,28 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        this.semanticList = val.map(item => {
-          return {
-            id: item.id,
-            name: item.name,
-            isEdit: false,
-            expand: true
-          };
-        });
+        console.log("currentNodeChildrenList", val)
+        if (Array.isArray(val)) {
+          this.semanticList = val.map(item => {
+            return {
+              id: item.id,
+              name: item.name,
+              isEdit: false,
+              expand: true
+            };
+          });
+        }
+
       }
     },
     bitWidth(val) {
       this.setCurrentNodeBitWidth(val);
     },
-    "currentNode.bitWidth": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        this.bitWidth = val || defaultBitWidth;
+    "currentNode": {
+      // deep: true,
+      // immediate: true,
+      handler({ bitWidth }) {
+        this.bitWidth = bitWidth || defaultBitWidth;
       }
     }
   },
@@ -99,7 +103,8 @@ export default {
         pid: this.currentNode.id,
         name: "",
         isEdit: true,
-        modified: 1
+        modified: 1,
+        nodes: []
       });
     },
     handleSave(id, name) {
