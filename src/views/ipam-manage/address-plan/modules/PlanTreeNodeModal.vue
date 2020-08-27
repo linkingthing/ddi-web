@@ -112,6 +112,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
+        this.createValueList = [];
         if (val.pid) {
           const parentNode = findNodeById(this.currentLayout, val.pid);
           const { prefix, bitWidth } = parentNode;
@@ -135,6 +136,7 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
+      "setCurrentNodeId",
       "setCurrentNodeChildrenList"
     ]),
     handleAutoCreate() {

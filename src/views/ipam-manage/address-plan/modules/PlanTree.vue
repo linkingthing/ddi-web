@@ -39,10 +39,11 @@
 </template>
 
 <script>
+import _ from "lodash";
 import { mapState, mapMutations, mapGetters } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
-import { treeEach, findNodeById, executeNextIpv6Segment } from "./helper";
+import { treeFlat, treeEach, findNodeById, executeNextIpv6Segment } from "./helper";
 
 export default {
   components: {
@@ -132,11 +133,44 @@ export default {
     handleAddressPlanFinish() {
       // this.nextPlanStep();
       console.log(this.currentLayout)
-      const { update } = this.currentLayout.links;
-      const params = this.currentLayout;
-      this.$put({ url: update, params }).then(() => {
-        console.log()
-      })
+      const { update, create } = this.currentLayout.links;
+
+      const params = _.cloneDeep(this.currentLayout);
+
+
+      const nodes = treeFlat(params)
+
+      nodes.unshift({
+        bitWidth: 0,
+        id: params.id,
+        ipv4: "",
+        modified: 1,
+        name: "",
+        pid: "0",
+        value: 0
+      });
+
+      delete params.creationTimestamp;
+      delete params.deletionTimestamp;
+      delete params.expand;
+      delete params.links;
+      delete params.type;
+      delete params.bitWidth;
+      delete params.prefix;
+      delete params.id;
+
+
+      params.nodes = nodes;
+      if (create) {
+        this.$post({ url: create, params }).then(() => {
+          console.log()
+        })
+      } else {
+        this.$put({ url: update, params }).then(() => {
+          console.log()
+        })
+      }
+
 
     }
   }

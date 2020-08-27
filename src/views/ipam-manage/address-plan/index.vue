@@ -145,7 +145,7 @@ export default {
     },
 
     getLayout({ layouts }) {
-      this.$get({ url: layouts }).then(({ data }) => {
+      this.$get({ url: layouts }).then(({ data, links }) => {
 
 
         this.setLayoutList(data);
@@ -154,6 +154,17 @@ export default {
           this.setCurrentLayoutId(data[0].id);
           this.setCurrentLayout({ layout: data[0], prefix: this.currentPlan.prefix });
           this.setCurrentNodeId(data[0].id);
+        } else {
+          this.setCurrentLayout({
+            layout: {
+              id: 0,
+              name: "layout",
+              nodes: null,
+              links: {
+                create: links.self
+              }
+            }, prefix: this.currentPlan.prefix
+          });
         }
 
       });

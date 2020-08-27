@@ -11,6 +11,7 @@ const initLayout = [
     name: "机构",
     nodes: [],
     bitWidth: defaultBitWidth,
+    ipv4: "",
     modified: 1
   },
   {
@@ -18,6 +19,7 @@ const initLayout = [
     name: "业务",
     nodes: [],
     bitWidth: defaultBitWidth,
+    ipv4: "",
     modified: 1
   },
   {
@@ -25,6 +27,7 @@ const initLayout = [
     name: "数据中心",
     nodes: [],
     bitWidth: defaultBitWidth,
+    ipv4: "",
     modified: 1
   }
 ];
@@ -38,13 +41,13 @@ const state = {
 
 const getters = {
   currentNodeChildrenList: state => {
-    console.log("currentNodeChildrenList", getCurrentNode(state))
+    console.log("currentNodeChildrenList", getCurrentNode(state));
     const currentNode = getCurrentNode(state) || {};
-    console.log(currentNode, 888)
+    console.log(currentNode, 888);
     return _.cloneDeep(currentNode).nodes || [];
   },
   currentNode: state => {
-    console.log("gettyer", getCurrentNode(state))
+    console.log("gettyer", getCurrentNode(state));
 
     return _.cloneDeep(getCurrentNode(state));
   }
@@ -84,8 +87,8 @@ const mutations = {
   },
   setCurrentNodeChildrenList(state, currentNodeChildrenList) {
     const currentNode = getCurrentNode(state);
-    console.log('set', currentNode)
-    
+    console.log("set", currentNode);
+
     currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
   },

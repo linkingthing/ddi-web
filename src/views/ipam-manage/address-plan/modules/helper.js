@@ -2,7 +2,7 @@ import { Address6 } from "ip-address";
 import ipaddr from "ipaddr.js";
 
 import _ from "lodash";
-export const defaultBitWidth = 4;
+export const defaultBitWidth = 32;
 
 export function findParentNodeById(tree, id) {
   if (tree.id === id) {
@@ -46,6 +46,16 @@ export function treeEach(tree, children, fn) {
     _tree[children].forEach(fn);
   }
   return _tree;
+}
+
+export function treeFlat(tree, result = []) {
+  if (Array.isArray(tree.nodes)) {
+    tree.nodes.forEach(({ nodes, ...node }) => {
+      result.push(node);
+      treeFlat(nodes, result);
+    });
+  }
+  return result;
 }
 
 const ipv6ToBigInt = ip => {
