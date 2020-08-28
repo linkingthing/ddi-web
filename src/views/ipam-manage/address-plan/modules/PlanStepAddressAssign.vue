@@ -4,14 +4,13 @@
       :active="active"
       @change="handleIpTypeChange"
     />
-    PlanStepAddressAssign
-
     <AddressAssignList />
     <AddressAssignSubnetList />
   </div>
 </template>
 
 <script>
+import { } from "vuex";
 import AddressTypeTab from "./AddressTypeTab";
 import AddressAssignList from "./AddressAssignList";
 import AddressAssignSubnetList from "./AddressAssignSubnetList";

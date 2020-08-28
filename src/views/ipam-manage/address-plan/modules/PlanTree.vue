@@ -4,14 +4,13 @@
       style="min-height: 580px;"
       :dataset="treeData"
       :config="config"
-      :active="active"
       direction="horizontal"
       link-style="straight"
     >
       <template v-slot:node="{ data, node, collapsed ,nodeDataList}">
         <div
           @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
-          :class="{activeNode:data.id ===active.id, activeDepth: node.depth === active.depth }"
+          :class="{activeNode:data.id ===active.id, activeDepth: active.siblingsId.includes(data.id)}"
           class="rich-node"
           :style="{ border: collapsed ? '2px solid grey' : '' }"
         >
@@ -68,7 +67,9 @@ export default {
         levelHeight: 200
       },
 
-      active: {}
+      active: {
+        siblingsId: []
+      }
 
 
 
@@ -93,20 +94,22 @@ export default {
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
 
-        // newTree = treeEach(newTree, "children", (item, index) => {
-        //   delete item.creationTimestamp;
-        //   delete item.deletionTimestamp;
-        //   delete item.expand;
-        //   delete item.links;
-        //   delete item.type;
+        newTree = treeEach(newTree, "children", (item, index) => {
+          delete item.creationTimestamp;
+          delete item.deletionTimestamp;
+          delete item.expand;
+          delete item.links;
+          delete item.type;
 
-        //   if (item.pid) {
-        //     const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
-        //     const parentNodePrefix = parentNode.prefix;
-        //     item.prefix = executeNextIpv6Segment(parentNodePrefix, index + 1); // 位偏移，自定义需要调整
-        //   }
+          if (item.pid) {
+            const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
+            const parentNodePrefix = parentNode.prefix;
+            console.log(item)
+            const offset = item.value || (index + 1);
+            item.prefix = executeNextIpv6Segment(parentNodePrefix, offset, item.bitWidth); // 位偏移，自定义需要调整
+          }
 
-        // });
+        });
 
         this.treeData = newTree;
       }
@@ -120,11 +123,17 @@ export default {
       "setCurrentNodeId"
     ]),
     handleSelectTreeNode(data, node, collapsed, nodeDataList) {
-      // console.log(data, node, collapsed, nodeDataList)
+      console.log(data, node, collapsed, nodeDataList)
       this.setCurrentNodeId(data.id);
+
+      let siblingsId = [];
+      if (node.parent) {
+        siblingsId = node.parent.data.children.map(item => item.id);
+      }
+
       this.active = {
         id: data.id,
-        depth: node.depth
+        siblingsId
       };
     },
     handleClickIpv4(e) {

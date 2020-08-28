@@ -37,8 +37,9 @@
 
         <component :is="stepComponent" />
 
-        <PlanStepSemantic />
+        <!-- <PlanStepSemantic />
         <PlanStepTree />
+        <PlanStepAddressAssign /> -->
       </template>
 
     </div>
@@ -64,6 +65,7 @@ export default {
     NoDataList,
     PlanTab,
     PlanProcess,
+
     PlanStepCreatePrefix,
     PlanStepSemantic,
     PlanStepTree,
@@ -157,7 +159,7 @@ export default {
         } else {
           this.setCurrentLayout({
             layout: {
-              id: 0,
+              id: "000",
               name: "layout",
               nodes: null,
               links: {

@@ -87,15 +87,16 @@ const mutations = {
   },
   setCurrentNodeChildrenList(state, currentNodeChildrenList) {
     const currentNode = getCurrentNode(state);
-    console.log("set", currentNode);
-
     currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
   },
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
-    currentNode.bitWidth = bitWidth;
+    // currentNode.bitWidth = bitWidth;
+    currentNode.nodes.forEach(item => {
+      item.bitWidth = bitWidth;
+    });
   }
 };
 

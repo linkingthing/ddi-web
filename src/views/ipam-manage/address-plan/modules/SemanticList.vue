@@ -3,11 +3,21 @@
     <h3 class="SemanticList-title">{{title}}</h3>
     <div class="plan-count">
       <span>为提高规划的可扩展性，建议您填写期望的分支数量，预留将来可规划的空间：</span>
-      <Input
+      <!-- <Input
         placeholder="期望分支数量（选填）"
         style="width:260px"
         v-model.number="bitWidth"
-      />
+      /> -->
+      <Select
+        v-model.number="bitWidth"
+        style="width:260px"
+      >
+        <Option
+          v-for="item in countList"
+          :value="item.bitWidth"
+          :key="item.bitWidth"
+        >{{item.name}}</Option>
+      </Select>
     </div>
 
     <div class="branch-list">
@@ -47,9 +57,20 @@ export default {
     }
   },
   data() {
+
     return {
       semanticList: [],
-      bitWidth: defaultBitWidth
+      bitWidth: defaultBitWidth,
+      countList: [{
+        name: "16",
+        bitWidth: 4
+      }, {
+        name: "256",
+        bitWidth: 8
+      }, {
+        name: "4096",
+        bitWidth: 12
+      }]
     };
   },
   computed: {
@@ -84,8 +105,10 @@ export default {
     "currentNode": {
       // deep: true,
       // immediate: true,
-      handler({ bitWidth }) {
-        this.bitWidth = bitWidth || defaultBitWidth;
+      handler(val) {
+        val.nodes.forEach(item => {
+          this.bitWidth = item.bitWidth;
+        });
       }
     }
   },

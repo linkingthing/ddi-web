@@ -2,7 +2,7 @@ import { Address6 } from "ip-address";
 import ipaddr from "ipaddr.js";
 
 import _ from "lodash";
-export const defaultBitWidth = 32;
+export const defaultBitWidth = 4;
 
 export function findParentNodeById(tree, id) {
   if (tree.id === id) {
