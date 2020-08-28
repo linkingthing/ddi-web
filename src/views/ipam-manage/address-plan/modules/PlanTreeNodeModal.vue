@@ -6,14 +6,14 @@
     <div class="PlanTreeNodeModal-content">
 
       <div class="prefix-range">
-        <strong>{{currentNodePrefixLen}}-{{Number(currentNodePrefixLen)+currentNodeParentBitWidth}}</strong>
+        <strong>{{currentNodePrefixLen}}-{{Number(currentNodePrefixLen)+currentNodeBitWidth}}</strong>
         <span>当前规划区段</span>
       </div>
 
       <SegmentAxis
         :enable-prefix-len="+prefixLen"
         :prefix-len="currentNodePrefixLen"
-        :bit-width="currentNodeParentBitWidth"
+        :bit-width="currentNodeBitWidth"
       />
       <Form
         style="padding-top: 36px"
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import { findNodeById } from "./helper";
 
@@ -82,7 +83,7 @@ export default {
     return {
       prefixLen: "",
       currentNodePrefixLen: 0,
-      currentNodeParentBitWidth: 0,
+      currentNodeBitWidth: 0,
       startValue: "",
       currentParentNode: {},
       createValueList: []
@@ -113,21 +114,33 @@ export default {
       immediate: true,
       handler(val) {
         this.createValueList = [];
+        console.log(33333, val)
+
         if (val.pid) {
           const parentNode = findNodeById(this.currentLayout, val.pid);
           const { prefix, bitWidth } = parentNode;
           if (prefix) {
             const [, prefixLen] = prefix.split("/");
-
             this.currentNodePrefixLen = prefixLen;
           }
 
-          this.currentNodeParentBitWidth = bitWidth;
+          this.currentNodeBitWidth = val.bitWidth;
 
-          this.currentParentNode = parentNode;
+          this.currentParentNode = _.cloneDeep(parentNode);
+
+          parentNode.nodes.forEach(item => {
+            if (item.value) {
+              this.createValueList.push({
+                isEdit: false,
+                value: item.value
+              });
+            }
+          });
+
         } else {
           this.currentNodePrefixLen = 0;
-          this.currentNodeParentBitWidth = 0;
+          this.currentNodeBitWidth = 0;
+          this.currentParentNode = {};
         }
       }
     }
