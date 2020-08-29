@@ -11,6 +11,9 @@ export function buildLayoutParams(currentLayout, autofill = true) {
   if (autofill) {
     autoFillValue(params.nodes);
   }
+
+  openModified(params.nodes); // TODO： 后期做局部跟新优化需要去掉
+
   const nodes = treeFlat(params.nodes);
 
   delete params.creationTimestamp;
@@ -38,6 +41,19 @@ function autoFillValue(tree) {
       node.value = index + 1;
       node.modified = 1;
       autoFillValue(node.nodes);
+    });
+  }
+}
+
+/**
+ * 解开modified
+ */
+
+export function openModified(tree) {
+  if (Array.isArray(tree)) {
+    tree.forEach((node, index) => {
+      node.modified = 1;
+      openModified(node.nodes);
     });
   }
 }
@@ -123,28 +139,17 @@ export function executeTreeNodePrefix(tree, children = "children") {
 /**
  *
  */
-export function list2Tree(data) {
-  let result = [];
-  if (!Array.isArray(data)) {
-    return result;
-  }
+export function list2Tree(data, pid) {
+  let res = [];
   data.forEach(item => {
-    delete item.nodes;
-  });
-  let map = {};
-  data.forEach(item => {
-    map[item.id] = item;
-    item.expand = true;
-  });
-  data.forEach(item => {
-    let parent = map[item.pid];
-    if (parent) {
-      (parent.nodes || (parent.nodes = [])).push(item);
-    } else {
-      result.push(item);
+    if (item.pid === pid) {
+      let itemChildren = list2Tree(data, item.id);
+      if (itemChildren.length) item.nodes = itemChildren;
+      item.expand = true;
+      res.push(item);
     }
   });
-  return result;
+  return res;
 }
 
 const ipv6ToBigInt = ip => {

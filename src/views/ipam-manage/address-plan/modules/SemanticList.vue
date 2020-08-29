@@ -91,6 +91,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
+        console.log(val)
         if (Array.isArray(val)) {
           this.semanticList = val.map(item => {
             return {

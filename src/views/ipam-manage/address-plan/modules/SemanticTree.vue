@@ -12,7 +12,7 @@
     <Button
       type="primary"
       long
-      @click="visible = true"
+      @click="handleFinish"
     > 语义规划完成</Button>
 
     <ChoosePlanWayModal :visible.sync="visible" />
@@ -24,6 +24,7 @@ import { mapState, mapMutations } from "vuex";
 import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
+import { buildLayoutParams } from "./helper";
 
 export default {
   components: {
@@ -67,8 +68,8 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "setCurrentNodeId"
-
+      "setCurrentNodeId",
+      "nextPlanStep"
     ]),
     handleSelectNode(nodes, node) {
       this.setCurrentNodeId(node.id);
@@ -94,6 +95,31 @@ export default {
           h("span", data.name)
         ])
       ]);
+    },
+    handleFinish() {
+      console.log(this.currentLayout)
+      const { autofill } = this.currentLayout; // true, false, undefined
+      console.log(typeof (autofill) === "undefined")
+
+      if (typeof (autofill) === "undefined") {
+        this.visible = true;
+      } else if (autofill) {
+        const params = buildLayoutParams(this.currentLayout);
+        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
+          this.$get({ url: this.currentLayout.links.self }).then(res => {
+            // 更新当前数据和状态
+            this.nextPlanStep();
+          });
+        });
+      } else {
+        const params = buildLayoutParams(this.currentLayout, false);
+        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
+          this.$get({ url: this.currentLayout.links.self }).then(res => {
+            // 更新当前数据和状态
+            this.nextPlanStep();
+          });
+        });
+      }
     }
   }
 };

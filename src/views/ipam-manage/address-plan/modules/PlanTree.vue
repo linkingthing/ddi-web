@@ -42,7 +42,7 @@ import _ from "lodash";
 import { mapState, mapMutations, mapGetters } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
-import { treeFlat, executeTreeNodePrefix, findNodeById, executeNextIpv6Segment } from "./helper";
+import { buildLayoutParams, executeTreeNodePrefix } from "./helper";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
@@ -100,9 +100,10 @@ export default {
           let tree = newTree.children[0];
           tree.prefix = newTree.prefix;
 
-
-          const a = executeTreeNodePrefix([tree]);
-          console.log(a, 23495728)
+          // 是否需要计算 prefix，自动规划的需要，手动规划的看情况
+          // const a = executeTreeNodePrefix([tree]);
+          // console.log(a, 23495728)
+          executeTreeNodePrefix([tree]);
           this.treeData = tree;
         }
       }
@@ -133,48 +134,13 @@ export default {
       console.log(e)
     },
     handleAddressPlanFinish() {
-      // this.nextPlanStep();
-      console.log(this.currentLayout)
-      const { update, create } = this.currentLayout.links;
-
-      const params = _.cloneDeep(this.currentLayout);
-
-      console.log(params)
-      const nodes = treeFlat(params);
-      nodes.shift();
-      nodes.unshift({
-        bitWidth: 0,
-        id: uuidv4(),
-        ipv4: "",
-        modified: 1,
-        name: "",
-        pid: "0",
-        value: 0
+      const params = buildLayoutParams(this.currentLayout, false);
+      this.$put({ url: this.currentLayout.links.update, params }).then(() => {
+        this.$get({ url: this.currentLayout.links.self }).then(res => {
+          // 更新当前数据和状态
+          this.nextPlanStep();
+        });
       });
-
-      delete params.creationTimestamp;
-      delete params.deletionTimestamp;
-      delete params.expand;
-      delete params.links;
-      delete params.type;
-      delete params.bitWidth;
-      delete params.prefix;
-      delete params.id;
-
-
-      params.nodes = nodes;
-      params.name = "layout";
-      params.autofill = true;
-      if (create) {
-        this.$post({ url: create, params }).then(() => {
-          console.log()
-        })
-      } else {
-        this.$put({ url: update, params }).then(() => {
-          console.log()
-        })
-      }
-
 
     }
   }

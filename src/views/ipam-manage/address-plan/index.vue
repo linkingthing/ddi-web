@@ -175,16 +175,15 @@ export default {
     getLayoutOne({ self }) {
       this.$get({ url: self }).then(data => {
         this.setCurrentLayoutId(data.id);
+        let nodes;
         if (Array.isArray(data.nodes)) {
-          // data.nodes = data.nodes.filter(item => {
-          //   return item.pid !== "0";
-          // });
-          data.nodes = list2Tree(data.nodes);
+          data.nodes = list2Tree(data.nodes, "0");
         }
+        console.log(data.nodes, 666, nodes)
         this.setCurrentLayout({ layout: data, prefix: this.currentPlan.prefix });
         this.setCurrentNodeId(data.id);
 
-        this.getPlannedsubnets(data.links);
+        // this.getPlannedsubnets(data.links);
       });
     },
 

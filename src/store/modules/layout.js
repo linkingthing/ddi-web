@@ -66,27 +66,44 @@ const mutations = {
       _layout.bitWidth = defaultBitWidth;
       _layout.prefix = prefix;
       if (!layout.nodes) {
-        _layout.nodes = _.cloneDeep(
-          initLayout.map(item => {
-            return {
-              ...item,
-              pid: state.currentLayoutId
-            };
-          })
-        );
+        const uuid = uuidv4();
+        _layout.nodes = [
+          {
+            expand: true,
+            bitWidth: 0,
+            id: uuid,
+            ipv4: "",
+            modified: 1,
+            name: "layout",
+            pid: "0",
+            value: 0,
+            nodes: _.cloneDeep(
+              initLayout.map(item => {
+                return {
+                  ...item,
+                  pid: uuid
+                };
+              })
+            )
+          }
+        ];
       } else if (
         layout.nodes &&
         Array.isArray(layout.nodes) &&
-        !layout.nodes.length
+        layout.nodes.length === 1
       ) {
-        _layout.nodes = _.cloneDeep(
-          initLayout.map(item => {
-            return {
-              ...item,
-              pid: state.currentLayoutId
-            };
-          })
-        );
+        // console.log("_layout", _layout);
+        // const node = _layout.nodes[0];
+        // node.name = "layout";
+        // node.nodes = _.cloneDeep(
+        //   initLayout.map(item => {
+        //     return {
+        //       ...item,
+        //       pid: node.id
+        //     };
+        //   })
+        // );
+        // _layout.nodes = [node];
       }
     }
 

@@ -101,25 +101,36 @@ export default {
     ]),
 
     handleCustom() {
-      this.nextPlanStep();
-
+      console.log(this.currentLayout)
+      const params = buildLayoutParams(this.currentLayout, false);
+      if (this.currentLayout.links.create) {
+        this.$post({ url: this.currentLayout.links.create, params }).then(() => {
+          // 更新当前数据和状态,重新获取layouts列表？
+          this.nextPlanStep();
+        });
+      } else {
+        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
+          this.$get({ url: this.currentLayout.links.self }).then(res => {
+            // 更新当前数据和状态
+            this.nextPlanStep();
+          });
+        });
+      }
     },
     handleIntellect() {
-
       const params = buildLayoutParams(this.currentLayout);
-
-      console.log(params, this.currentLayout)
-
-      console.log(222, this.currentLayout.links.update)
-
-      this.$put({ url: this.currentLayout.links.update, params }).then(res => {
-        console.log("自能规划后返回的数据", res)
-
-        // this.$get({ url: this.currentLayout.links.self }).then(res => {
-        //   console.log("自能规划后再次请求的数据", res)
-        // })
-      });
-      // this.nextPlanStep();
+      if (this.currentLayout.links.create) {
+        this.$post({ url: this.currentLayout.links.create, params }).then(() => {
+          this.nextPlanStep();
+        });
+      } else {
+        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
+          this.$get({ url: this.currentLayout.links.self }).then(res => {
+            // 更新当前数据和状态
+            this.nextPlanStep();
+          });
+        });
+      }
 
     }
   }

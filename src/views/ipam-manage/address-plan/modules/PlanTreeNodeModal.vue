@@ -44,7 +44,7 @@
             <ul>
               <li
                 v-for="item in createValueList"
-                :key="item.value"
+                :key="item.id"
                 @dblclick="handledblclick(item)"
               >
                 <Input
@@ -117,22 +117,25 @@ export default {
 
         if (val.pid) {
           const parentNode = findNodeById(this.currentLayout, val.pid);
+          if (parentNode) {
+            const [, prefixLen] = parentNode.prefix.split("/");
+            this.currentNodePrefixLen = prefixLen;
+            this.currentNodeBitWidth = val.bitWidth;
 
-          const [, prefixLen] = parentNode.prefix.split("/");
-          this.currentNodePrefixLen = prefixLen;
+            this.currentParentNode = _.cloneDeep(parentNode);
 
-          this.currentNodeBitWidth = val.bitWidth;
+            parentNode.nodes.forEach(item => {
+              if (item.value) {
+                this.createValueList.push({
+                  isEdit: false,
+                  value: item.value
+                });
+              }
+            });
 
-          this.currentParentNode = _.cloneDeep(parentNode);
-
-          parentNode.nodes.forEach(item => {
-            if (item.value) {
-              this.createValueList.push({
-                isEdit: false,
-                value: item.value
-              });
-            }
-          });
+          } else {
+            this.currentNodePrefixLen = 0;
+          }
 
         } else {
           this.currentNodePrefixLen = 0;
@@ -158,6 +161,7 @@ export default {
         this.currentParentNode.nodes.forEach(item => {
 
           this.createValueList.push({
+            id: item.id,
             isEdit: false,
             value: startValue
           });
@@ -178,9 +182,12 @@ export default {
     },
 
     handleSaveValue() {
-      console.log(22, this.currentParentNode.nodes)
       this.setCurrentNodeId(this.currentParentNode.id);
-      this.setCurrentNodeChildrenList(this.currentParentNode.nodes);
+      const currentNodeSiblings = this.currentParentNode.nodes;
+      currentNodeSiblings.forEach(node => {
+        node.value = +this.createValueList.find(item => item.id === node.id).value;
+      });
+      this.setCurrentNodeChildrenList(currentNodeSiblings);
     }
   }
 };
