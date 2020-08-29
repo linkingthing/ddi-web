@@ -58,7 +58,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log("watch", val)
+        console.log("watch currentLayout", val)
         this.treeData = _.cloneDeep(val);
       }
     }
@@ -71,11 +71,9 @@ export default {
 
     ]),
     handleSelectNode(nodes, node) {
-      console.log(node.name, node.id, node)
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
-      // console.log("render tree", data)
       return h("span", {
         props: {
         },

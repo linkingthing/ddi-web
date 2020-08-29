@@ -59,6 +59,7 @@ import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
 import PlanStepSemantic from "./modules/PlanStepSemantic";
 import PlanStepTree from "./modules/PlanStepTree";
 import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
+import { list2Tree } from "./modules/helper";
 
 export default {
   components: {
@@ -153,9 +154,10 @@ export default {
         this.setLayoutList(data);
 
         if (data.length) {
-          this.setCurrentLayoutId(data[0].id);
-          this.setCurrentLayout({ layout: data[0], prefix: this.currentPlan.prefix });
-          this.setCurrentNodeId(data[0].id);
+          const oneLinks = data[0].links;
+
+          this.getLayoutOne(oneLinks)
+
         } else {
           this.setCurrentLayout({
             layout: {
@@ -171,6 +173,30 @@ export default {
 
       });
 
+    },
+
+    getLayoutOne({ self }) {
+      this.$get({ url: self }).then(data => {
+        this.setCurrentLayoutId(data.id);
+        if (Array.isArray(data.nodes)) {
+          data.nodes = data.nodes.filter(item => {
+            return item.pid !== "0";
+          });
+
+          // TODU: 设置layout之前先将nodes list => layout tree 
+          data.nodes = list2Tree(data.nodes);
+        }
+        this.setCurrentLayout({ layout: data, prefix: this.currentPlan.prefix });
+        this.setCurrentNodeId(data.id);
+
+        this.getPlannedsubnets(data.links);
+      });
+    },
+
+    getPlannedsubnets({ plannedsubnets }) {
+      this.$get({ url: plannedsubnets }).then(data => {
+        console.log("plannedsubnets", data);
+      })
     },
 
     handleDelete(id) {

@@ -48,13 +48,49 @@ export function treeEach(tree, children, fn) {
   return _tree;
 }
 
+/**
+ * 树转换成列表
+ * tree.nodes
+ */
 export function treeFlat(tree, result = []) {
-  if (Array.isArray(tree.nodes)) {
+  result.push(tree);
+
+  if (tree && Array.isArray(tree.nodes)) {
     tree.nodes.forEach(({ nodes, ...node }) => {
       result.push(node);
-      treeFlat(nodes, result);
+      if (nodes && Array.isArray(nodes)) {
+        nodes.forEach(item => {
+          treeFlat(item, result);
+        });
+      }
     });
   }
+  return result;
+}
+
+/**
+ * 
+*/
+export function list2Tree(data) {
+  let result = [];
+  if (!Array.isArray(data)) {
+    return result;
+  }
+  data.forEach(item => {
+    delete item.nodes;
+  });
+  let map = {};
+  data.forEach(item => {
+    map[item.id] = item;
+  });
+  data.forEach(item => {
+    let parent = map[item.pid];
+    if (parent) {
+      (parent.nodes || (parent.nodes = [])).push(item);
+    } else {
+      result.push(item);
+    }
+  });
   return result;
 }
 

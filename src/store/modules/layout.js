@@ -41,14 +41,10 @@ const state = {
 
 const getters = {
   currentNodeChildrenList: state => {
-    console.log("currentNodeChildrenList", getCurrentNode(state));
     const currentNode = getCurrentNode(state) || {};
-    console.log(currentNode, 888);
     return _.cloneDeep(currentNode).nodes || [];
   },
   currentNode: state => {
-    console.log("gettyer", getCurrentNode(state));
-
     return _.cloneDeep(getCurrentNode(state));
   }
 };
@@ -64,12 +60,20 @@ const mutations = {
   },
   setCurrentLayout(state, { layout, prefix }) {
     const _layout = _.cloneDeep(layout);
-
     if (layout) {
       _layout.expand = true;
       _layout.bitWidth = defaultBitWidth;
       _layout.prefix = prefix;
       if (!layout.nodes) {
+        _layout.nodes = _.cloneDeep(
+          initLayout.map(item => {
+            return {
+              ...item,
+              pid: state.currentLayoutId
+            };
+          })
+        );
+      } else if (layout.nodes && Array.isArray(layout.nodes) && !layout.nodes.length) {
         _layout.nodes = _.cloneDeep(
           initLayout.map(item => {
             return {
@@ -89,11 +93,12 @@ const mutations = {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
+    const layout = _.cloneDeep(state.currentLayout);
+    state.currentLayout = layout;
   },
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
-    // currentNode.bitWidth = bitWidth;
     currentNode.nodes.forEach(item => {
       item.bitWidth = bitWidth;
     });

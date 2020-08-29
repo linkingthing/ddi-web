@@ -104,12 +104,12 @@ export default {
     },
     handleIntellect() {
 
-      const params = {}
+      const params = {};
       this.$put({ url: this.currentLayout.links.self }).then(res => {
         console.log("re", res)
       }).catch(err => {
         console.log(err)
-      })
+      });
       // this.nextPlanStep();
 
     }

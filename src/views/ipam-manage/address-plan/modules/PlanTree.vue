@@ -43,6 +43,7 @@ import { mapState, mapMutations, mapGetters } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
 import { treeFlat, treeEach, findNodeById, executeNextIpv6Segment } from "./helper";
+import node from '@/router/configs/node';
 
 export default {
   components: {
@@ -104,7 +105,7 @@ export default {
           if (item.pid) {
             const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
             const parentNodePrefix = parentNode.prefix;
-            console.log(item)
+            console.log("executeNextIpv6Segment ", item)
             const offset = item.value || (index + 1);
             item.prefix = executeNextIpv6Segment(parentNodePrefix, offset, item.bitWidth); // 位偏移，自定义需要调整
           }
@@ -146,9 +147,9 @@ export default {
 
       const params = _.cloneDeep(this.currentLayout);
 
-
-      const nodes = treeFlat(params)
-
+      console.log(params)
+      const nodes = treeFlat(params);
+      nodes.shift();
       nodes.unshift({
         bitWidth: 0,
         id: params.id,
@@ -170,6 +171,8 @@ export default {
 
 
       params.nodes = nodes;
+      params.name = "layout";
+      params.autofill = true;
       if (create) {
         this.$post({ url: create, params }).then(() => {
           console.log()

@@ -1,16 +1,11 @@
 <template>
   <div class="SemanticList">
-    <h3 class="SemanticList-title">{{title}}</h3>
+    <h3 class="SemanticList-title">{{currentNode.name}}</h3>
     <div class="plan-count">
       <span>为提高规划的可扩展性，建议您填写期望的分支数量，预留将来可规划的空间：</span>
-      <!-- <Input
-        placeholder="期望分支数量（选填）"
-        style="width:260px"
-        v-model.number="bitWidth"
-      /> -->
       <Select
         v-model.number="bitWidth"
-        style="width:260px"
+        style="width:160px"
       >
         <Option
           v-for="item in countList"
@@ -64,19 +59,30 @@ export default {
       countList: [{
         name: "16",
         bitWidth: 4
-      }, {
+      },
+      {
         name: "256",
         bitWidth: 8
-      }, {
+      },
+      {
         name: "4096",
         bitWidth: 12
-      }]
+      },
+      {
+        name: "4294967296",
+        bitWidth: 32
+      }
+      ]
     };
   },
   computed: {
+    ...mapState({
+      currentLayout: state => state.layout.currentLayout
+    }),
     ...mapGetters([
       "currentNodeChildrenList",
-      "currentNode"
+      "currentNode",
+      "setCurrentLayout"
     ])
 
   },
@@ -100,15 +106,22 @@ export default {
       }
     },
     bitWidth(val) {
-      this.setCurrentNodeBitWidth(val);
+      if (val) {
+        this.setCurrentNodeBitWidth(val);
+      }
     },
     "currentNode": {
-      // deep: true,
-      // immediate: true,
+      deep: true,
+      immediate: true,
       handler(val) {
-        val.nodes.forEach(item => {
-          this.bitWidth = item.bitWidth;
-        });
+        if (Array.isArray(val.nodes)) {
+          val.nodes.forEach(item => {
+            console.log(item)
+            this.bitWidth = item.bitWidth;
+          });
+        } else {
+          this.bitWidth = "";
+        }
       }
     }
   },
@@ -118,7 +131,8 @@ export default {
     ...mapMutations([
       "setCurrentNode",
       "setCurrentNodeChildrenList",
-      "setCurrentNodeBitWidth"
+      "setCurrentNodeBitWidth",
+      // "setCurrentLayout"
     ]),
     handleAdd() {
       this.semanticList.push({
@@ -127,7 +141,8 @@ export default {
         name: "",
         isEdit: true,
         modified: 1,
-        nodes: []
+        nodes: [],
+        bitWidth: defaultBitWidth
       });
     },
     handleSave(id, name) {
@@ -138,6 +153,9 @@ export default {
         }
       });
       this.setCurrentNodeChildrenList(this.semanticList);
+      console.log()
+      // 如果是异步的话可考虑回调
+      // this.setCurrentLayout(this.currentLayout);
     },
     handleEdit(id) {
       this.semanticList.forEach(item => {
@@ -150,6 +168,7 @@ export default {
       this.semanticList = this.semanticList.filter(item => {
         return item.id !== id;
       });
+      this.setCurrentNodeChildrenList(this.semanticList);
     }
   }
 };

@@ -118,7 +118,8 @@ export default {
 
         if (val.pid) {
           const parentNode = findNodeById(this.currentLayout, val.pid);
-          const { prefix, bitWidth } = parentNode;
+          console.log("pnode", parentNode)
+          const { prefix } = parentNode;
           if (prefix) {
             const [, prefixLen] = prefix.split("/");
             this.currentNodePrefixLen = prefixLen;
