@@ -54,6 +54,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import { buildLayoutParams } from "./helper";
+
 export default {
   components: {},
   props: {
@@ -104,11 +106,18 @@ export default {
     },
     handleIntellect() {
 
-      const params = {};
-      this.$put({ url: this.currentLayout.links.self }).then(res => {
-        console.log("re", res)
-      }).catch(err => {
-        console.log(err)
+      const params = buildLayoutParams(this.currentLayout);
+
+      console.log(params, this.currentLayout)
+
+      console.log(222, this.currentLayout.links.update)
+
+      this.$put({ url: this.currentLayout.links.update, params }).then(res => {
+        console.log("自能规划后返回的数据", res)
+
+        // this.$get({ url: this.currentLayout.links.self }).then(res => {
+        //   console.log("自能规划后再次请求的数据", res)
+        // })
       });
       // this.nextPlanStep();
 

@@ -42,8 +42,8 @@ import _ from "lodash";
 import { mapState, mapMutations, mapGetters } from "vuex";
 import VueTree from "@/components/vue-tree-chart";
 
-import { treeFlat, treeEach, findNodeById, executeNextIpv6Segment } from "./helper";
-import node from '@/router/configs/node';
+import { treeFlat, executeTreeNodePrefix, findNodeById, executeNextIpv6Segment } from "./helper";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   components: {
@@ -94,25 +94,17 @@ export default {
         let newTree = JSON.stringify(val);
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
+        console.log(newTree, 222)
 
-        newTree = treeEach(newTree, "children", (item, index) => {
-          delete item.creationTimestamp;
-          delete item.deletionTimestamp;
-          delete item.expand;
-          delete item.links;
-          delete item.type;
+        if (Array.isArray(newTree.children) && newTree.children.length) {
+          let tree = newTree.children[0];
+          tree.prefix = newTree.prefix;
 
-          if (item.pid) {
-            const parentNode = findNodeById(newTree, item.pid); // 这个函数的内部children会不会受影响？
-            const parentNodePrefix = parentNode.prefix;
-            console.log("executeNextIpv6Segment ", item)
-            const offset = item.value || (index + 1);
-            item.prefix = executeNextIpv6Segment(parentNodePrefix, offset, item.bitWidth); // 位偏移，自定义需要调整
-          }
 
-        });
-
-        this.treeData = newTree;
+          const a = executeTreeNodePrefix([tree]);
+          console.log(a, 23495728)
+          this.treeData = tree;
+        }
       }
     }
   },
@@ -152,7 +144,7 @@ export default {
       nodes.shift();
       nodes.unshift({
         bitWidth: 0,
-        id: params.id,
+        id: uuidv4(),
         ipv4: "",
         modified: 1,
         name: "",

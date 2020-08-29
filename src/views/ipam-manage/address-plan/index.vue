@@ -150,18 +150,15 @@ export default {
     getLayout({ layouts }) {
       this.$get({ url: layouts }).then(({ data, links }) => {
 
-
         this.setLayoutList(data);
 
         if (data.length) {
           const oneLinks = data[0].links;
-
-          this.getLayoutOne(oneLinks)
-
+          this.getLayoutOne(oneLinks);
         } else {
           this.setCurrentLayout({
             layout: {
-              id: "000",
+              id: uuidv4(),
               name: "layout",
               nodes: null,
               links: {
@@ -179,11 +176,9 @@ export default {
       this.$get({ url: self }).then(data => {
         this.setCurrentLayoutId(data.id);
         if (Array.isArray(data.nodes)) {
-          data.nodes = data.nodes.filter(item => {
-            return item.pid !== "0";
-          });
-
-          // TODU: 设置layout之前先将nodes list => layout tree 
+          // data.nodes = data.nodes.filter(item => {
+          //   return item.pid !== "0";
+          // });
           data.nodes = list2Tree(data.nodes);
         }
         this.setCurrentLayout({ layout: data, prefix: this.currentPlan.prefix });

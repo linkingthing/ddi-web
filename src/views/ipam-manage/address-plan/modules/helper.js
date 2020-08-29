@@ -4,6 +4,44 @@ import ipaddr from "ipaddr.js";
 import _ from "lodash";
 export const defaultBitWidth = 4;
 
+export function buildLayoutParams(currentLayout, autofill = true) {
+  const params = _.cloneDeep(currentLayout);
+
+  // 自动value赋值
+  if (autofill) {
+    autoFillValue(params.nodes);
+  }
+  const nodes = treeFlat(params.nodes);
+
+  delete params.creationTimestamp;
+  delete params.deletionTimestamp;
+  delete params.expand;
+  delete params.links;
+  delete params.type;
+  delete params.bitWidth;
+  delete params.prefix;
+  delete params.id;
+
+  params.nodes = nodes;
+  params.name = "layout";
+  params.autofill = autofill;
+
+  return params;
+}
+
+/**
+ * 自动填充value
+ */
+function autoFillValue(tree) {
+  if (Array.isArray(tree)) {
+    tree.forEach((node, index) => {
+      node.value = index + 1;
+      node.modified = 1;
+      autoFillValue(node.nodes);
+    });
+  }
+}
+
 export function findParentNodeById(tree, id) {
   if (tree.id === id) {
     return tree;
@@ -17,12 +55,12 @@ export function findParentNodeById(tree, id) {
   }
 }
 
-export function findNodeById(tree, id) {
+export function findNodeById(tree, id, children = "nodes") {
   if (tree.id === id) {
     return tree;
   } else {
-    if (Array.isArray(tree.nodes)) {
-      for (const node of tree.nodes) {
+    if (Array.isArray(tree[children])) {
+      for (const node of tree[children]) {
         const res = findNodeById(node, id);
         if (res) {
           return res;
@@ -50,27 +88,41 @@ export function treeEach(tree, children, fn) {
 
 /**
  * 树转换成列表
- * tree.nodes
+ * nodes
  */
 export function treeFlat(tree, result = []) {
-  result.push(tree);
-
-  if (tree && Array.isArray(tree.nodes)) {
-    tree.nodes.forEach(({ nodes, ...node }) => {
+  if (tree && Array.isArray(tree)) {
+    tree.forEach(({ nodes, ...node }) => {
       result.push(node);
-      if (nodes && Array.isArray(nodes)) {
-        nodes.forEach(item => {
-          treeFlat(item, result);
-        });
-      }
+      treeFlat(nodes, result);
     });
   }
   return result;
 }
 
+export function executeTreeNodePrefix(tree) {
+  if (Array.isArray(tree)) {
+    tree.forEach(item => {
+      const parentNodePrefix = item.prefix;
+      if (Array.isArray(item.children)) {
+        item.children.forEach((node, i) => {
+          const offset = node.value || i + 1;
+          node.prefix = executeNextIpv6Segment(
+            parentNodePrefix,
+            offset,
+            node.bitWidth
+          );
+        });
+      }
+      executeTreeNodePrefix(item.children);
+    });
+  }
+  return tree;
+}
+
 /**
- * 
-*/
+ *
+ */
 export function list2Tree(data) {
   let result = [];
   if (!Array.isArray(data)) {
@@ -82,6 +134,7 @@ export function list2Tree(data) {
   let map = {};
   data.forEach(item => {
     map[item.id] = item;
+    item.expand = true;
   });
   data.forEach(item => {
     let parent = map[item.pid];

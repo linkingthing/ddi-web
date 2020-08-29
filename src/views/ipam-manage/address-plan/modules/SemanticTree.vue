@@ -3,7 +3,7 @@
     <SemanticTreeHeader :prefix="prefix" />
 
     <Tree
-      :data="[treeData]"
+      :data="treeData"
       children-key="nodes"
       @on-select-change="handleSelectNode"
       :render="renderContent"
@@ -59,7 +59,7 @@ export default {
       immediate: true,
       handler(val) {
         console.log("watch currentLayout", val)
-        this.treeData = _.cloneDeep(val);
+        this.treeData = _.cloneDeep(val.nodes);
       }
     }
   },
