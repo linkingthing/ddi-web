@@ -91,14 +91,16 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log("currentNodeChildrenList", val)
         if (Array.isArray(val)) {
           this.semanticList = val.map(item => {
             return {
               id: item.id,
               name: item.name,
               isEdit: false,
-              expand: true
+              expand: true,
+              pid: item.pid,
+              bitWidth: item.bitWidth,
+              value: item.value
             };
           });
         }
@@ -116,7 +118,6 @@ export default {
       handler(val) {
         if (Array.isArray(val.nodes)) {
           val.nodes.forEach(item => {
-            console.log(item)
             this.bitWidth = item.bitWidth;
           });
         } else {
@@ -131,8 +132,7 @@ export default {
     ...mapMutations([
       "setCurrentNode",
       "setCurrentNodeChildrenList",
-      "setCurrentNodeBitWidth",
-      // "setCurrentLayout"
+      "setCurrentNodeBitWidth"
     ]),
     handleAdd() {
       this.semanticList.push({
@@ -153,9 +153,6 @@ export default {
         }
       });
       this.setCurrentNodeChildrenList(this.semanticList);
-      console.log()
-      // 如果是异步的话可考虑回调
-      // this.setCurrentLayout(this.currentLayout);
     },
     handleEdit(id) {
       this.semanticList.forEach(item => {

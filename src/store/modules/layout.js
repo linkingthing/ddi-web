@@ -2,7 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 import {
   defaultBitWidth,
-  getCurrentNode
+  getCurrentNode,
+  executeTreeNodePrefix
 } from "@/views/ipam-manage/address-plan/modules/helper";
 
 const initLayout = [
@@ -73,7 +74,11 @@ const mutations = {
             };
           })
         );
-      } else if (layout.nodes && Array.isArray(layout.nodes) && !layout.nodes.length) {
+      } else if (
+        layout.nodes &&
+        Array.isArray(layout.nodes) &&
+        !layout.nodes.length
+      ) {
         _layout.nodes = _.cloneDeep(
           initLayout.map(item => {
             return {
@@ -84,6 +89,13 @@ const mutations = {
         );
       }
     }
+
+    if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
+      let tree = _layout.nodes[0];
+      tree.prefix = _layout.prefix;
+      executeTreeNodePrefix([tree], "nodes");
+    }
+
     state.currentLayout = _layout || {};
   },
   setCurrentNodeId(state, id) {

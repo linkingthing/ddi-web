@@ -12,7 +12,7 @@
 
       <SegmentAxis
         :enable-prefix-len="+prefixLen"
-        :prefix-len="currentNodePrefixLen"
+        :prefix-len="Number(currentNodePrefixLen)"
         :bit-width="currentNodeBitWidth"
       />
       <Form
@@ -114,16 +114,12 @@ export default {
       immediate: true,
       handler(val) {
         this.createValueList = [];
-        console.log(33333, val)
 
         if (val.pid) {
           const parentNode = findNodeById(this.currentLayout, val.pid);
-          console.log("pnode", parentNode)
-          const { prefix } = parentNode;
-          if (prefix) {
-            const [, prefixLen] = prefix.split("/");
-            this.currentNodePrefixLen = prefixLen;
-          }
+
+          const [, prefixLen] = parentNode.prefix.split("/");
+          this.currentNodePrefixLen = prefixLen;
 
           this.currentNodeBitWidth = val.bitWidth;
 

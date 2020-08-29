@@ -100,12 +100,12 @@ export function treeFlat(tree, result = []) {
   return result;
 }
 
-export function executeTreeNodePrefix(tree) {
+export function executeTreeNodePrefix(tree, children = "children") {
   if (Array.isArray(tree)) {
     tree.forEach(item => {
       const parentNodePrefix = item.prefix;
-      if (Array.isArray(item.children)) {
-        item.children.forEach((node, i) => {
+      if (Array.isArray(item[children])) {
+        item[children].forEach((node, i) => {
           const offset = node.value || i + 1;
           node.prefix = executeNextIpv6Segment(
             parentNodePrefix,
@@ -114,7 +114,7 @@ export function executeTreeNodePrefix(tree) {
           );
         });
       }
-      executeTreeNodePrefix(item.children);
+      executeTreeNodePrefix(item[children]);
     });
   }
   return tree;
