@@ -1,3 +1,12 @@
+function getMapAddress(obj = {}) {
+  console.log(
+    Object.values(obj)
+      .map(item => item.ip)
+      .join(",")
+  );
+  return Object.values(obj).map(item => item.ip);
+}
+
 export const columns = scope => [
   {
     title: "设备名称",
@@ -35,19 +44,24 @@ export const columns = scope => [
     align: "center",
     width: 140
   },
-  // {
-  //   title: "上联地址",
-  //   key: "uplinkAddress",
-  //   align: "center",
-  //   width: 180,
-
-  // },
-  // {
-  //   title: "下联地址",
-  //   key: "downlinkAddress",
-  //   align: "center",
-  //   width: 180
-  // },
+  {
+    title: "上联地址",
+    // key: "uplinkAddresses",
+    align: "center",
+    width: 180,
+    render: (h, { row }) => {
+      return h("div", getMapAddress(row.uplinkAddresses));
+    }
+  },
+  {
+    title: "下联地址",
+    // key: "downlinkAddress",
+    align: "center",
+    width: 180,
+    render: (h, { row }) => {
+      return h("div", getMapAddress(row.downlinkAddresses));
+    }
+  },
   {
     title: "机房",
     key: "computerRoom",
