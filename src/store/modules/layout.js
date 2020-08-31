@@ -72,6 +72,7 @@ const mutations = {
       _layout.prefix = prefix;
       if (!layout.nodes) {
         const uuid = uuidv4();
+        state.currentNodeId = uuid;
         _layout.nodes = [
           {
             expand: true,

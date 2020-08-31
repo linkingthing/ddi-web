@@ -85,7 +85,8 @@ export default {
     ...mapGetters({
       planList: "planList",
       currentPlan: "currentPlan",
-      stepComponent: "currentPlanProcessId"
+      stepComponent: "currentPlanProcessId",
+      planProcessList: "planProcessList"
     })
   },
 
@@ -109,6 +110,7 @@ export default {
 
   methods: {
     ...mapMutations([
+      "setPlanProcessListInit",
       "setCurrentPlanId",
       "setPlanList",
       "addPlan",
@@ -167,6 +169,7 @@ export default {
               }
             }, prefix: this.currentPlan.prefix
           });
+          this.setPlanProcessListInit();
         }
 
       });
@@ -180,7 +183,10 @@ export default {
           data.nodes = list2Tree(data.nodes, "0");
         }
         this.setCurrentLayout({ layout: data, prefix: this.currentPlan.prefix });
-        this.setCurrentNodeId(data.id);
+        if (Array.isArray(data.nodes) && data.nodes.length) {
+          const id = data.nodes[0].id;
+          this.setCurrentNodeId(id);
+        }
 
         // this.getPlannedsubnets(data.links);
       });
@@ -215,6 +221,8 @@ export default {
       });
       this.setCurrentPlanId(id);
       this.setCurrentLayout(null);
+      this.setPlanProcessListInit();
+
     },
     handleImport() {
       // 正式做导入功能之前，这个操作都用于测试store

@@ -49,14 +49,12 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val, this.planProcessList)
         if (val && val.id) {
           // 有layout的情况可以访问 第 二 三步骤
           // 构造出的isStructureLayout ，只能访问第二步
           const steps = ["PlanStepSemantic", "PlanStepTree"];
           const planProcessList = [];
           this.planProcessList.forEach(({ ...item }) => {
-            console.log(item)
             if (val.planProcessAccessList) {
               if (val.planProcessAccessList.includes(item.id)) {
                 item.type = "visited";
