@@ -18,6 +18,7 @@
           v-model="formData.prefix"
           size="large"
           placeholder="请填写前缀"
+          :disabled="ableEditPrefix"
         />
       </FormItem>
       <div>
@@ -49,7 +50,10 @@ export default {
   computed: {
     ...mapGetters([
       "currentPlan"
-    ])
+    ]),
+    ableEditPrefix() {
+      return !!this.currentPlan.links;
+    }
   },
   watch: {
     currentPlan: {
@@ -80,10 +84,10 @@ export default {
     handleClickSubmit() {
       const params = { ...this.formData };
       if (this.currentPlan.links) {
-        // this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
-        //   this.nextPlanStep();
-        // });
-        this.nextPlanStep();
+        this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+          this.nextPlanStep();
+        });
+        // this.nextPlanStep();
 
       } else {
         this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(res => {

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapState } from "vuex";
 import PlanProcessItem from "./PlanProcessItem";
 export default {
   components: {
@@ -27,6 +27,9 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      "currentLayout": state => state.layout.currentLayout
+    }),
     ...mapGetters([
       "planProcessList"
     ])
@@ -41,6 +44,33 @@ export default {
         this.$emit("onchange", id);
         this.setCurrentPlanProcessId(id);
       }
+    },
+    "currentLayout": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log(val, this.planProcessList)
+        if (val && val.id) {
+          // 有layout的情况可以访问 第 二 三步骤
+          // 构造出的isStructureLayout ，只能访问第二步
+          const steps = ["PlanStepSemantic", "PlanStepTree"];
+          const planProcessList = [];
+          this.planProcessList.forEach(({ ...item }) => {
+            console.log(item)
+            if (val.planProcessAccessList) {
+              if (val.planProcessAccessList.includes(item.id)) {
+                item.type = "visited";
+              }
+            } else if (steps.includes(item.id)) {
+              if (item.type === "") {
+                item.type = "visited";
+              }
+            }
+            planProcessList.push(item);
+          });
+          this.setPlanProcessList(planProcessList);
+        }
+      }
     }
   },
   created() { },
@@ -48,7 +78,8 @@ export default {
   methods: {
     ...mapMutations([
       "setCurrentPlanProcessId",
-      "nextPlanStep"
+      "nextPlanStep",
+      "setPlanProcessList"
     ]),
     handleChange(id) {
       this.nextPlanStep(id);

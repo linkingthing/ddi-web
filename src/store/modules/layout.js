@@ -59,7 +59,12 @@ const mutations = {
   setCurrentLayoutId(state, currentLayoutId) {
     state.currentLayoutId = currentLayoutId;
   },
-  setCurrentLayout(state, { layout, prefix }) {
+  setCurrentLayout(state, data) {
+    if (!data) {
+      state.currentLayout = {};
+      return;
+    }
+    let { layout, prefix } = data;
     const _layout = _.cloneDeep(layout);
     if (layout) {
       _layout.expand = true;

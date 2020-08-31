@@ -76,6 +76,9 @@ const mutations = {
       state.planProcessList[currentPlanProcessIndex + 1].type = "active";
     }
   },
+  setPlanProcessList(state, planProcessList) {
+    state.planProcessList = planProcessList;
+  },
   setCurrentPlanProcessId(state, id) {
     state.currentPlanProcessId = id;
   }

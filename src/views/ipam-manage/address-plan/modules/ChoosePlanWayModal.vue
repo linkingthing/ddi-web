@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapGetters } from "vuex";
 import { buildLayoutParams } from "./helper";
 
 export default {
@@ -72,7 +72,10 @@ export default {
   computed: {
     ...mapState({
       "currentLayout": state => state.layout.currentLayout
-    })
+    }),
+    ...mapGetters([
+      "currentPlan"
+    ])
   },
   watch: {
     visible: {
@@ -97,38 +100,31 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "nextPlanStep"
+      "nextPlanStep",
+      "setCurrentLayout"
     ]),
 
     handleCustom() {
-      console.log(this.currentLayout)
       const params = buildLayoutParams(this.currentLayout, false);
       if (this.currentLayout.links.create) {
-        this.$post({ url: this.currentLayout.links.create, params }).then(() => {
-          // 更新当前数据和状态,重新获取layouts列表？
-          this.nextPlanStep();
-        });
-      } else {
-        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-          this.$get({ url: this.currentLayout.links.self }).then(res => {
-            // 更新当前数据和状态
-            this.nextPlanStep();
+        this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
+          this.setCurrentLayout({
+            layout: { ...this.currentLayout, links, autofill },
+            prefix: this.currentPlan.prefix
           });
+          this.nextPlanStep();
         });
       }
     },
     handleIntellect() {
       const params = buildLayoutParams(this.currentLayout);
       if (this.currentLayout.links.create) {
-        this.$post({ url: this.currentLayout.links.create, params }).then(() => {
-          this.nextPlanStep();
-        });
-      } else {
-        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-          this.$get({ url: this.currentLayout.links.self }).then(res => {
-            // 更新当前数据和状态
-            this.nextPlanStep();
+        this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
+          this.setCurrentLayout({
+            layout: { ...this.currentLayout, links, autofill },
+            prefix: this.currentPlan.prefix
           });
+          this.nextPlanStep();
         });
       }
 

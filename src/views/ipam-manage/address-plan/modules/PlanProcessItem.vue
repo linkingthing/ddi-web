@@ -43,11 +43,9 @@ export default {
   mounted() { },
   methods: {
     hanldeClick(type) {
-      // if (type === "visited") {
-      //   this.$emit("onchange", this.id);
-      // }
-      // TODO, 临时打开
-      this.$emit("onchange", this.id);
+      if (type === "visited") {
+        this.$emit("onchange", this.id);
+      }
     }
   }
 };

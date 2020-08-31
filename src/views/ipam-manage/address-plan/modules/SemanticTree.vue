@@ -97,9 +97,7 @@ export default {
       ]);
     },
     handleFinish() {
-      console.log(this.currentLayout)
       const { autofill } = this.currentLayout; // true, false, undefined
-      console.log(typeof (autofill) === "undefined")
 
       if (typeof (autofill) === "undefined") {
         this.visible = true;

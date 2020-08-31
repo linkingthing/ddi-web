@@ -159,6 +159,7 @@ export default {
           this.setCurrentLayout({
             layout: {
               id: uuidv4(),
+              planProcessAccessList: ["PlanStepSemantic"],
               name: "layout",
               nodes: null,
               links: {
@@ -175,11 +176,9 @@ export default {
     getLayoutOne({ self }) {
       this.$get({ url: self }).then(data => {
         this.setCurrentLayoutId(data.id);
-        let nodes;
         if (Array.isArray(data.nodes)) {
           data.nodes = list2Tree(data.nodes, "0");
         }
-        console.log(data.nodes, 666, nodes)
         this.setCurrentLayout({ layout: data, prefix: this.currentPlan.prefix });
         this.setCurrentNodeId(data.id);
 
@@ -215,6 +214,7 @@ export default {
         planType: "temp"
       });
       this.setCurrentPlanId(id);
+      this.setCurrentLayout(null);
     },
     handleImport() {
       // 正式做导入功能之前，这个操作都用于测试store
