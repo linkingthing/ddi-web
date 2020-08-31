@@ -2,7 +2,7 @@
   <div class="login-content">
     <div class="login">
       <div class="login-head">
-        <h1>数字资产管理平台</h1>
+        <h1>数据资产治理平台</h1>
       </div>
       <div>
         <Form
