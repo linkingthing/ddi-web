@@ -122,31 +122,32 @@ export default {
 
       "setCurrentNodeId"
     ]),
-    async handleQuery() {
-      this.loading = true;
+    handleQuery() {
 
-      try {
-        let { data } = await this.$get({ url: this.url });
-
+      this.$get({ url: this.url }).then(({ data }) => {
         const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
           item.title = item.description;
           return item;
         });
 
-        this.setPlanList(tableData);
+        if (this.currentPlan && tableData.map(item => item.id).includes(this.currentPlan.id)) {
+          this.setPlanList(tableData);
+        } else {
+          if (tableData.length) {
+            this.setCurrentPlanId(tableData[0].id);
+          }
+          this.setPlanList(tableData);
+        }
+
 
         if (tableData.length) {
           this.setCurrentPlanId(tableData[0].id);
         }
-
-
-      } catch (err) {
+      }).catch((err) => {
         this.$handleError(err);
-      }
-      finally {
-        this.loading = false;
-      }
+      });
+
     },
 
     getLayout({ layouts }) {
@@ -199,7 +200,6 @@ export default {
     },
 
     handleDelete(id) {
-
       this.$delete({ url: this.url + "/" + id }).then(() => {
         this.$$success("删除成功！");
         this.handleQuery();
@@ -226,7 +226,6 @@ export default {
     },
     handleImport() {
       // 正式做导入功能之前，这个操作都用于测试store
-      // this.clearTempPlan("temp");
 
       console.log(this.$store)
 

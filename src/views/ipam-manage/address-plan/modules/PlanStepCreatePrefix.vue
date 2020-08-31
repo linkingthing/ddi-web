@@ -65,6 +65,7 @@ export default {
           this.formData = {
             prefix,
             description,
+            _description: description,
             maskLen: maskLen || 64
           };
         }
@@ -84,11 +85,13 @@ export default {
     handleClickSubmit() {
       const params = { ...this.formData };
       if (this.currentPlan.links) {
-        this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+        if (params.description === params._description) {
           this.nextPlanStep();
-        });
-        // this.nextPlanStep();
-
+        } else {
+          this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+            this.nextPlanStep();
+          });
+        }
       } else {
         this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(res => {
           this.addPlan(res);

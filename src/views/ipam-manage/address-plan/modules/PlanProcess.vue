@@ -39,10 +39,13 @@ export default {
       immediate: true,
       deep: true,
       handler(val) {
-        const { id } = val.find(item => item.type === "active");
-
-        this.$emit("onchange", id);
-        this.setCurrentPlanProcessId(id);
+        console.log(val, val.find(item => item.type === "active"), 2)
+        const planProcess = val.find(item => item.type === "active");
+        if (planProcess) {
+          const { id } = planProcess;
+          this.$emit("onchange", id);
+          this.setCurrentPlanProcessId(id);
+        }
       }
     },
     "currentLayout": {
