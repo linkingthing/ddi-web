@@ -39,7 +39,7 @@
         <!-- 
         <PlanStepSemantic />
         <PlanStepTree /> -->
-        <PlanStepAddressAssign />
+        <!-- <PlanStepAddressAssign /> -->
       </template>
 
     </div>
@@ -183,23 +183,15 @@ export default {
           this.setCurrentNodeId(id);
         }
 
-        this.getPlannedsubnets(data.links);
         this.getNetnodes(data.links);
       });
-    },
-
-    getPlannedsubnets({ plannedsubnets }) {
-      this.$get({ url: plannedsubnets }).then(data => {
-        console.log("plannedsubnets", data);
-      })
     },
 
     getNetnodes({ netnodes }) {
       const params = {
         nettype: "netv6"
-      }
+      };
       this.$get({ url: netnodes, params }).then(({ data }) => {
-        console.log("netnodes", data);
         const netNodes = data[0].netitems;
         this.setNetnodes(netNodes);
       }).catch((err) => {
@@ -236,9 +228,7 @@ export default {
     },
     handleImport() {
       // 正式做导入功能之前，这个操作都用于测试store
-
       console.log(this.$store)
-
 
     }
 
@@ -250,14 +240,14 @@ export default {
 <style lang="less">
 .plan {
   padding-top: 60px;
+  .top-right {
+    position: absolute;
+    right: 10px;
+    top: 16px;
+  }
 }
 .plan-content {
   padding: 24px;
   border-top: 1px solid #efefef;
-}
-.top-right {
-  position: absolute;
-  right: 10px;
-  top: 16px;
 }
 </style>

@@ -3,6 +3,7 @@
     <table-page
       :columns="columns"
       :data="filterList"
+      :total="filterList.length"
     >
       <div
         class="AddressAssignList-header"
@@ -60,7 +61,40 @@ export default {
         key: "usage"
       }, {
         title: "操作",
-        key: "action"
+        key: "action",
+        align: "center",
+        width: 120,
+        render: (h, { row }) => {
+          const [, len] = row.prefix.split("/");
+          return h("div", {
+
+          }, [
+            h("span", {
+              class: {
+                "btn-line": true
+              },
+              style: {
+                display: +len === 64 && "none"
+              },
+              click: () => {
+                this.handleDelegate(row);
+              }
+            }, "地址委派"),
+            h("span", {
+              class: {
+                "btn-line": true
+              },
+              style: {
+                display: +len !== 64 && "none"
+              },
+              on: {
+                click: () => {
+                  this.handleDHCP(row);
+                }
+              }
+            }, "DHCP")
+          ]);
+        }
       }],
 
       dataList: [],
@@ -99,7 +133,68 @@ export default {
       } else {
         this.filterList = this.dataList;
       }
+    },
+    async handleDelegate(row) {
+      try {
+        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?ipnet=${row.prefix}`));
+
+        if (data.length) {
+          this.$router.push({
+            name: "address-pdpool-list",
+            params: {
+              id: data[0].id
+            },
+            query: {
+              ipnet: row.prefix,
+              address: row.prefix,
+              tags: row.tags
+            }
+          });
+        }
+        else {
+          this.$router.push({
+            name: "subnet-pool-subnet",
+            query: {
+              ipnet: row.ipnet,
+              tags: row.tags
+            }
+          });
+        }
+      } catch (err) {
+        this.$handleError(err);
+      }
+    },
+    async handleDHCP(row) {
+      try {
+        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?ipnet=${row.prefix}`));
+
+        if (data.length) {
+          this.$router.push({
+            name: "address-pool-list",
+            params: {
+              id: data[0].id
+            },
+            query: {
+              ipnet: row.ipnet,
+              address: row.ipnet,
+              tags: row.tags
+            }
+          });
+        }
+        else {
+          this.$router.push({
+            name: "subnet-pool-subnet",
+            query: {
+              ipnet: row.ipnet,
+              tags: row.tags
+            }
+          });
+        }
+      } catch (err) {
+        this.$handleError(err);
+      }
     }
+
   }
 };
 </script>
@@ -136,5 +231,17 @@ export default {
 .AddressAssignList-header {
   display: flex;
   padding: 20px 0;
+}
+
+.btn-line {
+  display: inline-block;
+  line-height: 24px;
+  padding: 0 8px;
+  height: 26px;
+  font-size: 12px;
+  color: #4686fe;
+  border: 1px solid #4686fe;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>
