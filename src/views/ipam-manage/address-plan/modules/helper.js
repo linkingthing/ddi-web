@@ -14,6 +14,8 @@ export function buildLayoutParams(currentLayout, autofill = true) {
 
   openModified(params.nodes); // TODO： 后期做局部跟新优化需要去掉
 
+  autoSequence(params.nodes);
+
   const nodes = treeFlat(params.nodes);
 
   delete params.creationTimestamp;
@@ -41,6 +43,15 @@ function autoFillValue(tree) {
       node.value = index + 1;
       node.modified = 1;
       autoFillValue(node.nodes);
+    });
+  }
+}
+
+function autoSequence(tree) {
+  if (Array.isArray(tree)) {
+    tree.forEach((node, index) => {
+      node.sequence = index + 1;
+      autoSequence(node.nodes);
     });
   }
 }

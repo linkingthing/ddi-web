@@ -181,7 +181,7 @@ export default {
           this.setCurrentNodeId(id);
         }
 
-        // this.getPlannedsubnets(data.links);
+        this.getPlannedsubnets(data.links);
       });
     },
 
