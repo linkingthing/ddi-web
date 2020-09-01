@@ -34,6 +34,29 @@
         @click="handleAddressPlanFinish"
       >地址段划分完成</Button>
     </div>
+
+    <common-modal
+      :visible.sync="visible"
+      title="编辑节点IPv4"
+      :width="413"
+      @confirm="handleFinishIpv4Edit"
+    >
+      <Form
+        style="margin-bottom: -30px"
+        :label-width="60"
+        label-position="left"
+      >
+        <FormItem label="Ipv4">
+          <Input
+            v-model="currentIpv4List"
+            style="width: 260px"
+            type="textarea"
+            :autosize="{minRows: 4,maxRows: 5}"
+            placeholder="请输入IPv4地址，逗号分隔"
+          />
+        </FormItem>
+      </Form>
+    </common-modal>
   </div>
 </template>
 
@@ -70,8 +93,11 @@ export default {
 
       active: {
         siblingsId: []
-      }
+      },
 
+
+      visible: false,
+      currentIpv4List: ""
 
 
     };
@@ -94,15 +120,12 @@ export default {
         let newTree = JSON.stringify(val);
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
-        console.log(newTree, 222)
 
         if (Array.isArray(newTree.children) && newTree.children.length) {
           let tree = newTree.children[0];
           tree.prefix = newTree.prefix;
 
           // 是否需要计算 prefix，自动规划的需要，手动规划的看情况
-          // const a = executeTreeNodePrefix([tree]);
-          // console.log(a, 23495728)
           executeTreeNodePrefix([tree]);
           this.treeData = tree;
         }
@@ -114,7 +137,8 @@ export default {
   methods: {
     ...mapMutations([
       "nextPlanStep",
-      "setCurrentNodeId"
+      "setCurrentNodeId",
+      "setCurrentNodeIpv4"
     ]),
     handleSelectTreeNode(data, node, collapsed, nodeDataList) {
       console.log(data, node, collapsed, nodeDataList)
@@ -130,9 +154,17 @@ export default {
         siblingsId
       };
     },
-    handleClickIpv4(e) {
-      console.log(e)
+    handleClickIpv4(e, data) {
+      this.visible = true;
+      this.setCurrentNodeId(data.id);
+      this.currentIpv4List = data.ipv4;
     },
+
+    handleFinishIpv4Edit() {
+      this.visible = false;
+      this.setCurrentNodeIpv4(this.currentIpv4List);
+    },
+
     handleAddressPlanFinish() {
       const params = buildLayoutParams(this.currentLayout, false);
       this.$put({ url: this.currentLayout.links.update, params }).then(() => {

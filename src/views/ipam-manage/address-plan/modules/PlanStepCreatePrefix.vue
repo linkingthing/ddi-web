@@ -41,6 +41,7 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { ipv6IsValid } from "@/util/common";
+
 export default {
   components: {},
   props: {},
@@ -92,7 +93,9 @@ export default {
             _description: description,
             maskLen: maskLen || 64
           };
-          this.$refs.formCustom.resetFields();
+          if (this.$refs.formCustom) {
+            this.$refs.formCustom.resetFields();
+          }
         }
 
       }
@@ -115,6 +118,7 @@ export default {
             if (params.description === params._description) {
               this.nextPlanStep();
             } else {
+              delete params._description;
               this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
                 this.nextPlanStep();
               });

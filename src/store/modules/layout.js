@@ -131,6 +131,13 @@ const mutations = {
     const layout = _.cloneDeep(state.currentLayout);
     state.currentLayout = layout;
   },
+  setCurrentNodeIpv4(state, ipv4List) {
+    const currentNode = getCurrentNode(state);
+    currentNode.expand = true;
+    currentNode.ipv4 = _.cloneDeep(ipv4List);
+    const layout = _.cloneDeep(state.currentLayout);
+    state.currentLayout = layout;
+  },
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
