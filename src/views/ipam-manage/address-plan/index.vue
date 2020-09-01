@@ -131,15 +131,7 @@ export default {
           return item;
         });
 
-        if (this.currentPlan && tableData.map(item => item.id).includes(this.currentPlan.id)) {
-          this.setPlanList(tableData);
-        } else {
-          if (tableData.length) {
-            this.setCurrentPlanId(tableData[0].id);
-          }
-          this.setPlanList(tableData);
-        }
-
+        this.setPlanList(tableData);
 
         if (tableData.length) {
           this.setCurrentPlanId(tableData[0].id);
@@ -202,6 +194,8 @@ export default {
     handleDelete(id) {
       this.$delete({ url: this.url + "/" + id }).then(() => {
         this.$$success("删除成功！");
+        this.setPlanProcessListInit();
+        this.currentNodeId("");
         this.handleQuery();
       });
 

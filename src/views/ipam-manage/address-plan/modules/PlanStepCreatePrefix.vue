@@ -5,6 +5,8 @@
       :label-width="80"
       label-position="left"
       :model="formData"
+      :rules="rules"
+      ref="formCustom"
     >
       <FormItem label="规划名称">
         <Input
@@ -13,7 +15,10 @@
           placeholder="请填写规划名称"
         />
       </FormItem>
-      <FormItem label="前缀">
+      <FormItem
+        label="前缀"
+        prop="prefix"
+      >
         <Input
           v-model="formData.prefix"
           size="large"
@@ -35,10 +40,29 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import { ipv6IsValid } from "@/util/common";
 export default {
   components: {},
   props: {},
   data() {
+    this.rules = {
+      prefix: [
+        {
+          validator: (rule, value, callback) => {
+            if (ipv6IsValid(value)) {
+              const [pre, len] = value.split("/");
+              if (+len > 63) {
+                callback("prefixLen不能大于等于64");
+              } else {
+                callback();
+              }
+            } else {
+              callback("请正确输入ipv6地址");
+            }
+          }
+        }
+      ]
+    };
     return {
       formData: {
         prefix: "",
@@ -68,6 +92,7 @@ export default {
             _description: description,
             maskLen: maskLen || 64
           };
+          this.$refs.formCustom.resetFields();
         }
 
       }
@@ -83,23 +108,29 @@ export default {
       "clearTempPlan"
     ]),
     handleClickSubmit() {
-      const params = { ...this.formData };
-      if (this.currentPlan.links) {
-        if (params.description === params._description) {
-          this.nextPlanStep();
-        } else {
-          this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
-            this.nextPlanStep();
-          });
+      this.$refs.formCustom.validate((valid) => {
+        if (valid) {
+          const params = { ...this.formData };
+          if (this.currentPlan.links) {
+            if (params.description === params._description) {
+              this.nextPlanStep();
+            } else {
+              this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+                this.nextPlanStep();
+              });
+            }
+          } else {
+            this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(res => {
+              this.addPlan(res);
+              this.clearTempPlan();
+              this.setCurrentPlanId(res.id);
+              this.nextPlanStep();
+            });
+          }
         }
-      } else {
-        this.$post({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(res => {
-          this.addPlan(res);
-          this.clearTempPlan();
-          this.setCurrentPlanId(res.id);
-          this.nextPlanStep();
-        });
-      }
+      })
+
+
 
     }
   }

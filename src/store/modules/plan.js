@@ -25,6 +25,35 @@ const planProcessList = [
   }
 ];
 
+function createPlanProcessList() {
+  return [
+    {
+      title: "前缀设置",
+      icon: "icon-process-prefix",
+      type: "active",
+      id: "PlanStepCreatePrefix"
+    },
+    {
+      title: "语义规划",
+      icon: "icon-process-plan",
+      type: "",
+      id: "PlanStepSemantic"
+    },
+    {
+      title: "划分地址段",
+      icon: "icon-process-branch",
+      type: "",
+      id: "PlanStepTree"
+    },
+    {
+      title: "地址分配",
+      icon: "icon-process-distribution",
+      type: "",
+      id: "PlanStepAddressAssign"
+    }
+  ];
+}
+
 const state = {
   planList: [],
   currentPlanId: "",
@@ -80,7 +109,7 @@ const mutations = {
     state.planProcessList = planProcessList;
   },
   setPlanProcessListInit(state) {
-    state.planProcessList = planProcessList;
+    state.planProcessList = createPlanProcessList();
   },
   setCurrentPlanProcessId(state, id) {
     state.currentPlanProcessId = id;

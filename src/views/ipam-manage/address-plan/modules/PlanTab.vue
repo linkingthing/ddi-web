@@ -51,7 +51,8 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "setCurrentPlanId"
+      "setCurrentPlanId",
+      "setPlanList"
     ]),
     handleTab({ id }) {
       this.active = id;
@@ -65,8 +66,8 @@ export default {
       });
     },
     exacuteDelete(id) {
-      this.planList = this.planList.filter(item => item.id !== id);
-
+      const planList = this.planList.filter(item => item.id !== id);
+      this.setPlanList(planList);
       this.$nextTick().then(() => {
         if (id === this.active) {
           if (this.planList.length) {
