@@ -29,5 +29,6 @@ export default {
 <style lang="less" scoped>
 .PlanStepTree {
   display: flex;
+  position: relative;
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
-  <div class="PlanTreeNodeModal">
+  <div
+    class="PlanTreeNodeModal"
+    v-if="visible"
+  >
     <div class="PlanTreeNodeModal-header">
       规划编辑
     </div>
@@ -81,6 +84,7 @@ export default {
   props: {},
   data() {
     return {
+      visible: false,
       prefixLen: "",
       currentNodePrefixLen: 0,
       currentNodeBitWidth: 0,
@@ -114,8 +118,12 @@ export default {
       immediate: true,
       handler(val) {
         this.createValueList = [];
-
         if (val.pid) {
+          if (val.pid === "0") {
+            this.visible = false;
+          } else {
+            this.visible = true;
+          }
           const parentNode = findNodeById(this.currentLayout, val.pid);
           if (parentNode) {
             const [, prefixLen] = parentNode.prefix.split("/");
@@ -195,9 +203,13 @@ export default {
 
 <style lang="less" scoped>
 .PlanTreeNodeModal {
+  position: absolute;
+  right: 0;
+  z-index: 100;
   width: 460px;
   border-radius: 4px;
   box-shadow: 0px 0px 16px 0px rgba(67, 67, 67, 0.1);
+  background: #fff;
 
   .PlanTreeNodeModal-header {
     height: 54px;

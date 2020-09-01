@@ -108,7 +108,8 @@ export default {
       "nextPlanStep",
       "setCurrentPlanId",
       "addPlan",
-      "clearTempPlan"
+      "clearTempPlan",
+      "setPlanList"
     ]),
     handleClickSubmit() {
       this.$refs.formCustom.validate((valid) => {
@@ -120,6 +121,15 @@ export default {
             } else {
               delete params._description;
               this.$put({ url: this.currentPlan.links.self, params }).then((res) => {
+                this.$get(this.$getApiByRoute()).then(({ data }) => {
+                  const tableData = data.map(item => {
+                    item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+                    item.title = item.description;
+                    return item;
+                  });
+
+                  this.setPlanList(tableData);
+                });
                 this.nextPlanStep();
               });
             }
