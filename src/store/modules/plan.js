@@ -58,7 +58,9 @@ const state = {
   planList: [],
   currentPlanId: "",
   planProcessList,
-  currentPlanProcessId: "PlanStepCreatePrefix"
+  currentPlanProcessId: "PlanStepCreatePrefix",
+
+  netNodes: []
 };
 
 const getters = {
@@ -70,7 +72,8 @@ const getters = {
     return getters.currentPlan.prefix;
   },
   planProcessList: state => state.planProcessList,
-  currentPlanProcessId: state => state.currentPlanProcessId
+  currentPlanProcessId: state => state.currentPlanProcessId,
+  netNodes: state => state.netNodes
 };
 
 const mutations = {
@@ -113,6 +116,9 @@ const mutations = {
   },
   setCurrentPlanProcessId(state, id) {
     state.currentPlanProcessId = id;
+  },
+  setNetnodes(state, netNodes) {
+    state.netNodes = netNodes;
   }
 };
 

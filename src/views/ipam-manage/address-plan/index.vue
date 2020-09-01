@@ -36,10 +36,10 @@
         <PlanProcess />
 
         <component :is="stepComponent" />
-
-        <!-- <PlanStepSemantic />
-        <PlanStepTree />
-        <PlanStepAddressAssign /> -->
+        <!-- 
+        <PlanStepSemantic />
+        <PlanStepTree /> -->
+        <PlanStepAddressAssign />
       </template>
 
     </div>
@@ -120,7 +120,9 @@ export default {
       "setCurrentLayoutId",
       "setCurrentLayout",
 
-      "setCurrentNodeId"
+      "setCurrentNodeId",
+
+      "setNetnodes"
     ]),
     handleQuery() {
 
@@ -182,6 +184,7 @@ export default {
         }
 
         this.getPlannedsubnets(data.links);
+        this.getNetnodes(data.links);
       });
     },
 
@@ -189,6 +192,19 @@ export default {
       this.$get({ url: plannedsubnets }).then(data => {
         console.log("plannedsubnets", data);
       })
+    },
+
+    getNetnodes({ netnodes }) {
+      const params = {
+        nettype: "netv6"
+      }
+      this.$get({ url: netnodes, params }).then(({ data }) => {
+        console.log("netnodes", data);
+        const netNodes = data[0].netitems;
+        this.setNetnodes(netNodes);
+      }).catch((err) => {
+        console.dir(err)
+      });
     },
 
     handleDelete(id) {
