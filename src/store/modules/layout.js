@@ -118,8 +118,9 @@ const mutations = {
       newTree = JSON.parse(newTree);
 
       let tree = newTree.nodes[0];
+      const autofill = _layout.autofill;
       tree.prefix = newTree.prefix;
-      executeTreeNodePrefix([tree], "nodes");
+      executeTreeNodePrefix([tree], autofill, "nodes");
       _layout.nodes[0] = tree;
     }
 

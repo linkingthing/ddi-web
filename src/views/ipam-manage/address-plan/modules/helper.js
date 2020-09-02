@@ -127,21 +127,39 @@ export function treeFlat(tree, result = []) {
   return result;
 }
 
-export function executeTreeNodePrefix(tree, children = "children") {
+export function executeTreeNodePrefix(
+  tree,
+  autofill = false,
+  children = "children"
+) {
   if (Array.isArray(tree)) {
     tree.forEach(item => {
       const parentNodePrefix = item.prefix;
-      if (Array.isArray(item[children])) {
+      if (Array.isArray(item[children]) && parentNodePrefix) {
         item[children].forEach((node, i) => {
-          const offset = node.value || i + 1;
-          node.prefix = executeNextIpv6Segment(
-            parentNodePrefix,
-            offset,
-            node.bitWidth
-          );
+          let offset = "";
+          if (autofill) {
+            offset = i + 1;
+            node.prefix = executeNextIpv6Segment(
+              parentNodePrefix,
+              offset,
+              node.bitWidth
+            );
+          } else {
+            if (node.value) {
+              offset = node.value;
+              node.prefix = executeNextIpv6Segment(
+                parentNodePrefix,
+                offset,
+                node.bitWidth
+              );
+            } else {
+              node.prefix = "";
+            }
+          }
         });
       }
-      executeTreeNodePrefix(item[children], children);
+      executeTreeNodePrefix(item[children], autofill, children);
     });
   }
   return tree;
