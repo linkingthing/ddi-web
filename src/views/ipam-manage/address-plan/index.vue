@@ -76,7 +76,8 @@ export default {
   data() {
     return {
       url: this.$getApiByRoute().url,
-      loading: true
+      loading: true,
+      netnodesurl: ""
 
     };
   },
@@ -86,7 +87,8 @@ export default {
       planList: "planList",
       currentPlan: "currentPlan",
       stepComponent: "currentPlanProcessId",
-      planProcessList: "planProcessList"
+      planProcessList: "planProcessList",
+      netType: "netType"
     })
   },
 
@@ -99,6 +101,17 @@ export default {
           this.getLayout(val.links);
         }
       }
+    },
+    netType(netType) {
+      const params = {
+        nettype: netType
+      };
+      this.$get({ url: this.netnodesurl, params }).then(({ data }) => {
+        const netNodes = data[0].netitems;
+        this.setNetnodes(netNodes);
+      }).catch((err) => {
+        console.dir(err)
+      });
     }
 
   },
@@ -189,8 +202,9 @@ export default {
 
     getNetnodes({ netnodes }) {
       const params = {
-        nettype: "netv6"
+        nettype: this.netType
       };
+      this.netnodesurl = netnodes;
       this.$get({ url: netnodes, params }).then(({ data }) => {
         const netNodes = data[0].netitems;
         this.setNetnodes(netNodes);

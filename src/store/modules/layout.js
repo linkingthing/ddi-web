@@ -37,7 +37,8 @@ const state = {
   layoutList: [],
   currentLayoutId: "",
   currentLayout: {},
-  currentNodeId: "" // 语义规划部分
+  currentNodeId: "", // 语义规划部分
+  nettype: "netv6"
 };
 
 const getters = {
@@ -47,7 +48,8 @@ const getters = {
   },
   currentNode: state => {
     return _.cloneDeep(getCurrentNode(state));
-  }
+  },
+  netType: state => state.nettype
 };
 
 const mutations = {
@@ -149,6 +151,9 @@ const mutations = {
     currentNode.nodes.forEach(item => {
       item.bitWidth = bitWidth;
     });
+  },
+  setNetType(state, netType) {
+    state.nettype = netType;
   }
 };
 

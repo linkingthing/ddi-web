@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import AddressTypeTab from "./AddressTypeTab";
 export default {
   components: {
@@ -36,7 +36,7 @@ export default {
   props: {},
   data() {
     return {
-      active: "IPv6",
+      active: "netv6",
       query: "",
       columns: [{
         title: "地址规划",
@@ -63,8 +63,20 @@ export default {
         title: "操作",
         key: "action",
         align: "center",
-        width: 120,
+        width: 130,
         render: (h, { row }) => {
+          if (this.netType === "netv4") {
+            return h("span", {
+              class: {
+                "btn-line": true
+              },
+              on: {
+                click: () => {
+                  this.handleDHCP(row);
+                }
+              }
+            }, "DHCP");
+          }
           const [, len] = row.prefix.split("/");
           return h("div", {
 
@@ -103,7 +115,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "netNodes"
+      "netNodes",
+      "netType"
     ])
   },
   watch: {
@@ -114,6 +127,9 @@ export default {
         this.dataList = val;
         this.filterList = this.dataList;
       }
+    },
+    "netType"(value) {
+      this.active = value;
     }
   },
   created() {
@@ -121,8 +137,12 @@ export default {
   },
   mounted() { },
   methods: {
+    ...mapMutations([
+      "setNetType"
+    ]),
     handleIpTypeChange(type) {
       this.active = type;
+      this.setNetType(type)
     },
     handleSearch() {
       const query = this.query.trim();
@@ -239,7 +259,7 @@ export default {
   padding: 0 8px;
   height: 26px;
   font-size: 12px;
-  color: #4686fe;
+  color: #4686fe!important;
   border: 1px solid #4686fe;
   border-radius: 4px;
   cursor: pointer;
