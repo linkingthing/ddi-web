@@ -1,7 +1,7 @@
 <template>
   <div class="PlanTree">
     <VueTree
-      style="min-height: 580px;"
+      style="min-height: calc(100vh - 490px);"
       :dataset="treeData"
       :config="config"
       direction="horizontal"
@@ -28,7 +28,7 @@
       </template>
     </VueTree>
 
-    <div style="text-align:center;padding: 20px">
+    <div style="text-align:center;padding: 20px 0 0">
       <Button
         type="primary"
         @click="handleAddressPlanFinish"
@@ -126,7 +126,7 @@ export default {
           tree.prefix = newTree.prefix;
 
           // 是否需要计算 prefix，自动规划的需要，手动规划的看情况
-          executeTreeNodePrefix([tree]);
+          // executeTreeNodePrefix([tree]);
           this.treeData = tree;
         }
       }

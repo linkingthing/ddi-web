@@ -114,9 +114,13 @@ const mutations = {
     }
 
     if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
-      let tree = _layout.nodes[0];
-      tree.prefix = _layout.prefix;
+      let newTree = JSON.stringify(_layout);
+      newTree = JSON.parse(newTree);
+
+      let tree = newTree.nodes[0];
+      tree.prefix = newTree.prefix;
       executeTreeNodePrefix([tree], "nodes");
+      _layout.nodes[0] = tree;
     }
 
     state.currentLayout = _layout || {};

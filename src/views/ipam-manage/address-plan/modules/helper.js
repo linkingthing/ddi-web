@@ -141,7 +141,7 @@ export function executeTreeNodePrefix(tree, children = "children") {
           );
         });
       }
-      executeTreeNodePrefix(item[children]);
+      executeTreeNodePrefix(item[children], children);
     });
   }
   return tree;

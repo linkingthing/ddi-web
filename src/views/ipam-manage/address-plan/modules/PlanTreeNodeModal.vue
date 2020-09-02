@@ -126,8 +126,12 @@ export default {
           }
           const parentNode = findNodeById(this.currentLayout, val.pid);
           if (parentNode) {
-            const [, prefixLen] = parentNode.prefix.split("/");
-            this.currentNodePrefixLen = prefixLen;
+            console.log(1, parentNode)
+            if (parentNode.prefix) {
+              const [, prefixLen] = parentNode.prefix.split("/");
+              this.currentNodePrefixLen = prefixLen;
+            }
+
             this.currentNodeBitWidth = val.bitWidth;
 
             this.currentParentNode = _.cloneDeep(parentNode);
