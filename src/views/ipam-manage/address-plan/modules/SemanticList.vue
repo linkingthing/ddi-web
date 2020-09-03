@@ -4,6 +4,7 @@
     <div class="plan-count">
       <span>为提高规划的可扩展性，建议您填写期望的分支数量，预留将来可规划的空间：</span>
       <Select
+      :disabled="!ableEditBitWidth"
         v-model.number="bitWidth"
         style="width:160px"
       >
@@ -71,7 +72,8 @@ export default {
           name: "4095",
           bitWidth: 12
         }
-      ]
+      ],
+      ableEditBitWidth: true
     };
   },
   computed: {
@@ -85,7 +87,11 @@ export default {
        return +item.bitWidth === +this.bitWidth;
       });
 
-      return +current.name > this.semanticList.length;
+      if(current) {
+        return +current.name > this.semanticList.length;
+      } else {
+        return true;
+      }
     }
   },
   watch: {
@@ -123,8 +129,10 @@ export default {
           val.nodes.forEach(item => {
             this.bitWidth = item.bitWidth;
           });
+          this.ableEditBitWidth = false;
         } else {
           this.bitWidth = "";
+          this.ableEditBitWidth = true;
         }
       }
     }
