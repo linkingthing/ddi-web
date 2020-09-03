@@ -71,7 +71,10 @@ export default {
   },
   computed: {
     ...mapState({
-      "currentLayout": state => state.layout.currentLayout
+      "currentLayout": state => {
+        const { currentPlanId, planList } = state.plan;
+        return planList.find(item => item.id === currentPlanId).layout;
+      }
     }),
     ...mapGetters([
       "currentPlan"
@@ -87,13 +90,6 @@ export default {
     },
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    },
-    currentLayout: {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        // console.log(123, val)
-      }
     }
   },
   created() { },

@@ -20,11 +20,13 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapMutations, mapGetters, mapState } from "vuex";
 import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams } from "./helper";
+
+import Bus from "@/util/bus";
 
 export default {
   components: {
@@ -44,14 +46,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      "layoutList": state => {
-        return state.layout.layoutList;
-      },
-      "currentLayout": state => {
-        return state.layout.currentLayout || {};
-      }
-    })
+    ...mapGetters([
+      "currentLayout"
+    ])
 
   },
   watch: {
@@ -59,7 +56,6 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log("watch currentLayout", val)
         this.treeData = _.cloneDeep(val.nodes);
       }
     }

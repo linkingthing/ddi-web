@@ -69,19 +69,6 @@ export function openModified(tree) {
   }
 }
 
-export function findParentNodeById(tree, id) {
-  if (tree.id === id) {
-    return tree;
-  } else {
-    return (
-      Array.isArray(tree.nodes) &&
-      tree.nodes.find(item => {
-        return findParentNodeById(item, id);
-      })
-    );
-  }
-}
-
 export function findNodeById(tree, id, children = "nodes") {
   if (tree.id === id) {
     return tree;
@@ -97,10 +84,16 @@ export function findNodeById(tree, id, children = "nodes") {
   }
 }
 
+/**
+ * 查找当前状态树下的当前节点引用
+ * 
+*/
 export function getCurrentNode(state) {
-  const layout = state.currentLayout;
-  const currentNodeId = state.currentNodeId;
-  var currentNode = findNodeById(layout, currentNodeId);
+  const { layout } = state.planList.find(
+    item => item.id === state.currentPlanId
+  );
+  const { currentNodeId } = layout;
+  const currentNode = findNodeById(layout, currentNodeId);
   return currentNode || {};
 }
 

@@ -5,6 +5,7 @@
   >
     <div class="PlanTreeNodeModal-header">
       规划编辑
+      <span class="PlanTreeNodeModal-header-close" @click="visible = false">x</span>
     </div>
     <div class="PlanTreeNodeModal-content">
 
@@ -95,7 +96,10 @@ export default {
   },
   computed: {
     ...mapState({
-      "currentLayout": state => state.layout.currentLayout
+      "currentLayout": state => {
+        const { currentPlanId, planList } = state.plan;
+        return planList.find(item => item.id === currentPlanId).layout;
+      }
     }),
     ...mapGetters([
       "currentPrefix",
@@ -126,7 +130,6 @@ export default {
           }
           const parentNode = findNodeById(this.currentLayout, val.pid);
           if (parentNode) {
-            console.log(1, parentNode)
             if (parentNode.prefix) {
               const [, prefixLen] = parentNode.prefix.split("/");
               this.currentNodePrefixLen = prefixLen;
@@ -162,7 +165,7 @@ export default {
   methods: {
     ...mapMutations([
       "setCurrentNodeId",
-      "setCurrentNodeChildrenList"
+      "setCurrentNodeSiblingsList"
     ]),
     handleAutoCreate() {
 
@@ -194,12 +197,14 @@ export default {
     },
 
     handleSaveValue() {
-      this.setCurrentNodeId(this.currentParentNode.id);
       const currentNodeSiblings = this.currentParentNode.nodes;
       currentNodeSiblings.forEach(node => {
-        node.value = +this.createValueList.find(item => item.id === node.id).value;
+        const item = this.createValueList.find(item => item.id === node.id);
+        if (item) {
+          node.value = +this.createValueList.find(item => item.id === node.id).value;
+        }
       });
-      this.setCurrentNodeChildrenList(currentNodeSiblings);
+      this.setCurrentNodeSiblingsList(currentNodeSiblings);
     }
   }
 };
@@ -223,6 +228,10 @@ export default {
     color: #333;
     font-weight: bold;
     background: #e6e6e6;
+    .PlanTreeNodeModal-header-close {
+      float: right;
+      cursor: pointer;
+    }
   }
   .PlanTreeNodeModal-content {
     padding: 30px 24px;

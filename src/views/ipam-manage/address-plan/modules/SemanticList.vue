@@ -38,9 +38,10 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 
-import { mapState, mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapState } from "vuex";
 import SemanticListItem from "./SemanticListItem";
-import { defaultBitWidth } from "./helper";
+import { defaultBitWidth, findNodeById } from "./helper";
+
 export default {
   components: {
     SemanticListItem
@@ -76,22 +77,17 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      currentLayout: state => state.layout.currentLayout
-    }),
     ...mapGetters([
-      "currentNodeChildrenList",
+      "planList",
       "currentNode",
-      "setCurrentLayout"
+      "currentNodeChildrenList"
     ])
-
   },
   watch: {
     currentNodeChildrenList: {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val)
         if (Array.isArray(val)) {
           this.semanticList = val.map(item => {
             return {
@@ -128,9 +124,12 @@ export default {
     }
   },
   created() { },
-  mounted() { },
+  mounted() {
+
+  },
   methods: {
     ...mapMutations([
+      "setPlanList",
       "setCurrentNode",
       "setCurrentNodeChildrenList",
       "setCurrentNodeBitWidth"

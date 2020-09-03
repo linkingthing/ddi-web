@@ -125,7 +125,7 @@ export default {
       immediate: true,
       handler(val) {
         this.dataList = val;
-        this.filterList = this.dataList;
+        this.filterList = this.dataList || [];
       }
     },
     "netType"(value) {
@@ -223,6 +223,11 @@ export default {
 .AddressAssignList {
   .ivu-table-cell {
     overflow: visible;
+  }
+  .table-pagination-top {
+    height: 0;
+    line-height: 0;
+    min-height: 0;
   }
 }
 .treeStyle {

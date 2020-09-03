@@ -38,10 +38,7 @@ export function valuesParser(values) {
   const valuesData =
     values &&
     values.map(({ timestamp, value, ratio }) => {
-      // console.log(timestamp);
-      // console.log(moment(timestamp).valueOf());
-      // console.log(moment(moment(timestamp).valueOf()).format("YYYY-MM-DD HH:mm:ss"));
-      // console.log("===")
+
       if (typeof ratio === "undefined") {
         return [
           moment(timestamp).valueOf(), // .format("YYYY-MM-DD HH:mm:ss"),

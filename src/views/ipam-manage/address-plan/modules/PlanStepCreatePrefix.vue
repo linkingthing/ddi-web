@@ -51,7 +51,7 @@ export default {
         {
           validator: (rule, value, callback) => {
             if (ipv6IsValid(value)) {
-              const [pre, len] = value.split("/");
+              const [, len] = value.split("/");
               if (+len > 63) {
                 callback("prefixLen不能大于等于64");
               } else {
@@ -139,6 +139,8 @@ export default {
               this.clearTempPlan();
               this.setCurrentPlanId(res.id);
               this.nextPlanStep();
+            }).catch(err => {
+              this.$Message.error(err.response.data.message);
             });
           }
         }

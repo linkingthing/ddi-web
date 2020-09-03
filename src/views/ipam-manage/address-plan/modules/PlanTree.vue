@@ -103,13 +103,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      "currentLayout": state => state.layout.currentLayout
-    },
-
-    ),
     ...mapGetters([
-      "currentNode"
+      "currentNode",
+      "currentLayout"
     ])
   },
   watch: {
@@ -141,7 +137,6 @@ export default {
       "setCurrentNodeIpv4"
     ]),
     handleSelectTreeNode(data, node, collapsed, nodeDataList) {
-      console.log(data, node, collapsed, nodeDataList)
       this.setCurrentNodeId(data.id);
 
       let siblingsId = [];

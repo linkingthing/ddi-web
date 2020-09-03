@@ -8,7 +8,7 @@
         type="primary"
         style="margin-right: 20px"
         @click="handleAddPlan"
-      >手动添加规划</Button>
+      >新建规划</Button>
       <Button
         type="primary"
         @click="handleImport"
@@ -19,7 +19,7 @@
       <NoDataList
         style="margin-top: 100px"
         v-if="!planList.length"
-        button-text="手动添加规划"
+        button-text="新建规划"
         @add="handleAddPlan"
         :buttons="[{
           text:'导入规划',
@@ -29,9 +29,7 @@
       <template v-else>
         <PlanTab
           @onDeletePlan="handleDelete"
-          @change="handlePlanChange"
           :plan-list="planList"
-          @currentPlan="currentPlan => currentPlan = currentPlan"
         />
         <PlanProcess />
 
@@ -93,12 +91,12 @@ export default {
   },
 
   watch: {
-    "currentPlan": {
+    "currentPlan.links": {
       deep: true,
       immediate: true,
       handler(val) {
-        if (val && val.links) {
-          this.getLayout(val.links);
+        if (val) {
+          this.getLayout(val);
         }
       }
     },
@@ -124,19 +122,16 @@ export default {
   methods: {
     ...mapMutations([
       "setPlanProcessListInit",
+      "setPlanProcessListAccessible",
       "setCurrentPlanId",
       "setPlanList",
       "addPlan",
       "clearTempPlan",
-
-      "setLayoutList",
-      "setCurrentLayoutId",
-      "setCurrentLayout",
-
+      "setLayout",
       "setCurrentNodeId",
-
       "setNetnodes"
     ]),
+
     handleQuery() {
 
       this.$get({ url: this.url }).then(({ data }) => {
@@ -160,22 +155,21 @@ export default {
     getLayout({ layouts }) {
       this.$get({ url: layouts }).then(({ data, links }) => {
 
-        this.setLayoutList(data);
 
         if (data.length) {
           const oneLinks = data[0].links;
           this.getLayoutOne(oneLinks);
         } else {
-          this.setCurrentLayout({
-            layout: {
-              id: uuidv4(),
-              planProcessAccessList: ["PlanStepSemantic"],
-              name: "layout",
-              nodes: null,
-              links: {
-                create: links.self
-              }
-            }, prefix: this.currentPlan.prefix
+          this.setLayout({
+            id: uuidv4(),
+            planProcessAccessList: ["PlanStepSemantic"],
+            name: "layout",
+            nodes: null,
+            links: {
+              create: links.self
+            },
+            prefix: this.currentPlan.prefix
+
           });
           this.setPlanProcessListInit();
         }
@@ -186,11 +180,13 @@ export default {
 
     getLayoutOne({ self }) {
       this.$get({ url: self }).then(data => {
-        this.setCurrentLayoutId(data.id);
         if (Array.isArray(data.nodes)) {
           data.nodes = list2Tree(data.nodes, "0");
         }
-        this.setCurrentLayout({ layout: data, prefix: this.currentPlan.prefix });
+        this.setLayout(data);
+        this.setPlanProcessListAccessible("PlanStepSemantic");
+        this.setPlanProcessListAccessible("PlanStepTree");
+
         if (Array.isArray(data.nodes) && data.nodes.length) {
           const id = data.nodes[0].id;
           this.setCurrentNodeId(id);
@@ -208,6 +204,7 @@ export default {
       this.$get({ url: netnodes, params }).then(({ data }) => {
         const netNodes = data[0].netitems;
         this.setNetnodes(netNodes);
+        this.setPlanProcessListAccessible("PlanStepAddressAssign");
       }).catch((err) => {
         console.dir(err)
       });
@@ -216,16 +213,13 @@ export default {
     handleDelete(id) {
       this.$delete({ url: this.url + "/" + id }).then(() => {
         this.$$success("删除成功！");
-        this.setPlanProcessListInit();
-        this.currentNodeId("");
         this.handleQuery();
+      }).catch(() => {
+        this.clearTempPlan();
       });
 
     },
 
-    handlePlanChange(id) {
-      // console.log(id)
-    },
     handleAddPlan() {
       const id = uuidv4();
       this.addPlan({
@@ -236,7 +230,7 @@ export default {
         planType: "temp"
       });
       this.setCurrentPlanId(id);
-      this.setCurrentLayout(null);
+      this.setLayout(null);
       this.setPlanProcessListInit();
 
     },

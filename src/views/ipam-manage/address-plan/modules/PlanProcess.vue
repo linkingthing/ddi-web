@@ -28,7 +28,10 @@ export default {
   },
   computed: {
     ...mapState({
-      "currentLayout": state => state.layout.currentLayout
+      "currentLayout": state => {
+        const { currentPlanId, planList } = state.plan;
+        return planList.find(item => item.id === currentPlanId).layout;
+      }
     }),
     ...mapGetters([
       "planProcessList"
@@ -39,7 +42,6 @@ export default {
       immediate: true,
       deep: true,
       handler(val) {
-        console.log(val, val.find(item => item.type === "active"), 2)
         const planProcess = val.find(item => item.type === "active");
         if (planProcess) {
           const { id } = planProcess;
