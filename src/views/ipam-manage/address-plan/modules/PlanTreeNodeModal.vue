@@ -5,7 +5,10 @@
   >
     <div class="PlanTreeNodeModal-header">
       规划编辑
-      <span class="PlanTreeNodeModal-header-close" @click="visible = false">x</span>
+      <span
+        class="PlanTreeNodeModal-header-close"
+        @click="visible = false"
+      >x</span>
     </div>
     <div class="PlanTreeNodeModal-content">
 
@@ -95,14 +98,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      "currentLayout": state => {
-        const { currentPlanId, planList } = state.plan;
-        return planList.find(item => item.id === currentPlanId).layout;
-      }
-    }),
     ...mapGetters([
       "currentPrefix",
+      "currentLayout",
       "currentNode"
     ])
   },
@@ -128,6 +126,9 @@ export default {
           } else {
             this.visible = true;
           }
+          if (this.currentLayout.autofill) {
+            this.visible = false;
+          }
           const parentNode = findNodeById(this.currentLayout, val.pid);
           if (parentNode) {
             if (parentNode.prefix) {
@@ -140,12 +141,11 @@ export default {
             this.currentParentNode = _.cloneDeep(parentNode);
 
             parentNode.nodes.forEach(item => {
-              if (item.value) {
-                this.createValueList.push({
-                  isEdit: false,
-                  value: item.value
-                });
-              }
+              this.createValueList.push({
+                isEdit: false,
+                value: item.value
+              });
+
             });
 
           } else {

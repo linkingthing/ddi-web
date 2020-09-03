@@ -96,6 +96,7 @@ const state = {
 
   count: 1, // 触发计数器
   planCount: 1,
+  layoutCount: 1,
 };
 
 const getters = {
@@ -117,19 +118,23 @@ const getters = {
       .currentPlanProcessId,
 
   currentLayout: state => {
-    if (state.count) {
-      console.log("currentLayout", state.count);
+    if (state.layoutCount) {
+      console.log("layoutCount")
       const plan = state.planList.find(item => item.id === state.currentPlanId);
       if (plan) {
         let _layout = plan.layout;
 
         if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
+          console.log("plan")
+
           let newTree = JSON.stringify(_layout);
           newTree = JSON.parse(newTree);
 
           let tree = newTree.nodes[0];
           const autofill = _layout.autofill;
           tree.prefix = newTree.prefix;
+          console.log("plan", tree, "autofill", autofill)
+
           executeTreeNodePrefix([tree], autofill, "nodes");
           _layout.nodes[0] = tree;
         }
@@ -139,23 +144,17 @@ const getters = {
   },
   currentNodeId: state => {
     if (state.count) {
-      console.log("currentNodeId", state.count);
-
       return state.planList.find(item => item.id === state.currentPlanId).layout
         .currentNodeId;
     }
   },
   currentNode: state => {
     if (state.count) {
-      console.log("currentNode", state.count);
-
       return _.cloneDeep(getCurrentNode(state));
     }
   },
   currentNodeChildrenList: state => {
     if (state.count) {
-      console.log("currentNodeChildrenList", state.count);
-
       const currentNode = getCurrentNode(state);
       return _.cloneDeep(currentNode).nodes || [];
     }
@@ -291,7 +290,7 @@ const mutations = {
 
     const parentNode = findNodeById(layout, currentNode.pid);
     parentNode.nodes = _.cloneDeep(currentNodeSiblingsList);
-    state.count++;
+    state.layoutCount++;
   },
   setCurrentNodeIpv4(state, ipv4List) {
     const currentNode = getCurrentNode(state);
