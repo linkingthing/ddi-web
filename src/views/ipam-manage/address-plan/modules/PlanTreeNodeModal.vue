@@ -13,7 +13,7 @@
     <div class="PlanTreeNodeModal-content">
 
       <div class="prefix-range">
-        <strong>{{currentNodePrefixLen}}-{{Number(currentNodePrefixLen)+currentNodeBitWidth}}</strong>
+        <strong>{{Number(currentNodePrefixLen)+1}}-{{Number(currentNodePrefixLen)+currentNodeBitWidth}}</strong>
         <span>当前规划区段</span>
       </div>
 

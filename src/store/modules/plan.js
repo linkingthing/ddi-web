@@ -280,7 +280,7 @@ const mutations = {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.nodes = _.cloneDeep(currentNodeChildrenList);
-    state.count++;
+    state.layoutCount++;
   },
   setCurrentNodeSiblingsList(state, currentNodeSiblingsList) {
     const { layout } = state.planList.find(
