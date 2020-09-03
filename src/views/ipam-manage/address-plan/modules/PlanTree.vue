@@ -68,6 +68,8 @@ import VueTree from "@/components/vue-tree-chart";
 import { buildLayoutParams, executeTreeNodePrefix } from "./helper";
 import { v4 as uuidv4 } from "uuid";
 
+import { ipv4IsValid } from "@/util/common";
+
 export default {
   components: {
     VueTree
@@ -156,8 +158,15 @@ export default {
     },
 
     handleFinishIpv4Edit() {
-      this.visible = false;
-      this.setCurrentNodeIpv4(this.currentIpv4List);
+      const ispass = this.currentIpv4List.split(",").every(item => {
+        return ipv4IsValid(item.trim());
+      });
+      if (ispass) {
+        this.visible = false;
+        this.setCurrentNodeIpv4(this.currentIpv4List);
+      } else {
+        this.$Message.error("IP地址输入有误，请查证");
+      }
     },
 
     handleAddressPlanFinish() {

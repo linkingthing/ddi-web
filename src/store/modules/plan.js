@@ -286,6 +286,8 @@ const mutations = {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
     currentNode.ipv4 = _.cloneDeep(ipv4List);
+    state.count++;
+
   },
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);

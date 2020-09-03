@@ -102,7 +102,6 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val)
         if (val && val.links) {
           this.getNetnodes(val.links);
         }
