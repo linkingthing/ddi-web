@@ -138,8 +138,11 @@ export default {
               this.addPlan(res);
               this.clearTempPlan();
               this.setCurrentPlanId(res.id);
-              this.nextPlanStep();
+              setTimeout(() => {
+                this.nextPlanStep();
+              }, 600);
             }).catch(err => {
+              console.dir(err)
               this.$Message.error(err.response.data.message);
             });
           }

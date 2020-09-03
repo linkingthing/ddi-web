@@ -115,20 +115,22 @@ const getters = {
 
   currentLayout: state => {
     if (state.count) {
-      let _layout = state.planList.find(item => item.id === state.currentPlanId)
-        .layout;
+      const plan = state.planList.find(item => item.id === state.currentPlanId);
+      if (plan) {
+        let _layout = plan.layout;
 
-      if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
-        let newTree = JSON.stringify(_layout);
-        newTree = JSON.parse(newTree);
+        if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
+          let newTree = JSON.stringify(_layout);
+          newTree = JSON.parse(newTree);
 
-        let tree = newTree.nodes[0];
-        const autofill = _layout.autofill;
-        tree.prefix = newTree.prefix;
-        executeTreeNodePrefix([tree], autofill, "nodes");
-        _layout.nodes[0] = tree;
+          let tree = newTree.nodes[0];
+          const autofill = _layout.autofill;
+          tree.prefix = newTree.prefix;
+          executeTreeNodePrefix([tree], autofill, "nodes");
+          _layout.nodes[0] = tree;
+        }
+        return _layout;
       }
-      return _layout;
     }
   },
   currentNodeId: state => {

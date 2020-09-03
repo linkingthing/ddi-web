@@ -97,16 +97,15 @@ export default {
   methods: {
     ...mapMutations([
       "nextPlanStep",
-      "setCurrentLayout"
+      "setLayout"
     ]),
 
     handleCustom() {
       const params = buildLayoutParams(this.currentLayout, false);
       if (this.currentLayout.links.create) {
         this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
-          this.setCurrentLayout({
-            layout: { ...this.currentLayout, links, autofill },
-            prefix: this.currentPlan.prefix
+          this.setLayout({
+            ...this.currentLayout, links, autofill
           });
           this.nextPlanStep();
         });
@@ -116,9 +115,8 @@ export default {
       const params = buildLayoutParams(this.currentLayout);
       if (this.currentLayout.links.create) {
         this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
-          this.setCurrentLayout({
-            layout: { ...this.currentLayout, links, autofill },
-            prefix: this.currentPlan.prefix
+          this.setLayout({
+            ...this.currentLayout, links, autofill
           });
           this.nextPlanStep();
         });

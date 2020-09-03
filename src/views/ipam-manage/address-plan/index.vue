@@ -9,10 +9,10 @@
         style="margin-right: 20px"
         @click="handleAddPlan"
       >新建规划</Button>
-      <Button
+      <!-- <Button
         type="primary"
         @click="handleImport"
-      >导入规划</Button>
+      >导入规划</Button> -->
     </div>
     <div class="plan-content">
 
@@ -21,11 +21,11 @@
         v-if="!planList.length"
         button-text="新建规划"
         @add="handleAddPlan"
-        :buttons="[{
+      />
+      <!-- :buttons="[{
           text:'导入规划',
           event: handleImport
-        }]"
-      />
+        }]" -->
       <template v-else>
         <PlanTab
           @onDeletePlan="handleDelete"
@@ -34,10 +34,7 @@
         <PlanProcess />
 
         <component :is="stepComponent" />
-        <!-- 
-        <PlanStepSemantic />
-        <PlanStepTree /> -->
-        <!-- <PlanStepAddressAssign /> -->
+
       </template>
 
     </div>
@@ -84,6 +81,7 @@ export default {
     ...mapGetters({
       planList: "planList",
       currentPlan: "currentPlan",
+      currentLayout: "currentLayout",
       stepComponent: "currentPlanProcessId",
       planProcessList: "planProcessList",
       netType: "netType"
@@ -100,13 +98,27 @@ export default {
         }
       }
     },
+    "currentLayout": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        console.log(val)
+        if (val && val.links) {
+          this.getNetnodes(val.links);
+        }
+      }
+    },
     netType(netType) {
       const params = {
         nettype: netType
       };
       this.$get({ url: this.netnodesurl, params }).then(({ data }) => {
-        const netNodes = data[0].netitems;
-        this.setNetnodes(netNodes);
+        if (data[0]) {
+          const netNodes = data[0].netitems;
+          this.setNetnodes(netNodes);
+        } else {
+          this.setNetnodes([]);
+        }
       }).catch((err) => {
         console.dir(err)
       });
@@ -230,15 +242,11 @@ export default {
         planType: "temp"
       });
       this.setCurrentPlanId(id);
-      this.setLayout(null);
-      this.setPlanProcessListInit();
-
     },
-    handleImport() {
-      // 正式做导入功能之前，这个操作都用于测试store
-      console.log(this.$store)
-
-    }
+    // handleImport() {
+    //   // 正式做导入功能之前，这个操作都用于测试store
+    //   console.log(this.$store)
+    // }
 
 
   }

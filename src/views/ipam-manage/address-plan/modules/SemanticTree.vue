@@ -26,8 +26,6 @@ import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams } from "./helper";
 
-import Bus from "@/util/bus";
-
 export default {
   components: {
     SemanticTreeHeader,
