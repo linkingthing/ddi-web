@@ -101,7 +101,9 @@ const getters = {
   planList: state => state.planList,
   currentPlanId: state => state.currentPlanId,
   currentPlan: state => {
-    return state.planList.find(item => item.id === state.currentPlanId);
+    if (state.count) {
+      return state.planList.find(item => item.id === state.currentPlanId);
+    }
   },
   currentPrefix: state => {
     return state.planList.find(item => item.id === state.currentPlanId).prefix;
@@ -228,6 +230,7 @@ const mutations = {
       _layout.expand = true;
       _layout.bitWidth = defaultBitWidth;
       _layout.prefix = this.getters.currentPrefix;
+      _layout.name = this.getters.currentPlan.description;
       if (!_layout.nodes) {
         const uuid = uuidv4();
         state.currentNodeId = uuid;
@@ -238,7 +241,7 @@ const mutations = {
             id: uuid,
             ipv4: "",
             modified: 1,
-            name: "layout",
+            name: _layout.name,
             pid: "0",
             value: 0,
             nodes: _.cloneDeep(
@@ -287,7 +290,6 @@ const mutations = {
     currentNode.expand = true;
     currentNode.ipv4 = _.cloneDeep(ipv4List);
     state.count++;
-
   },
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);

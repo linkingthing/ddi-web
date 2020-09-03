@@ -130,7 +130,9 @@ export default {
 
                   this.setPlanList(tableData);
                 });
-                this.nextPlanStep();
+                setTimeout(() => {
+                  this.nextPlanStep();
+                }, 400);
               });
             }
           } else {

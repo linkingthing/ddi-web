@@ -28,7 +28,6 @@ export function buildLayoutParams(currentLayout, autofill = true) {
   delete params.id;
 
   params.nodes = nodes;
-  params.name = "layout";
   params.autofill = autofill;
 
   return params;
