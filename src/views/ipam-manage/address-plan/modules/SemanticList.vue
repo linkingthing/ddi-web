@@ -27,6 +27,7 @@
     </div>
 
     <Button
+      :disabled="!ableAdd"
       icon="ios-add"
       type="default"
       @click="handleAdd"
@@ -57,22 +58,19 @@ export default {
     return {
       semanticList: [],
       bitWidth: defaultBitWidth,
-      countList: [{
-        name: "16",
-        bitWidth: 4
-      },
-      {
-        name: "256",
-        bitWidth: 8
-      },
-      {
-        name: "4096",
-        bitWidth: 12
-      },
-      {
-        name: "4294967296",
-        bitWidth: 32
-      }
+      countList: [
+        {
+          name: "15",
+          bitWidth: 4
+        },
+        {
+          name: "256",
+          bitWidth: 8
+        },
+        {
+          name: "4095",
+          bitWidth: 12
+        }
       ]
     };
   },
@@ -81,7 +79,14 @@ export default {
       "planList",
       "currentNode",
       "currentNodeChildrenList"
-    ])
+    ]),
+    ableAdd() {
+      const current = this.countList.find(item => {
+       return +item.bitWidth === +this.bitWidth;
+      });
+
+      return +current.name > this.semanticList.length;
+    }
   },
   watch: {
     currentNodeChildrenList: {
