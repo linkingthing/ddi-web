@@ -97,7 +97,8 @@ export default {
               expand: true,
               pid: item.pid,
               bitWidth: item.bitWidth,
-              value: item.value
+              value: item.value,
+              nodes: item.nodes
             };
           });
         }
