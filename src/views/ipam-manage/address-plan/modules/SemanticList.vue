@@ -146,13 +146,16 @@ export default {
       });
     },
     handleSave(id, name) {
-      this.semanticList.forEach(item => {
+      const semanticList = this.semanticList.map(item => {
         if (item.id === id) {
           item.name = name;
           item.isEdit = false;
         }
+        return item;
+      }).filter(item => {
+        return !!item.name;
       });
-      this.setCurrentNodeChildrenList(this.semanticList);
+      this.setCurrentNodeChildrenList(semanticList);
     },
     handleEdit(id) {
       this.semanticList.forEach(item => {
