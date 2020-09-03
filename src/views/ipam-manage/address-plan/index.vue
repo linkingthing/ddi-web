@@ -93,7 +93,8 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        if (val) {
+        console.log(val)
+        if (val && val.layouts) {
           this.getLayout(val);
         }
       }
@@ -102,7 +103,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        if (val && val.links) {
+        if (val && val.links && val.links.netnodes) {
           this.getNetnodes(val.links);
         }
       }
@@ -180,9 +181,8 @@ export default {
               create: links.self
             },
             prefix: this.currentPlan.prefix
-
           });
-          this.setPlanProcessListInit();
+          // this.setPlanProcessListInit();
         }
 
       });

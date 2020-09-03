@@ -94,14 +94,15 @@ const state = {
   nettype: "netv6",
   netNodes: [],
 
-  count: 1 // 触发计数器
+  count: 1, // 触发计数器
+  planCount: 1,
 };
 
 const getters = {
   planList: state => state.planList,
   currentPlanId: state => state.currentPlanId,
   currentPlan: state => {
-    if (state.count) {
+    if (state.planCount) {
       return state.planList.find(item => item.id === state.currentPlanId);
     }
   },
@@ -117,6 +118,7 @@ const getters = {
 
   currentLayout: state => {
     if (state.count) {
+      console.log("currentLayout", state.count);
       const plan = state.planList.find(item => item.id === state.currentPlanId);
       if (plan) {
         let _layout = plan.layout;
@@ -137,17 +139,23 @@ const getters = {
   },
   currentNodeId: state => {
     if (state.count) {
+      console.log("currentNodeId", state.count);
+
       return state.planList.find(item => item.id === state.currentPlanId).layout
         .currentNodeId;
     }
   },
   currentNode: state => {
     if (state.count) {
+      console.log("currentNode", state.count);
+
       return _.cloneDeep(getCurrentNode(state));
     }
   },
   currentNodeChildrenList: state => {
     if (state.count) {
+      console.log("currentNodeChildrenList", state.count);
+
       const currentNode = getCurrentNode(state);
       return _.cloneDeep(currentNode).nodes || [];
     }
@@ -172,7 +180,7 @@ const mutations = {
   },
   setCurrentPlanId(state, currentPlanId) {
     state.currentPlanId = currentPlanId;
-    state.count++;
+    state.planCount++;
   },
   nextPlanStep(state, id) {
     const plan = state.planList.find(item => item.id === state.currentPlanId);

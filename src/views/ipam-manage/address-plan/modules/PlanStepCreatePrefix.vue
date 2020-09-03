@@ -8,7 +8,10 @@
       :rules="rules"
       ref="formCustom"
     >
-      <FormItem label="规划名称">
+      <FormItem
+        label="规划名称"
+        prop="description"
+      >
         <Input
           v-model="formData.description"
           size="large"
@@ -47,6 +50,16 @@ export default {
   props: {},
   data() {
     this.rules = {
+      description: [{
+        validator: (rule, value, callback) => {
+          if (value.trim().length) {
+            callback();
+          } else {
+            callback("请输入规划名");
+          }
+        }
+      }
+      ],
       prefix: [
         {
           validator: (rule, value, callback) => {
