@@ -187,6 +187,7 @@ export default {
 <style lang="less" scoped>
 .PlanTree {
   flex: 1;
+  overflow: hidden;
 
   .rich-node {
     display: flex;

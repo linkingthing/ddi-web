@@ -24,15 +24,15 @@
           @click="onClickNode(index)"
           :key="node.data.id"
           :style="{
-            left: formatDimension(
-              direction === DIRECTION.VERTICAL ? node.x : node.y
-            ),
-            top: formatDimension(
-              direction === DIRECTION.VERTICAL ? node.y : node.x
-            ),
-            width: formatDimension(config.nodeWidth),
-            height: formatDimension(config.nodeHeight)
-          }"
+              left: formatDimension(
+                direction === DIRECTION.VERTICAL ? node.x : node.y
+              ),
+              top: formatDimension(
+                direction === DIRECTION.VERTICAL ? node.y : node.x
+              ),
+              width: formatDimension(config.nodeWidth),
+              height: formatDimension(config.nodeHeight)
+            }"
         >
           <slot
             name="node"
@@ -126,7 +126,8 @@ export default {
       linkDataList: [],
       initTransformX: 0,
       initTransformY: 0,
-      DIRECTION
+      DIRECTION,
+      zoom: 1
     };
   },
   computed: {
@@ -146,6 +147,20 @@ export default {
   },
   mounted() {
     this.init();
+    const container = this.$refs.container;
+    container.addEventListener("mousewheel", (e) => {
+      this.zoom += event.wheelDelta / 1200;
+
+      if (this.zoom < 0.1) {
+        this.zoom = 0.1;
+      }
+
+      if (this.zoom > 1) {
+        this.zoom = 1;
+      }
+      this.setScale(this.zoom);
+    }, false);
+
   },
   methods: {
     init() {
@@ -440,7 +455,9 @@ export default {
   overflow: hidden;
 
   .vue-tree {
-    position: relative;
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 
   > svg,

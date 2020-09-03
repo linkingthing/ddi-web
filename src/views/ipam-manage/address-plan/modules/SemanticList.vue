@@ -125,11 +125,17 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
+        console.log(44, val)
         if (Array.isArray(val.nodes)) {
           val.nodes.forEach(item => {
             this.bitWidth = item.bitWidth;
           });
-          this.ableEditBitWidth = false;
+
+          if(val.nodes.length) {
+            this.ableEditBitWidth = false;
+          }else {
+            this.ableEditBitWidth = true;
+          }
         } else {
           this.bitWidth = "";
           this.ableEditBitWidth = true;
