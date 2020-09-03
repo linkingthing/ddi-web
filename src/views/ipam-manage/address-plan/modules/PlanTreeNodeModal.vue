@@ -141,10 +141,19 @@ export default {
             this.currentParentNode = _.cloneDeep(parentNode);
 
             parentNode.nodes.forEach(item => {
-              this.createValueList.push({
-                isEdit: false,
-                value: item.value
-              });
+
+              if (item.value) {
+                this.createValueList.push({
+                  isEdit: false,
+                  value: item.value
+                });
+              } else {
+                this.createValueList.push({
+                  isEdit: true,
+                  value: ""
+                });
+              }
+
 
             });
 

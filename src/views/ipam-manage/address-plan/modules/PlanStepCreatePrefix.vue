@@ -65,8 +65,8 @@ export default {
           validator: (rule, value, callback) => {
             if (ipv6IsValid(value)) {
               const [, len] = value.split("/");
-              if (+len > 63) {
-                callback("prefixLen不能大于等于64");
+              if (+len > 60) {
+                callback("prefixLen不能大于等于60");
               } else {
                 callback();
               }
