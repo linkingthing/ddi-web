@@ -147,7 +147,7 @@ export default {
     };
 
     if (ip && ipv4IsValid(ip)) {
-      this.currentData.ipv4 = ip;
+      this.currentData.ipv4s = [ip];
     } else {
       this.currentData.ipv6s = [ip];
       this.currentData.subnetv6Ids = [subnetv6Ids];
