@@ -48,8 +48,6 @@ export default {
                 }
               });
 
-              console.log(domainNameList)
-
               return h("Tags", {
                 props: {
                   list: domainNameList
