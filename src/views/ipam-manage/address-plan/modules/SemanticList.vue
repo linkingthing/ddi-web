@@ -4,7 +4,7 @@
     <div class="plan-count">
       <span>为提高规划的可扩展性，建议您填写期望的分支数量，预留将来可规划的空间：</span>
       <Select
-      :disabled="!ableEditBitWidth"
+        :disabled="!ableEditBitWidth"
         v-model.number="bitWidth"
         style="width:160px"
       >
@@ -58,7 +58,7 @@ export default {
 
     return {
       semanticList: [],
-      bitWidth: defaultBitWidth,
+      bitWidth: "",
       countList: [
         {
           name: "15",
@@ -84,10 +84,10 @@ export default {
     ]),
     ableAdd() {
       const current = this.countList.find(item => {
-       return +item.bitWidth === +this.bitWidth;
+        return +item.bitWidth === +this.bitWidth;
       });
 
-      if(current) {
+      if (current) {
         return +current.name > this.semanticList.length;
       } else {
         return true;
@@ -127,13 +127,15 @@ export default {
       handler(val) {
         console.log(44, val)
         if (Array.isArray(val.nodes)) {
-          val.nodes.forEach(item => {
-            this.bitWidth = item.bitWidth;
-          });
-
-          if(val.nodes.length) {
-            this.ableEditBitWidth = false;
-          }else {
+          if (val.nodes.length) {
+            if (!!val.nodes[0].bitWidth) {
+              this.bitWidth = val.nodes[0].bitWidth;
+              this.ableEditBitWidth = false;
+            } else {
+              this.bitWidth = "";
+            }
+          } else {
+            this.bitWidth = "";
             this.ableEditBitWidth = true;
           }
         } else {

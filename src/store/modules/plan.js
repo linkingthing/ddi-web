@@ -48,7 +48,7 @@ function createInitLayout() {
       id: uuidv4(),
       name: "机构",
       nodes: [],
-      bitWidth: defaultBitWidth,
+      bitWidth: "",
       ipv4: "",
       modified: 1
     },
@@ -56,7 +56,7 @@ function createInitLayout() {
       id: uuidv4(),
       name: "业务",
       nodes: [],
-      bitWidth: defaultBitWidth,
+      bitWidth: "",
       ipv4: "",
       modified: 1
     },
@@ -64,7 +64,7 @@ function createInitLayout() {
       id: uuidv4(),
       name: "数据中心",
       nodes: [],
-      bitWidth: defaultBitWidth,
+      bitWidth: "",
       ipv4: "",
       modified: 1
     }
