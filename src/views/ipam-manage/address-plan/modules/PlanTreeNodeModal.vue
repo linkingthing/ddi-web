@@ -79,8 +79,10 @@
 import _ from "lodash";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import { findNodeById } from "./helper";
-
+import eventBus from "@/util/bus";
 import SegmentAxis from "@/components/SegmentAxis";
+
+
 export default {
   components: {
     SegmentAxis
@@ -123,20 +125,13 @@ export default {
         if (val.pid) {
           if (val.pid === "0") {
             this.visible = false;
-          } else {
-            this.visible = true;
           }
           if (this.currentLayout.autofill) {
             this.visible = false;
           }
           const parentNode = findNodeById(this.currentLayout, val.pid);
           if (parentNode) {
-            if (parentNode.prefix) {
-              const [, prefixLen] = parentNode.prefix.split("/");
-              this.currentNodePrefixLen = prefixLen;
-            } else {
-              // this.visible = false;
-            }
+
 
             this.currentNodeBitWidth = val.bitWidth;
 
@@ -172,16 +167,32 @@ export default {
     }
   },
   created() { },
-  mounted() { },
+  mounted() {
+    eventBus.$on("onSelectNode", this.onSelectNode);
+  },
   methods: {
     ...mapMutations([
       "setCurrentNodeId",
       "setCurrentNodeSiblingsList"
     ]),
+    onSelectNode(data, node) {
+      // 设置面板 prefix相关
+      if (node.parent) {
+        const parentNode = node.parent.data;
+        const [, len] = parentNode.prefix.split("/");
+        if (len) {
+          this.visible = true;
+          this.currentNodePrefixLen = len;
+          this.currentNodeBitWidth = data.bitWidth;
+        } else {
+          this.visible = false;
+        }
+      } else {
+        this.visible = false;
+      }
+    },
+
     handleAutoCreate() {
-
-
-
       let startValue = this.startValue || 1;
 
       /**
@@ -196,7 +207,6 @@ export default {
         this.$Message.error("起始值应大于0");
         return;
       }
-
 
       const parentNode = findNodeById(this.currentLayout, this.currentNode.pid);
       if (parentNode) {

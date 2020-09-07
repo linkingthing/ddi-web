@@ -76,6 +76,7 @@ import { buildLayoutParams, executeTreeNodePrefix } from "./helper";
 import { v4 as uuidv4 } from "uuid";
 
 import { ipv4IsValid } from "@/util/common";
+import eventBus from "@/util/bus";
 
 export default {
   components: {
@@ -161,6 +162,8 @@ export default {
         id: data.id,
         siblingsId
       };
+
+      eventBus.$emit("onSelectNode", data, node)
     },
     handleClickIpv4(e, data) {
       this.visible = true;
