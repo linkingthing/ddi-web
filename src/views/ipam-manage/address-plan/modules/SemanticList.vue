@@ -168,6 +168,10 @@ export default {
       });
     },
     handleSave(id, name) {
+      if (name.length > 15) {
+        this.$Message.error("请输入少于等于15字符");
+        return;
+      }
       const semanticList = this.semanticList.map(item => {
         if (item.id === id) {
           item.name = name;
