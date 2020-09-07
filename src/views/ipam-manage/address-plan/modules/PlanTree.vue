@@ -131,8 +131,11 @@ export default {
           let tree = newTree.children[0];
           tree.prefix = newTree.prefix;
 
-          // 是否需要计算 prefix，自动规划的需要，手动规划的看情况
-          // executeTreeNodePrefix([tree]);
+          // 是否需要计算 prefix，,手动规划情况，且规划到位的才设置prefix
+
+          if (_.isBoolean(val.autofill) && !val.autofill) {
+            executeTreeNodePrefix([tree]);
+          }
           this.treeData = tree;
         }
       }
