@@ -65,7 +65,7 @@ export default {
           bitWidth: 4
         },
         {
-          name: "256",
+          name: "255",
           bitWidth: 8
         },
         {
