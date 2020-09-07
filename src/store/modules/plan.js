@@ -4,8 +4,12 @@ import {
   defaultBitWidth,
   getCurrentNode,
   findNodeById,
-  executeTreeNodePrefix
+  executeTreeNodePrefix,
+  list2Tree
 } from "@/views/ipam-manage/address-plan/modules/helper";
+
+import { get } from "@/util/axios";
+import { getApiByRoute } from "@/util/request";
 
 const ProcessState = {
   ACTIVE: "active",
@@ -119,25 +123,24 @@ const getters = {
 
   currentLayout: state => {
     if (state.layoutCount) {
-      console.log("layoutCount");
       const plan = state.planList.find(item => item.id === state.currentPlanId);
       if (plan) {
         let _layout = plan.layout;
 
-        if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
-          console.log("plan");
+        // if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
+        //   console.log("plan");
 
-          let newTree = JSON.stringify(_layout);
-          newTree = JSON.parse(newTree);
+        //   let newTree = JSON.stringify(_layout);
+        //   newTree = JSON.parse(newTree);
 
-          let tree = newTree.nodes[0];
-          const autofill = _layout.autofill;
-          tree.prefix = newTree.prefix;
-          console.log("plan", tree, "autofill", autofill);
+        //   let tree = newTree.nodes[0];
+        //   const autofill = _layout.autofill;
+        //   tree.prefix = newTree.prefix;
+        //   console.log("plan", tree, "autofill", autofill);
 
-          executeTreeNodePrefix([tree], autofill, "nodes");
-          _layout.nodes[0] = tree;
-        }
+        //   executeTreeNodePrefix([tree], autofill, "nodes");
+        //   _layout.nodes[0] = tree;
+        // }
         return _layout;
       }
     }
@@ -170,6 +173,7 @@ const mutations = {
         return createPlan(item);
       });
     }
+    state.layoutCount++;
   },
   addPlan(state, plan) {
     state.planList.push(createPlan(plan));
@@ -238,6 +242,13 @@ const mutations = {
       _layout.bitWidth = defaultBitWidth;
       _layout.prefix = this.getters.currentPrefix;
       _layout.name = this.getters.currentPlan.description;
+
+      if (Array.isArray(_layout.nodes)) {
+        _layout.nodes = list2Tree(_layout.nodes, "0");
+        if (_layout.nodes.length) {
+          _layout.nodes[0].name = _layout.name;
+        }
+      }
       if (!_layout.nodes) {
         const uuid = uuidv4();
         state.currentNodeId = uuid;
@@ -267,6 +278,8 @@ const mutations = {
     state.planList.find(
       item => item.id === state.currentPlanId
     ).layout = _layout;
+
+    state.layoutCount++;
   },
 
   setCurrentNodeId(state, id) {
@@ -316,7 +329,14 @@ const mutations = {
   }
 };
 
-const actions = {};
+const actions = {
+  getPlanList(context) {
+    console.log("action");
+    get(getApiByRoute("/address/ipam/plans")).then(data => {
+      console.log(data);
+    });
+  }
+};
 
 export default {
   state,

@@ -67,7 +67,8 @@ export default {
   methods: {
     ...mapMutations([
       "setCurrentNodeId",
-      "nextPlanStep"
+      "nextPlanStep",
+      "setLayout"
     ]),
     handleSearch(val) {
       this.keywords = val;
@@ -117,16 +118,16 @@ export default {
         const params = buildLayoutParams(this.currentLayout);
         this.$put({ url: this.currentLayout.links.update, params }).then(() => {
           this.$get({ url: this.currentLayout.links.self }).then(res => {
-            // 更新当前数据和状态
             this.nextPlanStep();
+            this.setLayout(res);
           });
         });
       } else {
         const params = buildLayoutParams(this.currentLayout, false);
         this.$put({ url: this.currentLayout.links.update, params }).then(() => {
           this.$get({ url: this.currentLayout.links.self }).then(res => {
-            // 更新当前数据和状态
             this.nextPlanStep();
+            this.setLayout(res);
           });
         });
       }

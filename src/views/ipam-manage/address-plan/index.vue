@@ -193,9 +193,9 @@ export default {
 
     getLayoutOne({ self }) {
       this.$get({ url: self }).then(data => {
-        if (Array.isArray(data.nodes)) {
-          data.nodes = list2Tree(data.nodes, "0");
-        }
+        // if (Array.isArray(data.nodes)) {
+        //   data.nodes = list2Tree(data.nodes, "0");
+        // }
         this.setLayout(data);
         this.setPlanProcessListAccessible("PlanStepSemantic");
         this.setPlanProcessListAccessible("PlanStepTree");

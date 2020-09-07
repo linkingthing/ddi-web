@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from "vuex";
+import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 import { buildLayoutParams } from "./helper";
 
 export default {
@@ -100,6 +100,9 @@ export default {
       "setLayout"
     ]),
 
+    ...mapActions([
+      "getPlanList"
+    ]),
     handleCustom() {
       const params = buildLayoutParams(this.currentLayout, false);
       if (this.currentLayout.links.create) {
@@ -107,6 +110,7 @@ export default {
           this.setLayout({
             ...this.currentLayout, links, autofill
           });
+          this.getPlanList();
           this.nextPlanStep();
         });
       }
