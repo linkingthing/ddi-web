@@ -219,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .PlanTreeNodeModal {
   position: absolute;
   right: 0;
@@ -269,13 +269,20 @@ export default {
       float: left;
       display: block;
       width: 70px;
-      height: 36px;
-      line-height: 36px;
-      border: 1px solid #ccc;
       margin-right: 16px;
       margin-bottom: 16px;
       text-align: center;
-      border-radius: 4px;
+      span {
+        display: inline-block;
+        width: 70px;
+        height: 36px;
+        line-height: 36px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .ivu-input {
+        height: 36px;
+      }
     }
   }
 }
