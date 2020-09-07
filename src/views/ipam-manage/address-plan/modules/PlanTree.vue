@@ -167,7 +167,7 @@ export default {
 
     handleFinishIpv4Edit() {
       const ispass = this.currentIpv4List.split(",").every(item => {
-        return ipv4IsValid(item.trim());
+        return ipv4IsValid(item.trim()) && (item.split("/").length === 2);
       });
       if (ispass) {
         this.visible = false;
