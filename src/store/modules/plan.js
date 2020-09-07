@@ -96,7 +96,7 @@ const state = {
 
   count: 1, // 触发计数器
   planCount: 1,
-  layoutCount: 1,
+  layoutCount: 1
 };
 
 const getters = {
@@ -119,13 +119,13 @@ const getters = {
 
   currentLayout: state => {
     if (state.layoutCount) {
-      console.log("layoutCount")
+      console.log("layoutCount");
       const plan = state.planList.find(item => item.id === state.currentPlanId);
       if (plan) {
         let _layout = plan.layout;
 
         if (Array.isArray(_layout.nodes) && _layout.nodes.length) {
-          console.log("plan")
+          console.log("plan");
 
           let newTree = JSON.stringify(_layout);
           newTree = JSON.parse(newTree);
@@ -133,7 +133,7 @@ const getters = {
           let tree = newTree.nodes[0];
           const autofill = _layout.autofill;
           tree.prefix = newTree.prefix;
-          console.log("plan", tree, "autofill", autofill)
+          console.log("plan", tree, "autofill", autofill);
 
           executeTreeNodePrefix([tree], autofill, "nodes");
           _layout.nodes[0] = tree;
@@ -297,6 +297,7 @@ const mutations = {
     currentNode.expand = true;
     currentNode.ipv4 = _.cloneDeep(ipv4List);
     state.count++;
+    state.layoutCount++;
   },
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);

@@ -88,8 +88,10 @@ export default {
               style: {
                 display: +len === 64 && "none"
               },
-              click: () => {
-                this.handleDelegate(row);
+              on: {
+                click: () => {
+                  this.handleDelegate(row);
+                }
               }
             }, "地址委派"),
             h("span", {
@@ -264,7 +266,7 @@ export default {
   padding: 0 8px;
   height: 26px;
   font-size: 12px;
-  color: #4686fe!important;
+  color: #4686fe !important;
   border: 1px solid #4686fe;
   border-radius: 4px;
   cursor: pointer;
