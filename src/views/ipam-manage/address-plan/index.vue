@@ -157,6 +157,8 @@ export default {
 
         if (tableData.length) {
           this.setCurrentPlanId(tableData[0].id);
+          this.setPlanProcessListAccessible("PlanStepSemantic");
+
         }
       }).catch((err) => {
         this.$handleError(err);
