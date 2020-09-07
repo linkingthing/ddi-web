@@ -6,6 +6,7 @@
       search
       enter-button
       placeholder="搜索分支"
+      @on-search="handleSearch"
     />
 
   </div>
@@ -28,7 +29,11 @@ export default {
   watch: {},
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    handleSearch(val) {
+      this.$emit("search", val);
+    }
+  }
 };
 </script>
 

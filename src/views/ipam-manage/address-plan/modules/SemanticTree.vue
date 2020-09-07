@@ -1,6 +1,9 @@
 <template>
   <div class="SemanticTree">
-    <SemanticTreeHeader :prefix="prefix" />
+    <SemanticTreeHeader
+      :prefix="prefix"
+      @search="handleSearch"
+    />
 
     <Tree
       :data="treeData"
@@ -40,7 +43,8 @@ export default {
   data() {
     return {
       treeData: [],
-      visible: false
+      visible: false,
+      keywords: ""
     };
   },
   computed: {
@@ -65,10 +69,20 @@ export default {
       "setCurrentNodeId",
       "nextPlanStep"
     ]),
+    handleSearch(val) {
+      this.keywords = val;
+    },
     handleSelectNode(nodes, node) {
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
+      let name;
+
+      if (this.keywords.length > 0 && data.name.includes(this.keywords)) {
+        name = data.name.split(this.keywords).join(`<span style="color: #f02828">${this.keywords}</span>`);
+      } else {
+        name = data.name;
+      }
       return h("span", {
         props: {
         },
@@ -86,7 +100,11 @@ export default {
               marginRight: "8px"
             }
           }),
-          h("span", data.name)
+          h("span", {
+            domProps: {
+              innerHTML: name
+            }
+          })
         ])
       ]);
     },
