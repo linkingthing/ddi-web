@@ -8,23 +8,30 @@
       link-style="straight"
     >
       <template v-slot:node="{ data, node, collapsed ,nodeDataList}">
-        <div
-          @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
-          :class="{activeNode:data.id ===active.id, activeDepth: active.siblingsId.includes(data.id)}"
-          class="rich-node"
-          :style="{ border: collapsed ? '2px solid grey' : '' }"
-        >
+        <Tooltip placement="top">
+          <div
+            @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
+            :class="{activeNode:data.id ===active.id, activeDepth: active.siblingsId.includes(data.id)}"
+            class="rich-node"
+            :style="{ border: collapsed ? '2px solid grey' : '' }"
+          >
 
-          <h3 class="name">{{ data.name }}</h3>
-          <p class="ipv6">{{data.prefix}}</p>
-          <div class="ipv4">
-            <a
-              href="javascript:;"
-              class="btn-ipv4"
-              @click.stop="(e) => handleClickIpv4(e, data, node, collapsed ,nodeDataList) "
-            >+ ipv4</a>
+            <h3 class="name">{{ data.name }}</h3>
+            <p class="ipv6">{{data.prefix && (data.prefix.length > 15? `...${data.prefix.substr(-15)}` : data.prefix )}}</p>
+            <div class="ipv4">
+              <a
+                href="javascript:;"
+                class="btn-ipv4"
+                @click.stop="(e) => handleClickIpv4(e, data, node, collapsed ,nodeDataList) "
+              >+ ipv4</a>
+            </div>
           </div>
-        </div>
+          <div slot="content">
+            <p>{{data.prefix}}</p>
+            <p style="white-space: normal;">{{data.ipv4&& data.ipv4.replaceAll(",", " ")}}</p>
+          </div>
+        </Tooltip>
+
       </template>
     </VueTree>
 
@@ -115,7 +122,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val,7)
+        console.log(val, 7)
         let newTree = JSON.stringify(val);
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
