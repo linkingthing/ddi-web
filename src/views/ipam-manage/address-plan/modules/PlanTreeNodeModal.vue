@@ -134,6 +134,8 @@ export default {
             if (parentNode.prefix) {
               const [, prefixLen] = parentNode.prefix.split("/");
               this.currentNodePrefixLen = prefixLen;
+            } else {
+              this.visible = false;
             }
 
             this.currentNodeBitWidth = val.bitWidth;
