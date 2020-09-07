@@ -34,7 +34,30 @@ export default {
           key: "name",
           align: "left",
           render: (h, { row }) => {
-            return h("div", row.name === "." ? "根区" : row.name);
+            if (row.name) {
+              return h("div", row.name === "." ? "根区" : row.name);
+            }
+            if (row.domainGroup.length && this.domainGroupList.length) {
+              const domainNameList = row.domainGroup.map(item => {
+                const domain = this.domainGroupList.find(domain => domain.id === item);
+                if (domain) {
+                  return {
+                    id: item,
+                    name: domain.name
+                  };
+                }
+              });
+
+              console.log(domainNameList)
+
+              return h("Tags", {
+                props: {
+                  list: domainNameList
+                }
+              });
+            } else {
+              return h("div", "-");
+            }
           }
         },
 
@@ -94,7 +117,8 @@ export default {
       dsliteList: [],
       visible: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      domainGroupList: []
     };
   },
   created() {
@@ -102,6 +126,9 @@ export default {
   },
   mounted() {
     this.getDataList();
+    this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
+      this.domainGroupList = data;
+    });
   },
   methods: {
     getDataList() {

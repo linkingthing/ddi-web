@@ -95,10 +95,11 @@ export default {
         }
       ],
       formModel: {
-        name: ""
+        name: {}
       },
       loading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      domainGroupList: []
     };
   },
 
@@ -120,7 +121,7 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, comment, forwardtype, forwards }) => {
+        this.$get({ url: this.links.self }).then(({ name, domainGroup, comment, forwardtype, forwards }) => {
           this.formModel = {
             name,
             comment,
@@ -128,6 +129,14 @@ export default {
             forwards,
             forwardids: Array.isArray(forwards) ? forwards.map(item => item.id) : []
           };
+
+          // 改造name 和 domainGroup 字段映射到 name中，二者存在值的情况必然互斥
+
+          if (domainGroup.length) {
+            this.formModel.name = domainGroup.map(item => this.domainGroupList.find(domain => domain.id === item).name).join(",");
+          } else {
+            this.formModel.name = name;
+          }
 
 
         }).catch();
@@ -161,6 +170,10 @@ export default {
     this.$getData({}, "/dns/dns/forwards").then(({ data }) => {
       this.forwardList = data;
     }).catch();
+
+    this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
+      this.domainGroupList = data;
+    });
   },
 
   methods: {
@@ -170,6 +183,17 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
+
+          const { type, value } = params.name;
+
+          if (type === "domainGroup") {
+            params.domainGroup = value;
+            params.name = "";
+          } else {
+            params.name = name;
+            params.domainGroup = [];
+          }
+
 
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {

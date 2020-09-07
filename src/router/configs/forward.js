@@ -56,7 +56,18 @@ export default {
         }
       ]
     },
-
+    
+    {
+      name: "domain-group",
+      path: "/dns/dns/domaingroups",
+      component: () =>
+        import(
+          /* webpackChunkName: "domain-group" */ "@/views/dns/domain-group"
+        ),
+      meta: {
+        title: "域名组"
+      }
+    },
     {
       name: "concurrency-control",
       path: "/dns/forward/concurrency-control",

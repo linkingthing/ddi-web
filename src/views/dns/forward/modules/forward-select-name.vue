@@ -13,9 +13,22 @@
     </Select>
     <i-input
       v-model="name"
-      v-if="showInput"
-      @on-change="handleInputChange"
+      v-if="selectValue === 'name'"
     />
+
+    <Select
+      v-if="selectValue === 'domainGroup'"
+      multiple
+      :value="domainGroup"
+      style="width: 240px"
+      @on-change="handleSelectChangeDomainGroup"
+    >
+      <Option
+        v-for="item in domainGroupList"
+        :value="item.id"
+        :key="item.id"
+      >{{ item.name }}</Option>
+    </Select>
   </div>
 </template>
 
@@ -24,8 +37,19 @@ export default {
   components: {},
   props: {
     value: {
-      type: String,
-      default: ""
+      type: Object,
+      default: () => ({
+        type: "root",
+        value: "."
+      })
+      /**
+       * type:
+       * root
+       * name
+       * domainGroup
+       * 
+       * value, . domain, domainGroupName
+      */
     }
   },
   data() {
@@ -37,54 +61,74 @@ export default {
       {
         value: "name",
         label: "域名"
+      },
+      {
+        value: "domainGroup",
+        label: "域名组"
       }
     ];
     return {
       selectValue: "",
       name: "",
-      showInput: false
+      showInput: false,
+      showDomainGroup: false,
+      domainGroupList: [],
+      domainGroup: []
     };
   },
 
   watch: {
     value(value) {
-      console.log("props input", value)
-      if (value !== "." && value.trim() !== "") {
-        this.showInput = value !== "." && value.trim() !== "";
+      console.log(value)
+
+      if (value.type === "root") {
+        this.selectValue = value.value;
+
       }
-      if (value === ".") {
-        this.selectValue = ".";
-      } else {
-        this.selectValue = "name";
+      if (value.type === "name") {
+        this.name = value.value;
       }
-      this.name = value;
+      if (value.type === "domainGroup") {
+        this.domainGroup = value.value;
+      }
     },
     name(value) {
-      if (value.trim() !== "") {
-        this.$emit("input", value);
-      }
+      this.$emit("input", {
+        type: "name",
+        value
+      });
     }
 
   },
   created() { },
-  mounted() { },
+  mounted() {
+    this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
+      this.domainGroupList = data;
+    });
+  },
   methods: {
     handleSelectChange(value) {
-
       this.selectValue = value;
       if (value === ".") {
-        this.$emit("input", value);
-        this.showInput = false;
-      } else {
-        this.$emit("input", "");
-        this.showInput = true;
+        this.$emit("input", {
+          type: "root",
+          value
+        });
       }
+      // if (value === "name") {
+      //   this.$emit("input", {
+      //     type: "name",
+      //     value: this.name
+      //   });
+      // }
     },
-    handleInputChange(event) {
-      console.log('handleInputChange', event);
 
-      // this.$emit("input", data);
-      // todo: 没搞懂为什么通过事件抛出 name 始终不会变，但是通过watch解决了这个问题
+    handleSelectChangeDomainGroup(value) {
+      this.domainGroup = value;
+      this.$emit("input", {
+        type: "domainGroup",
+        value
+      });
     }
   }
 };
