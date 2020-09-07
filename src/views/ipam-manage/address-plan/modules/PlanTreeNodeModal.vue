@@ -135,7 +135,7 @@ export default {
               const [, prefixLen] = parentNode.prefix.split("/");
               this.currentNodePrefixLen = prefixLen;
             } else {
-              this.visible = false;
+              // this.visible = false;
             }
 
             this.currentNodeBitWidth = val.bitWidth;
@@ -180,7 +180,40 @@ export default {
     ]),
     handleAutoCreate() {
 
+
+
       let startValue = this.startValue || 1;
+
+      /**
+       * 起始值校验
+       * 大于0
+       * 默认为1
+       * 小于 最大节点减去当前节点
+       * 
+       * */
+
+      if (startValue < 1) {
+        this.$Message.error("起始值应大于0");
+        return;
+      }
+
+
+      const parentNode = findNodeById(this.currentLayout, this.currentNode.pid);
+      if (parentNode) {
+        if (parentNode.nodes) {
+          const bitWidth = this.currentNode.bitWidth;
+          const siblingsCount = parentNode.nodes.length;
+
+          const minStart = 2 ** bitWidth - siblingsCount;
+          if (minStart < startValue) {
+            this.$Message.error(`起始值应小于于${minStart}`);
+            return;
+          }
+
+        }
+      }
+
+
       this.createValueList = [];
 
       if (Array.isArray(this.currentParentNode.nodes)) {
