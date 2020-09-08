@@ -85,8 +85,8 @@ export function findNodeById(tree, id, children = "nodes") {
 
 /**
  * 查找当前状态树下的当前节点引用
- * 
-*/
+ *
+ */
 export function getCurrentNode(state) {
   const { layout } = state.planList.find(
     item => item.id === state.currentPlanId
@@ -103,6 +103,20 @@ export function treeEach(tree, children, fn) {
     _tree[children].forEach(fn);
   }
   return _tree;
+}
+
+/**
+ * 计算位宽累加
+ */
+export function executeBitWidthSum(layout, currentNode, result = 0) {
+  if (currentNode.prefix) {
+    const [, len] = currentNode.prefix.split("/");
+    return result + Number(len);
+  } else {
+    const parentNode = findNodeById(layout, currentNode.pid);
+    result += Number(currentNode.bitWidth);
+    return executeBitWidthSum(layout, parentNode, result);
+  }
 }
 
 /**

@@ -42,7 +42,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { mapGetters, mapMutations, mapState } from "vuex";
 import SemanticListItem from "./SemanticListItem";
-import { defaultBitWidth, findNodeById } from "./helper";
+import { defaultBitWidth, findNodeById, executeBitWidthSum } from "./helper";
 
 export default {
   components: {
@@ -80,7 +80,8 @@ export default {
     ...mapGetters([
       "planList",
       "currentNode",
-      "currentNodeChildrenList"
+      "currentNodeChildrenList",
+      "currentLayout"
     ]),
     ableAdd() {
       const current = this.countList.find(item => {
@@ -125,10 +126,45 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(44, val)
+
+        // 设置可选位宽
+        const maxBitLen = 64;
+        const bitWidthSum = executeBitWidthSum(this.currentLayout, val);
+        const surplus = maxBitLen - bitWidthSum;
+        this.countList = [];
+        if (surplus < 4) {
+          this.countList = [{
+            name: `${2 ** surplus - 1}`,
+            bitWidth: surplus
+          }];
+        }
+
+        if (surplus >= 4) {
+          this.countList.push({
+            name: "15",
+            bitWidth: 4
+          });
+        }
+
+        if (surplus >= 8) {
+          this.countList.push({
+            name: "255",
+            bitWidth: 8
+          });
+        }
+
+        if (surplus >= 12) {
+          this.countList.push({
+            name: "4095",
+            bitWidth: 12
+          });
+        }
+
+
         if (Array.isArray(val.nodes)) {
           if (val.nodes.length) {
-            if (!!val.nodes[0].bitWidth) {
+            const rootNodeHasBitWidth = !!val.nodes[0].bitWidth;
+            if (rootNodeHasBitWidth) {
               this.bitWidth = val.nodes[0].bitWidth;
               this.ableEditBitWidth = false;
             } else {
@@ -157,6 +193,28 @@ export default {
       "setCurrentNodeBitWidth"
     ]),
     handleAdd() {
+      /**
+       * 判断递归的位宽叠加
+       * - 等于于64则不能继续加
+       * - 接近64，则位宽设为 （0，4）
+      */
+
+      const bitWidthSum = executeBitWidthSum(this.currentLayout, this.currentNode);
+      console.log(this.currentNode, bitWidthSum)
+
+      if (bitWidthSum === 64) {
+        this.$Message.error("当前节点已规划到64位，不能继续增加子节点");
+        return;
+      }
+
+      // 当前节点没有设置位宽，也不能增加子节点,根节点除外
+
+      if (!this.currentNode.bitWidth && this.currentNode.pid !== "0") {
+        this.$Message.error("请先设置当前节点位宽，才能继续增加子节点");
+        return;
+      }
+
+
       this.semanticList.push({
         id: uuidv4(),
         pid: this.currentNode.id,
