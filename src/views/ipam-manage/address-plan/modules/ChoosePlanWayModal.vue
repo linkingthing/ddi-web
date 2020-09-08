@@ -110,7 +110,6 @@ export default {
           this.setLayout({
             ...this.currentLayout, links, autofill
           });
-          this.getPlanList();
           this.nextPlanStep();
         });
       }
@@ -118,10 +117,8 @@ export default {
     handleIntellect() {
       const params = buildLayoutParams(this.currentLayout);
       if (this.currentLayout.links.create) {
-        this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
-          this.setLayout({
-            ...this.currentLayout, links, autofill
-          });
+        this.$post({ url: this.currentLayout.links.create, params }).then((data) => {
+          this.setLayout(data);
           this.nextPlanStep();
         });
       }

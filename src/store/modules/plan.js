@@ -322,9 +322,8 @@ const mutations = {
 
 const actions = {
   getPlanList(context) {
-    console.log("action");
-    get(getApiByRoute("/address/ipam/plans")).then(data => {
-      console.log(data);
+    get(getApiByRoute("/address/ipam/plans")).then(({ data }) => {
+      context.commit("setPlanList", data);
     });
   }
 };
