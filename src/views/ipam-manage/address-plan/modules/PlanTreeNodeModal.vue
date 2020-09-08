@@ -273,15 +273,11 @@ export default {
       }
 
       // value值不能重复
-
       const hasRepeat = numberList.length !== [...new Set(numberList)].length;
       if (hasRepeat) {
         this.$Message.error(`生成值不能重复`);
         return;
       }
-
-
-
 
       const currentNodeSiblings = this.currentParentNode.nodes;
       currentNodeSiblings.forEach(node => {

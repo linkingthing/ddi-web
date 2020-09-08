@@ -130,8 +130,11 @@ export default {
         this.filterList = this.dataList || [];
       }
     },
-    "netType"(value) {
-      this.active = value;
+    netType: {
+      immediate: true,
+      handler(value) {
+        this.active = value;
+      }
     }
   },
   created() {
