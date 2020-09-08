@@ -234,7 +234,7 @@ export default {
           this.createValueList.push({
             id: item.id,
             isEdit: false,
-            value: startValue
+            value: +startValue
           });
 
           item.value = startValue++;
@@ -253,6 +253,36 @@ export default {
     },
 
     handleSaveValue() {
+
+      const numberList = this.createValueList.map(item => +item.value);
+
+      // 每一项的数字是按升序
+      const isAsc = numberList.join(",") === numberList.sort((a, b) => a - b).join(",");
+      if (!isAsc) {
+        this.$Message.error("生成值需要由小到大规划");
+        return;
+      }
+
+      // 每个值都应该在位宽对应范围内
+      const { bitWidth } = this.currentNode;
+      const maxValue = 2 ** bitWidth - 1;
+      const isValidEveryValue = numberList.every(item => maxValue >= item && item > 0);
+      if (!isValidEveryValue) {
+        this.$Message.error(`当前节点每个生成值需要在(0, ${maxValue}]范围内`);
+        return;
+      }
+
+      // value值不能重复
+
+      const hasRepeat = numberList.length !== [...new Set(numberList)].length;
+      if (hasRepeat) {
+        this.$Message.error(`生成值不能重复`);
+        return;
+      }
+
+
+
+
       const currentNodeSiblings = this.currentParentNode.nodes;
       currentNodeSiblings.forEach(node => {
         const item = this.createValueList.find(item => item.id === node.id);
@@ -260,7 +290,6 @@ export default {
           node.value = +this.createValueList.find(item => item.id === node.id).value;
         }
       });
-      console.log(currentNodeSiblings)
       this.setCurrentNodeSiblingsList(currentNodeSiblings);
     }
   }
@@ -330,6 +359,7 @@ export default {
       }
       .ivu-input {
         height: 36px;
+        text-align: center;
       }
     }
   }
