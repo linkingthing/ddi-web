@@ -5,7 +5,7 @@
     <table-page
       :data="tableData"
       :columns="columns"
-      :total="tableData.length"
+      :total="total"
       :current.sync="currentPage"
     >
       <template slot="top-right">
@@ -60,24 +60,40 @@ export default {
         sourceIp: ""
       },
       currentPage: 1,
+      total: 0,
       isSmallScreen: document.body.clientWidth <= 1366,
       showConfig: false
     };
   },
 
-  mounted() {
-    this.handleQuery();
+  watch: {
+    currentPage: {
+      immediate: true,
+      handler() {
+        this.handleQuery();
+      }
+    }
   },
 
+  mounted() {
+    const { current } = this.$route.query;
+    this.currentPage = +current || 1;
+
+
+  },
   methods: {
     async handleQuery() {
       this.loading = true;
 
-      this.currentPage = 1;
 
       try {
-        let { data } = await this.$get({ url: this.url, params: this.getParams() });
+        let { data, pagination } = await this.$get({ url: this.url, params: this.getParams() });
 
+        if (data.length === 0) {
+          this.currentPage = pagination.pageNum;
+        }
+
+        this.total = pagination.total;
         this.tableData = data.map(item => {
           item.creationTime = this.$trimDate(item.creationTimestamp);
           item.content = this.formatContent(item);
@@ -107,6 +123,8 @@ export default {
         res.to = date[1].toLocaleDateString().replace(/\//g, "-");
       }
 
+      res.page_size = 10;
+      res.page_num = this.currentPage;
       return res;
     },
 
@@ -123,7 +141,7 @@ export default {
           case "snmp": return "更新地址探测";
         }
       };
-      
+
       const opper = getOpperText(method) + "-";
 
       return `${username}${opper}${resources[resourceKind]}`;

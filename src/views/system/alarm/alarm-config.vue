@@ -1,9 +1,10 @@
 <template>
   <div class="alarm-config">
     <table-page
-      :total="list.length"
+      :total="total"
       :data="list"
       :columns="columns"
+      :current.sync="current"
     />
   </div>
 </template>
@@ -15,6 +16,8 @@ export default {
   props: {},
   data() {
     return {
+      total: 0,
+      current: 1,
       list: [],
       columns: [
         {
@@ -86,16 +89,33 @@ export default {
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    current: {
+      immediate: true,
+      handler() {
+        this.getData();
+
+      }
+    }
+  },
   created() {
-    this.getData();
+    this.current = 1;
   },
   mounted() { },
   methods: {
     getData() {
-      this.$getData().then(({ data }) => {
+      const params = {
+        page_size: 10,
+        page_num: this.current
+      };
+      this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;
         this.list = data;
+        this.total = pagination.total;
+        if (data.length === 0) {
+          this.current = pagination.pageNum;
+        }
+
       }).catch().finally(() => {
         this.loading = false;
       });

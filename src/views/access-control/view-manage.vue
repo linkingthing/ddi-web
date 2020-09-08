@@ -3,7 +3,8 @@
     <table-page
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -115,6 +116,8 @@ export default {
           }
         }
       ],
+      total: 0,
+      current: 0,
       list: [],
       visible: false,
       links: {},
@@ -122,9 +125,14 @@ export default {
       default: {}
     };
   },
-  mounted() {
-    this.getView();
+  watch: {
+    current: {
+      handler() {
+        this.getView();
+      }
+    }
   },
+
   methods: {
     handleOpenCreate() {
       this.visible = true;
@@ -135,13 +143,18 @@ export default {
       this.paramsLinks = links;
     },
     getView() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getViewList()
+        .getViewList(params)
         .then(res => {
           this.list = res.data.data;
           this.links = res.data.links;
 
           this.default = this.list.find(item => item.id === "default") || {};
+          this.total = res.data.pagination.total;
         })
         .catch(function (err) {
           console.log(err);

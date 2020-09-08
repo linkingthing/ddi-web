@@ -4,7 +4,8 @@
       title="转发区域"
       :data="dsliteList"
       :columns="columns"
-      :total="dsliteList.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -91,23 +92,35 @@ export default {
         }
       ],
       viewId: "",
+      total: 0,
+      current: 0,
       dsliteList: [],
       visible: false,
       links: {},
       paramsLinks: {}
     };
   },
+  watch: {
+    current: {
+      handler() {
+        this.getDataList();
+      }
+    }
+  },
   created() {
     this.viewId = this.$route.params.viewsId;
   },
-  mounted() {
-    this.getDataList();
-  },
+
   methods: {
     getDataList() {
-      this.$getData().then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$getData(params).then(({ data, links, pagination }) => {
         this.dsliteList = data;
         this.links = links;
+        this.total = pagination.total;
       }).catch(err => {
         this.$Message.error(err.message);
       });

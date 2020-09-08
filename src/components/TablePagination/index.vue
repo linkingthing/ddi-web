@@ -19,14 +19,14 @@
     <template v-if="showTable">
       <Table
         v-if="tableInnerHeight"
-        :data="dataFilter"
+        :data="data"
         :columns="columns"
         :max-height="tableInnerHeight"
         v-on="$listeners"
       />
       <Table
         v-else
-        :data="dataFilter"
+        :data="data"
         :columns="columns"
         v-on="$listeners"
       />
@@ -124,24 +124,8 @@ export default {
   },
 
   computed: {
-    dataFilter() {
-      const { data, size, innerCurrent } = this;
-
-      if (data.length > size) {
-        let start = (innerCurrent - 1) * size;
-
-        if (start >= data.length && data.length > size) {
-          start -= size;
-        }
-
-        return data.slice(start, start + size);
-      } else {
-        return data;
-      }
-    },
-
     showPage() {
-      return this.paginationEnable && this.data.length > this.size;
+      return this.paginationEnable || this.data.length > this.size;
     }
   },
 
@@ -166,20 +150,16 @@ export default {
 
         this.slotNames = names;
       }
-    },
-    data: {
-      deep: true,
-      immediate: true,
-      handler(val) {
+    }
 
-        if (this.dataFilter.length === 0) {
-          if (this.data.length) {
-            const current = this.innerCurrent - 2;
-            this.innerCurrent = current;
-            this.handlePageChange(current);
-          }
-        }
-      }
+  },
+
+  created() {
+    const { query } = this.$route;
+    if (query.current) {
+      this.$emit("update:current", +query.current);
+    } else {
+      this.$emit("update:current", 1);
     }
   },
 

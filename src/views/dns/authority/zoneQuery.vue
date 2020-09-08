@@ -4,7 +4,8 @@
       title="区域查询"
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -116,27 +117,37 @@ export default {
       id: "",
       viewId: "",
       name: "",
+      total: 0,
+      current: 0,
       list: [],
       visible: false,
       links: {},
       paramsLinks: {}
     };
   },
+  watch: {
+    current() {
+      this.getArea();
+
+    }
+  },
   created() {
     this.id = this.$route.params.id;
     this.viewId = this.$route.query.id;
   },
-  mounted() {
-    this.getArea();
-  },
   methods: {
     getArea() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getZoneByViewId(this.id)
+        .getZoneByViewId(this.id, params)
         .then(res => {
-          const { links, data } = res.data;
+          const { links, data, pagination } = res.data;
           this.list = data;
           this.links = links;
+          this.total = pagination.total;
         })
         .catch(err => {
           console.log(err);

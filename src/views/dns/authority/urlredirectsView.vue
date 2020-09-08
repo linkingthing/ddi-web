@@ -44,20 +44,29 @@ export default {
         },
       ],
       list: [],
-      current: 1,
+      current: 0,
       total: 0
     };
   },
-  mounted() {
-    this.getConfig();
+  watch: {
+    current: {
+      handler() {
+        this.getConfig();
+      }
+    }
   },
+
   methods: {
     getConfig() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getViewList()
+        .getViewList(params)
         .then(res => {
           this.list = res.data.data;
-          this.total = this.list.length;
+          this.total = res.data.pagination.total;
         })
         .catch(function (err) {
           console.log(err);

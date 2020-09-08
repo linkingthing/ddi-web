@@ -5,7 +5,7 @@
     <table-page
       :data="tableData"
       :columns="columns"
-      :total="tableData.length"
+      :total="total"
       :current.sync="currentPage"
     >
       <template slot="top-right">
@@ -79,25 +79,28 @@ export default {
         date: [],
         sourceIp: ""
       },
-      currentPage: 1,
+      total: 0,
+      currentPage: 0,
       isSmallScreen: document.body.clientWidth <= 1366,
       showConfig: false
     };
   },
 
-  mounted() {
-    this.handleQuery();
+  watch: {
+    currentPage() {
+      this.handleQuery();
+    }
   },
 
   methods: {
     async handleQuery() {
       this.loading = true;
 
-      this.currentPage = 1;
-
       try {
-        let { data, links } = await this.$get({ url: this.url, params: this.getParams() });
+        let { data, links, pagination } = await this.$get({ url: this.url, params: this.getParams() });
         this.links = links;
+        this.total = pagination.total;
+
         this.tableData = data.map(item => {
           item.creationTime = this.$trimDate(item.time);
           return item;
@@ -124,6 +127,9 @@ export default {
         res.from = this.$trimDate(start, "YYYY-MM-DD") // date[0].toLocaleDateString().replace(/\//g, "-");
         res.to = this.$trimDate(end, "YYYY-MM-DD") // date[1].toLocaleDateString().replace(/\//g, "-");
       }
+
+      res.page_size = 10;
+      res.page_num = this.currentPage;
 
       return res;
     },

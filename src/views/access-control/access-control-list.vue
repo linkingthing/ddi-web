@@ -1,9 +1,10 @@
 <template>
   <div class="acceccControlList">
     <table-page
-      :total="list.length"
+      :total="total"
       :data="list"
       :columns="columns"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -42,7 +43,7 @@ export default {
     }, {
       label: "中国电信",
       value: "ctcc"
-    }]
+    }];
     return {
       columns: [
         {
@@ -123,6 +124,8 @@ export default {
           }
         }
       ],
+      total: 0,
+      current: 0,
       list: [],
       id: "",
       visible: false,
@@ -130,10 +133,14 @@ export default {
       paramsLinks: {}
     };
   },
-  watch: {},
-  mounted() {
-    this.getManger();
+  watch: {
+    current: {
+      handler() {
+        this.getManger();
+      }
+    }
   },
+
   methods: {
     handleGo(path) {
       this.$router.push({
@@ -142,11 +149,16 @@ export default {
     },
 
     getManger() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getAccessList()
+        .getAccessList(params)
         .then(res => {
           this.list = res.data.data;
           this.links = res.data.links;
+          this.total = res.data.pagination.total;
         })
         .catch(err => {
           this.$Message.error(err.message);

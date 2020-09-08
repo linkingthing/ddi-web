@@ -1,7 +1,7 @@
 <template>
   <div class="alarm-notice">
     <table-page
-      :total="list.length"
+      :total="total"
       :data="executeList"
       :columns="columns"
       :current.sync="query.current"
@@ -147,6 +147,7 @@ export default {
           }
         }
       ],
+      total: 0,
       list: [],
       mutipleList: [],
       query: { current: 1 }
@@ -183,10 +184,17 @@ export default {
   },
   mounted() { },
   methods: {
-    getData(params = this.query) {
-      this.$getData(params).then(({ data }) => {
+    getData(query = this.query) {
+      const params = query;
+      params.page_size = 10;
+      params.page_num = query.current || 1;
+      this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;
         this.list = data;
+        this.total = pagination.total;
+        if (data.length === 0) {
+          this.query.current = pagination.pageNum;
+        }
       }).catch().finally(() => {
         this.loading = false;
       });
