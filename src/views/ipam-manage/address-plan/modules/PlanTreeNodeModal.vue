@@ -141,11 +141,13 @@ export default {
 
               if (item.value) {
                 this.createValueList.push({
+                  id: item.id,
                   isEdit: false,
                   value: item.value
                 });
               } else {
                 this.createValueList.push({
+                  id: item.id,
                   isEdit: true,
                   value: ""
                 });
@@ -238,8 +240,8 @@ export default {
           item.value = startValue++;
 
         });
-
       }
+
     },
 
     handledblclick({ value }) {
@@ -258,6 +260,7 @@ export default {
           node.value = +this.createValueList.find(item => item.id === node.id).value;
         }
       });
+      console.log(currentNodeSiblings)
       this.setCurrentNodeSiblingsList(currentNodeSiblings);
     }
   }
