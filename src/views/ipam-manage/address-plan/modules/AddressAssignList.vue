@@ -147,7 +147,7 @@ export default {
     ]),
     handleIpTypeChange(type) {
       this.active = type;
-      this.setNetType(type)
+      this.setNetType(type);
     },
     handleSearch() {
       const query = this.query.trim();

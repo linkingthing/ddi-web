@@ -93,7 +93,6 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val)
         if (val && val.layouts) {
           this.getLayout(val);
         }
@@ -184,7 +183,6 @@ export default {
             },
             prefix: this.currentPlan.prefix
           });
-          // this.setPlanProcessListInit();
         }
 
       });
@@ -193,9 +191,6 @@ export default {
 
     getLayoutOne({ self }) {
       this.$get({ url: self }).then(data => {
-        // if (Array.isArray(data.nodes)) {
-        //   data.nodes = list2Tree(data.nodes, "0");
-        // }
         this.setLayout(data);
         this.setPlanProcessListAccessible("PlanStepSemantic");
         this.setPlanProcessListAccessible("PlanStepTree");
