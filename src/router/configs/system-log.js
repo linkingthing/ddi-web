@@ -37,5 +37,17 @@ export default {
         title: "解析日志",
       },
     },
+    {
+      name: "feedback-logs",
+      path: "/system/log/feedback",
+      component: () =>
+        import(
+          /* webpackChuckName: "operate-logs" */ "@/views/system/log/feedback"
+        ),
+      meta: {
+        range: "system",
+        title: "配置返显",
+      },
+    },
   ],
 };

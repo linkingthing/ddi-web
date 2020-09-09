@@ -25,6 +25,7 @@ export default {
   recursivecurrent: "递归安全",
   log: "DNS日志",
   urlredirect: "url重定向",
+  dns_global_config: "dns全局配置",
   /** IPAM */
   asset: "IP资产",
   plan: "IP地址规划",
@@ -52,3 +53,10 @@ export default {
   usergroup: "用户组",
   whitelist: "白名单"
 };
+
+
+export const operateMap = {
+  Create: "创建",
+  Update: "更新",
+  Delete: "删除"
+}
