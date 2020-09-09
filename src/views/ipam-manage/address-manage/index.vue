@@ -1,12 +1,13 @@
 <template>
-  <div class="child-net-manage">
+  <div class="address-manage">
     <IviewLoading v-if="loading" />
 
     <table-page
-      :total="tableData.length"
       :data="tableData"
       :columns="columns"
       @on-selection-change="handleSelecChange"
+      :total="total"
+      :current.sync="current"
     />
   </div>
 </template>
@@ -29,12 +30,15 @@ export default {
       currentData: null,
       showAutoScan: false,
       showManualScan: false,
-      editData: null
+      editData: null,
+      total: 0,
+      current: 0
     };
   },
-
-  mounted() {
-    this.handleQuery();
+  watch: {
+    current() {
+      this.handleQuery();
+    }
   },
 
   methods: {
@@ -44,13 +48,19 @@ export default {
       this.selectedData = [];
 
       try {
-        let { data } = await this.$get({ url: this.url });
+        const params = {
+          page_num: this.current,
+          page_size: 10
+        };
+        let { data, pagination } = await this.$get({ url: this.url, params });
 
         this.tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
           item.usedRatio = parseFloat(parseFloat((1 - (item.unmanagedRatio || 0))).toFixed(2));
           return item;
         });
+
+        this.total = pagination.total;
 
       } catch (err) {
         this.$handleError(err);

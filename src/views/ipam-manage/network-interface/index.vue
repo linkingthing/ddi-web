@@ -70,7 +70,8 @@
               type="primary"
               size="small"
               @click="handleDownloadCsv"
-            >导出csv</Button></div>
+            >导出csv</Button>
+          </div>
 
           <div class="chart-legend">
             <div
@@ -106,7 +107,8 @@
       <table-page
         :columns="columns"
         :data="tableData"
-        :total="tableData.length"
+        :total="total"
+        :current.sync="current"
       >
         <template slot="top-left">
           <div class="table-title">{{tableTitle}}</div>
@@ -176,7 +178,9 @@ export default {
         ipAddress: "",
         mac: ""
       },
-      unmanagedRatio: ""
+      unmanagedRatio: "",
+      total: 0,
+      current: 0
     };
   },
 
@@ -188,6 +192,11 @@ export default {
       return (Number(this.unmanagedRatio) * 100).toFixed(2) + "%";
     }
 
+  },
+  watch: {
+    current() {
+      this.getList();
+    }
   },
 
   mounted() {
@@ -294,14 +303,18 @@ export default {
 
       try {
         let url = this.$getApiByRoute().url;
-
+        const params = {
+          page_num: this.current,
+          page_size: 10
+        };
         if (status) {
           url += `?${status}=true`;
         }
 
-        let { data } = await this.$get({ url });
-
+        let { data, pagination } = await this.$get({ url, params });
+        this.total = pagination.total;
         this.handleFilter(data);
+
       } catch (err) {
         return Promise.reject(err);
       }

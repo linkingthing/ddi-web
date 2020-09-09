@@ -5,8 +5,9 @@
     <table-page
       :data="tableData"
       :columns="columns"
-      :total="tableData.length"
       :is-padding-top="true"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-left">
         <div class="condition-item">
@@ -120,12 +121,19 @@ export default {
       columns: columns(this),
       showAdvance: false,
       showEdit: false,
-      currentData: null
+      currentData: null,
+      total: 0,
+      current: 0
     };
+  },
+  watch: {
+    current() {
+      this.handleQuery();
+
+    }
   },
 
   async mounted() {
-    this.handleQuery();
 
     const {
       id,
@@ -208,7 +216,11 @@ export default {
           deviceType = "";
         }
 
-        let { data } = await this.$get({ url: this.$formatQuerys({ ...params, deviceType }, url) });
+        const aparams = {
+          page_num: this.current,
+          page_size: 10
+        };
+        let { data, pagination } = await this.$get({ url: this.$formatQuerys({ ...params, deviceType }, url), params: aparams });
 
         this.tableData = data.map(item => {
           const type = deviceTypes.find(({ label }) => label === item.deviceType);
@@ -217,6 +229,7 @@ export default {
 
           return item;
         });
+        this.total = pagination.total;
       } catch (err) {
         this.$handleError(err);
       }
