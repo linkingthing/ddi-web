@@ -171,7 +171,7 @@ export default {
             },
             query: {
               ipnet: row.prefix,
-              // tags: row.tags
+              tags: row.tags
             }
           });
         }
@@ -180,7 +180,7 @@ export default {
             name: "subnet-pool-subnet",
             query: {
               ipnet: row.prefix,
-              // tags: row.tags
+              tags: row.tags
             }
           });
         }
@@ -200,7 +200,7 @@ export default {
             },
             query: {
               ipnet: row.prefix,
-              // tags: row.tags
+              tags: row.tags
             }
           });
         }
@@ -209,7 +209,7 @@ export default {
             name: "subnet-pool-subnet",
             query: {
               ipnet: row.prefix,
-              // tags: row.tags
+              tags: row.tags
             }
           });
         }
