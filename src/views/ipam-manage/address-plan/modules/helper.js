@@ -1,7 +1,7 @@
 import { Address6 } from "ip-address";
 import ipaddr from "ipaddr.js";
 
-import _ from "lodash";
+import _, { isNumber } from "lodash";
 export const defaultBitWidth = 4;
 
 export function buildLayoutParams(
@@ -71,7 +71,8 @@ export function hasAllBitWidth(tree, isValid = true) {
   if (Array.isArray(tree)) {
     tree.forEach(node => {
       const isRoot = node.pid === "0";
-      if (!isRoot && node.bitWidth === 0) {
+      const hasBitWidth = isNumber(node.bitWidth) && node.bitWidth > 0;
+      if (!isRoot && !hasBitWidth) {
         isValid = false;
       }
       isValid = hasAllBitWidth(node.nodes, isValid) && isValid;
