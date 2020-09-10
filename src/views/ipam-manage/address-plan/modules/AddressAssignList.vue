@@ -171,8 +171,7 @@ export default {
             },
             query: {
               ipnet: row.prefix,
-              address: row.prefix,
-              tags: row.tags
+              // tags: row.tags
             }
           });
         }
@@ -180,8 +179,8 @@ export default {
           this.$router.push({
             name: "subnet-pool-subnet",
             query: {
-              ipnet: row.ipnet,
-              tags: row.tags
+              ipnet: row.prefix,
+              // tags: row.tags
             }
           });
         }
@@ -200,9 +199,8 @@ export default {
               id: data[0].id
             },
             query: {
-              ipnet: row.ipnet,
-              address: row.ipnet,
-              tags: row.tags
+              ipnet: row.prefix,
+              // tags: row.tags
             }
           });
         }
@@ -210,8 +208,8 @@ export default {
           this.$router.push({
             name: "subnet-pool-subnet",
             query: {
-              ipnet: row.ipnet,
-              tags: row.tags
+              ipnet: row.prefix,
+              // tags: row.tags
             }
           });
         }
