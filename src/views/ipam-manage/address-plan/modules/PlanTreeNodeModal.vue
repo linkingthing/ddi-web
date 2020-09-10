@@ -218,7 +218,7 @@ export default {
 
           const minStart = 2 ** bitWidth - siblingsCount;
           if (minStart < startValue) {
-            this.$Message.error(`起始值应小于于${minStart}`);
+            this.$Message.error(`起始值应小于或等于${minStart}`);
             return;
           }
 
