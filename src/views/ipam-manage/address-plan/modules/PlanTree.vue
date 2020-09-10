@@ -28,7 +28,7 @@
           </div>
           <div slot="content">
             <p>{{data.prefix}}</p>
-            <p style="white-space: normal;">{{data.ipv4&& data.ipv4.replaceAll(",", " ")}}</p>
+            <p style="white-space: normal;">{{data.ipv4&& data.ipv4.replace(/,/g, " ")}}</p>
           </div>
         </Tooltip>
 
