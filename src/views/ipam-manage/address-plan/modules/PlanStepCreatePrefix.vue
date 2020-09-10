@@ -64,8 +64,12 @@ export default {
         {
           validator: (rule, value, callback) => {
             if (ipv6IsValid(value)) {
-              const [, len] = value.split("/");
-              if (+len > 60) {
+              const [ip, len] = value.split("/");
+              const numReg = /\d/g;
+              const ipNumberCount = ip.match(numReg).length;
+              if (ipNumberCount * 4 > +len) {
+                callback("请正确输入ipv6地址网段");
+              } else if (+len > 60) {
                 callback("prefixLen不能大于等于60");
               } else {
                 callback();
