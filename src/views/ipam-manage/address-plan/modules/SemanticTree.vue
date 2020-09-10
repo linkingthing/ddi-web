@@ -110,16 +110,14 @@ export default {
       ]);
     },
     handleFinish() {
-      const { autofill } = this.currentLayout; // true, false, undefined
 
       const isValid = hasAllBitWidth(this.currentLayout.nodes);
-      console.log(isValid, this.currentLayout)
-
       if (!isValid) {
         this.$Message.error("请检查设置节点位宽");
         return;
       }
 
+      const { autofill } = this.currentLayout; // true, false, undefined
       if (typeof (autofill) === "undefined") {
         this.visible = true;
       } else if (autofill) {

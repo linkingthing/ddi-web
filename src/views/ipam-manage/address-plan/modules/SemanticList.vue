@@ -87,7 +87,9 @@ export default {
       const current = this.countList.find(item => {
         return +item.bitWidth === +this.bitWidth;
       });
-
+      if (!this.bitWidth) {
+        return false;
+      }
       if (current) {
         return +current.name > this.semanticList.length;
       } else {
@@ -160,7 +162,6 @@ export default {
           });
         }
 
-
         if (Array.isArray(val.nodes)) {
           if (val.nodes.length) {
             const rootNodeHasBitWidth = !!val.nodes[0].bitWidth;
@@ -200,7 +201,6 @@ export default {
       */
 
       const bitWidthSum = executeBitWidthSum(this.currentLayout, this.currentNode);
-      console.log(this.currentNode, bitWidthSum)
 
       if (bitWidthSum === 64) {
         this.$Message.error("当前节点已规划到64位，不能继续增加子节点");
@@ -234,6 +234,7 @@ export default {
         if (item.id === id) {
           item.name = name;
           item.isEdit = false;
+          item.bitWidth = this.bitWidth;
         }
         return item;
       }).filter(item => {

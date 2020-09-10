@@ -143,13 +143,15 @@ export function treeEach(tree, children, fn) {
  * 计算位宽累加
  */
 export function executeBitWidthSum(layout, currentNode, result = 0) {
-  if (currentNode && currentNode.prefix) {
-    const [, len] = currentNode.prefix.split("/");
-    return result + Number(len);
-  } else {
-    const parentNode = findNodeById(layout, currentNode.pid);
-    result += Number(currentNode.bitWidth);
-    return executeBitWidthSum(layout, parentNode, result);
+  if (currentNode) {
+    if (currentNode.prefix) {
+      const [, len] = currentNode.prefix.split("/");
+      return result + Number(len);
+    } else {
+      const parentNode = findNodeById(layout, currentNode.pid);
+      result += Number(currentNode.bitWidth);
+      return executeBitWidthSum(layout, parentNode, result);
+    }
   }
 }
 
