@@ -4,12 +4,20 @@ import ipaddr from "ipaddr.js";
 import _ from "lodash";
 export const defaultBitWidth = 4;
 
-export function buildLayoutParams(currentLayout, autofill = true) {
+export function buildLayoutParams(
+  currentLayout,
+  autofill = true,
+  allValue = false
+) {
   const params = _.cloneDeep(currentLayout);
 
   // 自动value赋值
   if (autofill) {
     autoFillValue(params.nodes);
+  }
+
+  if (allValue) {
+    fillAllValue(params.nodes, allValue);
   }
 
   openModified(params.nodes); // TODO： 后期做局部跟新优化需要去掉
@@ -44,6 +52,32 @@ function autoFillValue(tree) {
       autoFillValue(node.nodes);
     });
   }
+}
+
+/**
+ * 给每个节点填充value为负一
+ */
+function fillAllValue(tree, value) {
+  if (Array.isArray(tree)) {
+    tree.forEach((node, index) => {
+      node.value = node.value || value;
+      node.modified = 1;
+      fillAllValue(node.nodes, value);
+    });
+  }
+}
+
+export function hasAllBitWidth(tree, isValid = true) {
+  if (Array.isArray(tree)) {
+    tree.forEach(node => {
+      const isRoot = node.pid === "0";
+      if (!isRoot && node.bitWidth === 0) {
+        isValid = false;
+      }
+      isValid = hasAllBitWidth(node.nodes, isValid) && isValid;
+    });
+  }
+  return isValid;
 }
 
 function autoSequence(tree) {
@@ -109,7 +143,7 @@ export function treeEach(tree, children, fn) {
  * 计算位宽累加
  */
 export function executeBitWidthSum(layout, currentNode, result = 0) {
-  if (currentNode.prefix) {
+  if (currentNode && currentNode.prefix) {
     const [, len] = currentNode.prefix.split("/");
     return result + Number(len);
   } else {

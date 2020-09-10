@@ -185,7 +185,7 @@ export default {
     },
 
     handleAddressPlanFinish() {
-      const params = buildLayoutParams(this.currentLayout, false);
+      const params = buildLayoutParams(this.currentLayout, false, -1);
       this.$put({ url: this.currentLayout.links.update, params }).then(() => {
         this.$get({ url: this.currentLayout.links.self }).then(res => {
           // 更新当前数据和状态

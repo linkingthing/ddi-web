@@ -104,7 +104,9 @@ export default {
       "getPlanList"
     ]),
     handleCustom() {
-      const params = buildLayoutParams(this.currentLayout, false);
+      const params = buildLayoutParams(this.currentLayout, false, -1);
+      console.log(params);
+
       if (this.currentLayout.links.create) {
         this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
           this.setLayout({

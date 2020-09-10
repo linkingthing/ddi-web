@@ -27,7 +27,7 @@ import { mapMutations, mapGetters, mapState } from "vuex";
 import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
-import { buildLayoutParams } from "./helper";
+import { buildLayoutParams, hasAllBitWidth } from "./helper";
 
 export default {
   components: {
@@ -111,6 +111,14 @@ export default {
     },
     handleFinish() {
       const { autofill } = this.currentLayout; // true, false, undefined
+
+      const isValid = hasAllBitWidth(this.currentLayout.nodes);
+      console.log(isValid, this.currentLayout)
+
+      if (!isValid) {
+        this.$Message.error("请检查设置节点位宽");
+        return;
+      }
 
       if (typeof (autofill) === "undefined") {
         this.visible = true;
