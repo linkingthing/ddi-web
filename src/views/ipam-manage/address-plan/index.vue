@@ -200,6 +200,10 @@ export default {
           this.setCurrentNodeId(id);
         }
 
+        if (data.firstfinished) {
+          this.setPlanProcessListAccessible("PlanStepAddressAssign");
+        }
+
         this.getNetnodes(data.links);
       });
     },
@@ -212,7 +216,6 @@ export default {
       this.$get({ url: netnodes, params }).then(({ data }) => {
         const netNodes = data[0].netitems;
         this.setNetnodes(netNodes);
-        this.setPlanProcessListAccessible("PlanStepAddressAssign");
       }).catch((err) => {
         console.dir(err)
       });

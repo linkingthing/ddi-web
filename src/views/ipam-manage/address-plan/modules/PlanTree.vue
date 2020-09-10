@@ -147,7 +147,8 @@ export default {
     ...mapMutations([
       "nextPlanStep",
       "setCurrentNodeId",
-      "setCurrentNodeIpv4"
+      "setCurrentNodeIpv4",
+      "setLayout"
     ]),
     handleSelectTreeNode(data, node, collapsed, nodeDataList) {
       this.setCurrentNodeId(data.id);
@@ -186,10 +187,13 @@ export default {
 
     handleAddressPlanFinish() {
       const params = buildLayoutParams(this.currentLayout, false, -1);
+      params.firstfinished = true;
       this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-        this.$get({ url: this.currentLayout.links.self }).then(res => {
+        this.$get({ url: this.currentLayout.links.self }).then(data => {
           // 更新当前数据和状态
           this.nextPlanStep();
+          this.setLayout(data);
+
         });
       });
 
