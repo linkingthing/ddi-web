@@ -8,7 +8,29 @@
       link-style="straight"
     >
       <template v-slot:node="{ data, node, collapsed ,nodeDataList}">
-        <Tooltip placement="top">
+        <template v-if="!data.prefix && !data.ipv4">
+          <div
+            @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
+            :class="{activeNode:data.id ===active.id, activeDepth: active.siblingsId.includes(data.id)}"
+            class="rich-node"
+            :style="{ border: collapsed ? '2px solid grey' : '' }"
+          >
+
+            <h3 class="name">{{ data.name }}</h3>
+            <p class="ipv6">{{data.prefix && (data.prefix.length > 15? `...${data.prefix.substr(-15)}` : data.prefix )}}</p>
+            <div class="ipv4">
+              <a
+                href="javascript:;"
+                class="btn-ipv4"
+                @click.stop="(e) => handleClickIpv4(e, data, node, collapsed ,nodeDataList) "
+              >+ ipv4</a>
+            </div>
+          </div>
+        </template>
+        <Tooltip
+          placement="top"
+          v-else
+        >
           <div
             @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
             :class="{activeNode:data.id ===active.id, activeDepth: active.siblingsId.includes(data.id)}"
