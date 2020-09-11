@@ -208,11 +208,27 @@ export default {
     },
 
     handleAddressPlanFinish() {
-      const params = buildLayoutParams(this.currentLayout, false, -1);
+
+      const layout = _.cloneDeep(this.currentLayout);
+
+
+      // 手动规划的prefix 前端计算
+      if (!layout.autofill) {
+        let tree = layout.nodes[0];
+        executeTreeNodePrefix([tree], false, "nodes");
+      }
+      let params;
+
+      if (typeof layout.autofill === "undefined") {
+        params = buildLayoutParams(layout, false, -1);
+      } else {
+        params = buildLayoutParams(layout, layout.autofill, -1);
+      }
+
+      // 控制下一个步骤可访问
       params.firstfinished = true;
       this.$put({ url: this.currentLayout.links.update, params }).then(() => {
         this.$get({ url: this.currentLayout.links.self }).then(data => {
-          // 更新当前数据和状态
           this.nextPlanStep();
           this.setLayout(data);
 
