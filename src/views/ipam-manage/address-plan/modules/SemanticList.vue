@@ -72,8 +72,7 @@ export default {
           name: "4095",
           bitWidth: 12
         }
-      ],
-      ableEditBitWidth: true
+      ]
     };
   },
   computed: {
@@ -83,6 +82,29 @@ export default {
       "currentNodeChildrenList",
       "currentLayout"
     ]),
+    ableEditBitWidth() {
+      const { autofill } = this.currentLayout;
+      const currentNode = this.currentNode;
+
+      const hasFinish = typeof autofill === "boolean";
+
+      // 语义规划完成后不可改 autofill 为 bool，已选择的不能改，未选的可改
+      if (hasFinish) {
+        if (currentNode.nodes && currentNode.nodes.length) {
+          return false; // false 不可编辑
+        }
+      }
+
+      // 语义规划阶段有孙子节点时不能改位宽
+      if (currentNode.nodes && currentNode.nodes.length) {
+        const son = currentNode.nodes[0]
+        if (son && son.nodes && son.nodes.length) {
+          return false;
+        }
+      }
+
+      return true;
+    },
     ableAdd() {
       const current = this.countList.find(item => {
         return +item.bitWidth === +this.bitWidth;
@@ -121,7 +143,17 @@ export default {
 
       }
     },
-    bitWidth(val) {
+    bitWidth(val, old) {
+      // 位宽个数不能改低于已存在子节点个数
+      const childrenNodeCount = this.semanticList.length;
+      const bitWidthCount = 2 ** val - 1;
+
+      if (childrenNodeCount > bitWidthCount) {
+        this.$Message.error("当且已有节点数量超过预设位宽可容纳数量");
+        this.bitWidth = old;
+        return false;
+      }
+
       if (val) {
         this.setCurrentNodeBitWidth(val);
       }
@@ -169,17 +201,14 @@ export default {
             const rootNodeHasBitWidth = !!val.nodes[0].bitWidth;
             if (rootNodeHasBitWidth) {
               this.bitWidth = val.nodes[0].bitWidth;
-              this.ableEditBitWidth = false;
             } else {
               this.bitWidth = "";
             }
           } else {
             this.bitWidth = "";
-            this.ableEditBitWidth = true;
           }
         } else {
           this.bitWidth = "";
-          this.ableEditBitWidth = true;
         }
       }
     }

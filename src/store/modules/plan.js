@@ -256,14 +256,7 @@ const mutations = {
             name: _layout.name,
             pid: "0",
             value: 0,
-            nodes: _.cloneDeep(
-              createInitLayout().map(item => {
-                return {
-                  ...item,
-                  pid: uuid
-                };
-              })
-            )
+            nodes: []
           }
         ];
       }
