@@ -157,6 +157,39 @@ export function executeBitWidthSum(layout, currentNode, result = 0) {
 }
 
 /**
+ * 获取树叶子节点
+ */
+export function getTreeLeaf(tree, result = []) {
+  if (tree && Array.isArray(tree)) {
+    tree.forEach(({ nodes, ...node }) => {
+      const hasChildren = nodes && nodes.length > 0;
+      if (!hasChildren) {
+        result.push(node);
+      }
+      getTreeLeaf(nodes, result);
+    });
+  }
+  return result;
+}
+
+/**
+ * 获取有子节点的节点
+*/
+export function getTreeCrotch(tree, result = []) {
+  if (tree && Array.isArray(tree)) {
+    tree.forEach(({ nodes, ...node }) => {
+      const hasChildren = nodes && nodes.length > 0;
+      if (hasChildren) {
+        result.push(node);
+      }
+      getTreeCrotch(nodes, result);
+    });
+  }
+  return result;
+}
+
+
+/**
  * 树转换成列表
  * nodes
  */

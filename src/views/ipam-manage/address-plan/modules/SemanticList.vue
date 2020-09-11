@@ -42,7 +42,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { mapGetters, mapMutations, mapState } from "vuex";
 import SemanticListItem from "./SemanticListItem";
-import { defaultBitWidth, findNodeById, executeBitWidthSum } from "./helper";
+import { defaultBitWidth, findNodeById, executeBitWidthSum, getTreeLeaf } from "./helper";
 
 export default {
   components: {
@@ -55,7 +55,8 @@ export default {
     }
   },
   data() {
-
+    // autofill后的叶子节点都改属于白名单
+    this.ableEditBitWidthWihteList = [];
     return {
       semanticList: [],
       bitWidth: "",
@@ -90,14 +91,14 @@ export default {
 
       // 语义规划完成后不可改 autofill 为 bool，已选择的不能改，未选的可改
       if (hasFinish) {
-        if (currentNode.nodes && currentNode.nodes.length) {
+        if (!this.ableEditBitWidthWihteList.includes(currentNode.id)) {
           return false; // false 不可编辑
         }
       }
 
       // 语义规划阶段有孙子节点时不能改位宽
       if (currentNode.nodes && currentNode.nodes.length) {
-        const son = currentNode.nodes[0]
+        const son = currentNode.nodes[0];
         if (son && son.nodes && son.nodes.length) {
           return false;
         }
@@ -209,6 +210,20 @@ export default {
           }
         } else {
           this.bitWidth = "";
+        }
+      }
+    },
+    currentLayout: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (val && val.nodes) {
+          const leafs = getTreeLeaf(val.nodes);
+          leafs.forEach(item => {
+            if (!this.ableEditBitWidthWihteList.includes(item.id)) {
+              this.ableEditBitWidthWihteList.push(item.id);
+            }
+          });
         }
       }
     }
