@@ -38,7 +38,7 @@
         />
       </Card>
 
-      <Card title="网络流量">
+      <Card title="网络流量(Bps)">
         <line-bar
           line-theme="brown"
           :labels="networkLabels"
