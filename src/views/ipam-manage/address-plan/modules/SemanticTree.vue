@@ -59,11 +59,15 @@ export default {
       immediate: true,
       handler(val) {
         this.treeData = _.cloneDeep(val.nodes);
+        _.once(this.setCurrentNodeId(val.nodes[0].id));
       }
     }
   },
   created() { },
-  mounted() { },
+  mounted() {
+   
+
+  },
   methods: {
     ...mapMutations([
       "setCurrentNodeId",
