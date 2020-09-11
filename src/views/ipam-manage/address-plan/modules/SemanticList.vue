@@ -87,9 +87,11 @@ export default {
       const current = this.countList.find(item => {
         return +item.bitWidth === +this.bitWidth;
       });
+
       if (!this.bitWidth) {
         return false;
       }
+
       if (current) {
         return +current.name > this.semanticList.length;
       } else {
@@ -210,7 +212,7 @@ export default {
       // 当前节点没有设置位宽，也不能增加子节点,根节点除外
 
       if (!this.currentNode.bitWidth && this.currentNode.pid !== "0") {
-        this.$Message.error("请先设置当前节点位宽，才能继续增加子节点");
+        this.$Message.error("请先设置节点位宽，才能继续增加子节点");
         return;
       }
 

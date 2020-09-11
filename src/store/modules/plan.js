@@ -122,6 +122,7 @@ const getters = {
       .currentPlanProcessId,
 
   currentLayout: state => {
+    console.log("getLayout");
     if (state.layoutCount) {
       const plan = state.planList.find(item => item.id === state.currentPlanId);
       if (plan) {
@@ -143,6 +144,7 @@ const getters = {
     }
   },
   currentNode: state => {
+    console.log("get node");
     if (state.count) {
       return _.cloneDeep(getCurrentNode(state));
     }
@@ -307,10 +309,12 @@ const mutations = {
   setCurrentNodeBitWidth(state, bitWidth) {
     const currentNode = getCurrentNode(state);
     currentNode.expand = true;
-    if (Array.isArray(currentNode.nodes)) {
+    if (Array.isArray(currentNode.nodes) && currentNode.nodes.length) {
       currentNode.nodes.forEach(item => {
         item.bitWidth = bitWidth;
       });
+      state.layoutCount++;
+      state.count++;
     }
   },
   setNetType(state, netType) {
