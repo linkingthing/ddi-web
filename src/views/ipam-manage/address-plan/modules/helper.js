@@ -263,6 +263,10 @@ export function executeNextIpv6Segment(
 ) {
   const ipv6 = new Address6(prefix);
   const { addressMinusSuffix, parsedSubnet } = ipv6;
+
+  if (offset === -1) {
+    return "";
+  }
   return `${excuteNextIPv6(
     addressMinusSuffix,
     parsedSubnet,

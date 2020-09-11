@@ -139,7 +139,7 @@ export default {
 
             parentNode.nodes.forEach(item => {
 
-              if (item.value) {
+              if (item.value && item.value !== -1) {
                 this.createValueList.push({
                   id: item.id,
                   isEdit: false,

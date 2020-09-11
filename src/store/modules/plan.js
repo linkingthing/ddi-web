@@ -175,6 +175,7 @@ const mutations = {
   setCurrentPlanId(state, currentPlanId) {
     state.currentPlanId = currentPlanId;
     state.planCount++;
+    state.layoutCount++;
   },
   nextPlanStep(state, id) {
     const plan = state.planList.find(item => item.id === state.currentPlanId);
