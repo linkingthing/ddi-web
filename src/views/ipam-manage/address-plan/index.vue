@@ -214,7 +214,10 @@ export default {
       };
       this.netnodesurl = netnodes;
       this.$get({ url: netnodes, params }).then(({ data }) => {
-        const netNodes = data[0].netitems;
+        let netNodes = [];
+        if (data.length) {
+          netNodes = data[0].netitems;
+        }
         this.setNetnodes(netNodes);
       }).catch((err) => {
         console.dir(err)
