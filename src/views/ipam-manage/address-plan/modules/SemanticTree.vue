@@ -27,7 +27,7 @@ import { mapMutations, mapGetters, mapState } from "vuex";
 import _ from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
-import { buildLayoutParams, hasAllBitWidth } from "./helper";
+import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
 
 export default {
   components: {
@@ -137,6 +137,7 @@ export default {
         });
       } else {
         const params = buildLayoutParams(this.currentLayout, false);
+        executeTreeNodePrefix(params.nodes);
         this.$put({ url: this.currentLayout.links.update, params }).then(() => {
           this.$get({ url: this.currentLayout.links.self }).then(res => {
             this.nextPlanStep();
