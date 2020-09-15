@@ -44,6 +44,7 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { ipv6IsValid } from "@/util/common";
+import { Address6 } from "ip-address";
 
 export default {
   components: {},
@@ -64,10 +65,15 @@ export default {
         {
           validator: (rule, value, callback) => {
             if (ipv6IsValid(value)) {
+
+              const data = new Address6(value);
+
               const [ip, len] = value.split("/");
-              const numReg = /\d/g;
-              const ipNumberCount = ip.match(numReg).length;
-              if (ipNumberCount * 4 > +len) {
+
+              const addressBinary = data.binaryZeroPad();
+              const endString = addressBinary.slice(Number(len), 128);
+
+              if (endString.includes("1")) {
                 callback("请正确输入ipv6地址网段");
               } else if (+len > 60) {
                 callback("prefixLen不能大于等于60");
