@@ -18,7 +18,10 @@
 
             <h3 class="name">{{ data.name }}</h3>
             <p class="ipv6">{{data.prefix && (data.prefix.length > 15? `...${data.prefix.substr(-15)}` : data.prefix )}}</p>
-            <div class="ipv4">
+            <div
+              class="ipv4"
+              v-if="data.pid !== '0'"
+            >
               <a
                 href="javascript:;"
                 class="btn-ipv4"
@@ -40,7 +43,10 @@
 
             <h3 class="name">{{ data.name }}</h3>
             <p class="ipv6">{{data.prefix && (data.prefix.length > 15? `...${data.prefix.substr(-15)}` : data.prefix )}}</p>
-            <div class="ipv4">
+            <div
+              class="ipv4"
+              v-if="data.pid !== '0'"
+            >
               <a
                 href="javascript:;"
                 class="btn-ipv4"
