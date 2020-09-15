@@ -296,6 +296,23 @@ export const isIp = address => {
   return ipv6IsValid(address) || ipv4IsValid(address);
 };
 
+export const isIpv4Segment = segment => {
+  const ipv4 = new Address4(segment);
+  const { subnetMask } = ipv4;
+  const ipBinary = ipv4.binaryZeroPad();
+  const endString = ipBinary.slice(subnetMask, ipBinary.length);
+  return !endString.includes("1");
+};
+
+export const isIpv6Segment = segment => {
+  const ipv6 = new Address6(segment);
+  const { subnetMask } = ipv6;
+  const ipBinary = ipv6.binaryZeroPad();
+  const endString = ipBinary.slice(subnetMask, ipBinary.length);
+  return !endString.includes("1");
+};
+
+window.Address6 = Address6;
 /**
  * 格式化日期
  * @param { Date|String } res 时间对象或字符串
@@ -357,11 +374,10 @@ export const toKebabCase = str => {
 
 /**
  * 验证端口是否合法
- * @param {Number | String} port 
+ * @param {Number | String} port
  */
 export const portIsValidate = port => {
   port = port.toString();
 
   return integerReg.test(port) && port <= 65535;
 };
-

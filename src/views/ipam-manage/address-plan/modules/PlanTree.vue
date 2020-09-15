@@ -103,7 +103,7 @@ import VueTree from "@/components/vue-tree-chart";
 import { buildLayoutParams, executeTreeNodePrefix } from "./helper";
 import { v4 as uuidv4 } from "uuid";
 
-import { ipv4IsValid } from "@/util/common";
+import { ipv4IsValid, isIpv4Segment } from "@/util/common";
 import eventBus from "@/util/bus";
 
 export default {
@@ -203,8 +203,9 @@ export default {
       const ispass = this.currentIpv4List.split(",").every(item => {
         const isNetSegment = (item.split("/").length === 2);
         const [, len] = item.split("/");
-        return ipv4IsValid(item.trim()) && isNetSegment && len < 32 && len > 0;
+        return ipv4IsValid(item.trim()) && isNetSegment && len < 32 && len > 0 && isIpv4Segment(item.trim());
       });
+
       if (ispass) {
         this.visible = false;
         this.setCurrentNodeIpv4(this.currentIpv4List);
@@ -237,8 +238,9 @@ export default {
         this.$get({ url: this.currentLayout.links.self }).then(data => {
           this.nextPlanStep();
           this.setLayout(data);
-
         });
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
 
     }
