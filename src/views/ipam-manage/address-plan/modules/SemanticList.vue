@@ -268,7 +268,8 @@ export default {
         isEdit: true,
         modified: 1,
         nodes: [],
-        bitWidth: defaultBitWidth
+        bitWidth: defaultBitWidth,
+        value: -1
       });
     },
     handleSave(id, name) {

@@ -24,7 +24,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapState } from "vuex";
-import _ from "lodash";
+import _, { cloneDeep } from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
@@ -136,14 +136,17 @@ export default {
           });
         });
       } else {
-        const params = buildLayoutParams(this.currentLayout, false);
-        executeTreeNodePrefix(params.nodes);
+        const layout = cloneDeep(this.currentLayout);
+        executeTreeNodePrefix(layout.nodes, autofill, "nodes");
+        const params = buildLayoutParams(layout, false);
         this.$put({ url: this.currentLayout.links.update, params }).then(() => {
           this.$get({ url: this.currentLayout.links.self }).then(res => {
             this.nextPlanStep();
             this.setLayout(res);
           });
         });
+
+
       }
     }
   }

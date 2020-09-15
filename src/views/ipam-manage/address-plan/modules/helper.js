@@ -174,7 +174,7 @@ export function getTreeLeaf(tree, result = []) {
 
 /**
  * 获取有子节点的节点
-*/
+ */
 export function getTreeCrotch(tree, result = []) {
   if (tree && Array.isArray(tree)) {
     tree.forEach(({ nodes, ...node }) => {
@@ -187,7 +187,6 @@ export function getTreeCrotch(tree, result = []) {
   }
   return result;
 }
-
 
 /**
  * 树转换成列表
@@ -222,7 +221,7 @@ export function executeTreeNodePrefix(
               node.bitWidth
             );
           } else {
-            if (node.value) {
+            if (isNumber(node.value) && node.value !== -1) {
               offset = node.value;
               node.prefix = executeNextIpv6Segment(
                 parentNodePrefix,
