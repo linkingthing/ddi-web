@@ -38,7 +38,66 @@
           style="margin-left: 26px;"
           type="primary"
           @click="handleExportLog"
-        >导出</Button>
+        >FTP导出</Button>
+
+        <common-modal
+          class="acl-modal"
+          :visible.sync="dialogVisible"
+          title="ftp导出"
+          :width="413"
+          @confirm="handleConfirm('formInline')"
+        >
+          <Form
+            ref="formInline"
+            label-position="left"
+            :label-width="100"
+            :label-colon="true"
+            :rules="rules"
+            :model="formModel"
+          >
+            <FormItem
+              label="服务器地址"
+              prop="address"
+            >
+              <Input
+                placeholder="请输入服务器地址"
+                v-model="formModel.address"
+              />
+            </FormItem>
+            <FormItem
+              label="账号名称"
+              prop="userName"
+            >
+              <Input
+                placeholder="请输入账号名称"
+                v-model="formModel.userName"
+              />
+
+            </FormItem>
+            <FormItem
+              label="密码"
+              prop="password"
+            >
+              <Input
+                type="password"
+                placeholder="请输入密码"
+                v-model="formModel.password"
+              />
+
+            </FormItem>
+            <FormItem>
+              <Button
+                type="primary"
+                @click="handleCreateLog('formInline')"
+              >导出解析日志</Button>
+            </FormItem>
+            <FormItem>
+              {{status}}
+            </FormItem>
+
+          </Form>
+        </common-modal>
+
       </template>
     </table-page>
   </div>
@@ -50,7 +109,23 @@ import resources from "@/dictionary/resources";
 
 export default {
   data() {
+    this.buttonConfig = [{
+      label: "取消",
+      type: "default",
+      class: "button-cancel",
+      event: "cancel"
+    },
+    {
+      label: "上传",
+      type: "primary",
+      class: "button-confirm",
+      event: "confirm"
+    }];
+    this.rules = {
+
+    };
     return {
+      dialogVisible: false,
       url: this.$getApiByRoute().url,
       loading: true,
       tableData: [],
@@ -81,7 +156,13 @@ export default {
       },
       currentPage: 1,
       isSmallScreen: document.body.clientWidth <= 1366,
-      showConfig: false
+      showConfig: false,
+      formModel: {
+        address: "",
+        userName: "",
+        password: ""
+      },
+      status: ""
     };
   },
 
@@ -156,33 +237,48 @@ export default {
       });
     },
     handleExportLog() {
-      const link = this.links.self || "/apis/linkingthing.com/log/v1/dnslogs";
-      const params = this.getParams();
-      let url = `${link}/dnslog?action=exportcsv`;
-      const query = qs.stringify(params);
-      if (query) {
-        url += `&${query}`;
-      }
+      this.dialogVisible = true;
+      this.$get(this.$getApiByRoute("/system/log/uploadlogs")).then(res => {
+        const { data } = res;
+        if (Array.isArray(data) && data.length) {
+          const { userName, address, password, status } = data[0];
+          this.formModel.userName = userName;
+          this.formModel.address = address;
+          this.formModel.password = password;
 
-      this.$post({ url, params }).then(res => {
-        const { downloadPath, fileName } = this.pathParser(res);
-        this.downloadFile(downloadPath, fileName);
+          this.status = status;
+        }
       });
     },
-    pathParser({ path }) {
-      const realPath = "/opt/website/";
-      const staticPath = "/public/";
-      const fileName = path.replace(realPath, "");
-      return {
-        downloadPath: staticPath.concat(fileName),
-        fileName
-      };
+    handleCreateLog(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const params = this.formModel;
+          let { url } = this.$getApiByRoute("/system/log/uploadlogs");
+          url += "/1?action=uploadLog";
+          this.$post({ params, url }).then(({ status }) => {
+            this.status = status;
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
+      });
     },
-    downloadFile(path, fileName) {
-      let a = document.createElement("a");
-      a.href = path;
-      a.download = fileName;
-      a.click();
+    handleConfirm(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const params = this.formModel;
+          let { url } = this.$getApiByRoute("/system/log/uploadlogs");
+          url += "/user";
+
+          this.$put({ params, url }).then(res => {
+            this.$Message.success("配置保存成功");
+            this.dialogVisible = false;
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
+      });
     }
   }
 };
