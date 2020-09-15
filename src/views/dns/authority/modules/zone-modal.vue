@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isIp } from "@/util/common";
+import { ipv6IsValid, ipv4IsValid } from "@/util/common";
 import { ttlValidator } from "@/util/validator";
 
 export default {
@@ -53,11 +53,20 @@ export default {
             if (this.formModel.isarpa === "true") {
               const [ip, len] = value.split("/");
               const arr = [8, 16, 24];
-              if (isIp(ip)) {
-                if (arr.includes(Number(len))) {
+              if (ipv4IsValid(ip)) {
+                const range = Number(len) < 32 && Number(len) > 24;
+                if (arr.includes(Number(len)) || range) {
                   callback();
                 } else {
-                  callback("子网范围只能是8/16/24三种之一");
+                  callback("IPv4:支持掩码8,16,24-31");
+                }
+              } else if (ipv6IsValid(ip)) {
+                const range = Number(len) >= 4 && Number(len) <= 128;
+                const is4Times = Number(len) % 4 === 0;
+                if (range && is4Times) {
+                  callback();
+                } else {
+                  callback("IPv6: 支持掩码4-128,且4的整数倍");
                 }
               } else {
                 callback("请正确填写区名称");
