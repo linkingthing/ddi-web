@@ -154,6 +154,7 @@ export default {
         userName: "",
         password: ""
       },
+      timer: null,
       status: ""
     };
   },
@@ -204,6 +205,14 @@ export default {
 
       };
       return statusMap[this.status] || {}
+    }
+  },
+
+  watch: {
+    dialogVisible(val) {
+      if (!val) {
+        clearInterval(this.timer);
+      }
     }
   },
 
@@ -279,6 +288,14 @@ export default {
     },
     handleExportLog() {
       this.dialogVisible = true;
+      this.getUploadlogs();
+      this.timer = setInterval(() => {
+        if (this.status.includes("ing")) {
+          this.getUploadlogs();
+        }
+      }, 2000);
+    },
+    getUploadlogs() {
       this.$get(this.$getApiByRoute("/system/log/uploadlogs")).then(res => {
         const { data } = res;
         if (Array.isArray(data) && data.length) {
