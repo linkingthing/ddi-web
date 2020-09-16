@@ -45,6 +45,7 @@
           :visible.sync="dialogVisible"
           title="ftp导出"
           :width="413"
+          :buttons="buttonConfig"
           @confirm="handleConfirm('formInline')"
         >
           <Form
@@ -85,15 +86,17 @@
               />
 
             </FormItem>
-            <FormItem>
-              <Button
-                type="primary"
-                @click="handleCreateLog('formInline')"
-              >导出解析日志</Button>
-            </FormItem>
-            <FormItem>
-              {{status}}
-            </FormItem>
+            <div style="text-align: center;font-size: 14px">
+
+              <p :style="{color: statusMap.color}">
+                <img
+                  style="vertical-align: bottom;"
+                  v-if="statusMap.icon"
+                  :src="require(`./${statusMap.icon}.png`)"
+                  alt=""
+                > {{statusMap.text}}
+              </p>
+            </div>
 
           </Form>
         </common-modal>
@@ -109,18 +112,7 @@ import resources from "@/dictionary/resources";
 
 export default {
   data() {
-    this.buttonConfig = [{
-      label: "取消",
-      type: "default",
-      class: "button-cancel",
-      event: "cancel"
-    },
-    {
-      label: "上传",
-      type: "primary",
-      class: "button-confirm",
-      event: "confirm"
-    }];
+
     this.rules = {
 
     };
@@ -164,6 +156,55 @@ export default {
       },
       status: ""
     };
+  },
+
+  computed: {
+    buttonConfig() {
+      return [{
+        label: "取消",
+        type: "default",
+        class: "button-cancel",
+        event: "cancel"
+      },
+      {
+        label: "导出解析日志",
+        type: "primary",
+        class: "button-confirm",
+        event: "confirm",
+        disabled: this.status.includes("ing")
+      }];
+    },
+    statusMap() {
+      const statusMap = {
+        connecting: {
+          color: "#4586FE",
+          text: "连接中...",
+          icon: ""
+        },
+        connectFailed: {
+          color: "#FF9024",
+          text: "连接失败",
+          icon: "warn"
+        },
+        transporting: {
+          color: "#4586FE",
+          text: "上传中...",
+          icon: ""
+        },
+        transportFailed: {
+          color: "#FC4545",
+          text: "上传失败",
+          icon: "close"
+        },
+        completed: {
+          color: "#40C85A",
+          text: "上传完成",
+          icon: "success"
+        }
+
+      };
+      return statusMap[this.status] || {}
+    }
   },
 
   mounted() {
@@ -250,7 +291,8 @@ export default {
         }
       });
     },
-    handleCreateLog(name) {
+
+    handleConfirm(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = this.formModel;
@@ -258,22 +300,6 @@ export default {
           url += "/1?action=uploadLog";
           this.$post({ params, url }).then(({ status }) => {
             this.status = status;
-          }).catch(err => {
-            this.$Message.error(err.response.data.message);
-          });
-        }
-      });
-    },
-    handleConfirm(name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          const params = this.formModel;
-          let { url } = this.$getApiByRoute("/system/log/uploadlogs");
-          url += "/user";
-
-          this.$put({ params, url }).then(res => {
-            this.$Message.success("配置保存成功");
-            this.dialogVisible = false;
           }).catch(err => {
             this.$Message.error(err.response.data.message);
           });
