@@ -23,6 +23,11 @@ export default {
       name: "forwards",
       label: "转发组",
       route: "forward-group"
+    },
+    {
+      name: "timepolicy",
+      label: "时间策略",
+      route: "time-policy"
     }];
     return {
       tab: this.$route.path.split("/").pop(),
@@ -31,7 +36,7 @@ export default {
   },
   computed: {},
   created() {
- 
+
   },
   methods: {
     handleTab(tab) {

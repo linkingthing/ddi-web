@@ -40,9 +40,18 @@ export default {
           path: "/dns/dns/forwards",
           component: () => import("@/views/dns/forward/ForwardGroup"),
           meta: {
-            title: "转发配置"
+            title: "转发组"
           }
         },
+        {
+          name: "time-policy",
+          path: "/dns/dns/forwardtimepolicies",
+          component: () => import("@/views/dns/forward/TimePolicy"),
+          meta: {
+            title: "时间策略"
+          }
+        },
+
 
         {
           name: "zone-query-forward",
