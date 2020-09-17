@@ -139,6 +139,7 @@ export default {
   },
   watch: {
     dataset() {
+      console.log("draw")
       this.draw();
     }
   },
@@ -307,28 +308,28 @@ export default {
       links
         .enter()
         .append("path")
-        .style("opacity", 0)
-        .transition()
-        .duration(ANIMATION_DURATION)
-        .ease(d3.easeCubicInOut)
-        .style("opacity", 1)
+        // .style("opacity", 0)
+        // .transition()
+        // .duration(ANIMATION_DURATION)
+        // .ease(d3.easeCubicInOut)
+        // .style("opacity", 1)
         .attr("class", "link")
         .attr("d", function (d, i) {
           return self.generateLinkPath(d);
         });
       links
         .transition()
-        .duration(ANIMATION_DURATION)
-        .ease(d3.easeCubicInOut)
+        // .duration(ANIMATION_DURATION)
+        // .ease(d3.easeCubicInOut)
         .attr("d", function (d) {
           return self.generateLinkPath(d);
         });
       links
         .exit()
-        .transition()
-        .duration(ANIMATION_DURATION / 2)
-        .ease(d3.easeCubicInOut)
-        .style("opacity", 0)
+        // .transition()
+        // .duration(ANIMATION_DURATION / 2)
+        // .ease(d3.easeCubicInOut)
+        // .style("opacity", 0)
         .remove();
 
       this.nodeDataList = nodeDataList;

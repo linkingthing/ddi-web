@@ -151,6 +151,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
+        console.log(1)
         let newTree = JSON.stringify(val);
         newTree = newTree.replace(/nodes/g, "children");
         newTree = JSON.parse(newTree);
