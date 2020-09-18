@@ -133,8 +133,13 @@ export default {
     current: {
       deep: true,
       immediate: true,
-      handler(val) {
+      handler(val, old) {
         this.innerCurrent = val;
+
+        if (val !== old && val > 0) {
+          const { query } = this.$route;
+          this.$router.push({ query: { ...query, current: val } });
+        }
       }
     },
 

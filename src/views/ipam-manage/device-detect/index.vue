@@ -187,6 +187,9 @@ export default {
         });
 
         this.total = res.pagination.total;
+        if (!Object.is(this.current, res.pagination.pageNum)) {
+          this.current = res.pagination.pageNum;
+        }
       } catch (err) {
         this.$handleError(err);
       }
