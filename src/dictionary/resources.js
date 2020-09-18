@@ -47,7 +47,6 @@ export default {
   dnsglobalconfig: "DNS全局配置",
   globalConfig: "DNS日志开关",
   dnslog: "DNS日志",
-  urlredirect: "url重定向",
   /** 用户 */
   user: "用户信息",
   ddiuser: "当前用户信息",
