@@ -1,5 +1,5 @@
 <template>
-  <common-modal  
+  <common-modal
     :visible.sync="dialogVisible"
     :width="415"
     :title="getTitle"
@@ -26,6 +26,7 @@
 
 <script>
 import { formItemList, rules } from "./define";
+import { filter } from 'shelljs/commands';
 
 export default {
   props: {
@@ -47,7 +48,7 @@ export default {
       url: this.$getApiByRoute().url,
 
       formModel: this.initForm(),
-      
+
       formItemList: [],
       rules
     };
@@ -62,14 +63,14 @@ export default {
   watch: {
     visible(val) {
       if (!val) return;
-      
+
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
       if (!val) {
         this.$refs.form.resetFields();
-        
+
         if (this.$route.query.mac) {
           this.$refresh();
         }
@@ -93,9 +94,10 @@ export default {
       this.formItemList = formItemList(!val);
 
       await this.$nextTick();
-      
-      this.formModel = { 
+      this.formModel = {
         ...value,
+        ipv4s: value.ipv4s ? value.ipv4s.join(",") : "",
+        ipv6s: value.ipv6s ? value.ipv6s.join(",") : "",
         deviceType: value.deviceType || "pc"
       };
     },
@@ -130,14 +132,20 @@ export default {
           action = "$put";
         }
 
-        await this[action]({ url, params: this.formModel });
+        const params = {
+          ...this.formModel
+        };
+        params.ipv4s = params.ipv4s.split(",").filter(item => !!item.trim());
+        params.ipv6s = params.ipv6s.split(",").filter(item => !!item.trim());
         
+        await this[action]({ url, params });
+
         this.$$success("保存成功！");
 
         this.$emit("saved");
 
         this.dialogVisible = false;
-      } 
+      }
       catch (err) {
         this.$handleError(err);
       }
@@ -159,7 +167,7 @@ export default {
 
 <style lang="less">
 .ip-assets-edit {
-  .ivu-modal-body { 
+  .ivu-modal-body {
     max-height: 520px;
     overflow: auto;
   }

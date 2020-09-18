@@ -41,17 +41,31 @@ export const columns = scope => [
   },
   {
     title: "IPv4地址",
-    key: "ipv4",
+    key: "ipv4s",
     align: "center",
     width: 180,
-    tooltip
+    tooltip,
+    render: (h, { row }) => {
+      return h("Tags", {
+        props: {
+          list: row.ipv4s
+        }
+      });
+    }
   },
   {
     title: "IPv6地址",
     key: "ipv6s",
     align: "center",
     width: 180,
-    tooltip
+    tooltip,
+    render: (h, { row }) => {
+      return h("Tags", {
+        props: {
+          list: row.ipv6s
+        }
+      });
+    }
   },
 
   {
