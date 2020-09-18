@@ -220,6 +220,7 @@ export default {
         }
         this.setNetnodes(netNodes);
       }).catch((err) => {
+        this.setNetnodes([]);
         // this.$Message.error(err.response.data.message);
       });
     },

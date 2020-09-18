@@ -130,6 +130,7 @@ export default {
         if (Array.isArray(val)) {
           this.semanticList = val.map(item => {
             return {
+              ...item,
               id: item.id,
               name: item.name,
               isEdit: false,
