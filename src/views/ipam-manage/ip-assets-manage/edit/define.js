@@ -79,6 +79,13 @@ export const formItemList = isNew => [
     placeholder: "请输入端口"
   },
   {
+    label: "vlan",
+    model: "vlanId",
+    type: "input",
+    maxlength: 50,
+    placeholder: "请输入vlan"
+  },
+  {
     label: "业务名称",
     model: "deployedService",
     type: "input",

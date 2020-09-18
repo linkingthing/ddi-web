@@ -427,12 +427,13 @@ export default {
           query: {
             id: res.id,
             ip: row.ip,
+            vlanId: row.vlanId,
             mac: row.mac,
             switchName,
             switchPort,
             computerRack,
             computerRoom,
-            subnetv6Ids: scannedsubnetsId
+            subnetId: scannedsubnetsId
           }
         });
       } catch (err) {

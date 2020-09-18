@@ -111,6 +111,16 @@ export const columns = scope => [
     tooltip
   },
   {
+    title: "vlan",
+    key: "vlanId",
+    align: "center",
+    width: 120,
+    tooltip,
+    render: (h, { row }) => {
+      return h("div", row.vlanId ? row.vlanId : "");
+    }
+  },
+  {
     title: "业务名称",
     key: "deployedService",
     align: "center",
