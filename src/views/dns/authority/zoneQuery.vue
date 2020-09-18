@@ -193,8 +193,10 @@ export default {
 
       this.$post({ url, params }).then(res => {
         this.$Message.success("切换成功");
+        this.getArea();
       }).catch(() => {
         this.$Message.error("切换失败");
+        this.getArea();
       });
     }
   }
