@@ -212,6 +212,7 @@ export default {
     dialogVisible(val) {
       if (!val) {
         clearInterval(this.timer);
+        this.$refs.formInline.resetFields();
       }
     }
   },
@@ -299,10 +300,9 @@ export default {
       this.$get(this.$getApiByRoute("/system/log/uploadlogs")).then(res => {
         const { data } = res;
         if (Array.isArray(data) && data.length) {
-          const { userName, address, password, status } = data[0];
+          const { userName, address, status } = data[0];
           this.formModel.userName = userName;
           this.formModel.address = address;
-          this.formModel.password = password;
 
           this.status = status;
         }
