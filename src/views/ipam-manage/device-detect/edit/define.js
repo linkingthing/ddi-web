@@ -105,6 +105,7 @@ export const formItemList = isNew => [
 ];
 
 const validateIP = (rule, value, callback) => {
+  console.log(value)
   if (!value) {
     return callback(new Error("请输入管理IP"));
   }
@@ -120,15 +121,13 @@ export const rules = {
   name: [
     {
       required,
-      message: "请输入设备名称",
-      trigger: "change,blur"
+      message: "请输入设备名称"
     }
   ],
   administrationAddress: [
     {
       required,
-      validator: validateIP, 
-      trigger: "blur"
+      validator: validateIP
     }
   ],
   equipmentType: [
@@ -145,8 +144,7 @@ export const rules = {
   telephone: [
     {
       pattern: mobilePhoneReg,
-      message: "请输入正确的联系电话",
-      trigger: "blur"
+      message: "请输入正确的联系电话"
     }
   ]
 };

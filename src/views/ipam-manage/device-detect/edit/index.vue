@@ -16,7 +16,10 @@
       :model="formModel"
       style="height: 750px"
     >
-      <common-form :form-model="formModel" :form-item-list="formItemList" />
+      <common-form
+        :form-model="formModel"
+        :form-item-list="formItemList"
+      />
     </Form>
   </common-modal>
 </template>
@@ -38,21 +41,38 @@ export default {
   },
 
   data() {
+    this.rules = rules;
     return {
       loading: false,
       dialogVisible: false,
       isEdit: false,
       url: this.$getApiByRoute().url,
 
-      formModel: this.initForm(),
-      formItemList: [],
-      rules
+      formModel: {
+        name: "",
+        administrationAddress: "",
+        equipmentType: "",
+        serialNumber: "",
+        manufacturer: "",
+        firmwareVersion: "",
+        uplinkAddress: "",
+        downlinkAddress: "",
+        computerRoom: "",
+        computerRack: "",
+        location: "",
+        department: "",
+        responsiblePerson: "",
+        telephone: ""
+      }
     };
   },
 
   computed: {
     getTitle() {
       return this.isEdit ? "编辑" : "新建";
+    },
+    formItemList() {
+      return formItemList(!this.isEdit);
     }
   },
 
@@ -74,8 +94,7 @@ export default {
     data: {
       immediate: true,
       handler(val) {
-        this.isEdit = val && Object.keys(val).length;
-
+        this.isEdit = !!val;
         this.setValue(val);
       }
     }
@@ -85,38 +104,19 @@ export default {
     async setValue(val) {
       let value = val;
 
-      if (!val) value = {};      
-
-      this.formItemList = formItemList(!val);
+      if (!val) value = {};
 
       await this.$nextTick();
 
       this.formModel = {
+        ...this.formModel,
         ...value
-      };
-    },
-
-    initForm() {
-      return {
-        name: "",
-        administrationAddress: "",
-        equipmentType: "",
-        serialNumber: "",
-        manufacturer: "",
-        firmwareVersion: "",
-        uplinkAddress: "",
-        downlinkAddress: "",
-        computerRoom: "",
-        computerRack: "",
-        location: "",
-        department: "",
-        responsiblePerson: "",
-        telephone: ""
       };
     },
 
     async handleConfirm() {
       try {
+        console.log(this.formModel)
         await this.validate();
 
         this.loading = true;
@@ -129,7 +129,7 @@ export default {
           action = "$put";
         }
 
-        await this[action]({ url, params: this.getParams() });
+        await this[action]({ url, params: this.formModel });
 
         this.$$success("保存成功！");
 
@@ -143,11 +143,7 @@ export default {
       }
     },
 
-    getParams() {
-      return {
-        ...this.formModel
-      };
-    },
+
 
     validate() {
       return new Promise((resolve, reject) => {
@@ -162,7 +158,7 @@ export default {
 
 <style lang="less">
 .device-detect-edit {
-  .ivu-modal-body { 
+  .ivu-modal-body {
     max-height: 520px;
     overflow: auto;
   }
