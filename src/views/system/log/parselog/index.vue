@@ -95,6 +95,9 @@
                   :src="require(`./${statusMap.icon}.png`)"
                   alt=""
                 > {{statusMap.text}}
+                <span style="color: #999;padding-left: 20">
+                  {{finishTime}}
+                </span>
               </p>
             </div>
 
@@ -155,7 +158,8 @@ export default {
         password: ""
       },
       timer: null,
-      status: ""
+      status: "",
+      finishTime: ""
     };
   },
 
@@ -300,11 +304,12 @@ export default {
       this.$get(this.$getApiByRoute("/system/log/uploadlogs")).then(res => {
         const { data } = res;
         if (Array.isArray(data) && data.length) {
-          const { userName, address, status } = data[0];
+          const { userName, address, status, finishTime } = data[0];
           this.formModel.userName = userName;
           this.formModel.address = address;
 
           this.status = status;
+          this.finishTime = finishTime;
         }
       });
     },
