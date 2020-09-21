@@ -38,7 +38,72 @@
           style="margin-left: 26px;"
           type="primary"
           @click="handleExportLog"
-        >导出</Button>
+        >FTP导出</Button>
+
+        <common-modal
+          class="acl-modal"
+          :visible.sync="dialogVisible"
+          title="ftp导出"
+          :width="413"
+          :buttons="buttonConfig"
+          @confirm="handleConfirm('formInline')"
+        >
+          <Form
+            ref="formInline"
+            label-position="left"
+            :label-width="100"
+            :label-colon="true"
+            :rules="rules"
+            :model="formModel"
+          >
+            <FormItem
+              label="服务器地址"
+              prop="address"
+            >
+              <Input
+                placeholder="请输入服务器地址"
+                v-model="formModel.address"
+              />
+            </FormItem>
+            <FormItem
+              label="账号名称"
+              prop="userName"
+            >
+              <Input
+                placeholder="请输入账号名称"
+                v-model="formModel.userName"
+              />
+
+            </FormItem>
+            <FormItem
+              label="密码"
+              prop="password"
+            >
+              <Input
+                type="password"
+                placeholder="请输入密码"
+                v-model="formModel.password"
+              />
+
+            </FormItem>
+            <div style="text-align: center;font-size: 14px">
+
+              <p :style="{color: statusMap.color}">
+                <img
+                  style="vertical-align: bottom;"
+                  v-if="statusMap.icon"
+                  :src="require(`./${statusMap.icon}.png`)"
+                  alt=""
+                > {{statusMap.text}}
+                <span style="color: #999;padding-left: 20">
+                  {{finishTime}}
+                </span>
+              </p>
+            </div>
+
+          </Form>
+        </common-modal>
+
       </template>
     </table-page>
   </div>
@@ -50,7 +115,12 @@ import resources from "@/dictionary/resources";
 
 export default {
   data() {
+
+    this.rules = {
+
+    };
     return {
+      dialogVisible: false,
       url: this.$getApiByRoute().url,
       loading: true,
       tableData: [],
@@ -81,8 +151,74 @@ export default {
       },
       currentPage: 1,
       isSmallScreen: document.body.clientWidth <= 1366,
-      showConfig: false
+      showConfig: false,
+      formModel: {
+        address: "",
+        userName: "",
+        password: ""
+      },
+      timer: null,
+      status: "",
+      finishTime: ""
     };
+  },
+
+  computed: {
+    buttonConfig() {
+      return [{
+        label: "取消",
+        type: "default",
+        class: "button-cancel",
+        event: "cancel"
+      },
+      {
+        label: "导出解析日志",
+        type: "primary",
+        class: "button-confirm",
+        event: "confirm",
+        disabled: this.status.includes("ing")
+      }];
+    },
+    statusMap() {
+      const statusMap = {
+        connecting: {
+          color: "#4586FE",
+          text: "连接中...",
+          icon: ""
+        },
+        connectFailed: {
+          color: "#FF9024",
+          text: "连接失败",
+          icon: "warn"
+        },
+        transporting: {
+          color: "#4586FE",
+          text: "上传中...",
+          icon: ""
+        },
+        transportFailed: {
+          color: "#FC4545",
+          text: "上传失败",
+          icon: "close"
+        },
+        completed: {
+          color: "#40C85A",
+          text: "上传完成",
+          icon: "success"
+        }
+
+      };
+      return statusMap[this.status] || {}
+    }
+  },
+
+  watch: {
+    dialogVisible(val) {
+      if (!val) {
+        clearInterval(this.timer);
+        this.$refs.formInline.resetFields();
+      }
+    }
   },
 
   mounted() {
@@ -156,33 +292,41 @@ export default {
       });
     },
     handleExportLog() {
-      const link = this.links.self || "/apis/linkingthing.com/log/v1/dnslogs";
-      const params = this.getParams();
-      let url = `${link}/dnslog?action=exportcsv`;
-      const query = qs.stringify(params);
-      if (query) {
-        url += `&${query}`;
-      }
+      this.dialogVisible = true;
+      this.getUploadlogs();
+      this.timer = setInterval(() => {
+        if (this.status.includes("ing")) {
+          this.getUploadlogs();
+        }
+      }, 2000);
+    },
+    getUploadlogs() {
+      this.$get(this.$getApiByRoute("/system/log/uploadlogs")).then(res => {
+        const { data } = res;
+        if (Array.isArray(data) && data.length) {
+          const { userName, address, status, finishTime } = data[0];
+          this.formModel.userName = userName;
+          this.formModel.address = address;
 
-      this.$post({ url, params }).then(res => {
-        const { downloadPath, fileName } = this.pathParser(res);
-        this.downloadFile(downloadPath, fileName);
+          this.status = status;
+          this.finishTime = finishTime;
+        }
       });
     },
-    pathParser({ path }) {
-      const realPath = "/opt/website/";
-      const staticPath = "/public/";
-      const fileName = path.replace(realPath, "");
-      return {
-        downloadPath: staticPath.concat(fileName),
-        fileName
-      };
-    },
-    downloadFile(path, fileName) {
-      let a = document.createElement("a");
-      a.href = path;
-      a.download = fileName;
-      a.click();
+
+    handleConfirm(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const params = this.formModel;
+          let { url } = this.$getApiByRoute("/system/log/uploadlogs");
+          url += "/1?action=uploadLog";
+          this.$post({ params, url }).then(({ status }) => {
+            this.status = status;
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
+      });
     }
   }
 };

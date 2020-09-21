@@ -39,6 +39,7 @@
         :type="typeList.includes(button.type) ? button.type : 'primary'"
         @click="handleButtonClick(button)"
         :loading="loading(button)"
+        :disabled="button.disabled"
       >
         {{ button.label }}
       </Button>
