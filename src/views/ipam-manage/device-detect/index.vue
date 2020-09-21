@@ -5,8 +5,9 @@
     <table-page
       :data="tableData"
       :columns="columns"
-      :total="tableData.length"
       :is-padding-top="true"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-left">
         <div class="condition-item">
@@ -131,12 +132,16 @@ export default {
       showAdvance: false,
       showEdit: false,
       showDetect: false,
-      currentData: null
+      currentData: null,
+      current: 0,
+      total: 0
     };
   },
 
-  mounted() {
-    this.handleQuery();
+  watch: {
+    current() {
+      this.handleQuery();
+    }
   },
 
   methods: {
@@ -167,7 +172,11 @@ export default {
       Reflect.deleteProperty(params, "equipmentType");
 
       try {
-        let res = await this.$get({ url: this.$formatQuerys(params, this.url) });
+        const aparams = {
+          page_num: this.current,
+          page_size: 10
+        };
+        let res = await this.$get({ url: this.$formatQuerys(params, this.url), params: aparams });
 
         this.tableData = res.data.map(item => {
           const equipmentType = deviceTypes.find(({ label }) => label === item.equipmentType);
@@ -176,6 +185,11 @@ export default {
 
           return item;
         });
+
+        this.total = res.pagination.total;
+        if (!Object.is(this.current, res.pagination.pageNum)) {
+          this.current = res.pagination.pageNum;
+        }
       } catch (err) {
         this.$handleError(err);
       }

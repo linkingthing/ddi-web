@@ -62,22 +62,31 @@ export default {
         }
       ],
       list: [],
-      current: 1,
+      current: 0,
       total: 0,
       visible: false,
       paramsLinks: {}
     };
   },
-  mounted() {
-    this.getData();
+  watch: {
+    current: {
+      handler() {
+        this.getData();
+      }
+    }
   },
   methods: {
     getData() {
-      this.$getDataAndLinks()
-        .then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$getData(params)
+        .then(({ data, links, pagination }) => {
           this.list = data;
           this.total = data.length;
           this.links = links;
+          this.total = pagination.total;
         })
         .catch(function (err) {
           console.log(err);

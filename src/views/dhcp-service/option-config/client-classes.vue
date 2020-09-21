@@ -3,8 +3,9 @@
     <table-page
       title="OPTION列表"
       :data="tableData"
-      :total="tableData.length"
+      :total="total"
       :columns="columns"
+      :current.sync="current"
     >
       <template slot="top-right">
         <Button
@@ -78,20 +79,28 @@ export default {
       ],
       showEdit: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      total: 0,
+      current: 0
     };
   },
 
-  mounted() {
-
-    this.getDataList();
+  watch: {
+    current() {
+      this.getDataList();
+    }
   },
 
   methods: {
 
     getDataList() {
-      this.$getData().then(({ data }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$getData(params).then(({ data, pagination }) => {
         this.tableData = data;
+        this.total = pagination.total;
       }).catch(err => err);
     },
 

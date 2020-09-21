@@ -4,7 +4,8 @@
       title="转发视图"
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -93,20 +94,31 @@ export default {
           }
         }
       ],
+      total: 0,
+      current: 0,
       list: [],
       links: {},
       paramsLinks: {},
       visible: false
     };
   },
-  mounted() {
-    this.getDataList();
+  watch: {
+    current: {
+      handler() {
+        this.getDataList();
+      }
+    }
   },
   methods: {
     getDataList() {
-      this.$getDataAndLinks().then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$getData(params).then(({ data, links, pagination }) => {
         this.list = data;
         this.links = links;
+        this.total = pagination.total;
       });
     },
     handleOpenCreate() {

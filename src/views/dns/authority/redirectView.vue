@@ -4,7 +4,8 @@
       title="重定向视图"
       :data="list"
       :columns="columns"
-      :paginationEnable="false"
+      :current.sync="current"
+      :total="total"
     />
   </div>
 </template>
@@ -51,28 +52,35 @@ export default {
           key: "creationTimestamp",
           align: "right",
           render: (h, { row }) => {
-            return h("div", this.$trimDate(row.creationTimestamp))
+            return h("div", this.$trimDate(row.creationTimestamp));
           }
         }
       ],
+      current: 0,
+      total: 0,
       list: [],
       id: ""
     };
   },
-  mounted() {
-    this.getView();
+  watch: {
+    current: {
+      handler() {
+        this.getView();
+
+      }
+    }
   },
   methods: {
-    goConfig(type) {
-      if (type == 0) {
-        this.$refs.deviceRef.openConfig();
-      }
-    },
     getView() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getViewList()
+        .getViewList(params)
         .then(res => {
           this.list = res.data.data;
+          this.total = res.data.pagination.total;
         })
         .catch(err => {
           console.log(err);

@@ -5,8 +5,9 @@
     <TablePagination
       title="地址池管理"
       :data="tableData"
-      :total="tableData.length"
+      :total="total"
       :columns="columns"
+      :current.sync="current"
     >
       <template slot="top-right">
         <Button
@@ -81,20 +82,28 @@ export default {
         }
       ],
       showEdit: false,
-      links: {}
+      links: {},
+      current: 0,
+      total: 0
     };
   },
-  mounted() {
-    this.getDataList();
+  watch: {
+    current() {
+      this.getDataList();
+    }
   },
   methods: {
 
     getDataList() {
       this.loading = true;
-
-      this.$axios.get(this.$getApiByRoute().url).then(({ data: { data, links } }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$axios.get(this.$getApiByRoute().url, { params }).then(({ data: { data, links, pagination } }) => {
         this.tableData = data;
         this.links = links;
+        this.total = pagination.total;
       }).catch().finally(() => {
         this.loading = false;
       });

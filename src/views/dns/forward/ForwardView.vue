@@ -4,7 +4,8 @@
       title="转发视图"
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     />
   </div>
 </template>
@@ -50,18 +51,29 @@ export default {
           }
         }
       ],
+      total: 0,
+      current: 0,
       list: []
     };
   },
-  mounted() {
-    this.getManger();
+  watch: {
+    current: {
+      handler() {
+        this.getManger();
+      }
+    }
   },
   methods: {
     getManger() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getViewList()
+        .getViewList(params)
         .then(res => {
           this.list = res.data.data;
+          this.total = res.data.pagination.total;
         })
         .catch(err => {
           console.log(err);

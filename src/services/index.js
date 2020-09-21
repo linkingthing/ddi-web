@@ -24,8 +24,8 @@ export default {
   createView(params) {
     return axios.post(`${baseUrl}/views`, params);
   },
-  getViewList() {
-    return axios.get(`${baseUrl}/views`);
+  getViewList(params) {
+    return axios.get(`${baseUrl}/views`, { params });
   },
   deleteViewById(id) {
     return axios.delete(`${baseUrl}/views/${id}`);
@@ -81,8 +81,8 @@ export default {
   getAccessById(id) {
     return axios.get(`${baseUrl}/acls/${id}`);
   },
-  getAccessList() {
-    return axios.get(`${baseUrl}/acls`);
+  getAccessList(params) {
+    return axios.get(`${baseUrl}/acls`, { params });
   },
   createAccess(params) {
     return axios.post(`${baseUrl}/acls`, params);
@@ -95,8 +95,8 @@ export default {
   },
 
   // 重定向
-  geRedirectionsByViewId(viewId) {
-    return axios.get(`${baseUrl}/views/${viewId}/redirections`);
+  geRedirectionsByViewId(viewId, params) {
+    return axios.get(`${baseUrl}/views/${viewId}/redirections`, { params });
   },
   deleteRedirection(viewId, redirectionId) {
     return axios.delete(
@@ -478,7 +478,7 @@ export default {
    */
   editOption(params, id) {
     return axios.put(`${baseUrl}/restoptionnames/${id}`, params);
-  },
+  }
 
   /** OPTOIN配置 end */
 };

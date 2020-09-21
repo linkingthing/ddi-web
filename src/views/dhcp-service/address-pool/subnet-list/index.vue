@@ -5,8 +5,9 @@
     <TablePagination
       title="地址池管理"
       :data="tableData"
-      :total="tableData.length"
       :columns="columns"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <Button
@@ -49,19 +50,25 @@ export default {
       tableData: [],
       columns: columns(this),
       showEdit: false,
-      links: {}
+      links: {},
+      total: 0,
+      current: 0
     };
   },
 
+  watch: {
+    current() {
+      this.getDataList();
+    }
+  },
   mounted() {
-    this.getDataList();
     this.openToCreate();
   },
 
   methods: {
     openToCreate() {
       const { ipnet } = this.$route.query;
-      
+
       if (ipnet) {
         this.showEdit = true;
         this.links = {
@@ -77,9 +84,14 @@ export default {
     },
 
     getDataList() {
-      this.$getData().then(({ data }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;
         this.tableData = data;
+        this.total = pagination.total;
       }).catch().finally(() => {
         this.loading = false;
       });

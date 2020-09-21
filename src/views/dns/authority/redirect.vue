@@ -4,7 +4,8 @@
       title="重定向"
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -101,15 +102,20 @@ export default {
       remove: "",
       modal1: false,
       priority: "",
-      acls: []
+      acls: [],
+      total: 0,
+      current: 0
     };
+  },
+  watch: {
+    current() {
+      this.getView();
+    }
   },
   created() {
     this.id = this.$route.params.id;
   },
-  mounted() {
-    this.getView();
-  },
+
   methods: {
     handleOpenCreate(data) {
       this.$refs.ipRef.openConfig(data);
@@ -119,10 +125,15 @@ export default {
     },
     getView() {
       let _self = this;
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .geRedirectionsByViewId(this.id)
+        .geRedirectionsByViewId(this.id, params)
         .then(function (res) {
           _self.list = res.data.data;
+          _self.total = res.data.pagination.total;
         })
         .catch(function (err) {
           console.log(err);
