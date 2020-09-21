@@ -20,11 +20,14 @@ export default {
   forwardzone: "转发区",
   rr: "资源记录",
   forward: "转发组",
+  forward_zone: "转发区",
   redirection: "重定向",
+  url_redirect: "URL重定向",
   ipblackhole: "IP黑名单",
   recursivecurrent: "递归安全",
   log: "DNS日志",
   urlredirect: "url重定向",
+  dns_global_config: "dns全局配置",
   /** IPAM */
   asset: "IP资产",
   plan: "IP地址规划",
@@ -44,7 +47,6 @@ export default {
   dnsglobalconfig: "DNS全局配置",
   globalConfig: "DNS日志开关",
   dnslog: "DNS日志",
-  urlredirect: "url重定向",
   /** 用户 */
   user: "用户信息",
   ddiuser: "当前用户信息",
@@ -52,3 +54,10 @@ export default {
   usergroup: "用户组",
   whitelist: "白名单"
 };
+
+
+export const operateMap = {
+  Create: "创建",
+  Update: "更新",
+  Delete: "删除"
+}
