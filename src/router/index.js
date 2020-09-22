@@ -55,7 +55,6 @@ router.beforeEach((to, from, next) => {
               router.addRoutes(asyncRouter);
               isAddRouter = true;
               next({ ...to, replace: true });
-              // next("/monitor");
             }
             next();
           } else {
@@ -64,7 +63,7 @@ router.beforeEach((to, from, next) => {
         })
         .catch(err => {
           
-          throw new Error(err, "err info");
+          throw new Error(err, "err getUserInfo");
         });
     } else {
       next("/login");

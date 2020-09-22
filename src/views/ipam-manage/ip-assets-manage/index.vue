@@ -150,7 +150,6 @@ export default {
       vlanId
     };
 
-    console.log(id, 33)
     if (id) {
       try {
         let data = await this.$get({ url: this.url + "/" + id });
@@ -166,11 +165,14 @@ export default {
         this.$handleError(err);
       }
     } else {
-      if (ipv4IsValid(ip)) {
-        this.currentData.ipv4s = [ip];
-      } else {
-        this.currentData.ipv4s = [ip];
+      if (ip) {
+        if (ipv4IsValid(ip)) {
+          this.currentData.ipv4s = [ip];
+        } else {
+          this.currentData.ipv4s = [ip];
+        }
       }
+
     }
 
     if (mac) {

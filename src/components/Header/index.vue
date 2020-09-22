@@ -213,12 +213,11 @@ export default {
     };
     const { port, protocol, hostname } = document.location;
     const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-    const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.8" : hostname;
+    const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.120" : hostname;
     const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
     const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
 
     ws = new WebSocket(`${wsUrl}`);
-
     ws.onopen = function () {
       console.log("连接成功 初始化");
     };
@@ -305,7 +304,7 @@ export default {
       width: 56px;
       padding: 12px 0;
       margin-right: 10px;
-      border-right: 1px solid #E8E8E8;
+      border-right: 1px solid #e8e8e8;
       img {
         width: 30px;
       }
