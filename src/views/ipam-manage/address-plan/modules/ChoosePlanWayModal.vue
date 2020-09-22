@@ -105,14 +105,14 @@ export default {
     ]),
     handleCustom() {
       const params = buildLayoutParams(this.currentLayout, false, -1);
-      console.log(params);
-
       if (this.currentLayout.links.create) {
         this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
           this.setLayout({
             ...this.currentLayout, links, autofill
           });
           this.nextPlanStep();
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
         });
       }
     },
@@ -122,6 +122,8 @@ export default {
         this.$post({ url: this.currentLayout.links.create, params }).then((data) => {
           this.setLayout(data);
           this.nextPlanStep();
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
         });
       }
 
