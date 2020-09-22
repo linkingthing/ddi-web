@@ -48,9 +48,8 @@ const actions = {
             resolve(userInfo);
           })
           .catch(err => {
-            commit("SET_USERINFO", {userType: "superUser"});
-            resolve({userType: "superUser"});
-
+            // commit("SET_USERINFO", {userType: "superUser"});
+            // resolve({userType: "superUser"});
             reject(err);
           });
       }

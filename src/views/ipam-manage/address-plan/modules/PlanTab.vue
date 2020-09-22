@@ -2,6 +2,8 @@
   <div class="PlanTab">
     <div class="PlanTabtitle">规划名称:</div>
     <ul>
+      <!-- @mouseenter="handlerMouseEnter"
+      @mouseout="handlerMouseOut" -->
       <PlanTabItem
         v-for="item in planList"
         v-bind="item"
@@ -78,7 +80,20 @@ export default {
           }
         }
       });
-    }
+    },
+    // handlerMouseEnter() {
+    //   console.log(1)
+    //   window.addEventListener("mousewheel", this.handleScroll, true);
+
+    // },
+    // handlerMouseOut() {
+    //   console.log(2)
+    //   window.removeEventListener("mousewheel", this.handleScroll, true);
+
+    // },
+    // handleScroll(e) {
+    //   console.log(e)
+    // }
 
   }
 };
@@ -101,7 +116,9 @@ export default {
     line-height: 48px;
   }
   ul {
+    flex: 1;
     display: inline-flex;
+    overflow: auto;
     padding: 5px 5px 0;
   }
 }

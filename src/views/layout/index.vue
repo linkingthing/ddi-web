@@ -12,6 +12,7 @@
         <router-view />
       </div>
     </section>
+    <!-- <div class="right">sss</div> -->
   </article>
 </template>
 
@@ -56,5 +57,13 @@ export default {
     position: relative;
     border-radius: 6px;
   }
+}
+.right {
+  position: fixed;
+  right: 10px;
+  top: 80px;
+  bottom: 0;
+  width: 300px;
+  background: #f80;
 }
 </style>

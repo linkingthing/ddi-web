@@ -59,6 +59,7 @@ export default {
   cursor: pointer;
   border-radius: 4px 4px 0px 0px;
   line-height: 1;
+  flex-shrink: 0;
 
   &.active {
     color: #4585fd;
