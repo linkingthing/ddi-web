@@ -175,5 +175,25 @@ export const rules = {
       pattern: mobilePhoneReg,
       message: "请输入正确的联系电话"
     }
+  ],
+  vlanId: [
+    {
+      validator(rules, value, callback) {
+        if (value === "") {
+          callback();
+        }
+        const NumberReg = /^\d+$/g;
+        if (NumberReg.test(value)) {
+          const number = Number(value);
+          if (number > 0 && number < 4095) {
+            callback();
+          } else {
+            callback("plan值应该大于0且小于4095");
+          }
+        } else {
+          callback("请输入数字");
+        }
+      }
+    }
   ]
 };

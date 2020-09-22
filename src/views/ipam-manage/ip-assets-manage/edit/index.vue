@@ -91,6 +91,9 @@ export default {
     async setValue(val) {
       let value = val || {};
 
+      if (value.vlanId === 0) {
+        value.vlanId = "";
+      }
       this.formItemList = formItemList(!val);
 
       await this.$nextTick();
