@@ -15,7 +15,7 @@ import router from "./router";
 
 new Vue({
   el: "#app",
-  render: (h) => h(App),
+  render: h => h(App),
   store,
   router
 });

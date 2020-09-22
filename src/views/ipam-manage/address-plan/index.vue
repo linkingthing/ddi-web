@@ -1,120 +1,275 @@
 <template>
-  <div class="plan-list">   
-    <IviewLoading v-if="loading" />
+  <div class="plan">
+    <div
+      class="top-right"
+      v-if="planList.length"
+    >
+      <Button
+        type="primary"
+        style="margin-right: 20px"
+        @click="handleAddPlan"
+      >新建规划</Button>
+      <!-- <Button
+        type="primary"
+        @click="handleImport"
+      >导入规划</Button> -->
+    </div>
+    <div class="plan-content">
 
-    <no-data-list
-      v-if="!tableData.length"
-      @add="handleAdd"
-      top="212" 
-    />
+      <NoDataList
+        style="margin-top: 100px"
+        v-if="!planList.length"
+        button-text="新建规划"
+        @add="handleAddPlan"
+      />
+      <!-- :buttons="[{
+          text:'导入规划',
+          event: handleImport
+        }]" -->
+      <template v-else>
+        <PlanTab
+          @onDeletePlan="handleDelete"
+          :plan-list="planList"
+        />
+        <PlanProcess @onchange="handleProcessChange" />
 
-    <TablePagination 
-      v-else
-      :data="tableData"
-      :columns="columns"  
-      :total="tableData.length"
-    > 
-      <template slot="top-right">
-        <Button 
-          type="primary" 
-          @click="handleAdd" 
-          class="top-button"
-        >
-          新建网络
-        </Button>
+        <component :is="stepComponent" />
+
       </template>
-    </TablePagination>
 
-    <Create 
-      :visible.sync="showCreate"
-      @saved="handleSaved"
-    />
+    </div>
+
   </div>
 </template>
 
-<style lang="less">
-@import "./index.less";
-</style>
-
 <script>
-import TablePagination from "@/components/TablePagination";
-import Create from "./create";
 
-import { columns } from "./define";
+import { mapGetters, mapMutations } from "vuex";
+import { v4 as uuidv4 } from "uuid";
+import { debounce } from "lodash";
+
+import NoDataList from "@/components/NoDataList";
+import PlanTab from "./modules/PlanTab";
+import PlanProcess from "./modules/PlanProcess";
+import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
+import PlanStepSemantic from "./modules/PlanStepSemantic";
+import PlanStepTree from "./modules/PlanStepTree";
+import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
+import { list2Tree } from "./modules/helper";
 
 export default {
   components: {
-    TablePagination,
-    Create
+    NoDataList,
+    PlanTab,
+    PlanProcess,
+
+    PlanStepCreatePrefix,
+    PlanStepSemantic,
+    PlanStepTree,
+    PlanStepAddressAssign
   },
 
   data() {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      tableData: [],
-      columns: columns(this),
-      showCreate: false
+      netnodesurl: "",
+      oneLayoutLinks: null
+
     };
   },
 
-  mounted() {    
+  computed: {
+    ...mapGetters({
+      planList: "planList",
+      currentPlan: "currentPlan",
+      currentLayout: "currentLayout",
+      stepComponent: "currentPlanProcessId",
+      planProcessList: "planProcessList",
+      netType: "netType"
+    })
+  },
+
+  watch: {
+    "currentPlan.links": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        if (val && val.layouts) {
+          this.getLayout(val);
+        }
+      }
+    },
+    "currentLayout": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        if (val && val.links && val.links.netnodes) {
+          this.getNetnodes(val.links);
+        }
+      }
+    },
+    currentPlanProcessId(val) {
+      console.log(22, val)
+    },
+    netType(netType) {
+      const params = {
+        nettype: netType
+      };
+      this.$get({ url: this.netnodesurl, params }).then(({ data }) => {
+        if (data[0]) {
+          const netNodes = data[0].netitems;
+          this.setNetnodes(netNodes);
+        } else {
+          this.setNetnodes([]);
+        }
+      }).catch((err) => {
+        this.$Message.error(err.response.data.message);
+      });
+    }
+
+  },
+
+  mounted() {
     this.handleQuery();
   },
 
+
   methods: {
-    async handleQuery() {
-      this.loading = true;
+    ...mapMutations([
+      "setPlanProcessListInit",
+      "setPlanProcessListAccessible",
+      "setCurrentPlanId",
+      "setPlanList",
+      "addPlan",
+      "clearTempPlan",
+      "setLayout",
+      "setCurrentNodeId",
+      "setNetnodes"
+    ]),
 
-      try {
-        let { data } = await this.$get({ url: this.url });
-        
-        this.tableData = data.map(item => {
+    handleQuery() {
+
+      this.$get({ url: this.url }).then(({ data }) => {
+        const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
-
+          item.title = item.description;
           return item;
         });
-      } catch (err) {
-        this.$handleError(err); 
-      }
-      finally {        
-        this.loading = false;
-      }
-    },
 
-    handleViewLayouts(data) {
-      this.$router.push(`/address/ipam/plans/${data.id}/layouts?prefix=${data.prefix}&maskLen=${data.maskLen}`);
-    },
+        this.setPlanList(tableData);
 
-    handleAdd() {
-      this.showCreate = true;
-    },
+        if (tableData.length) {
+          this.setCurrentPlanId(tableData[0].id);
+          this.setPlanProcessListAccessible("PlanStepSemantic");
 
-    handleSaved() {
-      this.showCreate = false;
-
-      this.handleQuery();
-    },
-
-    async handleDelete({ id }) {
-      try {
-        await this.$$confirm({ content: "您确定要删除当前数据吗？" });
-
-        this.loading = true;
-        
-        await this.$delete({ url: this.url + "/" + id });
-        
-        this.$$success("删除成功！");
-
-        this.handleQuery();
-      }
-      catch (err) {
+        }
+      }).catch((err) => {
         this.$handleError(err);
-      }
-      finally {
-        this.loading = false;
+      });
+
+    },
+
+    getLayout({ layouts }) {
+      this.$get({ url: layouts }).then(({ data, links }) => {
+
+        if (data.length) {
+          const oneLinks = data[0].links;
+          this.oneLayoutLinks = oneLinks;
+          this.getLayoutOne(oneLinks);
+        } else {
+          this.oneLayoutLinks = null;
+          this.setLayout({
+            id: uuidv4(),
+            planProcessAccessList: ["PlanStepSemantic"],
+            name: "layout",
+            nodes: null,
+            links: {
+              create: links.self
+            },
+            prefix: this.currentPlan.prefix
+          });
+        }
+
+      });
+
+    },
+
+    getLayoutOne({ self }) {
+      this.$get({ url: self }).then(data => {
+        this.setLayout(data);
+        this.setPlanProcessListAccessible("PlanStepSemantic");
+        this.setPlanProcessListAccessible("PlanStepTree");
+
+        if (Array.isArray(data.nodes) && data.nodes.length) {
+          const id = data.nodes[0].id;
+          this.setCurrentNodeId(id);
+        }
+
+        if (data.firstfinished) {
+          this.setPlanProcessListAccessible("PlanStepAddressAssign");
+        }
+      });
+    },
+
+    getNetnodes: debounce(function ({ netnodes }) {
+      const params = {
+        nettype: this.netType
+      };
+      this.netnodesurl = netnodes;
+      this.$get({ url: netnodes, params }).then(({ data }) => {
+        let netNodes = [];
+        if (data.length) {
+          netNodes = data[0].netitems;
+        }
+        this.setNetnodes(netNodes);
+      }).catch((err) => {
+        this.setNetnodes([]);
+      });
+    }, 300),
+
+    handleDelete(id) {
+      this.$delete({ url: this.url + "/" + id }).then(() => {
+        this.$$success("删除成功！");
+        this.handleQuery();
+      }).catch(() => {
+        this.clearTempPlan();
+      });
+
+    },
+
+    handleAddPlan() {
+      const id = uuidv4();
+      this.addPlan({
+        id,
+        prefix: "",
+        description: "New Plan",
+        maxLen: 64,
+        planType: "temp"
+      });
+      this.setCurrentPlanId(id);
+    },
+    handleProcessChange(process) {
+      const shouldRequestLayout = ["PlanStepSemantic", "PlanStepTree"].includes(process);
+      if (shouldRequestLayout && this.oneLayoutLinks) {
+        this.getLayoutOne(this.oneLayoutLinks);
       }
     }
   }
 };
 </script>
+
+<style lang="less">
+.plan {
+  padding-top: 60px;
+  .top-right {
+    position: absolute;
+    right: 10px;
+    top: 16px;
+  }
+}
+.plan-content {
+  padding: 24px;
+  border-top: 1px solid #efefef;
+}
+</style>

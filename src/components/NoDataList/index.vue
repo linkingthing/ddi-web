@@ -1,27 +1,33 @@
 <template>
-  <div class="no-data-list" :style="{marginTop: getTop}">
-    <img :src="img" >
+  <div
+    class="no-data-list"
+    :style="{marginTop: getTop}"
+  >
+    <img :src="img">
 
     <p>{{text}}</p>
 
     <template v-if="showButton">
-      <Button
-        v-if="showAdd"
-        type="primary"
-        @click="$emit('add')"
-      >
-        {{buttonText}}
-      </Button>
+      <div>
+        <Button
+          v-if="showAdd"
+          type="primary"
+          @click="$emit('add')"
+        >
+          {{buttonText}}
+        </Button>
 
-      <Button
-        v-for="(btn, idx) in buttons"
-        :key="idx"
-        :type="btn.type || 'primary'"
-        :class="btn.customClass"
-        @click="$emit(btn.event)"
-      >
-        {{btn.text}}
-      </Button>
+        <Button
+          v-for="(btn, idx) in buttons"
+          :key="idx"
+          :type="btn.type || 'primary'"
+          :class="btn.customClass"
+          @click="$emit(btn.event)"
+        >
+          {{btn.text}}
+        </Button>
+      </div>
+
     </template>
   </div>
 </template>
@@ -83,5 +89,4 @@ export default {
 </script>
 
 <style>
-
 </style>
