@@ -94,7 +94,6 @@ export default {
   methods: {
     getData() {
       this.$getData().then(({ data }) => {
-        console.log(data)
         this.loading = false;
         this.list = data;
       }).catch().finally(() => {

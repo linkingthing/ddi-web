@@ -31,7 +31,7 @@
           @onDeletePlan="handleDelete"
           :plan-list="planList"
         />
-        <PlanProcess />
+        <PlanProcess @onchange="handleProcessChange" />
 
         <component :is="stepComponent" />
 
@@ -46,6 +46,7 @@
 
 import { mapGetters, mapMutations } from "vuex";
 import { v4 as uuidv4 } from "uuid";
+import { debounce } from "lodash";
 
 import NoDataList from "@/components/NoDataList";
 import PlanTab from "./modules/PlanTab";
@@ -72,7 +73,8 @@ export default {
     return {
       url: this.$getApiByRoute().url,
       loading: true,
-      netnodesurl: ""
+      netnodesurl: "",
+      oneLayoutLinks: null
 
     };
   },
@@ -106,6 +108,9 @@ export default {
           this.getNetnodes(val.links);
         }
       }
+    },
+    currentPlanProcessId(val) {
+      console.log(22, val)
     },
     netType(netType) {
       const params = {
@@ -168,11 +173,12 @@ export default {
     getLayout({ layouts }) {
       this.$get({ url: layouts }).then(({ data, links }) => {
 
-
         if (data.length) {
           const oneLinks = data[0].links;
+          this.oneLayoutLinks = oneLinks;
           this.getLayoutOne(oneLinks);
         } else {
+          this.oneLayoutLinks = null;
           this.setLayout({
             id: uuidv4(),
             planProcessAccessList: ["PlanStepSemantic"],
@@ -203,12 +209,10 @@ export default {
         if (data.firstfinished) {
           this.setPlanProcessListAccessible("PlanStepAddressAssign");
         }
-
-        this.getNetnodes(data.links);
       });
     },
 
-    getNetnodes({ netnodes }) {
+    getNetnodes: debounce(function ({ netnodes }) {
       const params = {
         nettype: this.netType
       };
@@ -221,9 +225,8 @@ export default {
         this.setNetnodes(netNodes);
       }).catch((err) => {
         this.setNetnodes([]);
-        // this.$Message.error(err.response.data.message);
       });
-    },
+    }, 300),
 
     handleDelete(id) {
       this.$delete({ url: this.url + "/" + id }).then(() => {
@@ -246,12 +249,12 @@ export default {
       });
       this.setCurrentPlanId(id);
     },
-    // handleImport() {
-    //   // 正式做导入功能之前，这个操作都用于测试store
-    //   console.log(this.$store)
-    // }
-
-
+    handleProcessChange(process) {
+      const shouldRequestLayout = ["PlanStepSemantic", "PlanStepTree"].includes(process);
+      if (shouldRequestLayout && this.oneLayoutLinks) {
+        this.getLayoutOne(this.oneLayoutLinks);
+      }
+    }
   }
 };
 </script>

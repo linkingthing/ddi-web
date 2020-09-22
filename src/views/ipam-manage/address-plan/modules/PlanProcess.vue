@@ -49,31 +49,6 @@ export default {
           this.setCurrentPlanProcessId(id);
         }
       }
-    },
-    "currentLayout": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        if (val && val.id) {
-          // 有layout的情况可以访问 第 二 三步骤
-          // 构造出的isStructureLayout ，只能访问第二步
-          const steps = ["PlanStepSemantic", "PlanStepTree"];
-          const planProcessList = [];
-          this.planProcessList.forEach(({ ...item }) => {
-            if (val.planProcessAccessList) {
-              if (val.planProcessAccessList.includes(item.id)) {
-                item.type = "visited";
-              }
-            } else if (steps.includes(item.id)) {
-              if (item.type === "") {
-                item.type = "visited";
-              }
-            }
-            planProcessList.push(item);
-          });
-          this.setPlanProcessList(planProcessList);
-        }
-      }
     }
   },
   created() { },
@@ -81,12 +56,10 @@ export default {
   methods: {
     ...mapMutations([
       "setCurrentPlanProcessId",
-      "nextPlanStep",
-      "setPlanProcessList"
+      "nextPlanStep"
     ]),
     handleChange(id) {
       this.nextPlanStep(id);
-      this.$emit("onchange", id);
     }
   }
 };

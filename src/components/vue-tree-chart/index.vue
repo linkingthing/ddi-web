@@ -139,7 +139,6 @@ export default {
   },
   watch: {
     dataset() {
-      console.log("draw")
       this.draw();
     }
   },
