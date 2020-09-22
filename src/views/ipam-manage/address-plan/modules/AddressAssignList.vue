@@ -2,7 +2,7 @@
   <div class="AddressAssignList">
     <table-page
       :columns="columns"
-      :data="filterList"
+      :data="filterListWithList"
       :total="filterList.length"
     >
       <div
@@ -119,7 +119,15 @@ export default {
     ...mapGetters([
       "netNodes",
       "netType"
-    ])
+    ]),
+    filterListWithList() {
+      const pageSize = 10;
+      const { current } = this.$route.query;
+      const startIndex = (current - 1) * pageSize;
+      const endIndex = current * pageSize;
+
+      return this.filterList.slice(startIndex, endIndex);
+    }
   },
   watch: {
     netNodes: {

@@ -57,6 +57,8 @@ import PlanStepTree from "./modules/PlanStepTree";
 import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
 import { list2Tree } from "./modules/helper";
 
+import eventBus from "@/util/bus";
+
 export default {
   components: {
     NoDataList,
@@ -132,6 +134,7 @@ export default {
 
   mounted() {
     this.handleQuery();
+    eventBus.$on("getLayout", this.getLayout)
   },
 
 
@@ -170,7 +173,7 @@ export default {
 
     },
 
-    getLayout({ layouts }) {
+    getLayout({ layouts } = this.currentPlan.links) {
       this.$get({ url: layouts }).then(({ data, links }) => {
 
         if (data.length) {
@@ -249,10 +252,12 @@ export default {
       });
       this.setCurrentPlanId(id);
     },
-    handleProcessChange(process) {
-      const shouldRequestLayout = ["PlanStepSemantic", "PlanStepTree"].includes(process);
-      if (shouldRequestLayout && this.oneLayoutLinks) {
-        this.getLayoutOne(this.oneLayoutLinks);
+    handleProcessChange(process, isHandle) {
+      if (isHandle) {
+        const shouldRequestLayout = ["PlanStepSemantic", "PlanStepTree"].includes(process);
+        if (shouldRequestLayout && this.oneLayoutLinks) {
+          this.getLayoutOne(this.oneLayoutLinks);
+        }
       }
     }
   }

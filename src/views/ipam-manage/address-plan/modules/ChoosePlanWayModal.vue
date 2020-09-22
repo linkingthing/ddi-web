@@ -56,6 +56,8 @@
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 import { buildLayoutParams } from "./helper";
 
+import eventBus from "@/util/bus";
+
 export default {
   components: {},
   props: {
@@ -106,11 +108,10 @@ export default {
     handleCustom() {
       const params = buildLayoutParams(this.currentLayout, false, -1);
       if (this.currentLayout.links.create) {
-        this.$post({ url: this.currentLayout.links.create, params }).then(({ links, autofill }) => {
-          this.setLayout({
-            ...this.currentLayout, links, autofill
-          });
+        this.$post({ url: this.currentLayout.links.create, params }).then(data => {
+          this.setLayout(data);
           this.nextPlanStep();
+          eventBus.$emit("getLayout");
         }).catch(err => {
           this.$Message.error(err.response.data.message);
         });
@@ -119,9 +120,10 @@ export default {
     handleIntellect() {
       const params = buildLayoutParams(this.currentLayout);
       if (this.currentLayout.links.create) {
-        this.$post({ url: this.currentLayout.links.create, params }).then((data) => {
+        this.$post({ url: this.currentLayout.links.create, params }).then(data => {
           this.setLayout(data);
           this.nextPlanStep();
+          eventBus.$emit("getLayout");
         }).catch(err => {
           this.$Message.error(err.response.data.message);
         });

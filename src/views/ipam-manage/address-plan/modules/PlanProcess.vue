@@ -60,6 +60,7 @@ export default {
     ]),
     handleChange(id) {
       this.nextPlanStep(id);
+      this.$emit("onchange", id, true);
     }
   }
 };
