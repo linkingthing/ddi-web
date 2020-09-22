@@ -135,7 +135,7 @@ export const columns = scope => [
     title: "联系电话",
     key: "telephone",
     align: "center",
-    width: 150,
+    minWidth: 150,
     tooltip
   },
   {
