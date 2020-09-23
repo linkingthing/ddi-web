@@ -15,6 +15,22 @@
 <script>
 import * as d3 from "d3";
 import { parseData } from "./helper";
+import access_switch from "./access_switch.png";
+import convergence_switch from "./convergence_switch.png";
+import core_switch from "./core_switch.png";
+import firewall from "./firewall.png";
+import router from "./router.png";
+import security_gateway from "./security_gateway.png";
+
+const EQUIPMENT_ICON_MAP = {
+  access_switch,
+  convergence_switch,
+  core_switch,
+  firewall,
+  router,
+  security_gateway
+}
+
 export default {
   components: {},
   props: {
@@ -51,9 +67,15 @@ export default {
 
     initTopology() {
       console.log(d3)
+
+      const NODE_WIDTH = 180;
+      const NODE_HEIGHT = 60;
+
       const [width, height] = [800, 600]
       const svg = d3.select("#topplogy-svg").append("svg").attr("width", width)
         .attr("height", height);
+
+      svg.append("style").text(`.node-equipment { border: 1px solid #AAB5BF; width: ${NODE_WIDTH}px ; height: ${NODE_HEIGHT}px }`)
 
       const { nodes, links } = parseData(this.dataList); // graph
 
@@ -64,7 +86,7 @@ export default {
         .force("link", d3.forceLink(links).id(function (d) {
           return d.administrationAddress;
         })) // distance为连线的距离设置
-        .force("collide", d3.forceCollide().radius(() => 100)) // collide 为节点指定一个radius区域来防止节点重叠。
+        .force("collide", d3.forceCollide().radius(() => 200)) // collide 为节点指定一个radius区域来防止节点重叠。
         .force("charge", null)  // 节点间的作用力
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", tick);
@@ -78,10 +100,56 @@ export default {
 
       let node = svg.selectAll(".node").data(nodes)
         .enter()
-        .append("circle")
-        .attr("class", "node")
-        .attr("r", 12);
+        .append("g")
 
+      // const nodeHtml = node.append("foreignObject")
+      //   .style("width", NODE_WIDTH)
+      //   .style("height", NODE_HEIGHT)
+      //   .append("div")
+      //   .attr("class", "node-equipment")
+
+      // nodeHtml.append("div")
+
+      // nodeHtml.append("img").attr("src",)
+
+
+      node.append("rect")
+        .attr("class", "node")
+
+        .attr("rx", NODE_HEIGHT / 2)
+        .attr("ry", NODE_HEIGHT / 2)
+        .attr("width", NODE_WIDTH)
+        .attr("height", NODE_HEIGHT)
+        .style("fill", "#fff") // transparent
+        .style("stroke", "#D4DCE3")
+
+      const nodeImage = node.append("image")
+        .attr("x", 10)
+        .attr("y", 6)
+        .attr("xlink:href", function (d) {
+          console.log(d, 22)
+          return EQUIPMENT_ICON_MAP[d.equipmentType];
+        })
+
+      const nodeName = node.append("text")
+        .attr("x", 70)
+        .attr("y", 22)
+        .style("font-size", 14)
+        .style("color", "#333")
+        .style("font-weight", "bold")
+        .text(function (d) {
+          return d.name;
+        })
+
+
+      const nodeIp = node.append("text")
+        .attr("x", 70)
+        .attr("y", 46)
+        .style("font-size", 14)
+        .style("color", "#333")
+        .text(function (d) {
+          return d.administrationAddress;
+        })
 
       function tick() {
         link.attr("x1", function (d) { return d.source.x; })
@@ -89,8 +157,13 @@ export default {
           .attr("x2", function (d) { return d.target.x; })
           .attr("y2", function (d) { return d.target.y; });
 
-        node.attr("cx", function (d) { d.fx = d.x; return d.x; })
-          .attr("cy", function (d) { d.fy = d.y; return d.y; });
+        node.attr("transform", function (d) {
+          d.fx = d.x;
+          d.fy = d.y;
+          const x = d.x - NODE_WIDTH / 2;
+          const y = d.y - NODE_HEIGHT / 2;
+          return "translate(" + x + " " + y + ")";
+        });
       }
 
     }
@@ -113,7 +186,12 @@ export default {
   .topology-inner {
     flex: 1;
     border-top: 1px solid #ddd;
-    background: #e7eeef;
   }
+}
+
+.node-equipment {
+  width: 100px;
+  height: 60px;
+  background: #f80;
 }
 </style>

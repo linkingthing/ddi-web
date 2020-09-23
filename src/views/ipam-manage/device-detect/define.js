@@ -1,9 +1,4 @@
 function getMapAddress(obj = {}) {
-  console.log(
-    Object.values(obj)
-      .map(item => item.ip)
-      .join(",")
-  );
   return Object.values(obj).map(item => item.ip);
 }
 
