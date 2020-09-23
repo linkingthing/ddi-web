@@ -91,6 +91,9 @@ export default {
     async setValue(val) {
       let value = val || {};
 
+      if (value.vlanId === 0) {
+        value.vlanId = "";
+      }
       this.formItemList = formItemList(!val);
 
       await this.$nextTick();
@@ -114,7 +117,8 @@ export default {
         deployedService: "",
         department: "",
         responsiblePerson: "",
-        telephone: ""
+        telephone: "",
+        vlan: ""
       };
     },
 
@@ -132,12 +136,18 @@ export default {
           action = "$put";
         }
 
+        // action 注册, 只有存在的情况才注册
+        if (this.data && this.data.shouldRegister) {
+          url += `?action=register`;
+          action = "$post";
+        }
+
         const params = {
           ...this.formModel
         };
         params.ipv4s = params.ipv4s.split(",").filter(item => !!item.trim());
         params.ipv6s = params.ipv6s.split(",").filter(item => !!item.trim());
-        
+        params.vlanId = +params.vlanId;
         await this[action]({ url, params });
 
         this.$$success("保存成功！");

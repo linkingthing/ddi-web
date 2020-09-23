@@ -143,7 +143,8 @@ export default {
       switchPort,
       computerRack,
       computerRoom,
-      subnetv6Ids
+      subnetId,
+      vlanId
     } = this.$route.query;
 
     this.currentData = {
@@ -151,15 +152,11 @@ export default {
       switchName,
       switchPort,
       computerRack,
-      computerRoom
+      computerRoom,
+      ip,
+      subnetId,
+      vlanId
     };
-
-    if (ip && ipv4IsValid(ip)) {
-      this.currentData.ipv4s = [ip];
-    } else {
-      this.currentData.ipv6s = [ip];
-      this.currentData.subnetv6Ids = [subnetv6Ids];
-    }
 
     if (id) {
       try {
@@ -169,9 +166,21 @@ export default {
           ...data,
           ...this.currentData
         };
+
+        this.currentData.shouldRegister = true;
+
       } catch (err) {
         this.$handleError(err);
       }
+    } else {
+      if (ip) {
+        if (ipv4IsValid(ip)) {
+          this.currentData.ipv4s = [ip];
+        } else {
+          this.currentData.ipv4s = [ip];
+        }
+      }
+
     }
 
     if (mac) {
