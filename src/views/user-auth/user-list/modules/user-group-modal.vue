@@ -149,7 +149,7 @@ export default {
           placeholder: "请填写前缀长度",
           style: "width: 380px"
         },
-        ...com,
+        // ...com,
         {
           label: "选择用户组",
           type: "component",

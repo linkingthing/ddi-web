@@ -15,6 +15,9 @@ Vue.component("btn-edit", BaseBtnEdit);
 import BaseBtnDel from "@/components/BaseBtnDel";
 Vue.component("btn-del", BaseBtnDel);
 
+import BaseBtnReset from "@/components/BaseBtnReset";
+Vue.component("btn-reset", BaseBtnReset);
+
 import BaseLineEdit from "@/components/BaseLineEdit";
 Vue.component("line-edit", BaseLineEdit);
 
