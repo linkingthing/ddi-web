@@ -31,6 +31,8 @@ import MultipleSelect from "../../modules/MultipleSelect";
 import ShowPassword from "@/components/BaseShowPassword";
 import InputPassword from "@/components/BaseInputPassword";
 
+
+const DEFAULT_PASSWORD = "123456";
 export default {
   props: {
     visible: {
@@ -52,7 +54,9 @@ export default {
       ],
       password: [{
         validator: function (rule, value, callback) {
-
+          if (!this.isEdit) {
+            callback();
+          }
           if (value.trim()) {
             callback();
           } else {
@@ -67,14 +71,23 @@ export default {
       repassword: [
         {
           validator: function (rule, value, callback) {
+            if (!this.isEdit) {
+              callback();
+            }
             if (value === self.formModel.password) {
               callback();
             } else {
               callback("两次输入的密码不一致");
             }
-            setTimeout(() => {
-              self.$refs["formInline"].validateField("repassword");
-            });
+            let timer = null;
+            if (!this.isEdit) {
+              clearTimeout(timer);
+              timer = setTimeout(() => {
+                self.$refs["formInline"].validateField("repassword");
+              });
+            } else {
+              clearTimeout(timer);
+            }
           }
         }
       ]
@@ -82,11 +95,12 @@ export default {
 
     return {
       formModel: {
-        name: "",
-        password: "",
-        repassword: "",
+        username: "",
         userGroupIDs: [],
-        roleIDs: []
+        roleIDs: [],
+        password: DEFAULT_PASSWORD,
+        repassword: DEFAULT_PASSWORD,
+        comment: ""
       },
       loading: false,
       dialogVisible: false,
@@ -125,20 +139,24 @@ export default {
         style: "width: 380px"
       }];
 
-      if (!this.isEditPassword && this.isEdit) {
-        com = [{
-          label: "登录密码",
-          model: "password",
-          type: "component",
-          placeholder: "请输入密码",
-          component: ShowPassword,
-          style: "width: 380px",
-          props: {
-            click: () => this.isEditPassword = true
-          }
-        }
+      // if (!this.isEditPassword && this.isEdit) {
+      //   com = [{
+      //     label: "登录密码",
+      //     model: "password",
+      //     type: "component",
+      //     placeholder: "请输入密码",
+      //     component: ShowPassword,
+      //     style: "width: 380px",
+      //     props: {
+      //       click: () => this.isEditPassword = true
+      //     }
+      //   }
 
-        ];
+      //   ];
+      // }
+
+      if (this.isEdit) {
+        com = [];
       }
 
       return [
@@ -149,7 +167,7 @@ export default {
           placeholder: "请填写前缀长度",
           style: "width: 380px"
         },
-        // ...com,
+        ...com,
         {
           label: "选择用户组",
           type: "component",
@@ -227,8 +245,16 @@ export default {
       });
     },
     reset() {
-      this.isEditPassword = false;
       this.$refs["formInline"].resetFields();
+
+      this.formModel = {
+        username: "",
+        userGroupIDs: [],
+        roleIDs: [],
+        password: DEFAULT_PASSWORD,
+        repassword: DEFAULT_PASSWORD,
+        comment: ""
+      };
     },
 
     handleConfirm(name) {
