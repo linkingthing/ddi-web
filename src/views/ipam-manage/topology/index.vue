@@ -44,8 +44,6 @@ export default {
       this.$get(this.$getApiByRoute("/address/ipam/networkequipments")).then(({ data }) => {
         this.dataList = data;
 
-        console.log(parseData(data))
-
         this.initTopology();
 
       });
@@ -61,33 +59,32 @@ export default {
 
 
       const simulation = d3.forceSimulation().alphaDecay(0.1) // 设置alpha衰减系数
-        .force("link", d3.forceLink().distance(100)) // distance为连线的距离设置
-        .force("collide", d3.forceCollide().radius(() => 30)) // collide 为节点指定一个radius区域来防止节点重叠。
-        .force("charge", d3.forceManyBody().strength(-400))  // 节点间的作用力
+        .nodes(nodes)
+
+        .force("link", d3.forceLink(links).id(function (d) {
+          return d.administrationAddress;
+        })) // distance为连线的距离设置
+        .force("collide", d3.forceCollide().radius(() => 100)) // collide 为节点指定一个radius区域来防止节点重叠。
+        .force("charge", null)  // 节点间的作用力
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", tick);
 
 
       let link = svg.selectAll(".link").data(links)
         .enter().append("line")
-        .attr("class", "link");
+        .attr("class", "link")
+        .attr("style", "stroke: #AAB5BF")
+        ;
 
       let node = svg.selectAll(".node").data(nodes)
-        .enter().append("circle")
+        .enter()
+        .append("circle")
         .attr("class", "node")
-        .attr("r", 12)
-
-
-
-      simulation
-        .nodes(nodes)
-        .force("link", d3.forceLink(links));
-
-
+        .attr("r", 12);
 
 
       function tick() {
-        link.attr("x1", function (d) { console.log(d) ; return d.source.x; })
+        link.attr("x1", function (d) { return d.source.x; })
           .attr("y1", function (d) { return d.source.y; })
           .attr("x2", function (d) { return d.target.x; })
           .attr("y2", function (d) { return d.target.y; });
