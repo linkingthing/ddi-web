@@ -75,7 +75,14 @@ export default {
       const svg = d3.select("#topplogy-svg").append("svg").attr("width", width)
         .attr("height", height);
 
-      svg.append("style").text(`.node-equipment { border: 1px solid #AAB5BF; width: ${NODE_WIDTH}px ; height: ${NODE_HEIGHT}px }`)
+      const g = svg.append("g");
+
+      const zoomHandler = d3.zoom().on("zoom", function () {
+        g.attr("transform", d3.zoomTransform(svg.node()));
+      });
+
+      svg.call(zoomHandler);
+
 
       const { nodes, links } = parseData(this.dataList); // graph
 
@@ -86,9 +93,9 @@ export default {
           .id(function (d) {
             return d.administrationAddress;
           })) // distance为连线的距离设置
-        .force("collide", d3.forceCollide(200)) // collide 为节点指定一个radius区域来防止节点重叠。
+        .force("collide", d3.forceCollide(100)) // collide 为节点指定一个radius区域来防止节点重叠。
 
-        .force("positioning", d3.forceY(.11).strength(.11))
+        // .force("positioning", d3.forceX(1).strength(1))
 
 
 
@@ -96,26 +103,15 @@ export default {
         .on("tick", tick);
 
 
-      let link = svg.selectAll(".link").data(links)
+      let link = g.selectAll(".link").data(links)
         .enter().append("line")
         .attr("class", "link")
         .attr("style", "stroke: #AAB5BF")
         ;
 
-      let node = svg.selectAll(".node").data(nodes)
+      let node = g.selectAll(".node").data(nodes)
         .enter()
-        .append("g")
-
-      // const nodeHtml = node.append("foreignObject")
-      //   .style("width", NODE_WIDTH)
-      //   .style("height", NODE_HEIGHT)
-      //   .append("div")
-      //   .attr("class", "node-equipment")
-
-      // nodeHtml.append("div")
-
-      // nodeHtml.append("img").attr("src",)
-
+        .append("g");
 
 
       node.append("rect")
@@ -162,8 +158,8 @@ export default {
           .attr("y2", function (d) { return d.target.y; });
 
         node.attr("transform", function (d) {
-          d.fx = d.x;
-          d.fy = d.y;
+          // d.fx = d.x;
+          // d.fy = d.y;
           const x = d.x - NODE_WIDTH / 2;
           const y = d.y - NODE_HEIGHT / 2;
           return "translate(" + x + " " + y + ")";
