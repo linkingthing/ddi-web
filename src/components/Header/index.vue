@@ -71,6 +71,7 @@
     <change-password
       :username="username"
       :visible.sync="visible"
+      action="changePassword"
     />
   </div>
 </template>

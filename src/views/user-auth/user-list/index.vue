@@ -18,6 +18,11 @@
       :links="paramsLinks"
       @success="getDataList"
     />
+    <change-password
+      :username="username"
+      :visible.sync="cpvisible"
+      action="resetPassword"
+    />
   </div>
 </template>
 
@@ -25,11 +30,12 @@
 
 
 import ViewModal from "./modules/user-group-modal";
+import ChangePassword from "@/components/ChangePassword";
 
 export default {
   name: "deviceMonitor",
   components: {
-
+    ChangePassword,
     ViewModal
   },
   data() {
@@ -61,6 +67,11 @@ export default {
           width: 220,
           render: (h, { row }) => {
             return h("div", [
+              h("btn-reset", {
+                on: {
+                  click: () => this.handleChangePassword(row)
+                }
+              }),
               h("btn-edit", {
                 on: {
                   click: () => this.handleEdit(row)
@@ -79,7 +90,9 @@ export default {
       list: [],
       visible: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      cpvisible: false,
+      username: ""
     };
   },
   mounted() {
@@ -95,6 +108,10 @@ export default {
     handleOpenCreate() {
       this.visible = true;
       this.paramsLinks = this.links;
+    },
+    handleChangePassword({ username }) {
+      this.username = username;
+      this.cpvisible = true;
     },
     handleEdit({ links }) {
       this.visible = true;
