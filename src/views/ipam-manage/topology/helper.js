@@ -1,18 +1,19 @@
 /**
  * 处理设备列表数据，输出，nodes links
- * @return { nodes<Array>, links<Array> }
+ * @return { nodes<Array>, links<Array> } nodes links
  */
 export function parseData(data) {
   let links = [];
   let nodes = [];
   data.forEach(element => {
     nodes.push({
-      ...element,
+      ...element
     });
 
     // 线的计算 downlinkAddresses uplinkAddresses
 
     const {
+      nextHopAddresses,
       downlinkAddresses,
       uplinkAddresses,
       administrationAddress // ip
@@ -33,6 +34,15 @@ export function parseData(data) {
         target: administrationAddress
       });
     });
+
+    Object.keys(nextHopAddresses).forEach(port => {
+      const next = nextHopAddresses[port];
+      links.push({
+        source: administrationAddress,
+        target: next.ip
+      });
+    });
+
   });
 
   links = unique(links);

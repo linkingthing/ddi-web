@@ -8,7 +8,23 @@
       class="topology-inner"
       id="topplogy-svg"
       ref="topplogy-svg"
-    />
+    >
+      <div class="tool-bar">
+        <img
+          src="./access_switch.png"
+          alt=""
+        >
+        <img
+          src="./access_switch.png"
+          alt=""
+        >
+        <img
+          @click="handleSavePicture"
+          src="./access_switch.png"
+          alt=""
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -54,6 +70,7 @@ export default {
   created() { },
   mounted() {
     this.getDataList();
+
   },
   methods: {
     getDataList() {
@@ -66,14 +83,16 @@ export default {
     },
 
     initTopology() {
-      console.log(d3)
 
       const NODE_WIDTH = 180;
       const NODE_HEIGHT = 60;
-
-      const [width, height] = [800, 600]
+      const { clientWidth, clientHeight } = d3.select("#topplogy-svg").node();
+      const [width, height] = [clientWidth, clientHeight - 20];
+      this.size = [width, height];
       const svg = d3.select("#topplogy-svg").append("svg").attr("width", width)
         .attr("height", height);
+
+      this.svg = svg;
 
       const g = svg.append("g");
 
@@ -87,13 +106,13 @@ export default {
       const { nodes, links } = parseData(this.dataList); // graph
 
 
-      const simulation = d3.forceSimulation().alphaDecay(0.1) // 设置alpha衰减系数
+      const simulation = d3.forceSimulation().alphaDecay(.8) // 设置alpha衰减系数
         .nodes(nodes)
         .force("link", d3.forceLink(links)
           .id(function (d) {
             return d.administrationAddress;
           })) // distance为连线的距离设置
-        .force("collide", d3.forceCollide(100)) // collide 为节点指定一个radius区域来防止节点重叠。
+        .force("collide", d3.forceCollide(160)) // collide 为节点指定一个radius区域来防止节点重叠。
 
         // .force("positioning", d3.forceX(1).strength(1))
 
@@ -166,6 +185,29 @@ export default {
         });
       }
 
+    },
+
+    handleSavePicture() {
+
+      const serializer = new XMLSerializer();
+      const source = '<?xml version="1.0" standalone="no"?>\r\n' + serializer.serializeToString(this.svg.node());
+      const image = new Image;
+      image.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+      const canvas = document.createElement("canvas");
+      [canvas.width, canvas.height] = this.size;
+
+      const context = canvas.getContext("2d");
+      context.fillStyle = "#fff"; // #fff设置保存后的PNG 是白色的  
+      context.fillRect(0, 0, 10000, 10000);
+      image.onload = function () {
+        context.drawImage(image, 0, 0);
+        const a = document.createElement("a");
+        a.download = "topology.png";
+        a.href = canvas.toDataURL("image/png");
+        a.click();
+      };
+
+
     }
   }
 };
@@ -184,6 +226,7 @@ export default {
   }
 
   .topology-inner {
+    position: relative;
     flex: 1;
     border-top: 1px solid #ddd;
   }
@@ -193,5 +236,13 @@ export default {
   width: 100px;
   height: 60px;
   background: #f80;
+}
+
+.tool-bar {
+  position: absolute;
+  right: 24px;
+  top: 36px;
+  display: flex;
+  flex-direction: column;
 }
 </style>
