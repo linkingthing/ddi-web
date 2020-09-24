@@ -82,12 +82,16 @@ export default {
 
       const simulation = d3.forceSimulation().alphaDecay(0.1) // 设置alpha衰减系数
         .nodes(nodes)
+        .force("link", d3.forceLink(links)
+          .id(function (d) {
+            return d.administrationAddress;
+          })) // distance为连线的距离设置
+        .force("collide", d3.forceCollide(200)) // collide 为节点指定一个radius区域来防止节点重叠。
 
-        .force("link", d3.forceLink(links).id(function (d) {
-          return d.administrationAddress;
-        })) // distance为连线的距离设置
-        .force("collide", d3.forceCollide().radius(() => 200)) // collide 为节点指定一个radius区域来防止节点重叠。
-        .force("charge", null)  // 节点间的作用力
+        .force("positioning", d3.forceY(.11).strength(.11))
+
+
+
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", tick);
 
@@ -113,6 +117,7 @@ export default {
       // nodeHtml.append("img").attr("src",)
 
 
+
       node.append("rect")
         .attr("class", "node")
 
@@ -121,15 +126,14 @@ export default {
         .attr("width", NODE_WIDTH)
         .attr("height", NODE_HEIGHT)
         .style("fill", "#fff") // transparent
-        .style("stroke", "#D4DCE3")
+        .style("stroke", "#D4DCE3");
 
       const nodeImage = node.append("image")
         .attr("x", 10)
         .attr("y", 6)
         .attr("xlink:href", function (d) {
-          console.log(d, 22)
           return EQUIPMENT_ICON_MAP[d.equipmentType];
-        })
+        });
 
       const nodeName = node.append("text")
         .attr("x", 70)
@@ -139,7 +143,7 @@ export default {
         .style("font-weight", "bold")
         .text(function (d) {
           return d.name;
-        })
+        });
 
 
       const nodeIp = node.append("text")
