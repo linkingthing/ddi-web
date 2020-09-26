@@ -12,7 +12,10 @@
       id="topplogy-svg"
       ref="topplogy-svg"
     >
-      <div class="tool-bar">
+      <div
+        class="tool-bar"
+        v-if="dataList.length"
+      >
         <span
           class="tool-bar-icon"
           @click="handlePlus"
@@ -44,6 +47,13 @@
         </span>
       </div>
 
+      <div v-else>
+        <no-data-list
+          @add="handleCreate"
+          top="212"
+        />
+      </div>
+
       <div
         class="Tooltip"
         :style="tooltip.style"
@@ -54,6 +64,7 @@
 </template>
 
 <script>
+
 import * as d3 from "d3";
 import { parseData } from "./helper";
 import access_switch from "./access_switch.png";
@@ -104,6 +115,9 @@ export default {
     this.getDataList();
   },
   methods: {
+    handleCreate() {
+      this.$router.push({ name: "device-detect" });
+    },
     handleUpdateTopology() {
       this.getDataList();
     },
