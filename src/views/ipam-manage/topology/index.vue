@@ -10,21 +10,40 @@
       ref="topplogy-svg"
     >
       <div class="tool-bar">
-        <img
-          src="./access_switch.png"
-          alt=""
+        <span
+          class="tool-bar-icon"
+          @click="handlePlus"
         >
-        <img
-          src="./access_switch.png"
-          alt=""
+          <img
+            src="./icon-add.png"
+            alt=""
+          >
+        </span>
+
+        <span
+          @click="handleReduce"
+          class="tool-bar-icon"
+          style="border-top: 1px solid #CCC; margin-bottom: 10px"
         >
-        <img
+          <img
+            src="./icon-reduce.png"
+            alt=""
+          >
+        </span>
+        <span
           @click="handleSavePicture"
-          src="./access_switch.png"
-          alt=""
+          class="tool-bar-icon"
         >
+          <img
+            src="./icon-export.png"
+            alt=""
+          >
+        </span>
       </div>
+
+      <div class="Tooltip">{{tooltip.text}}</div>
     </div>
+
   </div>
 </template>
 
@@ -47,6 +66,9 @@ const EQUIPMENT_ICON_MAP = {
   security_gateway
 }
 
+const NODE_WIDTH = 180;
+const NODE_HEIGHT = 60;
+
 export default {
   components: {},
   props: {
@@ -62,7 +84,11 @@ export default {
   },
   data() {
     return {
-      dataList: []
+      dataList: [],
+      tooltip: {
+        style: {},
+        text: ""
+      }
     };
   },
   computed: {},
@@ -70,7 +96,6 @@ export default {
   created() { },
   mounted() {
     this.getDataList();
-
   },
   methods: {
     getDataList() {
@@ -83,22 +108,48 @@ export default {
     },
 
     initTopology() {
+      const self = this;
 
-      const NODE_WIDTH = 180;
-      const NODE_HEIGHT = 60;
       const { clientWidth, clientHeight } = d3.select("#topplogy-svg").node();
       const [width, height] = [clientWidth, clientHeight - 20];
       this.size = [width, height];
       const svg = d3.select("#topplogy-svg").append("svg").attr("width", width)
         .attr("height", height);
 
+
+      var defs = svg.append("defs");
+
+      var arrowMarker = defs.append("marker")
+        .attr("id", "arrow")
+        .attr("class", "arrow")
+        .attr("markerUnits", "strokeWidth")
+        .attr("markerWidth", 20)
+        .attr("markerHeight", 20)
+        .attr("viewBox", "0 0 12 12")
+        .attr("refX", "6")
+        .attr("refY", "6")
+        .attr("orient", "auto")
+        .attr("fill", "#AAB5BF")
+        ;
+
+      var arrow_path = "M2,2 L10,6 L2,10 L2,2";
+
+      arrowMarker.append("path")
+        .attr("d", arrow_path);
+
+
       this.svg = svg;
 
       const g = svg.append("g");
 
-      const zoomHandler = d3.zoom().on("zoom", function () {
+      function zoomTransformHandler() {
+        console.log(d3.zoomTransform(svg.node()))
         g.attr("transform", d3.zoomTransform(svg.node()));
-      });
+      }
+      const zoomHandler = d3.zoom().on("zoom", zoomTransformHandler);
+      this.zoomHandler = zoomHandler;
+
+      this.g = g;
 
       svg.call(zoomHandler);
 
@@ -122,11 +173,45 @@ export default {
         .on("tick", tick);
 
 
-      let link = g.selectAll(".link").data(links)
-        .enter().append("line")
+      let link = g.selectAll(".link")
+        .data(links).enter().append("g");
+
+
+      let path = link.append("path")
+        .attr("id", function (d) {
+          return `${d.source.administrationAddress}_${d.source_port}__${d.target.administrationAddress}_${d.target_port}`;
+        })
         .attr("class", "link")
         .attr("style", "stroke: #AAB5BF")
+        .attr("marker-end", "url(#arrow)")
+        .attr("stroke-width", 2)
         ;
+
+      let sourcePortText = link.append("text")
+        .append("textPath")
+        .attr("xlink:href", function (d) {
+          return `#${d.source.administrationAddress}_${d.source_port}__${d.target.administrationAddress}_${d.target_port}`;
+        })
+        .attr("startOffset", "6%")
+
+        .text(function (d) {
+          return d.source_port;
+        });
+
+      let targetPortText = link.append("text")
+        .append("textPath")
+        .attr("xlink:href", function (d) {
+          return `#${d.source.administrationAddress}_${d.source_port}__${d.target.administrationAddress}_${d.target_port}`;
+        })
+        .attr("startOffset", "95%")
+        .attr("text-anchor", "end")
+        .text(function (d) {
+          return d.target_port;
+        });
+
+
+
+
 
       let node = g.selectAll(".node").data(nodes)
         .enter()
@@ -156,10 +241,30 @@ export default {
         .style("font-size", 14)
         .style("color", "#333")
         .style("font-weight", "bold")
+        .attr("title", function (d) {
+          return d.name;
+        })
+        .on("mouseover", nodeMouseOver)
+        .on("mouseout", nodeMouseOut)
         .text(function (d) {
           return d.name;
         });
 
+      function nodeMouseOver(e) {
+        console.log(e)
+
+        self.tooltip = {
+          style: {
+            left: e.x + "px",
+            top: e.y + "px"
+          },
+          text: e.name
+        };
+      }
+      function nodeMouseOut() {
+        console.log("ss2")
+
+      }
 
       const nodeIp = node.append("text")
         .attr("x", 70)
@@ -168,13 +273,61 @@ export default {
         .style("color", "#333")
         .text(function (d) {
           return d.administrationAddress;
-        })
+        });
 
       function tick() {
-        link.attr("x1", function (d) { return d.source.x; })
-          .attr("y1", function (d) { return d.source.y; })
-          .attr("x2", function (d) { return d.target.x; })
-          .attr("y2", function (d) { return d.target.y; });
+
+
+        path.attr("d", function ({ source, target }) {
+          const x1 = source.x;
+          const y1 = source.y;
+          const x2 = target.x;
+          const y2 = target.y;
+
+
+          let sourceX, sourceY, targetX, targetY;
+
+          const edgeRadialX = 0; // (NODE_WIDTH - NODE_HEIGHT) / 2 + 10;
+          const edgeRadialY = NODE_HEIGHT / 2;
+
+
+          if (x2 > x1) {
+            targetX = x2 - edgeRadialX;
+            sourceX = x1 + edgeRadialX;
+          } else {
+            targetX = x2 + edgeRadialX;
+            sourceX = x1 - edgeRadialX;
+          }
+
+          if (y2 > y1) {
+            targetY = y2 - edgeRadialY;
+            sourceY = y1 + edgeRadialY;
+          } else {
+            targetY = y2 + edgeRadialY;
+            sourceY = y1 - edgeRadialY;
+          }
+
+
+
+          return `M ${sourceX} ,${sourceY} L ${targetX} ,${targetY}`;
+        });
+
+        sourcePortText
+          .attr("x", function ({ source, target }) {
+            const x1 = source.x;
+            const y1 = source.y;
+            const x2 = target.x;
+            const y2 = target.y;
+            return x1;
+          })
+          .attr("y", function ({ source, target }) {
+            const x1 = source.x;
+            const y1 = source.y;
+            const x2 = target.x;
+            const y2 = target.y;
+            return y1;
+          });
+
 
         node.attr("transform", function (d) {
           // d.fx = d.x;
@@ -187,6 +340,25 @@ export default {
 
     },
 
+    handlePlus() {
+      const svg = this.svg;
+      this.zoomHandler.scaleTo(svg, function () {
+        const transform = d3.zoomTransform(svg.node());
+        const { k } = transform;
+        return 1.2 * k;
+      });
+
+    },
+
+    handleReduce() {
+      const svg = this.svg;
+      this.zoomHandler.scaleTo(svg, function () {
+        const transform = d3.zoomTransform(svg.node());
+        const { k } = transform;
+        return k / 1.2;
+      });
+
+    },
     handleSavePicture() {
 
       const serializer = new XMLSerializer();
@@ -229,6 +401,14 @@ export default {
     position: relative;
     flex: 1;
     border-top: 1px solid #ddd;
+    .Tooltip {
+      position: absolute;
+      color: #fff;
+      width: 200px;
+      height: 30px;
+      background-color: #000;
+      opacity: 0.5;
+    }
   }
 }
 
@@ -244,5 +424,15 @@ export default {
   top: 36px;
   display: flex;
   flex-direction: column;
+
+  .tool-bar-icon {
+    display: inline-block;
+    background: #ededed;
+    padding: 5px;
+    cursor: pointer;
+    img {
+      display: block;
+    }
+  }
 }
 </style>

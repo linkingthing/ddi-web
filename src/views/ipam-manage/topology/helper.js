@@ -23,7 +23,9 @@ export function parseData(data) {
       const next = downlinkAddresses[port];
       links.push({
         source: administrationAddress,
-        target: next.ip
+        source_port: port,
+        target: next.ip,
+        next_port: next.port
       });
     });
 
@@ -31,7 +33,9 @@ export function parseData(data) {
       const prev = uplinkAddresses[port];
       links.push({
         source: prev.ip,
-        target: administrationAddress
+        source_port: prev.port,
+        target: administrationAddress,
+        target_port: port
       });
     });
 
@@ -39,7 +43,9 @@ export function parseData(data) {
       const next = nextHopAddresses[port];
       links.push({
         source: administrationAddress,
-        target: next.ip
+        source_port: port,
+        target: next.ip,
+        next_port: next.port
       });
     });
 
