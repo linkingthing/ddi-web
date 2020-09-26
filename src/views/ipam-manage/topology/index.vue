@@ -1,8 +1,11 @@
 <template>
   <div class="topology">
     <div class="topology-action">
-      <Button type="primary">生成网络拓扑</Button>
-      <Button type="primary">触发拓扑更新</Button>
+      <!-- <Button type="primary">生成网络拓扑</Button> -->
+      <Button
+        type="primary"
+        @click="handleUpdateTopology"
+      >触发拓扑更新</Button>
     </div>
     <div
       class="topology-inner"
@@ -101,18 +104,19 @@ export default {
     this.getDataList();
   },
   methods: {
+    handleUpdateTopology() {
+      this.getDataList();
+    },
     getDataList() {
       this.$get(this.$getApiByRoute("/address/ipam/networkequipments")).then(({ data }) => {
         this.dataList = data;
-
         this.initTopology();
-
       });
     },
 
     initTopology() {
       const self = this;
-
+      d3.select("#topplogy-svg").selectAll("svg").remove();
       const { clientWidth, clientHeight } = d3.select("#topplogy-svg").node();
       const [width, height] = [clientWidth, clientHeight - 20];
       this.size = [width, height];
