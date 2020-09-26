@@ -66,16 +66,18 @@ export default {
         width: 130,
         render: (h, { row }) => {
           if (this.netType === "netv4") {
-            return h("span", {
-              class: {
-                "btn-line": true
-              },
-              on: {
-                click: () => {
-                  this.handleDHCP(row);
+            return h("div", [
+              h("span", {
+                class: {
+                  "btn-line": true
+                },
+                on: {
+                  click: () => {
+                    this.handleDHCP(row);
+                  }
                 }
-              }
-            }, "DHCP");
+              }, "DHCP")
+            ]);
           }
           const [, len] = row.prefix.split("/");
           return h("div", {
@@ -86,7 +88,7 @@ export default {
                 "btn-line": true
               },
               style: {
-                display: +len === 64 && "none"
+                display: +len === 64 ? "none" : "inline-block"
               },
               on: {
                 click: () => {
@@ -99,7 +101,7 @@ export default {
                 "btn-line": true
               },
               style: {
-                display: +len !== 64 && "none"
+                display: (+len !== 64) ? "none" : "inline-block"
               },
               on: {
                 click: () => {
