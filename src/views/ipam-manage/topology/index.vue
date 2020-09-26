@@ -184,7 +184,7 @@ export default {
           .id(function (d) {
             return d.administrationAddress;
           })) // distance为连线的距离设置
-        .force("collide", d3.forceCollide(160)) // collide 为节点指定一个radius区域来防止节点重叠。
+        .force("collide", d3.forceCollide(200)) // collide 为节点指定一个radius区域来防止节点重叠。
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", tick);
 
@@ -217,7 +217,7 @@ export default {
         .attr("xlink:href", function (d) {
           return `#${d.source.administrationAddress}_${d.source_port}__${d.target.administrationAddress}_${d.target_port}`;
         })
-        .attr("startOffset", "6%")
+        .attr("startOffset", "10%")
         .style("font-size", 12)
 
         .text(function (d) {
@@ -229,7 +229,7 @@ export default {
         .attr("xlink:href", function (d) {
           return `#${d.source.administrationAddress}_${d.source_port}__${d.target.administrationAddress}_${d.target_port}`;
         })
-        .attr("startOffset", "95%")
+        .attr("startOffset", "90%")
         .attr("text-anchor", "end")
         .style("font-size", 12)
         .text(function (d) {
