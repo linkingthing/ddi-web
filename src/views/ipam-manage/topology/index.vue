@@ -181,9 +181,18 @@ export default {
         })
         .attr("class", "link")
         .attr("style", "stroke: #AAB5BF")
-        .attr("marker-end", "url(#arrow)")
+        // .attr("marker-end", "url(#arrow)")
         .attr("stroke-width", 2)
         ;
+
+
+      // 动画，数据流动
+      // const arrowMark = link.append("rect")
+      //   .attr("class", "ball-animate")
+      //   .attr("style", "fill:#ff9;stroke:black;width: 20px;height: 20px")
+      //   .style("offset-distance", "0%")
+      //   .style("animation", "pathAnimate 2s linear infinite");
+
 
       let sourcePortText = link.append("text")
         .append("textPath")
@@ -191,6 +200,7 @@ export default {
           return `#${d.source.administrationAddress}_${d.source_port}__${d.target.administrationAddress}_${d.target_port}`;
         })
         .attr("startOffset", "6%")
+        .style("font-size", 12)
 
         .text(function (d) {
           return d.source_port;
@@ -203,6 +213,7 @@ export default {
         })
         .attr("startOffset", "95%")
         .attr("text-anchor", "end")
+        .style("font-size", 12)
         .text(function (d) {
           return d.target_port;
         });
@@ -280,41 +291,47 @@ export default {
         return str.length > len ? `${str.slice(0, len)}...` : str;
       }
 
+      function executePath({ source, target }) {
+        const x1 = source.x;
+        const y1 = source.y;
+        const x2 = target.x;
+        const y2 = target.y;
+
+
+        let sourceX, sourceY, targetX, targetY;
+
+        const edgeRadialX = 0; // (NODE_WIDTH - NODE_HEIGHT) / 2 + 10;
+        const edgeRadialY = NODE_HEIGHT / 2;
+
+
+        if (x2 > x1) {
+          targetX = x2 - edgeRadialX;
+          sourceX = x1 + edgeRadialX;
+        } else {
+          targetX = x2 + edgeRadialX;
+          sourceX = x1 - edgeRadialX;
+        }
+
+        if (y2 > y1) {
+          targetY = y2 - edgeRadialY;
+          sourceY = y1 + edgeRadialY;
+        } else {
+          targetY = y2 + edgeRadialY;
+          sourceY = y1 - edgeRadialY;
+        }
+
+
+
+        return `M ${sourceX} ,${sourceY} L ${targetX} ,${targetY}`;
+      }
+
       function tick() {
 
-        path.attr("d", function ({ source, target }) {
-          const x1 = source.x;
-          const y1 = source.y;
-          const x2 = target.x;
-          const y2 = target.y;
+        path.attr("d", executePath);
 
-
-          let sourceX, sourceY, targetX, targetY;
-
-          const edgeRadialX = 0; // (NODE_WIDTH - NODE_HEIGHT) / 2 + 10;
-          const edgeRadialY = NODE_HEIGHT / 2;
-
-
-          if (x2 > x1) {
-            targetX = x2 - edgeRadialX;
-            sourceX = x1 + edgeRadialX;
-          } else {
-            targetX = x2 + edgeRadialX;
-            sourceX = x1 - edgeRadialX;
-          }
-
-          if (y2 > y1) {
-            targetY = y2 - edgeRadialY;
-            sourceY = y1 + edgeRadialY;
-          } else {
-            targetY = y2 + edgeRadialY;
-            sourceY = y1 - edgeRadialY;
-          }
-
-
-
-          return `M ${sourceX} ,${sourceY} L ${targetX} ,${targetY}`;
-        });
+        // arrowMark.style("offset-path", function (d) {
+        //   return `path('${executePath(d)}')`;
+        // });
 
         sourcePortText
           .attr("x", function ({ source, target }) {
@@ -338,6 +355,7 @@ export default {
           // d.fy = d.y;
           const x = d.x - NODE_WIDTH / 2;
           const y = d.y - NODE_HEIGHT / 2;
+
           return "translate(" + x + " " + y + ")";
         });
       }
@@ -410,9 +428,10 @@ export default {
       display: none;
       color: #fff;
       min-width: 200px;
-      height: 30px;
+      min-height: 30px;
+      line-height: 20px;
       background-color: rgba(0, 0, 0, 0.7);
-      padding: 0 12px;
+      padding: 4px 12px;
     }
   }
 }
@@ -438,6 +457,17 @@ export default {
     img {
       display: block;
     }
+  }
+}
+</style>
+
+<style >
+@keyframes pathAnimate {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
   }
 }
 </style>
