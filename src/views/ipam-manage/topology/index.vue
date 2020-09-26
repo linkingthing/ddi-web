@@ -41,7 +41,10 @@
         </span>
       </div>
 
-      <div class="Tooltip">{{tooltip.text}}</div>
+      <div
+        class="Tooltip"
+        :style="tooltip.style"
+      >{{tooltip.text}}</div>
     </div>
 
   </div>
@@ -143,9 +146,9 @@ export default {
       const g = svg.append("g");
 
       function zoomTransformHandler() {
-        console.log(d3.zoomTransform(svg.node()))
         g.attr("transform", d3.zoomTransform(svg.node()));
       }
+
       const zoomHandler = d3.zoom().on("zoom", zoomTransformHandler);
       this.zoomHandler = zoomHandler;
 
@@ -164,11 +167,6 @@ export default {
             return d.administrationAddress;
           })) // distance为连线的距离设置
         .force("collide", d3.forceCollide(160)) // collide 为节点指定一个radius区域来防止节点重叠。
-
-        // .force("positioning", d3.forceX(1).strength(1))
-
-
-
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", tick);
 
@@ -211,8 +209,6 @@ export default {
 
 
 
-
-
       let node = g.selectAll(".node").data(nodes)
         .enter()
         .append("g");
@@ -241,29 +237,32 @@ export default {
         .style("font-size", 14)
         .style("color", "#333")
         .style("font-weight", "bold")
-        .attr("title", function (d) {
-          return d.name;
-        })
-        .on("mouseover", nodeMouseOver)
+        .on("mouseover", (e) => nodeMouseOver(e, "name"))
         .on("mouseout", nodeMouseOut)
         .text(function (d) {
-          return d.name;
+          return overEllipsis(d.name, 10);
         });
 
-      function nodeMouseOver(e) {
-        console.log(e)
+      function nodeMouseOver(e, field, offsetY = 0) {
+        const transform = d3.zoomTransform(svg.node());
+
+        const { k, x, y } = transform;
 
         self.tooltip = {
           style: {
-            left: e.x + "px",
-            top: e.y + "px"
+            display: "block",
+            transform: `translate(${x + (e.x) * k - 20}px,${y + (e.y + offsetY) * k}px)`
           },
-          text: e.name
+          text: e[field]
         };
       }
       function nodeMouseOut() {
-        console.log("ss2")
-
+        self.tooltip = {
+          style: {
+            display: "none"
+          },
+          text: ""
+        };
       }
 
       const nodeIp = node.append("text")
@@ -271,12 +270,17 @@ export default {
         .attr("y", 46)
         .style("font-size", 14)
         .style("color", "#333")
+        .on("mouseover", (e) => nodeMouseOver(e, "administrationAddress", 20))
+        .on("mouseout", nodeMouseOut)
         .text(function (d) {
-          return d.administrationAddress;
+          return overEllipsis(d.administrationAddress, 10);
         });
 
-      function tick() {
+      function overEllipsis(str, len) {
+        return str.length > len ? `${str.slice(0, len)}...` : str;
+      }
 
+      function tick() {
 
         path.attr("d", function ({ source, target }) {
           const x1 = source.x;
@@ -403,11 +407,12 @@ export default {
     border-top: 1px solid #ddd;
     .Tooltip {
       position: absolute;
+      display: none;
       color: #fff;
-      width: 200px;
+      min-width: 200px;
       height: 30px;
-      background-color: #000;
-      opacity: 0.5;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 0 12px;
     }
   }
 }
