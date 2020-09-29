@@ -44,28 +44,14 @@ export const columns = scope => [
     key: "ipv4s",
     align: "center",
     width: 180,
-    tooltip,
-    render: (h, { row }) => {
-      return h("Tags", {
-        props: {
-          list: row.ipv4s
-        }
-      });
-    }
+    tooltip
   },
   {
     title: "IPv6地址",
     key: "ipv6s",
     align: "center",
     width: 180,
-    tooltip,
-    render: (h, { row }) => {
-      return h("Tags", {
-        props: {
-          list: row.ipv6s
-        }
-      });
-    }
+    tooltip
   },
 
   {
