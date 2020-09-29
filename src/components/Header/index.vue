@@ -205,6 +205,8 @@ export default {
   },
 
   created() {
+
+    console.log("created")
     const self = this;
     let ws = null;
     const baseConfig = {

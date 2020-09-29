@@ -124,7 +124,7 @@ export default {
       }
 
       res.page_size = 10;
-      res.page_num = this.currentPage;
+      res.page_num = this.currentPage || 1;
       return res;
     },
 
