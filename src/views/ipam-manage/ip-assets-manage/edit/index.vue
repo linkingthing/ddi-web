@@ -26,7 +26,6 @@
 
 <script>
 import { formItemList, rules } from "./define";
-import { filter } from 'shelljs/commands';
 
 export default {
   props: {

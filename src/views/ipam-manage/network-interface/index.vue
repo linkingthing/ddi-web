@@ -113,7 +113,10 @@
         <template slot="top-left">
           <div class="table-title">
             <label class="condition-item-label">地址状态：</label>
-            <Select style="width: 160px" v-model="condition.status">
+            <Select
+              style="width: 160px"
+              v-model="condition.status"
+            >
               <Option
                 v-for="item in statusLegends"
                 :value="item.type"
@@ -439,12 +442,38 @@ export default {
         let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?mac=${row.mac}`));
 
         let res = data[0] || {};
-
         const switchName = row.switchName || res.switchName;
         const switchPort = row.switchPort || res.switchPort;
         const computerRack = row.computerRack || res.computerRack;
         const computerRoom = row.computerRoom || res.computerRoom;
         const scannedsubnetsId = this.$route.params.scannedsubnetsId;
+
+        const ip = row.ip;
+        const subnetId = scannedsubnetsId;
+        const vlanId = row.vlanId;
+
+        // 能查询到，进行注册操作
+
+        if (data.length) {
+          const url = `${res.links.self}?action=register`;
+          const params = {
+            computerRack,
+            computerRoom,
+            ip,
+            subnetId,
+            switchName,
+            switchPort,
+            vlanId
+          };
+          this.$post({ url, params }).then(() => {
+            this.$Message.success("终端登记成功");
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+          return;
+        }
+
+
         this.$router.push({
           name: "ip-assets-manage",
           query: {
