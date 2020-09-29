@@ -494,7 +494,6 @@ export default {
     },
 
     point2Path(pointList) {
-      console.log(1, pointList)
       const pathList = pointList.map(({ startPoint, endPoint, slave }) => {
 
         let startX = 0;

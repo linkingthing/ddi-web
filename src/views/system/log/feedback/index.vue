@@ -99,7 +99,7 @@ export default {
       };
       const { port, protocol, hostname } = document.location;
       const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-      const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.190" : hostname;
+      const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.120" : hostname;
       const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
       const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
 
@@ -110,7 +110,6 @@ export default {
       };
       ws.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        console.log(data)
         self.list.unshift(data);
       };
       ws.onerror = function (e) {
