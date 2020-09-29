@@ -111,7 +111,17 @@
         :current.sync="current"
       >
         <template slot="top-left">
-          <div class="table-title">{{tableTitle}}</div>
+          <div class="table-title">
+            <label class="condition-item-label">地址状态：</label>
+            <Select style="width: 160px" v-model="condition.status">
+              <Option
+                v-for="item in statusLegends"
+                :value="item.type"
+                :key="item.type"
+              >
+                {{item.label}}</Option>
+            </Select>
+          </div>
 
           <div class="condition-item">
             <label class="condition-item-label">IP地址：</label>
@@ -246,8 +256,8 @@ export default {
         this.renderTypeChart();
         this.renderStatusChart();
 
-        this.bindPieEvent();
-        this.dispatchPieAction("活跃地址");
+        // this.bindPieEvent();
+        // this.dispatchPieAction("活跃地址");
       } catch (err) {
         this.$handleError(err);
       }
@@ -417,7 +427,7 @@ export default {
 
       this.tableTitle = label;
 
-      this.dispatchPieAction(label);
+      // this.dispatchPieAction(label);
 
       this.currentType = type;
 
