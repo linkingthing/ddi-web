@@ -50,7 +50,7 @@ export default {
       path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
-        title: "IP地址管理"
+        title: "IP地址监测"
       }
     },
     {
