@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name'] : []"
+        :show-fields="showFields"
       />
 
     </Form>
@@ -121,6 +121,16 @@ export default {
       // 目前是采用调节判断，修改formitemlist来处理
       // 第二种思路；将edit field作为参数传入commonform 中处理这个问题？
       return isEdit;
+    },
+    showFields() {
+      const showFields = [];
+      if (this.isEdit) {
+        showFields.push("name");
+        if (this.formModel.name === "default") {
+          showFields.push("acls");
+        }
+      }
+      return showFields;
     }
 
   },

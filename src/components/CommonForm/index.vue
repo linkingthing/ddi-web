@@ -106,7 +106,7 @@
         v-if="item.type === 'text'"
         :size="item.size"
       >
-        {{ formModel[item.model ]}}
+        {{ Array.isArray(formModel[item.model]) ? formModel[item.model].join(",") : formModel[item.model] }}
         <slot
           v-if="item.slot"
           :name="item.slot"
