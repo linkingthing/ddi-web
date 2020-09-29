@@ -154,26 +154,26 @@ export const columns = scope => [
     fixed: "right",
     align: "center",
     render: (h, { row }) => {
-      if (scope.$store.getters.hasPermissionToCreate) {
-        return h("div", [
-          h("btn-edit", {
-            on: {
-              click: () => {
-                scope.handleEdit(row);
-              }
+      // if (scope.$store.getters.hasPermissionToCreate) {
+      return h("div", [
+        h("btn-edit", {
+          on: {
+            click: () => {
+              scope.handleEdit(row);
             }
-          }),
-          h("btn-del", {
-            on: {
-              click: () => {
-                scope.handleDelete(row);
-              }
+          }
+        }),
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
             }
-          })
-        ]);
-      } else {
-        return h("div");
-      }
+          }
+        })
+      ]);
+      // } else {
+      //   return h("div");
+      // }
     }
   }
 ];
