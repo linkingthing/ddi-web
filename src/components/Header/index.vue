@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import store from "@/store";
 import logoSrc from "@/assets/images/logo.png";
 
@@ -132,8 +132,6 @@ const userDropdownMenu = [
 ];
 
 
-let isInitAlarm = false;
-
 
 export default {
   name: "Header",
@@ -143,19 +141,20 @@ export default {
   },
 
   data() {
-
     return {
       logoSrc,
       currentMainMenu: "/monitor",
       visible: false,
       password: "",
       rePassword: "",
-      alarmCount: 0,
       username: "",
       userType: ""
     };
   },
   computed: {
+    ...mapGetters([
+      "alarmCount"
+    ]),
     mainMenuList() {
       const userType = this.userType;
       if (userType) {
@@ -206,36 +205,6 @@ export default {
 
   created() {
 
-    console.log("created")
-    const self = this;
-    let ws = null;
-    const baseConfig = {
-      timer: null,
-      baseUrl: "/apis/ws.linkingthing.com/v1",
-      resource: "alarm",
-      reconnectNumber: 3,
-      reconnectDelay: 0
-    };
-    const { port, protocol, hostname } = document.location;
-    const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-    const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.120" : hostname;
-    const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
-    const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
-
-    if (!isInitAlarm) {
-      ws = new WebSocket(`${wsUrl}`);
-      ws.onopen = function () {
-        console.log("连接成功 初始化");
-        isInitAlarm = true;
-      };
-      ws.onmessage = function (e) {
-        const { count } = JSON.parse(e.data);
-        self.alarmCount = count;
-      };
-      ws.onerror = function (e) {
-        console.log(e);
-      };
-    }
 
   },
 

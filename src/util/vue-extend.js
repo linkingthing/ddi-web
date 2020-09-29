@@ -3,6 +3,7 @@ import store from "@/store";
 import { del, post, put, get, axios } from "./axios";
 import * as requestMethods from "./request";
 import router from "@/router";
+import "./ws";
 
 import moment from "moment";
 moment.locale("zh-cn");

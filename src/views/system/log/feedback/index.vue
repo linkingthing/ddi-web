@@ -3,11 +3,11 @@
     <IviewLoading v-if="loading" />
 
     <table-page
-      :data="list"
+      :data="agentEventList"
       :columns="columns"
       :current.sync="currentPage"
       :pagination-enable="true"
-      :total="list.length"
+      :total="agentEventCount"
     />
   </div>
 </template>
@@ -15,12 +15,12 @@
 <script>
 import qs from "qs";
 import resources, { operateMap } from "@/dictionary/resources";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
       loading: false,
-      tableData: [],
       links: {},
       columns: [
         {
@@ -74,51 +74,24 @@ export default {
         date: [],
         sourceIp: ""
       },
-      currentPage: 1,
+      currentPage: 0,
       isSmallScreen: document.body.clientWidth <= 1366,
       showConfig: false,
-      list: []
+      agentEventList: []
     };
   },
 
-  mounted() {
-    this.handleQuery();
+  computed: {
+    ...mapGetters(["agentEventCount"])
   },
-
+  watch: {
+    currentPage: {
+      handler(current) {
+        this.agentEventList = this.$store.getters.agentEventList({ current });
+      }
+    }
+  },
   methods: {
-    handleQuery() {
-
-      const self = this;
-      let ws = null;
-      const baseConfig = {
-        timer: null,
-        baseUrl: "/apis/ws.linkingthing.com/v1",
-        resource: "agentevent",
-        reconnectNumber: 3,
-        reconnectDelay: 0
-      };
-      const { port, protocol, hostname } = document.location;
-      const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-      const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.120" : hostname;
-      const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
-      const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
-
-      ws = new WebSocket(`${wsUrl}`);
-
-      ws.onopen = function () {
-        console.log("连接成功 初始化");
-      };
-      ws.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        self.list.unshift(data);
-      };
-      ws.onerror = function (e) {
-        console.log(e);
-      };
-
-      // item.creationTime = this.$trimDate(item.time);
-
-    },
 
     getParams() {
       const { date, sourceIp } = this.conditions;

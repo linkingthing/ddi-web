@@ -33,7 +33,7 @@ const router = new Router({
       redirect: () => {
         Vue.nextTick().then(() => {
           return "/dns/dns/views_zones";
-        })
+        });
       }
     }
   ]
@@ -62,7 +62,6 @@ router.beforeEach((to, from, next) => {
           }
         })
         .catch(err => {
-          
           throw new Error(err, "err getUserInfo");
         });
     } else {

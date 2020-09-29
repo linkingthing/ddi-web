@@ -4,9 +4,11 @@ import modules from "./modules";
 
 Vue.use(Vuex);
 
+// eslint-disable-next-line no-undef
 const Cache = require("../util/store").default("sessionStorage");
 
 export default new Vuex.Store({
+  // eslint-disable-next-line no-undef
   strict: process.env.NODE_ENV !== "production",
   plugins: [
     store => {
