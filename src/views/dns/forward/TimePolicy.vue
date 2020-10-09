@@ -25,12 +25,7 @@
 <script>
 import { sortBy } from "lodash";
 import TimePolicyModal from "./modules/time-policy-modal";
-const DateType = {
-  Date: "Date",
-  Week: "Week",
-  Day: "Day"
-};
-
+import { DateType } from "./modules/helper";
 const weekMap = {
   0: "星期日",
   1: "星期一",
@@ -129,27 +124,27 @@ export default {
           if (timetype === DateType.Day) {
             if (weekdaygroup.length) {
               const { beginminute, endminute } = weekdaygroup[0];
-              startTime = `${beginminute / 60}: 00`;
-              endTime = `${endminute / 60}: 00`;
+              startTime = `${beginminute / 60}:00`;
+              endTime = `${endminute / 60}:00`;
             }
           }
           if (timetype === DateType.Week) {
             if (weekdaygroup.length) {
               {
                 const { beginminute, weekday } = weekdaygroup[0];
-                startTime = `${weekMap[weekday]} ${beginminute / 60}: 00`;
+                startTime = `${weekMap[weekday]} ${beginminute / 60}:00`;
               }
               {
                 const { endminute, weekday } = weekdaygroup[weekdaygroup.length - 1];
-                endTime = `${weekMap[weekday]} ${endminute / 60}: 00`;
+                endTime = `${weekMap[weekday]} ${endminute / 60}:00`;
               }
             }
           }
 
           if (timetype === DateType.Date) {
             const { begindaytime, enddaytime } = item;
-            startTime = begindaytime;
-            endTime = enddaytime;
+            startTime = this.$trimDate(begindaytime, "YYYY-MM-DD HH:MM");
+            endTime = this.$trimDate(enddaytime, "YYYY-MM-DD HH:MM");
           }
 
           return {

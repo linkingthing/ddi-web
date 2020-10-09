@@ -32,13 +32,10 @@ import TimeTypeDate from "./TimeTypeDate";
 import TimeSelect from "./TimeSelect";
 
 import TimeTypeWeek from "./TimeTypeWeek";
+import { DateType } from "./helper";
 
+import moment from "moment-timezone";
 
-const DateType = {
-  Date: "Date",
-  Week: "Week",
-  Day: "Day"
-};
 
 export default {
   props: {
@@ -202,7 +199,6 @@ export default {
   },
 
   created() {
-
   },
 
   methods: {
@@ -217,10 +213,9 @@ export default {
               const { startTime, endTime } = params;
               const [timestamp1, time1] = startTime.split("-");
               const [timestamp2, time2] = endTime.split("-");
-              const oneMinute = 60 * 1000;
-              params.begindaytime = (+timestamp1 + time1 * oneMinute) / 1000;
-              params.enddaytime = (+timestamp2 + time2 * oneMinute) / 1000;
-
+              const oneMinute = 60 * 60 * 1000;
+              params.begindaytime = moment.tz(new Date(+timestamp1 + time1 * oneMinute), "Asia/Shanghai").format();
+              params.enddaytime = moment.tz(new Date(+timestamp2 + time2 * oneMinute), "Asia/Shanghai").format();
             },
             [DateType.Week]: function (params) {
               const { startTime, endTime } = params;
