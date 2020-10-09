@@ -27,14 +27,18 @@
 </template>
 
 <script>
-import {
-  ipv4IsValid,
-  ipv6IsValid
-} from "@/util/common";
 
-import { DatePicker } from "view-design";
-import WeekSelect from "./WeekSelect";
+import TimeTypeDate from "./TimeTypeDate";
 import TimeSelect from "./TimeSelect";
+
+import TimeTypeWeek from "./TimeTypeWeek";
+
+
+const DateType = {
+  Date: "Date",
+  Week: "Week",
+  Day: "Day"
+};
 
 export default {
   props: {
@@ -55,37 +59,11 @@ export default {
       name: [
         { required: true, message: "请填写组名称" }
       ],
-      ips: [
-        { required: true, message: "请填写组名称" },
-        {
-          validator: (rule, value, callback) => {
-            if (value.trim() === "") {
-              callback("请输入服务器地址");
-            }
-            const ipList = value.split(",");
-            const isPass = ipList.every(item => {
-              return (ipv4IsValid(item.trim()) || ipv6IsValid(item.trim())) && !item.includes("/");
-            });
 
-            if (ipList.length > 10) {
-              callback(new Error("每次最多填写10条"));
-            }
-
-            if (isPass) {
-              callback();
-            } else {
-              callback(new Error("请正确填写服务器地址"));
-            }
-
-
-          }
-        }
-      ]
     };
     return {
       formModel: {
-        timeType: "1",
-        ips: "",
+        type: DateType.Date,
         name: "",
         startTime: "",
         endTime: ""
@@ -104,17 +82,17 @@ export default {
     },
     formItemList() {
 
-      let timeSegment = getTimeComponents(this.formModel.timeType);
+      let timeSegment = getTimeComponents(this.formModel.type);
 
-      function getTimeComponents(timeType) {
+      function getTimeComponents(type) {
         const timeTypeMap = {
-          "1": {
-            component: DatePicker
+          [DateType.Date]: {
+            component: TimeTypeDate
           },
-          "2": {
-            component: WeekSelect
+          [DateType.Week]: {
+            component: TimeTypeWeek
           },
-          "3": {
+          [DateType.Day]: {
             component: TimeSelect
           }
         };
@@ -124,7 +102,7 @@ export default {
             type: "component",
             component,
             props: {
-              type: "datetime",
+              type: "date",
               format: "yyyy-MM-dd",
               style: "width: 100%",
               ...params
@@ -136,22 +114,16 @@ export default {
           {
             label: "开始时间",
             model: "startTime",
-            type: "textarea",
-            placeholder: "请选择开始时间",
-            ...createComponent(timeTypeMap[timeType], { placeholder: "请选择开始时间1" })
+            ...createComponent(timeTypeMap[type], { placeholder: "请选择开始时间" })
           },
           {
             label: "结束时间",
             model: "endTime",
-            type: "textarea",
-            placeholder: "请选择结束时间"
+            ...createComponent(timeTypeMap[type], { placeholder: "请选择结束时间" })
           }
         ];
 
       }
-
-
-
 
 
       return [
@@ -163,16 +135,16 @@ export default {
         },
         {
           label: "时间",
-          model: "timeType",
+          model: "type",
           type: "select",
           children: [{
-            label: "1",
+            label: DateType.Date,
             text: "日期"
           }, {
-            label: "2",
+            label: DateType.Week,
             text: "每周"
           }, {
-            label: "3",
+            label: DateType.Day,
             text: "每日"
           }],
           placeholder: "请选择时间"
@@ -197,10 +169,9 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, ips, comment }) => {
+        this.$get({ url: this.links.self }).then(({ name, comment }) => {
           this.formModel = {
             name,
-            ips: ips.join(","),
             comment
           };
         }).catch();
@@ -212,8 +183,8 @@ export default {
       this.$emit("update:visible", val);
     },
 
-    "formModel.timeType"(val) {
-      if (val === "1") {
+    "formModel.type"(val) {
+      if (val === DateType.Date) {
         if (typeof this.formModel.startTime === "number") {
           this.formModel.startTime = "";
         }
@@ -241,15 +212,74 @@ export default {
         if (valid) {
           const params = { ...this.formModel };
 
-          if (typeof params.ips === "string") {
-            if (params.ips.trim().length) {
-              params.ips = params.ips.split(",").map(item => item.trim());
-            } else {
-              params.ips = [];
+          const strategy = {
+            [DateType.Date]: function (params) {
+              const { startTime, endTime } = params;
+              const [timestamp1, time1] = startTime.split("-");
+              const [timestamp2, time2] = endTime.split("-");
+              const oneMinute = 60 * 1000;
+              params.begindaytime = (+timestamp1 + time1 * oneMinute) / 1000;
+              params.enddaytime = (+timestamp2 + time2 * oneMinute) / 1000;
+
+            },
+            [DateType.Week]: function (params) {
+              const { startTime, endTime } = params;
+              const [week1, time1] = startTime.split("-");
+              const [week2, time2] = endTime.split("-");
+
+              if (Number(week1) < Number(week2)) {
+                const startDay = {
+                  beginminute: time1 * 60,
+                  endminute: 24 * 60,
+                  weekday: Number(week1)
+                };
+                const wholeDayGroup = Array.from({ length: Number(week2) - Number(week1) - 1 }, function wholeDay(item, index) {
+                  return {
+                    beginminute: 0,
+                    endminute: 24 * 60,
+                    weekday: Number(week1) + index + 1
+                  };
+                });
+                const endDay = {
+                  beginminute: 0,
+                  endminute: time2 * 60,
+                  weekday: Number(week2)
+                };
+
+                return [startDay, ...wholeDayGroup, endDay];
+              }
+              if (Number(week1) === Number(week2)) {
+                return [{
+                  beginminute: time1 * 60,
+                  endminute: endTime * 60,
+                  weekday: Number(week1)
+                }];
+              }
+
+              //  "起始星期大于结束星期"; 在输入的时候预先做校验，这里的场景就永远不会出现
+
+            },
+            [DateType.Day]: function (params) {
+              const { startTime, endTime } = params;
+              return Array.from({ length: 1 }, function (item, index) {
+                return {
+                  beginminute: startTime * 60,
+                  endminute: endTime * 60,
+                  weekday: index
+                };
+              });
             }
-          } else {
-            params.ips = [];
-          }
+
+          };
+
+          const weekdaygroup = strategy[params.type](params);
+          params.weekdaygroup = weekdaygroup;
+
+          params.timetype = params.type;
+
+          Reflect.deleteProperty(params, "startTime");
+          Reflect.deleteProperty(params, "endTime");
+          Reflect.deleteProperty(params, "type");
 
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {

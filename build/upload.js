@@ -10,10 +10,10 @@ const connect = new Client();
 console.log(path.resolve(__dirname, "dist"));
 
 const server = {
-  host: "10.0.0.172",
+  host: "10.0.0.183",
   port: 22,
   username: "root",
-  password: "123456"
+  password: "654321"
 };
 
 const config = {

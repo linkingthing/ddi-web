@@ -1,6 +1,6 @@
 <template>
-  <div class="week-time">
-    <WeekSelect v-model="week" />
+  <div class="date-time">
+    <DatePicker v-model="date" />
     <TimeSelect
       class="time"
       v-model="time"
@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import WeekSelect from "./WeekSelect";
+import { DatePicker } from "view-design";
 import TimeSelect from "./TimeSelect";
 
 export default {
   components: {
-    WeekSelect,
+    DatePicker,
     TimeSelect
   },
   props: {
@@ -29,22 +29,23 @@ export default {
   },
   data() {
     return {
-      week: void 0,
+      date: void 0,
       time: void 0
     };
   },
   computed: {
     innerValue() {
-      const { week, time } = this;
-      return { week, time };
+      const { date, time } = this;
+      const timestamp = date && date.getTime();
+      return { timestamp, time };
     }
   },
   watch: {
     innerValue: {
       deep: true,
-      handler({ week, time }) {
-        if (week !== void 0 && time !== void 0) {
-          const value = `${week}-${time}`;
+      handler({ timestamp, time }) {
+        if (timestamp !== void 0 && time !== void 0) {
+          const value = `${timestamp}-${time}`;
           if (value !== this.value) {
             this.$emit("input", value);
           }
@@ -61,7 +62,7 @@ export default {
 </script>
 
 <style lang="less">
-.week-time {
+.date-time {
   display: flex;
   .time {
     width: 120px;

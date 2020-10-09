@@ -73,7 +73,14 @@ export default {
           multiple: true,
           children: []
         },
-
+        {
+          label: "时间策略",
+          model: "forwardids",
+          type: "select",
+          placeholder: "请选择时间策略",
+          multiple: true,
+          children: []
+        },
         {
           label: "转发方式",
           model: "forwardtype",
@@ -99,7 +106,8 @@ export default {
       },
       loading: false,
       dialogVisible: false,
-      domainGroupList: []
+      domainGroupList: [],
+      forwardtimepolicyList: []
     };
   },
 
@@ -163,6 +171,21 @@ export default {
         }
       });
 
+    },
+
+    forwardtimepolicyList(value) {
+      const optionList = value.map(item => {
+        return {
+          label: item.id,
+          text: item.name
+        };
+      });
+
+      this.formItemList.some(item => {
+        if (item.model === "forwardids") {
+          item.children = optionList;
+        }
+      });
     }
   },
 
@@ -174,6 +197,10 @@ export default {
     this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
       this.domainGroupList = data;
     });
+
+    this.$getData({}, "/dns/dns/forwardtimepolicies").then(({ data }) => {
+      this.forwardtimepolicyList = data;
+    })
   },
 
   methods: {

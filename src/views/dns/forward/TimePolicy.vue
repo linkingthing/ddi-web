@@ -23,7 +23,23 @@
 </template>
 
 <script>
+import { sortBy } from "lodash";
 import TimePolicyModal from "./modules/time-policy-modal";
+const DateType = {
+  Date: "Date",
+  Week: "Week",
+  Day: "Day"
+};
+
+const weekMap = {
+  0: "星期日",
+  1: "星期一",
+  2: "星期二",
+  3: "星期三",
+  4: "星期四",
+  5: "星期五",
+  6: "星期六"
+};
 
 export default {
   name: "applicationFirewall",
@@ -51,12 +67,12 @@ export default {
         },
         {
           title: "开始时间",
-          key: "begindaytime",
+          key: "startTime",
           align: "left"
         },
         {
           title: "结束时间",
-          key: "enddaytime",
+          key: "endTime",
           align: "left"
         },
         {
@@ -102,7 +118,46 @@ export default {
   methods: {
     getDataList() {
       this.$getDataAndLinks().then(({ data, links }) => {
-        this.list = data;
+        this.list = data.map(item => {
+          let startTime, endTime;
+
+          let { weekdaygroup, timetype } = item;
+          weekdaygroup = sortBy(weekdaygroup, function (o) {
+            return o.weekday;
+          });
+
+          if (timetype === DateType.Day) {
+            if (weekdaygroup.length) {
+              const { beginminute, endminute } = weekdaygroup[0];
+              startTime = `${beginminute / 60}: 00`;
+              endTime = `${endminute / 60}: 00`;
+            }
+          }
+          if (timetype === DateType.Week) {
+            if (weekdaygroup.length) {
+              {
+                const { beginminute, weekday } = weekdaygroup[0];
+                startTime = `${weekMap[weekday]} ${beginminute / 60}: 00`;
+              }
+              {
+                const { endminute, weekday } = weekdaygroup[weekdaygroup.length - 1];
+                endTime = `${weekMap[weekday]} ${endminute / 60}: 00`;
+              }
+            }
+          }
+
+          if (timetype === DateType.Date) {
+            const { begindaytime, enddaytime } = item;
+            startTime = begindaytime;
+            endTime = enddaytime;
+          }
+
+          return {
+            ...item,
+            startTime,
+            endTime
+          };
+        });
         this.links = links;
       });
     },

@@ -10,7 +10,7 @@ let assetsPublicPath = "./";
 // const url = "https://10.0.0.19:58081"
 // const url = "https://10.0.0.172:58081";
 // const url = "https://10.0.0.90:8081"
-const url = "https://10.0.0.183:58081"
+const url = "https://10.0.0.183:58082"
 
 
 module.exports = {
