@@ -78,6 +78,14 @@ export default {
       meta: {
         title: "设备管理"
       }
+    },
+    {
+      name: 'topology',
+      path: '/address/ipam/topology',
+      component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/topology"),
+      meta: {
+        title: "网络拓扑"
+      }
     }
   ]
 }
