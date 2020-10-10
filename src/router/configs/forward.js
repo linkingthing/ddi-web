@@ -37,7 +37,7 @@ export default {
         },
         {
           name: "forward-group",
-          path: "/dns/dns/forwards",
+          path: "/dns/dns/forwarders",
           component: () => import("@/views/dns/forward/ForwardGroup"),
           meta: {
             title: "转发组"

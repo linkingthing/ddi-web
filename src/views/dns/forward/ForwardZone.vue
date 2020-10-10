@@ -30,58 +30,43 @@ export default {
     return {
       columns: [
         {
-          title: "域名",
-          key: "name",
-          align: "left",
-          render: (h, { row }) => {
-            if (row.name) {
-              return h("div", row.name === "." ? "根区" : row.name);
-            }
-            if (row.domainGroup.length && this.domainGroupList.length) {
-              const domainNameList = row.domainGroup.map(item => {
-                const domain = this.domainGroupList.find(domain => domain.id === item);
-                if (domain) {
-                  return {
-                    id: item,
-                    name: domain.name
-                  };
-                }
-              });
-
-              return h("Tags", {
-                props: {
-                  list: domainNameList
-                }
-              });
-            } else {
-              return h("div", "-");
-            }
-          }
-        },
-
-        {
-          title: "转发组",
-          key: "forwards",
-          align: "center",
-          render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.forwards
-              }
-            });
-          }
-        },
-
-        {
           title: "转发类型",
+          key: "domain",
+          align: "left",
+          width: 120,
+          render: (h, { row }) => {
+            const typeMap = {
+              root: "根区",
+              domain: "域名",
+              domaingroup: "域名组"
+            };
+            return h("div", typeMap[row.nametype]);
+          }
+        },
+
+        {
+          title: "转发项",
+          key: "forwardItem"
+        },
+
+        {
+          title: "转发服务器组",
+          key: "forwardtype",
+          width: 150,
+          render: (h, { row }) => {
+            return h("div", row.forwarders.map(item => item.name).join(","));
+          }
+        },
+
+        {
+          title: "转发方式",
           key: "forwardtype",
           align: "center"
         },
-
         {
           title: "创建时间",
           key: "creationTimestamp",
-          algin: "center",
+          align: "center",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
           }
@@ -131,7 +116,18 @@ export default {
   methods: {
     getDataList() {
       this.$getData().then(({ data, links }) => {
-        this.dsliteList = data;
+        this.dsliteList = data.map(item => {
+          const forwardItemMap = {
+            root: "@",
+            domain: item.domain,
+            domaingroup: item.domaingroupids.map(item => this.domainGroupList.find(domain => domain.id === item).name || "").join(",")
+          };
+          const forwardItem = forwardItemMap[item.nametype];
+          return {
+            ...item,
+            forwardItem
+          };
+        });
         this.links = links;
       }).catch(err => {
         this.$Message.error(err.message);
