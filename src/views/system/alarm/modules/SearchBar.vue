@@ -5,6 +5,7 @@
         ref="formInline"
         :model="searchParams"
         :label-width="80"
+        :label-colon="true"
         inline
       >
         <FormItem
@@ -153,6 +154,9 @@ export default {
   display: flex;
   .search-form {
     flex: 1;
+    .ivu-form-item {
+      margin-right: 0 !important;
+    }
   }
   .search-operate {
     padding: 0 26px;
@@ -168,13 +172,13 @@ export default {
   }
 }
 
-@media screen and(min-width: 1200px) and(max-width: 1500px) {
+@media screen and(min-width: 1000px) and(max-width: 1520px) {
   .search-bar {
     .m-select {
-      width: 120px;
+      width: 110px;
     }
     .m-date {
-      width: 120px;
+      width: 110px;
     }
   }
 }
