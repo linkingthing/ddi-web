@@ -143,8 +143,8 @@ export default {
 
           if (timetype === DateType.Date) {
             const { begindaytime, enddaytime } = item;
-            startTime = this.$trimDate(begindaytime, "YYYY-MM-DD HH:MM");
-            endTime = this.$trimDate(enddaytime, "YYYY-MM-DD HH:MM");
+            startTime = this.$trimDate(begindaytime, "YYYY-MM-DD HH:mm");
+            endTime = this.$trimDate(enddaytime, "YYYY-MM-DD HH:mm");
           }
 
           return {

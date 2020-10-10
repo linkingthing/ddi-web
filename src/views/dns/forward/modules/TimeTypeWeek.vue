@@ -11,6 +11,7 @@
 <script>
 import WeekSelect from "./WeekSelect";
 import TimeSelect from "./TimeSelect";
+import { isNumber, isNaN } from "lodash";
 
 export default {
   components: {
@@ -51,10 +52,16 @@ export default {
         }
       }
     },
-    value(value) {
-      const [week, time] = value.split("-");
-      this.week = +week;
-      this.time = +time;
+    value: {
+      immediate: true,
+      handler(value) {
+        const [week, time] = value.split("-");
+        if (isNumber(+week) && isNumber(+time) && !isNaN(+week) && !isNaN(+time)) {
+          this.week = +week;
+          this.time = +time;
+
+        }
+      }
     }
   }
 };

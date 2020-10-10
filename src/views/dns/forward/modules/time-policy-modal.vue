@@ -35,6 +35,7 @@ import TimeTypeWeek from "./TimeTypeWeek";
 import { DateType } from "./helper";
 
 import moment from "moment-timezone";
+import { sortBy } from "lodash";
 
 
 export default {
@@ -60,7 +61,7 @@ export default {
     };
     return {
       formModel: {
-        type: DateType.Date,
+        timetype: DateType.Date,
         name: "",
         startTime: "",
         endTime: ""
@@ -79,7 +80,7 @@ export default {
     },
     formItemList() {
 
-      let timeSegment = getTimeComponents(this.formModel.type);
+      let timeSegment = getTimeComponents(this.formModel.timetype);
 
       function getTimeComponents(type) {
         const timeTypeMap = {
@@ -132,7 +133,7 @@ export default {
         },
         {
           label: "时间",
-          model: "type",
+          model: "timetype",
           type: "select",
           children: [{
             label: DateType.Date,
@@ -166,11 +167,45 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, comment }) => {
-          this.formModel = {
-            name,
-            comment
+        this.$get({ url: this.links.self }).then(({ name, timetype, comment, weekdaygroup, begindaytime, enddaytime }) => {
+
+          const strategy = {
+            [DateType.Date]: function () {
+              const [startDate] = moment(begindaytime).format("YYYY-MM-DD HH:mm").split(" ");
+              const [endDate] = moment(enddaytime).format("YYYY-MM-DD HH:mm").split(" ");
+              let startTime = `${moment(startDate).valueOf()}-${moment(begindaytime).hour()}`;
+              let endTime = `${moment(endDate).valueOf()}-${moment(enddaytime).hour()}`;
+              return { startTime, endTime };
+            },
+            [DateType.Week]: function () {
+              weekdaygroup = sortBy(weekdaygroup, function (o) {
+                return o.weekday;
+              });
+
+              let startTime = `${weekdaygroup[0].weekday}-${weekdaygroup[0].beginminute / 60}`;
+              let endTime = `${weekdaygroup[weekdaygroup.length - 1].weekday}-${weekdaygroup[weekdaygroup.length - 1].endminute / 60}`;
+
+              return { startTime, endTime };
+            },
+            [DateType.Day]: function () {
+              if (weekdaygroup.length) {
+                const { beginminute, endminute } = weekdaygroup[0];
+                let startTime = beginminute / 60;
+                let endTime = endminute / 60;
+                return { startTime, endTime };
+              }
+            }
           };
+
+          let { startTime, endTime } = strategy[timetype]();
+          this.formModel.timetype = timetype;
+          this.$nextTick().then(() => {
+            this.formModel.name = name;
+            this.formModel.comment = comment;
+            this.formModel.startTime = startTime;
+            this.formModel.endTime = endTime;
+          });
+
         }).catch();
       }
       this.dialogVisible = val;
@@ -180,7 +215,7 @@ export default {
       this.$emit("update:visible", val);
     },
 
-    "formModel.type"(val) {
+    "formModel.timetype"(val) {
       if (val === DateType.Date) {
         if (typeof this.formModel.startTime === "number") {
           this.formModel.startTime = "";
@@ -266,11 +301,8 @@ export default {
             }
 
           };
-
-          const weekdaygroup = strategy[params.type](params);
+          const weekdaygroup = strategy[params.timetype](params);
           params.weekdaygroup = weekdaygroup;
-
-          params.timetype = params.type;
 
           Reflect.deleteProperty(params, "startTime");
           Reflect.deleteProperty(params, "endTime");

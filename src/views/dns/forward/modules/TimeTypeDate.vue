@@ -11,6 +11,7 @@
 <script>
 import { DatePicker } from "view-design";
 import TimeSelect from "./TimeSelect";
+import { isNumber, isNaN } from "lodash";
 
 export default {
   components: {
@@ -53,9 +54,11 @@ export default {
       }
     },
     value(value) {
-      const [week, time] = value.split("-");
-      this.week = +week;
-      this.time = +time;
+      const [date, time] = value.split("-");
+      if (isNumber(+date) && isNumber(+time) && !isNaN(+date) && !isNaN(+time)) {
+        this.date = new Date(+date);
+        this.time = +time;
+      }
     }
   }
 };
