@@ -41,14 +41,14 @@ export const columns = scope => [
   },
   {
     title: "IPv4地址",
-    key: "ipv4s",
+    key: "showipv4s",
     align: "center",
     width: 180,
     tooltip
   },
   {
     title: "IPv6地址",
-    key: "ipv6s",
+    key: "showipv6s",
     align: "center",
     width: 180,
     tooltip

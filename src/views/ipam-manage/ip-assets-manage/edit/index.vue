@@ -46,7 +46,22 @@ export default {
       dialogVisible: false,
       url: this.$getApiByRoute().url,
 
-      formModel: this.initForm(),
+      formModel: {
+        mac: "",
+        name: "",
+        deviceType: "",
+        switchName: "",
+        computerRoom: "",
+        computerRack: "",
+        switchPort: "",
+        deployedService: "",
+        department: "",
+        responsiblePerson: "",
+        telephone: "",
+        vlanId: "",
+        ipv4s: "",
+        ipv6s: ""
+      },
 
       formItemList: [],
       rules
@@ -96,80 +111,60 @@ export default {
       this.formItemList = formItemList(!val);
 
       await this.$nextTick();
-      this.formModel = {
-        ...value,
-        ipv4s: value.ipv4s ? value.ipv4s.join(",") : "",
-        ipv6s: value.ipv6s ? value.ipv6s.join(",") : "",
-        deviceType: value.deviceType || "pc"
-      };
+
+
+      for (const attr in this.formModel) {
+        this.formModel[attr] = value[attr];
+      }
+      this.formModel.ipv4s = Array.isArray(value.ipv4s) ? value.ipv4s.join(",") : "";
+      this.formModel.ipv6s = Array.isArray(value.ipv6s) ? value.ipv6s.join(",") : "";
+      this.formModel.deviceType = value.deviceType || "pc";
+
     },
+    handleConfirm() {
 
-    initForm() {
-      return {
-        mac: "",
-        name: "",
-        deviceType: "",
-        switchName: "",
-        computerRoom: "",
-        computerRack: "",
-        switchPort: "",
-        deployedService: "",
-        department: "",
-        responsiblePerson: "",
-        telephone: "",
-        vlan: ""
-      };
-    },
 
-    async handleConfirm() {
-      try {
-        await this.validate();
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.loading = true;
 
-        this.loading = true;
+          let url = this.url;
+          let action = "$post";
 
-        let url = this.url;
-        let action = "$post";
+          if (this.data && this.data.id) {
+            url += "/" + this.data.id;
+            action = "$put";
+          }
 
-        if (this.data && this.data.id) {
-          url += "/" + this.data.id;
-          action = "$put";
+          // action 注册, 只有存在的情况才注册
+          if (this.data && this.data.shouldRegister) {
+            url += `?action=register`;
+            action = "$post";
+          }
+
+          const params = {
+            ...this.formModel
+          };
+          params.ipv4s = params.ipv4s.split(",").filter(item => !!item.trim());
+          params.ipv6s = params.ipv6s.split(",").filter(item => !!item.trim());
+          params.vlanId = +params.vlanId;
+
+          this[action]({ url, params }).then(() => {
+            this.$$success("保存成功！");
+            this.$emit("saved");
+            this.dialogVisible = false;
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          }).finally(() => {
+            this.loading = false;
+          });
         }
-
-        // action 注册, 只有存在的情况才注册
-        if (this.data && this.data.shouldRegister) {
-          url += `?action=register`;
-          action = "$post";
-        }
-
-        const params = {
-          ...this.formModel
-        };
-        params.ipv4s = params.ipv4s.split(",").filter(item => !!item.trim());
-        params.ipv6s = params.ipv6s.split(",").filter(item => !!item.trim());
-        params.vlanId = +params.vlanId;
-        await this[action]({ url, params });
-
-        this.$$success("保存成功！");
-
-        this.$emit("saved");
-
-        this.dialogVisible = false;
-      }
-      catch (err) {
-        this.$handleError(err);
-      }
-      finally {
-        this.loading = false;
-      }
-    },
-
-    validate() {
-      return new Promise((resolve, reject) => {
-        this.$refs.form.validate(valid => {
-          return valid ? resolve() : reject();
-        });
       });
+
     }
+
+
+
   }
 };
 </script>

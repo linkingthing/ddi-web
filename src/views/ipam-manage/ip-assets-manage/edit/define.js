@@ -179,7 +179,7 @@ export const rules = {
   vlanId: [
     {
       validator(rules, value, callback) {
-        if (value === "") {
+        if (value === "" || value === void 0) {
           callback();
         }
         const NumberReg = /^\d+$/g;
