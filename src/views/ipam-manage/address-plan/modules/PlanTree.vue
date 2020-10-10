@@ -26,7 +26,7 @@
                 href="javascript:;"
                 class="btn-ipv4"
                 @click.stop="(e) => handleClickIpv4(e, data, node, collapsed ,nodeDataList) "
-              >+ ipv4</a>
+              >+ IPv4</a>
             </div>
           </div>
         </template>
@@ -51,7 +51,7 @@
                 href="javascript:;"
                 class="btn-ipv4"
                 @click.stop="(e) => handleClickIpv4(e, data, node, collapsed ,nodeDataList) "
-              >+ ipv4</a>
+              >+ IPv4</a>
             </div>
           </div>
           <div slot="content">

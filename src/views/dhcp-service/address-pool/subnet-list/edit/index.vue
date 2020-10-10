@@ -118,11 +118,11 @@ export default {
           placeholder: "请填写默认网关",
           children: [{
             label: 4,
-            text: "ipv4"
+            text: "IPv4"
           },
           {
             label: 6,
-            text: "ipv6"
+            text: "IPv6"
           }]
         };
 
