@@ -177,7 +177,7 @@ export default {
         if (ipv4IsValid(ip)) {
           this.currentData.ipv4s = [ip];
         } else {
-          this.currentData.ipv4s = [ip];
+          this.currentData.ipv6s = [ip];
         }
       }
 
