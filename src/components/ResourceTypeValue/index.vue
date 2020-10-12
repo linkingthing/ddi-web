@@ -67,12 +67,12 @@ export default {
   computed: {
     ipv4List() {
       return {
-        validator: this.unitValidator(ipv4IsValid, "请正确输入ipv4记录")
+        validator: this.unitValidator(ipv4IsValid, "请正确输入IPv4记录")
       };
     },
     ipv6List() {
       return {
-        validator: this.unitValidator(ipv6IsValid, "请正确输入ipv6记录")
+        validator: this.unitValidator(ipv6IsValid, "请正确输入IPv6记录")
       };
     }
   },

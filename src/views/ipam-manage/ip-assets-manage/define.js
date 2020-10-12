@@ -41,31 +41,17 @@ export const columns = scope => [
   },
   {
     title: "IPv4地址",
-    key: "ipv4s",
+    key: "showipv4s",
     align: "center",
     width: 180,
-    tooltip,
-    render: (h, { row }) => {
-      return h("Tags", {
-        props: {
-          list: row.ipv4s
-        }
-      });
-    }
+    tooltip
   },
   {
     title: "IPv6地址",
-    key: "ipv6s",
+    key: "showipv6s",
     align: "center",
     width: 180,
-    tooltip,
-    render: (h, { row }) => {
-      return h("Tags", {
-        props: {
-          list: row.ipv6s
-        }
-      });
-    }
+    tooltip
   },
 
   {
@@ -154,26 +140,26 @@ export const columns = scope => [
     fixed: "right",
     align: "center",
     render: (h, { row }) => {
-      if (scope.$store.getters.hasPermissionToCreate) {
-        return h("div", [
-          h("btn-edit", {
-            on: {
-              click: () => {
-                scope.handleEdit(row);
-              }
+      // if (scope.$store.getters.hasPermissionToCreate) {
+      return h("div", [
+        h("btn-edit", {
+          on: {
+            click: () => {
+              scope.handleEdit(row);
             }
-          }),
-          h("btn-del", {
-            on: {
-              click: () => {
-                scope.handleDelete(row);
-              }
+          }
+        }),
+        h("btn-del", {
+          on: {
+            click: () => {
+              scope.handleDelete(row);
             }
-          })
-        ]);
-      } else {
-        return h("div");
-      }
+          }
+        })
+      ]);
+      // } else {
+      //   return h("div");
+      // }
     }
   }
 ];

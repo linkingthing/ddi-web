@@ -8,6 +8,7 @@
         type="primary"
         style="margin-right: 20px"
         @click="handleAddPlan"
+        v-if="$store.getters.hasPermissionToCreate"
       >新建规划</Button>
       <!-- <Button
         type="primary"
@@ -18,7 +19,7 @@
 
       <NoDataList
         style="margin-top: 100px"
-        v-if="!planList.length"
+        v-if="!planList.length && $store.getters.hasPermissionToCreate"
         button-text="新建规划"
         @add="handleAddPlan"
       />

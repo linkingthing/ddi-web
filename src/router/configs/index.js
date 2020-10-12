@@ -9,7 +9,14 @@ import systemAlarms from "./system-alarms";
 import systemLog from "./system-log";
 import authControl from "./auth-control";
 
-const constRouter = [node, ipam, dns, forword, accessControl, dhcp];
+const constRouter = [
+  node,
+  ipam,
+  dns,
+  forword,
+  accessControl,
+  dhcp
+];
 
 const superUserRouter = [
   // node,

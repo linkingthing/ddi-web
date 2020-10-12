@@ -215,6 +215,7 @@ export const generatePieOption = ({ data, title, color, noData }) => {
     },
     series: [
       {
+        selectedOffset: 0,  // 选中扇区偏移
         silent: noData,
         selectedMode: "single",
         color: noData ? noDataColors : color,

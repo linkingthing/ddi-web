@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       url: this.$getApiByRoute().url,
-      loading: true,
+      loading: false,
       tableData: [],
       columns: columns(this),
       conditions: {
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     async handleQuery() {
-      this.loading = true;
+      // this.loading = true;
 
 
       try {
@@ -124,7 +124,7 @@ export default {
       }
 
       res.page_size = 10;
-      res.page_num = this.currentPage;
+      res.page_num = this.currentPage || 1;
       return res;
     },
 
@@ -139,6 +139,7 @@ export default {
           case "exportcsv": return "导出";
           case "changingrrs": return "A和AAAA记录切换";
           case "snmp": return "更新地址探测";
+          case "register": return "终端登记";
         }
       };
 

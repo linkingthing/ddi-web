@@ -3,11 +3,11 @@
     <IviewLoading v-if="loading" />
 
     <table-page
-      :data="list"
+      :data="agentEventList"
       :columns="columns"
       :current.sync="currentPage"
       :pagination-enable="true"
-      :total="list.length"
+      :total="agentEventCount"
     />
   </div>
 </template>
@@ -15,12 +15,12 @@
 <script>
 import qs from "qs";
 import resources, { operateMap } from "@/dictionary/resources";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
       loading: false,
-      tableData: [],
       links: {},
       columns: [
         {
@@ -74,52 +74,21 @@ export default {
         date: [],
         sourceIp: ""
       },
-      currentPage: 1,
+      currentPage: 0,
       isSmallScreen: document.body.clientWidth <= 1366,
-      showConfig: false,
-      list: []
+      showConfig: false
     };
   },
 
-  mounted() {
-    this.handleQuery();
+  computed: {
+    ...mapGetters(["agentEventCount"]),
+    agentEventList() {
+      const current = this.currentPage || 1;
+      return this.$store.getters.agentEventList({ current });
+    }
   },
 
   methods: {
-    handleQuery() {
-
-      const self = this;
-      let ws = null;
-      const baseConfig = {
-        timer: null,
-        baseUrl: "/apis/ws.linkingthing.com/v1",
-        resource: "agentevent",
-        reconnectNumber: 3,
-        reconnectDelay: 0
-      };
-      const { port, protocol, hostname } = document.location;
-      const wsProtocol = protocol.includes("s") ? "wss" : "ws";
-      const wsHost = process.env.NODE_ENV === "development" ? "10.0.0.190" : hostname;
-      const wsPort = process.env.NODE_ENV === "development" ? "58081" : port;
-      const wsUrl = `${wsProtocol}://${wsHost}:${wsPort}${baseConfig.baseUrl}/${baseConfig.resource}`;
-
-      ws = new WebSocket(`${wsUrl}`);
-
-      ws.onopen = function () {
-        console.log("连接成功 初始化");
-      };
-      ws.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        console.log(data)
-        self.list.unshift(data);
-      };
-      ws.onerror = function (e) {
-        console.log(e);
-      };
-
-      // item.creationTime = this.$trimDate(item.time);
-
-    },
 
     getParams() {
       const { date, sourceIp } = this.conditions;
@@ -132,8 +101,8 @@ export default {
 
       if (date[0]) {
         const [start, end] = date;
-        res.from = this.$trimDate(start, "YYYY-MM-DD") // date[0].toLocaleDateString().replace(/\//g, "-");
-        res.to = this.$trimDate(end, "YYYY-MM-DD") // date[1].toLocaleDateString().replace(/\//g, "-");
+        res.from = this.$trimDate(start, "YYYY-MM-DD");
+        res.to = this.$trimDate(end, "YYYY-MM-DD");
       }
 
       return res;

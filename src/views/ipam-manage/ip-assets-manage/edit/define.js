@@ -137,7 +137,7 @@ export const rules = {
         if (isValid) {
           callback();
         } else {
-          callback("请输入正确ipv4地址，多条用逗号分隔");
+          callback("请输入正确IPv4地址，多条用逗号分隔");
         }
       }
     }
@@ -153,7 +153,7 @@ export const rules = {
         if (isValid) {
           callback();
         } else {
-          callback("请输入正确ipv6地址，多条用逗号分隔");
+          callback("请输入正确IPv6地址，多条用逗号分隔");
         }
       }
     }
@@ -179,7 +179,7 @@ export const rules = {
   vlanId: [
     {
       validator(rules, value, callback) {
-        if (value === "") {
+        if (value === "" || value === void 0) {
           callback();
         }
         const NumberReg = /^\d+$/g;

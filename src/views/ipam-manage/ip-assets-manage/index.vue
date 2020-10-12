@@ -177,7 +177,7 @@ export default {
         if (ipv4IsValid(ip)) {
           this.currentData.ipv4s = [ip];
         } else {
-          this.currentData.ipv4s = [ip];
+          this.currentData.ipv6s = [ip];
         }
       }
 
@@ -235,6 +235,8 @@ export default {
           const type = deviceTypes.find(({ label }) => label === item.deviceType);
 
           item.deviceTypeText = type ? type.text : "";
+          item.showipv4s = item.ipv4s.length ? `[\n${item.ipv4s.join("," + "\n")}\n]` : "";
+          item.showipv6s = item.ipv6s.length ? `[\n${item.ipv6s.join("," + "\n")}\n]` : "";
 
           return item;
         });
