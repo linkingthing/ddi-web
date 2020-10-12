@@ -72,8 +72,7 @@ export default {
         },
         {
           title: "备注",
-          key: "comment",
-          align: "center"
+          key: "comment"
         },
         {
           title: "操作",

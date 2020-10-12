@@ -24,7 +24,8 @@ export default {
       default: ""
     },
     value: {
-      type: String,
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: String | Number,
       default: "" // week-time
     }
   },
@@ -55,11 +56,10 @@ export default {
     value: {
       immediate: true,
       handler(value) {
-        const [week, time] = value.split("-");
+        const [week, time] = String(value).split("-");
         if (isNumber(+week) && isNumber(+time) && !isNaN(+week) && !isNaN(+time)) {
           this.week = +week;
           this.time = +time;
-
         }
       }
     }

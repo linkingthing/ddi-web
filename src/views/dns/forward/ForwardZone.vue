@@ -59,22 +59,20 @@ export default {
         },
 
         {
-          title: "转发方式",
-          key: "forwardtype",
-          align: "center"
+          title: "时间策略",
+          key: "forwardtimepolicyname"
         },
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center",
+          width: 190,
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
           }
         },
         {
           title: "备注",
-          key: "comment",
-          align: "center"
+          key: "comment"
         },
         {
           title: "操作",

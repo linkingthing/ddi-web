@@ -187,22 +187,10 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, domainGroup, comment, forwardtype, forwards }) => {
-          this.formModel = {
-            name,
-            comment,
-            forwardtype,
-            forwards,
-            forwarderids: Array.isArray(forwards) ? forwards.map(item => item.id) : []
-          };
+        this.$get({ url: this.links.self }).then((data) => {
+          this.formModel = data;
 
-          // 改造name 和 domainGroup 字段映射到 name中，二者存在值的情况必然互斥
-
-          if (domainGroup.length) {
-            this.formModel.name = domainGroup.map(item => this.domainGroupList.find(domain => domain.id === item).name).join(",");
-          } else {
-            this.formModel.name = name;
-          }
+   
 
 
         }).catch();

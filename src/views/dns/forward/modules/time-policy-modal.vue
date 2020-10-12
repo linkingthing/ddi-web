@@ -35,7 +35,7 @@ import TimeTypeWeek from "./TimeTypeWeek";
 import { DateType } from "./helper";
 
 import moment from "moment-timezone";
-import { sortBy } from "lodash";
+import { sortBy, isUndefined } from "lodash";
 
 
 export default {
@@ -57,6 +57,102 @@ export default {
       name: [
         { required: true, message: "请填写组名称" }
       ],
+      timetype: [{
+        required: true, message: "请选时间方式"
+      }],
+      startTime: [
+        {
+          required: true,
+          message: "请选择开始时间"
+        }
+      ],
+      endTime: [
+        {
+          required: true,
+          message: "请选择结束时间"
+        },
+        {
+          validator: (rules, value, callback) => {
+            const { timetype, startTime } = this.formModel;
+            const message = "结束时间应该大于开始时间";
+            const policyMap = {
+              [DateType.Day]: function () {
+                return {
+                  isValid: Number(value) <= Number(startTime),
+                  message
+                };
+              },
+              [DateType.Week]: function () {
+                const [weekStart, timeStart] = String(startTime).split("-");
+                const [weekEnd, timeEnd] = String(value).split("-");
+
+                if (isUndefined(weekEnd) || isUndefined(timeEnd)) {
+                  return {
+                    isValid: true,
+                    message: "请选择结束时间"
+                  };
+                }
+
+                if (Number(weekEnd) < Number(weekStart)) {
+                  return {
+                    isValid: true,
+                    message
+                  };
+                }
+                if (Number(weekEnd) === Number(weekStart)) {
+                  return {
+                    isValid: Number(timeEnd) <= Number(timeStart),
+                    message
+                  };
+                }
+              },
+              [DateType.Date]: function () {
+                const [strampStart, timeStart] = String(startTime).split("-");
+                const [strampEnd, timeEnd] = String(value).split("-");
+
+                if (isUndefined(strampEnd) || isUndefined(timeEnd)) {
+                  return {
+                    isValid: true,
+                    message: "请选择结束时间"
+                  };
+                }
+
+                if (Number(strampEnd) < Number(strampStart)) {
+                  return {
+                    isValid: true,
+                    message
+                  };
+                }
+
+                if (Number(strampEnd) === Number(strampStart)) {
+                  return {
+                    isValid: Number(timeEnd) <= Number(timeStart),
+                    message
+                  };
+                }
+
+                if (Number(strampEnd) > Number(strampStart)) {
+                  return {
+                    isValid: false,
+                    message
+                  };
+                }
+
+              }
+
+            };
+
+            {
+              const { isValid, message } = policyMap[timetype]();
+              if (isValid) {
+                callback(message);
+              }
+              callback();
+            }
+
+          }
+        }
+      ]
 
     };
     return {
@@ -281,7 +377,7 @@ export default {
               if (Number(week1) === Number(week2)) {
                 return [{
                   beginminute: time1 * 60,
-                  endminute: endTime * 60,
+                  endminute: time2 * 60,
                   weekday: Number(week1)
                 }];
               }
