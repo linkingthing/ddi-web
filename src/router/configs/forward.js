@@ -23,7 +23,7 @@ export default {
       redirect: { name: "forward-view" },
       component: () => import("@/views/dns/forward/layout"),
       meta: {
-        title: "转发管理"
+        title: "转发配置"
       },
       children: [
         {
@@ -49,7 +49,7 @@ export default {
           path: "/dns/dns/views_forwards/:viewsId/forwardzones",
           component: () => import("@/views/dns/forward/ForwardZone"),
           meta: {
-            title: "转发配置编辑",
+            title: "转发规则",
             notInMenu: true,
             from: "forward-view"
           }
