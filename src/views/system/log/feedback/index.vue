@@ -76,21 +76,18 @@ export default {
       },
       currentPage: 0,
       isSmallScreen: document.body.clientWidth <= 1366,
-      showConfig: false,
-      agentEventList: []
+      showConfig: false
     };
   },
 
   computed: {
-    ...mapGetters(["agentEventCount"])
-  },
-  watch: {
-    currentPage: {
-      handler(current) {
-        this.agentEventList = this.$store.getters.agentEventList({ current });
-      }
+    ...mapGetters(["agentEventCount"]),
+    agentEventList() {
+      const current = this.currentPage || 1;
+      return this.$store.getters.agentEventList({ current });
     }
   },
+
   methods: {
 
     getParams() {
@@ -104,8 +101,8 @@ export default {
 
       if (date[0]) {
         const [start, end] = date;
-        res.from = this.$trimDate(start, "YYYY-MM-DD") // date[0].toLocaleDateString().replace(/\//g, "-");
-        res.to = this.$trimDate(end, "YYYY-MM-DD") // date[1].toLocaleDateString().replace(/\//g, "-");
+        res.from = this.$trimDate(start, "YYYY-MM-DD");
+        res.to = this.$trimDate(end, "YYYY-MM-DD");
       }
 
       return res;
