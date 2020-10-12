@@ -102,9 +102,9 @@ export default {
 <style lang="less" scoped>
 .PlanTab {
   display: flex;
-  height: 48px;
+  height: 40px;
   background: #f2f2f2;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   border-radius: 4px;
 
   .PlanTabtitle {
@@ -113,7 +113,7 @@ export default {
     font-size: #333;
     font-size: 16px;
     background: #e6e6e6;
-    line-height: 48px;
+    line-height: 40px;
   }
   ul {
     flex: 1;

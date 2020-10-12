@@ -275,7 +275,7 @@ export default {
   }
 }
 .plan-content {
-  padding: 24px;
+  padding: 16px 24px;
   border-top: 1px solid #efefef;
 }
 </style>

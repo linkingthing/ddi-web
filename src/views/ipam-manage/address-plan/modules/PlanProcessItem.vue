@@ -53,18 +53,21 @@ export default {
 
 <style lang="less" scoped>
 .PlanProcessItem {
-  height: 80px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
   width: 168px;
   text-align: center;
   border-radius: 4px;
-  padding: 10px;
+  padding: 2px 10px;
   font-size: 16px;
   border: 1px dashed #ccc;
   color: #999;
 }
 
 .PlanProcessItemText {
-  padding-top: 10px;
+  padding-left: 10px;
 }
 
 .active {

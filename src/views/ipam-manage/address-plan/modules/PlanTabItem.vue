@@ -54,7 +54,7 @@ export default {
 .PlanTabItem {
   font-size: 14px;
   width: 160px;
-  padding: 14px;
+  padding: 10px 14px;
   color: #999;
   cursor: pointer;
   border-radius: 4px 4px 0px 0px;

@@ -1,7 +1,7 @@
 <template>
   <div class="PlanTree">
     <VueTree
-      style="min-height: calc(100vh - 490px);"
+      style="min-height: calc(100vh - 410px);"
       :dataset="treeData"
       :config="config"
       direction="horizontal"

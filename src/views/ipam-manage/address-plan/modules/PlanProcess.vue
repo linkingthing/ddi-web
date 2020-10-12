@@ -69,10 +69,10 @@ export default {
 <style lang="less" scoped>
 .PlanProcess {
   border-bottom: 1px dashed rgba(69, 134, 254, 0.3);
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   ul {
     display: inline-flex;
-    padding-bottom: 30px;
+    padding-bottom: 24px;
   }
   li {
     flex: 1;
@@ -83,7 +83,7 @@ export default {
         position: absolute;
         width: 150px;
         left: 0;
-        top: 40px;
+        top: 25px;
         content: "";
         border-bottom: 1px dashed #ccc;
       }
