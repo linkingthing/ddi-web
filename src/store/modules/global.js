@@ -1,5 +1,7 @@
 import { post } from "@/util/axios";
 import store from "@/util/store";
+import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
+
 const Cache = store("localStorage");
 
 const state = {
@@ -16,7 +18,7 @@ const getters = {
   userType: state => state.userType,
   userInfo: state => state.userInfo,
   hasPermissionToCreate: state =>
-    state.userInfo && state.userInfo.userType === "superUser",
+    state.userInfo && state.userInfo.userType === USERTYPE_SUPER,
 
   alarmCount: state => state.alarmCount,
   agentEventCount: state => state.agentEventList.length,

@@ -79,6 +79,7 @@
 <script>
 
 import configs, { asyncRouter, superUserAllowList } from "@/router/configs";
+import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
 
 export default {
   name: "menuNav",
@@ -133,11 +134,11 @@ export default {
           const { userInfo } = this.$store.getters;
           if (userInfo) {
             const { userType } = userInfo;
-            if (userType === "superUser") {
+            if (userType === USERTYPE_SUPER) {
               return true;
             }
 
-            if (userType === "normalUser") {
+            if (userType === USERTYPE_NORMAL) {
               return !superUserAllowList.includes(item.name);
             }
 

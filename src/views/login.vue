@@ -131,8 +131,9 @@ export default {
           services
             .login(this.params)
             .then(res => {
-              if (res.data.code === "200") {
-                this.SET_TOKEN(res.data.token);
+              const { authorization } = res.headers;
+              if (res.data.code === 200) {
+                this.SET_TOKEN(authorization);
                 this.SET_USERINFO(false);
                 this.$router.push({
                   path: "/"

@@ -80,6 +80,7 @@
 import { mapGetters, mapMutations } from "vuex";
 import store from "@/store";
 import logoSrc from "@/assets/images/logo.png";
+import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
 
 import ChangePassword from "@/components/ChangePassword";
 
@@ -87,27 +88,27 @@ const mainMenuList = [
   {
     title: "系统状态",
     url: "/monitor",
-    userType: "normalUser",
+    userType: USERTYPE_NORMAL,
     icon: "icon-statistics"
   },
   {
     title: "DNS管理",
     url: "/dns",
-    userType: "normalUser",
+    userType: USERTYPE_NORMAL,
     icon: "icon-dns"
 
   },
   {
     title: "地址管理",
     url: "/address",
-    userType: "normalUser",
+    userType: USERTYPE_NORMAL,
     icon: "icon-computer"
 
   },
   {
     title: "系统管理",
     url: "/system",
-    userType: "superUser",
+    userType: USERTYPE_SUPER,
     icon: "icon-system"
 
   }
@@ -158,7 +159,7 @@ export default {
     mainMenuList() {
       const userType = this.userType;
       if (userType) {
-        if (userType === "superUser") {
+        if (userType === USERTYPE_SUPER) {
           return mainMenuList;
         } else {
           return mainMenuList.filter(item => {
@@ -171,7 +172,7 @@ export default {
     },
     userDropdownMenu() {
       const userType = this.userType;
-      if (userType === "superUser") {
+      if (userType === USERTYPE_SUPER) {
         return userDropdownMenu;
       } else {
         return userDropdownMenu.filter(item => {

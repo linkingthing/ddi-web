@@ -45,6 +45,7 @@ instance.interceptors.response.use(
       Message.error("您当前没有执行权限，请与超级管理员联系");
       throw "403 您当前没有执行权限，请与超级管理员联系";
     }
+
     return Promise.reject(err);
   }
 );
@@ -72,7 +73,6 @@ async function netCall(request) {
       });
     }
   } catch (error) {
-
     return Promise.reject(error);
   }
 }

@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Login from "../views/login";
 import DefaultLayout from "../views/default-layout";
+import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
 
 import configs, { asyncRouter } from "./configs";
 
@@ -50,7 +51,7 @@ router.beforeEach((to, from, next) => {
         .dispatch("getUserInfo")
         .then(userInfo => {
           const { userType } = userInfo;
-          if (userType === "superUser") {
+          if (userType === USERTYPE_SUPER) {
             if (!isAddRouter) {
               router.addRoutes(asyncRouter);
               isAddRouter = true;
