@@ -51,11 +51,11 @@ export const formItemList = isNew => [
     placeholder: "请选择终端类型"
   },
   {
-    label: "交换机名称",
+    label: "上联设备",
     model: "switchName",
     type: "input",
     maxlength: 50,
-    placeholder: "请输交换机名称"
+    placeholder: "请输上联设备"
   },
   {
     label: "机房",

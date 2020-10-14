@@ -41,10 +41,10 @@
         </div>
 
         <div class="condition-item">
-          <label class="condition-item-label">交换机名称</label>
+          <label class="condition-item-label">上联设备</label>
           <Input
             v-model="condition.switchName"
-            placeholder="请输入交换机名称"
+            placeholder="请输入上联设备"
             class="top-input"
             @on-enter="handleQuery"
           />

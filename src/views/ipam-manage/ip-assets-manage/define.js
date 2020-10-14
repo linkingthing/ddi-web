@@ -69,7 +69,7 @@ export const columns = scope => [
     tooltip
   },
   {
-    title: "交换机名称",
+    title: "上联设备",
     key: "switchName",
     align: "center",
     width: 160,
