@@ -88,11 +88,16 @@ export default {
                 "btn-line": true
               },
               style: {
-                display: +len === 64 ? "none" : "inline-block"
+                display: +len === 64 ? "none" : "inline-block",
+                color: len === undefined ? "#999!important" : "#4686fe",
+                borderColor: len === undefined ? "#999" : "#4686fe",
+                cursor: len === undefined ? "default" : "pointer"
               },
               on: {
                 click: () => {
-                  this.handleDelegate(row);
+                  if (len !== undefined) {
+                    this.handleDelegate(row);
+                  }
                 }
               }
             }, "地址委派"),
