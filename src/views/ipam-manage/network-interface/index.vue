@@ -115,7 +115,8 @@
             <label class="condition-item-label">地址状态：</label>
             <Select
               style="width: 160px"
-              v-model="condition.status"
+              clearable
+              v-model="condition.ipstate"
             >
               <Option
                 v-for="item in statusLegends"
@@ -189,7 +190,8 @@ export default {
       currentType: {},
       condition: {
         ipAddress: "",
-        mac: ""
+        mac: "",
+        ipstate: ""
       },
       unmanagedRatio: "",
       total: 0,
@@ -252,8 +254,7 @@ export default {
         this.loading = true;
 
         await Promise.all([
-          this.getPieData(),
-          this.getList("active")
+          this.getPieData()
         ]);
 
         this.renderTypeChart();
@@ -311,18 +312,27 @@ export default {
       }
     },
 
-    async getList(status) {
+    async getList() {
       this.tableLoading = true;
 
       try {
         let url = this.$getApiByRoute().url;
+        let { ipAddress, mac, ipstate } = this.condition;
+
+        let ip = ipAddress.trim();
+        mac = mac.trim();
+
         const params = {
           page_num: this.current,
-          page_size: 10
+          page_size: 10,
+          ip,
+          mac
         };
-        if (status) {
-          url += `?${status}=true`;
+
+        if (ipstate) {
+          params.ipstate = ipstate;
         }
+
 
         let { data, pagination } = await this.$get({ url, params });
         this.total = pagination.total;
@@ -337,12 +347,9 @@ export default {
     },
 
     handleFilter(data) {
-      let { ipAddress, mac } = this.condition;
 
-      ipAddress = ipAddress.trim();
-      mac = mac.trim();
 
-      this.tableData = data.filter(item => item.mac.indexOf(mac) >= 0 && item.ip.indexOf(ipAddress) >= 0)
+      this.tableData = data
         .map(item => {
           item.ipTypeText = this.getAttributeByArrayAndKeyValue({ array: this.typeLegends, key: "type", value: item.ipType, attr: "label" });
           item.ipStateText = this.getAttributeByArrayAndKeyValue({ array: this.statusLegends, key: "type", value: item.ipState, attr: "label" });
@@ -434,7 +441,8 @@ export default {
 
       this.currentType = type;
 
-      this.getList(type);
+      this.condition.ipstate = type;
+      this.getList();
     },
 
     async handleEdit(row) {

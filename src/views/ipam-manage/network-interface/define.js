@@ -12,13 +12,13 @@ export const columns = scope => [
     align: "center"
   },
   {
-    title: "类型",
+    title: "地址类型",
     key: "ipTypeText",
     minWidth: 120,
     align: "center"
   },
   {
-    title: "租约状态",
+    title: "地址状态",
     key: "ipStateText",
     minWidth: 120,
     align: "center"
@@ -32,7 +32,7 @@ export const columns = scope => [
   {
     title: "租赁过期时间",
     key: "expire",
-    minWidth: 120,
+    minWidth: 190,
     align: "center"
   },
   {
