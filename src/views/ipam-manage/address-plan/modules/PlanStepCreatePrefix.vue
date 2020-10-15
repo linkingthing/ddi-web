@@ -53,13 +53,15 @@ export default {
     this.rules = {
       description: [{
         validator: (rule, value, callback) => {
-          if (value.trim().length) {
+          const name = value.trim();
+          if (name.length) {
             callback();
           } else {
             callback("请输入规划名");
           }
         }
-      }
+      },
+      { max: 15, message: "请输入少于等于15字符" }
       ],
       prefix: [
         {

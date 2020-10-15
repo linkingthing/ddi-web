@@ -37,7 +37,7 @@ export default {
   },
   computed: {},
   watch: {
-    
+
   },
   created() { },
   mounted() { },
@@ -52,14 +52,18 @@ export default {
 
 <style lang="less" scoped>
 .PlanTabItem {
+  position: relative;
   font-size: 14px;
   width: 160px;
-  padding: 10px 14px;
+  padding: 10px 24px 10px 14px;
   color: #999;
   cursor: pointer;
   border-radius: 4px 4px 0px 0px;
   line-height: 1;
   flex-shrink: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 
   &.active {
     color: #4585fd;
@@ -67,7 +71,9 @@ export default {
     cursor: default;
   }
   .tab-close {
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
   }
 }
