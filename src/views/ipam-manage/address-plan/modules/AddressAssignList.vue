@@ -130,7 +130,7 @@ export default {
     ]),
     filterListWithList() {
       const pageSize = 10;
-      const current  = this.current;
+      const current = this.current;
       const startIndex = (current - 1) * pageSize;
       const endIndex = current * pageSize;
 
@@ -142,7 +142,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        this.dataList = val;
+        this.dataList = val || [];
         this.filterList = this.dataList || [];
       }
     },
