@@ -336,6 +336,7 @@ export default {
 
         let { data, pagination } = await this.$get({ url, params });
         this.total = pagination.total;
+        this.current = pagination.pageNum;
         this.handleFilter(data);
 
       } catch (err) {

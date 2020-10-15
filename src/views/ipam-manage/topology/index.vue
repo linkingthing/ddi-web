@@ -124,7 +124,9 @@ export default {
     getDataList() {
       this.$get(this.$getApiByRoute("/address/ipam/networkequipments")).then(({ data }) => {
         this.dataList = data;
-        this.initTopology();
+        if (this.dataList.length) {
+          this.initTopology();
+        }
       });
     },
 
