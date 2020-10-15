@@ -23,7 +23,8 @@ export default {
 			icon: 'icon-node-monitor',
 			meta: {
 				range: 'monitor',
-				title: '概览',
+        title: '概览',
+        permission: "overview"
 			}
 		},
 		{
@@ -32,7 +33,8 @@ export default {
 			component: () => import('@/views/node/DNSDashboard'),
 			icon: 'icon-dns-monitor',
 			meta: {
-				title: 'DNS统计'
+        title: 'DNS统计',
+        permission: "dnsStatistics"
 			}
 		},
 		{
@@ -42,7 +44,8 @@ export default {
 			icon: 'icon-dhcp-monitor',
 			meta: {
 				from: 'monitor',
-				title: 'DHCP统计'
+        title: 'DHCP统计',
+        permission: "dhcpStatistics"
 			}
 		},
 		{
@@ -52,7 +55,8 @@ export default {
 			icon: 'icon-controller-monitor',
 			meta: {
 				range: 'nodeManage',
-				title: '节点监控'
+        title: '节点监控',
+        permission: "nodeMonitor"
 			}
 		}
 	]

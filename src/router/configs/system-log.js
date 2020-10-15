@@ -6,6 +6,8 @@ export default {
   meta: {
     range: "system",
     title: "日志信息",
+    permission: "logInfo"
+
   },
   name: "system-log",
   icon: "icon-log",
@@ -22,6 +24,8 @@ export default {
       meta: {
         range: "system",
         title: "操作日志",
+        permission: "operateLog"
+
       },
     },
     {
@@ -35,6 +39,8 @@ export default {
       meta: {
         range: "system",
         title: "解析日志",
+        permission: "parseLog"
+
       },
     },
     {
@@ -47,6 +53,8 @@ export default {
       meta: {
         range: "system",
         title: "配置返显",
+        permission: "configFeedback"
+
       },
     },
   ],

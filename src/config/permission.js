@@ -168,6 +168,14 @@ const menuList = [
     menuType: ""
   },
   {
+    name: "解析优先级",
+    id: "parsePriority",
+    module: "dns",
+    resource: "view",
+    operations: [],
+    menuType: ""
+  },
+  {
     name: "全局配置",
     id: "dnsGlobalConfig",
     module: "dns",

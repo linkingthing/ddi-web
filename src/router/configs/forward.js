@@ -12,7 +12,8 @@ export default {
   icon: "icon-forward",
   meta: {
     title: "递归服务",
-    range: "dns"
+    range: "dns",
+    permission: "recursionServe"
   },
   name: "forward",
   redirect: { name: "forward-layout" },
@@ -23,7 +24,9 @@ export default {
       redirect: { name: "forward-view" },
       component: () => import("@/views/dns/forward/layout"),
       meta: {
-        title: "转发配置"
+        title: "转发配置",
+        permission: "forwardConfigMenu"
+
       },
       children: [
         {
@@ -32,7 +35,9 @@ export default {
           component: () => import("@/views/dns/forward/ForwardView"),
           meta: {
             title: "转发配置",
-            active: "forward-layout"
+            active: "forward-layout",
+            permission: "forwardConfig"
+
           }
         },
         {
@@ -40,7 +45,9 @@ export default {
           path: "/dns/dns/forwards",
           component: () => import("@/views/dns/forward/ForwardGroup"),
           meta: {
-            title: "转发配置"
+            title: "转发配置",
+            permission: "forwardGroup"
+
           }
         },
 
@@ -51,7 +58,9 @@ export default {
           meta: {
             title: "转发规则",
             notInMenu: true,
-            from: "forward-view"
+            from: "forward-view",
+            permission: "forwardRule"
+
           }
         }
       ]
@@ -65,7 +74,9 @@ export default {
           /* webpackChunkName: "concurrency-control" */ "@/views/dns/forward/concurrency-control"
         ),
       meta: {
-        title: "递归安全"
+        title: "递归安全",
+        permission: "recursionSecurity"
+
       }
     }
   ]

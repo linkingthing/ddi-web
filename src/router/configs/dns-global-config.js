@@ -12,7 +12,9 @@ export default {
   meta: {
     title: "全局配置",
     range: "dns",
-    isFlat: true
+    isFlat: true,
+    permission: "dnsGlobalConfig"
+
   },
   name: "global-config-content",
   children: [
