@@ -119,7 +119,8 @@ export default {
       }],
 
       dataList: [],
-      filterList: []
+      filterList: [],
+      current: 1
     };
   },
   computed: {
@@ -129,7 +130,7 @@ export default {
     ]),
     filterListWithList() {
       const pageSize = 10;
-      const { current } = this.$route.query;
+      const current  = this.current;
       const startIndex = (current - 1) * pageSize;
       const endIndex = current * pageSize;
 
@@ -148,6 +149,7 @@ export default {
     netType: {
       immediate: true,
       handler(value) {
+        this.current = 1;
         this.active = value;
       }
     }
