@@ -59,8 +59,10 @@ export default {
   },
 
   // 资源记录
-  getResourceRecord(viewId, zoneId) {
-    return axios.get(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs`);
+  getResourceRecord(viewId, zoneId, params) {
+    return axios.get(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs`, {
+      params
+    });
   },
   createResourceRecord(viewId, zoneId, params) {
     return axios.post(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs`, params);

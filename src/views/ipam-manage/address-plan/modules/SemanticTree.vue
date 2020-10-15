@@ -110,7 +110,7 @@ export default {
           }),
           h("span", {
             domProps: {
-              innerHTML: name
+              innerText: name
             }
           })
         ])

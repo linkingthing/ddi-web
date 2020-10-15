@@ -4,7 +4,8 @@
       title="资源记录"
       :data="resList"
       :columns="columns"
-      :total="resList.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -86,16 +87,23 @@ export default {
       ],
       viewId: "",
       zoneId: " ",
-      resList: []
+      resList: [],
+      total: 0,
+      current: 0
     };
   },
+  watch: {
+    current() {
+      this.getResources();
+
+    }
+  },
+
   created() {
     this.viewId = this.$route.params.id;
     this.zoneId = this.$route.params.zoneId;
   },
-  mounted() {
-    this.getResources();
-  },
+
   methods: {
     handleOpenCreate(viewId, zoneId) {
       this.$refs.configRef.openConfig(viewId, zoneId);
@@ -104,10 +112,15 @@ export default {
       this.$refs.analysisRef.openModel(viewId, zoneId, id);
     },
     getResources() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
       services
-        .getResourceRecord(this.viewId, this.zoneId)
+        .getResourceRecord(this.viewId, this.zoneId, params)
         .then(res => {
           this.resList = res.data.data;
+          this.total = res.data.pagination.total;
         })
         .catch(err => {
           console.log(err);
