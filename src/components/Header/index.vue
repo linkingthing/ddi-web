@@ -196,8 +196,8 @@ export default {
       immediate: true,
       handler({ userInfo }) {
         if (userInfo) {
-          const { user, userType } = userInfo;
-          this.username = user;
+          const { username, userType } = userInfo;
+          this.username = username;
           this.userType = userType;
         }
       }
