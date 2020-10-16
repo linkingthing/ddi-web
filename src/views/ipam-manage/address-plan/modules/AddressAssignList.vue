@@ -4,6 +4,7 @@
       :columns="columns"
       :data="filterListWithList"
       :total="filterList.length"
+      :current.sync="current"
     >
       <div
         class="AddressAssignList-header"
@@ -143,7 +144,7 @@ export default {
       immediate: true,
       handler(val) {
         this.dataList = val || [];
-        this.filterList = this.dataList || [];
+        this.filterList = val || [];
       }
     },
     netType: {

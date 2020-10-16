@@ -104,6 +104,7 @@ export default {
         this.tableData = data;
         this.links = links;
         this.total = pagination.total;
+        this.current = pagination.pageNum;
       }).catch().finally(() => {
         this.loading = false;
       });
