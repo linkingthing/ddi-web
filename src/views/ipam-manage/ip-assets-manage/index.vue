@@ -241,6 +241,7 @@ export default {
           return item;
         });
         this.total = pagination.total;
+        this.current = pagination.pageNum;
       } catch (err) {
         this.$handleError(err);
       }
