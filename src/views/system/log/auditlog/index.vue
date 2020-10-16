@@ -148,9 +148,11 @@ export default {
       return `${username}${opper}${resources[resourceKind]}`;
     },
     handleOpenMessage(row) {
-      const message = row.succeed
+      let message = row.succeed
         ? JSON.stringify(JSON.parse(row.parameters), null, 2)
         : row.errMessage;
+
+      message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       this.$Modal.info({
         scrollable: true,
         width: 800,
