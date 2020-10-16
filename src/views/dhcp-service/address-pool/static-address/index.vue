@@ -87,9 +87,12 @@ export default {
       total: 0
     };
   },
-  mounted() {
-    this.getDataList();
+  watch: {
+    current() {
+      this.getDataList();
+    }
   },
+
   methods: {
 
     getDataList() {
@@ -103,6 +106,7 @@ export default {
         this.tableData = data;
         this.links = links;
         this.total = pagination.total;
+        this.current = pagination.pageNum;
       }).catch().finally(() => {
         this.loading = false;
       });
