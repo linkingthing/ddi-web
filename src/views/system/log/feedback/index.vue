@@ -125,8 +125,12 @@ export default {
       return `${username}${opper}${resources[resourceKind]}`;
     },
     handleOpenMessage(row) {
-      const cmdMessage = JSON.stringify(JSON.parse(row.cmdMessage), null, 2);
-      const errMessage = row.errorMessage ? `错误信息：${row.errorMessage}` : "操作成功";
+      let cmdMessage = JSON.stringify(JSON.parse(row.cmdMessage), null, 2);
+      let errMessage = row.errorMessage ? `错误信息：${row.errorMessage}` : "操作成功";
+
+      cmdMessage = cmdMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      errMessage = errMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
       this.$Modal.info({
         scrollable: true,
         width: 800,
