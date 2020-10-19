@@ -66,7 +66,7 @@ export default {
             return h("i-switch", {
               on: {
                 "on-change": (val) => {
-                  this.handleToggle(row.links.update, val, row)
+                  this.handleToggle(row.links.update, val, row);
                 }
               },
               props: {
@@ -124,6 +124,7 @@ export default {
     handleUpdateValue(url, value, row) {
       this.$put({ url, params: { ...row, value } }).then(() => {
         this.$Message.success("更新成功");
+        this.getData();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
@@ -131,6 +132,7 @@ export default {
     handleToggle(url, sendMail, row) {
       this.$put({ url, params: { ...row, sendMail } }).then(() => {
         this.$Message.success("更新成功");
+        this.getData();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
