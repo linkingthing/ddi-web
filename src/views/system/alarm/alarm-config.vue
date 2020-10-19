@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       total: 0,
-      current: 1,
+      current: 0,
       list: [],
       columns: [
         {
@@ -91,16 +91,13 @@ export default {
   computed: {},
   watch: {
     current: {
-      immediate: true,
       handler() {
         this.getData();
 
       }
     }
   },
-  created() {
-    this.current = 1;
-  },
+
   mounted() { },
   methods: {
     getData() {
