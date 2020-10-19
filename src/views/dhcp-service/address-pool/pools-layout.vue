@@ -44,7 +44,7 @@ export default {
           route: "address-reservations-list"
         });
         this.tabList.push({
-          name: "staticaddress",
+          name: "staticaddresses",
           label: "静态地址",
           route: "static-address"
         });
@@ -63,7 +63,7 @@ export default {
             route: "address-reservations-list"
           });
           this.tabList.push({
-            name: "staticaddress",
+            name: "staticaddresses",
             label: "静态地址",
             route: "static-address"
           });

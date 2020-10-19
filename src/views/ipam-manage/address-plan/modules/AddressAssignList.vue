@@ -143,6 +143,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
+        this.current = 1;
         this.dataList = val || [];
         this.filterList = val || [];
       }
