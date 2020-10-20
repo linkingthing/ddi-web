@@ -155,10 +155,10 @@ export default {
       };
       services
         .getAccessList(params)
-        .then(res => {
-          this.list = res.data.data;
-          this.links = res.data.links;
-          this.total = res.data.pagination.total;
+        .then(({ data, links, pagination }) => {
+          this.list = data;
+          this.links = links;
+          this.total = pagination.total;
         })
         .catch(err => {
           this.$Message.error(err.message);

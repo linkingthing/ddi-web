@@ -1,13 +1,27 @@
 <template>
   <div class="A4Compose">
-    <table-page title="A4地址合成查询表" :data="list" :columns="columns" :paginationEnable="false">
+    <table-page
+      title="A4地址合成查询表"
+      :data="list"
+      :columns="columns"
+      :paginationEnable="false"
+    >
       <template slot="top-right">
-        <i-button type="success" @click="handleOpenCreate">新建</i-button>
+        <i-button
+          type="success"
+          @click="handleOpenCreate"
+        >新建</i-button>
       </template>
     </table-page>
 
-    <createA4 ref="resRef" @onCreateSuccess="getView"></createA4>
-    <editA4 ref="powerRef" @onEditSuccess="getView"></editA4>
+    <createA4
+      ref="resRef"
+      @onCreateSuccess="getView"
+    ></createA4>
+    <editA4
+      ref="powerRef"
+      @onEditSuccess="getView"
+    ></editA4>
   </div>
 </template>
 
@@ -91,10 +105,10 @@ export default {
       let _self = this;
       services
         .getDNS64sByViewId(this.id)
-        .then(function(res) {
-          _self.list = res.data.data;
+        .then(function ({ data }) {
+          _self.list = data;
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.log(err);
         });
     },

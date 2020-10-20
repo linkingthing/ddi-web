@@ -5,7 +5,11 @@
     :value="value"
     @on-change="(d) => $emit('change',d,accessList.find(item => item.id === d) )"
   >
-    <Option v-for="item in accessList" :key="item.id" :value="item.id">{{item.name}}</Option>
+    <Option
+      v-for="item in accessList"
+      :key="item.id"
+      :value="item.id"
+    >{{item.name}}</Option>
   </Select>
 </template>
 
@@ -32,8 +36,8 @@ export default {
   },
   methods: {
     getAccessList() {
-      services.getAccessList().then(res => {
-        this.accessList = res.data.data;
+      services.getAccessList().then(({ data }) => {
+        this.accessList = data;
       });
     }
   }

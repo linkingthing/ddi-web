@@ -88,27 +88,27 @@ const mainMenuList = [
   {
     title: "系统状态",
     url: "/monitor",
-    userType: USERTYPE_NORMAL,
+    module: "monitor",
     icon: "icon-statistics"
   },
   {
     title: "DNS管理",
     url: "/dns",
-    userType: USERTYPE_NORMAL,
+    module: "dns",
     icon: "icon-dns"
 
   },
   {
     title: "地址管理",
     url: "/address",
-    userType: USERTYPE_NORMAL,
+    module: "address",
     icon: "icon-computer"
 
   },
   {
     title: "系统管理",
     url: "/system",
-    userType: USERTYPE_SUPER,
+    module: "system",
     icon: "icon-system"
 
   }
@@ -118,17 +118,17 @@ const userDropdownMenu = [
   {
     label: "修改密码",
     key: "password",
-    userType: "normalUser"
+    permission: "ddiuser"
   },
   {
     label: "访问控制",
     key: "permissions",
-    userType: "superUser"
+    permission: "super"
   },
   {
     label: "退出系统",
     key: "out",
-    userType: "normalUser"
+    permission: "*"
   }
 ];
 
@@ -149,7 +149,9 @@ export default {
       password: "",
       rePassword: "",
       username: "",
-      userType: ""
+      userType: "",
+      resourceList: []
+
     };
   },
   computed: {
@@ -158,12 +160,13 @@ export default {
     ]),
     mainMenuList() {
       const userType = this.userType;
+      const { rangeList } = this.$store.getters;
       if (userType) {
         if (userType === USERTYPE_SUPER) {
           return mainMenuList;
         } else {
           return mainMenuList.filter(item => {
-            return item.userType === userType;
+            return rangeList.includes(item.module);
           });
         }
       }
@@ -172,11 +175,12 @@ export default {
     },
     userDropdownMenu() {
       const userType = this.userType;
+      const resourceList = this.resourceList;
       if (userType === USERTYPE_SUPER) {
         return userDropdownMenu;
       } else {
         return userDropdownMenu.filter(item => {
-          return item.userType === userType;
+          return resourceList.includes(item.permission) || item.permission === "*";
         });
       }
     }
@@ -196,9 +200,10 @@ export default {
       immediate: true,
       handler({ userInfo }) {
         if (userInfo) {
-          const { username, userType } = userInfo;
+          const { username, userType, menuList } = userInfo;
           this.username = username;
           this.userType = userType;
+          this.resourceList = Array.isArray(menuList) ? menuList.map(item => item.resource) : [];
         }
       }
     }
@@ -211,7 +216,8 @@ export default {
 
   methods: {
     ...mapMutations({
-      setToken: "SET_TOKEN"
+      setToken: "SET_TOKEN",
+      setRoutes: "setRoutes"
     }),
 
     handleClickMainMenu(menu) {
@@ -227,6 +233,7 @@ export default {
         };
         this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=logout", params }).finally(() => {
           self.setToken("");
+          self.setRoutes([]);
           self.$router.push({
             path: "/login"
           });

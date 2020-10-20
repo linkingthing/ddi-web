@@ -123,31 +123,5 @@ export default {
       },
     },
 
-    // {
-    //   name: "a4-compose-view",
-    //   path: "/dns/recursion/A4ComposeView",
-    //   component: () =>
-    //     import(
-    //       /* webpackChunkName: "option-config" */ "@/views/dns/recursion/A4ComposeView"
-    //     ),
-    //   meta: {
-    //     notInMenu: true,
-    //     title: "DNS64",
-
-    //   },
-    // },
-    // {
-    //   name: "a4-compose",
-    //   path: "/dns/recursion/view/A4Compose",
-    //   component: () =>
-    //     import(
-    //       /* webpackChuckName: "option-config" */ "@/views/dns/recursion/A4Compose"
-    //     ),
-    //   meta: {
-    //     notInMenu: true,
-    //     from: "a4-compose-view",
-    //     title: "A4地址合成",
-    //   },
-    // },
   ],
 };

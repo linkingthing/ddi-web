@@ -83,8 +83,8 @@ export default {
     getSelct() {
       services
         .getAccessList()
-        .then(res => {
-          this.select = res.data.data;
+        .then(({ data }) => {
+          this.select = data;
         })
         .catch(err => {
           console.log(err);
@@ -113,7 +113,7 @@ export default {
         }
       });
     },
-    //关闭弹窗
+    // 关闭弹窗
     cancelModel() {
       this.blacklistModal = false;
       this.$refs.formValidate.resetFields();

@@ -149,12 +149,12 @@ export default {
       };
       services
         .getViewList(params)
-        .then(res => {
-          this.list = res.data.data;
-          this.links = res.data.links;
+        .then(({ data, links, pagination }) => {
+          this.list = data;
+          this.links = links;
 
           this.default = this.list.find(item => item.id === "default") || {};
-          this.total = res.data.pagination.total;
+          this.total = pagination.total;
         })
         .catch(function (err) {
           console.log(err);

@@ -40,7 +40,7 @@ export default {
           align: "left",
           render: (h, { row }) => {
             return h(
-              "a",
+              "span",
               {
                 props: {
                   href: "javascript:;"

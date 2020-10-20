@@ -1,5 +1,9 @@
 <template>
-  <common-modal :visible.sync="restrictModal" title="新建A4合成地址列表" @confirm="handleSubmit">
+  <common-modal
+    :visible.sync="restrictModal"
+    title="新建A4合成地址列表"
+    @confirm="handleSubmit"
+  >
     <i-form
       :model="params"
       label-position="right"
@@ -9,9 +13,20 @@
     >
       <div class="pop-content">
         <div class="pop-box">
-          <div class="pop-body" style="padding-bottom:0">
-            <form-item label="前缀" :label-width="110" prop="prefix" style="margin-bottom: 48px">
-              <i-input v-model="params.prefix" placeholder="请填写前缀"></i-input>
+          <div
+            class="pop-body"
+            style="padding-bottom:0"
+          >
+            <form-item
+              label="前缀"
+              :label-width="110"
+              prop="prefix"
+              style="margin-bottom: 48px"
+            >
+              <i-input
+                v-model="params.prefix"
+                placeholder="请填写前缀"
+              ></i-input>
             </form-item>
             <form-item
               label="客户IP地址"
@@ -20,13 +35,25 @@
               style="margin-bottom: 48px"
             >
               <i-select v-model="params.clientacl">
-                <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+                <i-option
+                  v-for="item in list"
+                  :key="item.id"
+                  :value="item.id"
+                >{{item.name}}</i-option>
               </i-select>
             </form-item>
 
-            <form-item label="目标IPv4地址" prop="aaddress" :label-width="110">
+            <form-item
+              label="目标IPv4地址"
+              prop="aaddress"
+              :label-width="110"
+            >
               <i-select v-model="params.aaddress">
-                <i-option v-for="item in list" :key="item.id" :value="item.id">{{item.name}}</i-option>
+                <i-option
+                  v-for="item in list"
+                  :key="item.id"
+                  :value="item.id"
+                >{{item.name}}</i-option>
               </i-select>
             </form-item>
           </div>
@@ -78,8 +105,8 @@ export default {
     getChoose() {
       services
         .getAccessList()
-        .then(res => {
-          this.list = res.data.data;
+        .then(({ data }) => {
+          this.list = data;
         })
         .catch(err => {
           console.log(err);

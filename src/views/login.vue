@@ -123,7 +123,7 @@ export default {
   created() {
   },
   methods: {
-    ...mapMutations(["SET_TOKEN", "SET_USERINFO"]),
+    ...mapMutations(["SET_TOKEN", "SET_USERINFO", "setRoutes"]),
 
     login() {
       this.$refs["formLogin"].validate(valid => {
@@ -133,6 +133,7 @@ export default {
             .then(res => {
               if (res.code === 200) {
                 this.SET_USERINFO(false);
+                this.setRoutes([]);
                 this.$router.push({
                   path: "/"
                 });

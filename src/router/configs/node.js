@@ -12,7 +12,8 @@ export default {
 	meta: {
 		range: 'monitor',
 		title: '监控分析',
-		isFlat: true
+    isFlat: true,
+    permission: "*",
 	},
 	name: 'monitor',
 	children: [
@@ -54,7 +55,7 @@ export default {
 			component: () => import('@/views/node/ControllerDashboard'),
 			icon: 'icon-controller-monitor',
 			meta: {
-				range: 'nodeManage',
+				range: 'monitor',
         title: '节点监控',
         permission: "nodeMonitor"
 			}

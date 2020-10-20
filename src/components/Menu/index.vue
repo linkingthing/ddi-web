@@ -8,10 +8,10 @@
         :open-names="openNames"
       >
         <template v-for="(item, idx) in routeList">
-          <template v-if="item.meta.isFlat && hasShowMenu(item) ">
+          <template v-if="item.meta.isFlat">
             <template v-for="child in item.children">
               <MenuItem
-                v-if="!child.meta.notInMenu && hasPermisssion(child)"
+                v-if="!child.meta.notInMenu"
                 :key="child.path"
                 :name="child.name"
                 @click.native="handleJump(child.path)"
@@ -28,7 +28,7 @@
 
           <template v-else>
             <MenuItem
-              v-if="item.meta.isSingle && hasShowMenu(item)"
+              v-if="item.meta.isSingle"
               :key="idx"
               :name="item.name"
               @click.native="handleJump(item.path)"
@@ -44,7 +44,6 @@
 
             <Submenu
               :key="idx"
-              v-else-if="hasShowMenu(item)"
               :name="item.name"
               class="level-menu"
             >
@@ -59,7 +58,7 @@
 
               <template v-for="child in item.children">
                 <MenuItem
-                  v-if="!child.meta.notInMenu && hasPermisssion(child)"
+                  v-if="!child.meta.notInMenu"
                   :key="child.path"
                   :name="child.name"
                   @click.native="handleJump(child.path)"
@@ -77,9 +76,7 @@
 </template>
 
 <script>
-
-import configs, { asyncRouter, superUserAllowList } from "@/router/configs";
-import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
+import { filter } from 'shelljs/commands';
 
 export default {
   name: "menuNav",
@@ -108,15 +105,19 @@ export default {
         "system-alarms",
         "auth-user"
       ],
-      routes: [],
       tab: "" // 路由tab
     };
   },
 
   computed: {
     routeList() {
-      const routeFlat = [...configs, ...asyncRouter];
+      const { routes } = this.$store.getters;
+      const routeFlat = routes[0].children;
       const result = routeFlat
+        .filter(item => {
+          const [, moduleName] = this.$route.path.split("/");
+          return item.meta.range === moduleName;
+        })
         .map(item => {
           if (item.meta.isSingle) {
             let res = item.children.filter(item => !item.notInMenu)[0];
@@ -126,24 +127,8 @@ export default {
           else {
             return item;
           }
-        })
-        .filter(item => {
-          return "dns,monitor,address,system,auth".includes(item.meta.range);
-        })
-        .filter(item => {
-          const { userInfo } = this.$store.getters;
-          if (userInfo) {
-            const { userType } = userInfo;
-            if (userType === USERTYPE_SUPER) {
-              return true;
-            }
-
-            if (userType === USERTYPE_NORMAL) {
-              return !superUserAllowList.includes(item.name);
-            }
-
-          }
         });
+
       return result;
 
     }
@@ -196,21 +181,8 @@ export default {
 
       return result;
 
-    },
-
-
-    hasShowMenu({ meta: { range } }) {
-      const [, moduleName] = this.$route.path.split("/");
-      return moduleName === range;
-    },
-
-    hasPermisssion({ name }) {
-      if (this.$store.getters.hasPermissionToCreate) {
-        return true;
-      } else {
-        return !superUserAllowList.includes(name);
-      }
     }
+   
 
   }
 };

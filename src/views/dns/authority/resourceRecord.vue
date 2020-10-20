@@ -106,8 +106,8 @@ export default {
     getResources() {
       services
         .getResourceRecord(this.viewId, this.zoneId)
-        .then(res => {
-          this.resList = res.data.data;
+        .then(({ data }) => {
+          this.resList = data;
         })
         .catch(err => {
           console.log(err);

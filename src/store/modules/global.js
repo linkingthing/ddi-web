@@ -10,7 +10,9 @@ const state = {
   userInfo: null,
 
   alarmCount: 0,
-  agentEventList: []
+  agentEventList: [],
+
+  routes: []
 };
 
 const getters = {
@@ -28,6 +30,10 @@ const getters = {
     const startPage = (current - 1) * size;
     const endPage = current * size;
     return state.agentEventList.slice(startPage, endPage);
+  },
+  routes: state => state.routes,
+  rangeList: state => {
+    return getRouteRange(state.routes);
   }
 };
 
@@ -47,6 +53,10 @@ const mutations = {
   },
   addAgentEventList(state, agentEvent) {
     state.agentEventList.unshift(agentEvent);
+  },
+
+  setRoutes(state, routes) {
+    state.routes = routes;
   }
 };
 
@@ -66,18 +76,32 @@ const actions = {
           params
         })
           .then(userInfo => {
+            console.log(userInfo);
             commit("SET_USERINFO", userInfo);
             resolve(userInfo);
           })
           .catch(err => {
-            // commit("SET_USERINFO", {userType: "superUser"});
-            // resolve({userType: "superUser"});
             reject(err);
           });
       }
     });
   }
 };
+
+export function getRouteRange(routes, result = []) {
+  if (Array.isArray(routes)) {
+    routes.forEach(item => {
+      const range = item.meta.range;
+      if (range) {
+        if (!result.includes(range)) {
+          result.push(range);
+        }
+      }
+      getRouteRange(item.children, result);
+    });
+  }
+  return result;
+}
 
 export default {
   state,
