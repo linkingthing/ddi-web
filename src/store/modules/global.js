@@ -19,9 +19,6 @@ const getters = {
   token: state => state.token,
   userType: state => state.userType,
   userInfo: state => state.userInfo,
-  hasPermissionToCreate: state =>
-    state.userInfo && state.userInfo.userType === USERTYPE_SUPER,
-
   alarmCount: state => state.alarmCount,
   agentEventCount: state => state.agentEventList.length,
   agentEventList: state => (

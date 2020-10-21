@@ -4,6 +4,7 @@ import { del, post, put, get, axios } from "./axios";
 import * as requestMethods from "./request";
 import router from "@/router";
 import "./ws";
+import { USERTYPE_SUPER } from "@/config";
 
 import moment from "moment";
 moment.locale("zh-cn");
@@ -211,3 +212,20 @@ Vue.prototype.$formatQuerys = (params = {}, url) => {
 
   return query;
 };
+
+export function hasPermisson() {
+  const { userInfo } = store.getters;
+  console.log(userInfo);
+  if (userInfo) {
+    const { userType, menuList } = userInfo;
+    if (userType === USERTYPE_SUPER) {
+      return true;
+    } else {
+      console.log(menuList)
+    }
+  }
+}
+
+
+Vue.prototype.$hasPermisson = hasPermisson;
+

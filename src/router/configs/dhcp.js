@@ -101,7 +101,6 @@ export default {
         title: "基础配置",
         hideTitle: true,
         permission: "dhcpBaseConfig"
-
       },
       component: () => import("@/views/dhcp-service/option-config/layout"),
       children: [
@@ -116,7 +115,8 @@ export default {
             notInMenu: true,
             from: "dhcp-config",
             title: "基础配置",
-            active: "dhcp-config"
+            active: "dhcp-config",
+            permission: "dhcpBaseConfig"
           }
         },
         {
@@ -129,7 +129,8 @@ export default {
           meta: {
             notInMenu: true,
             from: "dhcp-config",
-            title: "基础配置"
+            title: "option60",
+            permission: "clientclass"
           }
         }
       ]

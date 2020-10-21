@@ -2,7 +2,7 @@
   <div class="plan">
     <div
       class="top-right"
-      v-if="planList.length"
+      v-if="showPlanList"
     >
       <Button
         type="primary"
@@ -19,7 +19,7 @@
 
       <NoDataList
         style="margin-top: 100px"
-        v-if="!planList.length && $store.getters.hasPermissionToCreate"
+        v-if="!showPlanList"
         button-text="新建规划"
         @add="handleAddPlan"
       />
@@ -90,7 +90,11 @@ export default {
       stepComponent: "currentPlanProcessId",
       planProcessList: "planProcessList",
       netType: "netType"
-    })
+    }),
+    showPlanList() {
+      console.log(!!this.planList.length)
+      return !!this.planList.length;
+    }
   },
 
   watch: {
@@ -135,7 +139,7 @@ export default {
 
   mounted() {
     this.handleQuery();
-    eventBus.$on("getLayout", this.getLayout)
+    eventBus.$on("getLayout", this.getLayout);
   },
 
 

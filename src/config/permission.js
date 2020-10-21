@@ -75,11 +75,11 @@ export default [
     name: "递归服务",
     id: "recursionServe",
     module: "dns",
-    resouces: [null]
+    resouces: ["forwardzone"]
   },
   {
     name: "转发配置",
-    id: "forwardConfig",
+    id: "forwardConfigMenu",
     module: "dns",
     resouces: ["forwardzone"]
   },
@@ -93,13 +93,13 @@ export default [
     name: "转发规则",
     id: "forwardRule",
     module: "dns",
-    resouces: [null]
+    resouces: ["forwardzone"]
   },
   {
     name: "转发策略",
     id: "forwardPolicy",
     module: "dns",
-    resouces: [null]
+    resouces: ["forwardzone"]
   },
   {
     name: "递归安全",
@@ -221,6 +221,13 @@ export default [
     module: "address",
     resouces: ["dhcpconfig"]
   },
+  {
+    name: "option60",
+    id: "option60",
+    module: "address",
+    resouces: ["clientclass"]
+  },
+  
   {
     name: "日志信息",
     id: "logInfo",

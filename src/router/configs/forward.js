@@ -21,7 +21,7 @@ export default {
     {
       name: "forward-layout",
       path: "/dns/dns/forward/layout",
-      redirect: { name: "forward-view" },
+      redirect: { name: "forward-group" },
       component: () => import("@/views/dns/forward/layout"),
       meta: {
         title: "转发配置",
@@ -36,7 +36,7 @@ export default {
           meta: {
             title: "转发配置",
             active: "forward-layout",
-            permission: "forwardConfig"
+            permission: "forwardConfigMenu"
 
           }
         },
