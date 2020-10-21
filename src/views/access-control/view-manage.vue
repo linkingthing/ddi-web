@@ -8,7 +8,7 @@
     >
       <template slot="top-right">
         <i-button
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermission('view', 'POST')"
           type="primary"
           @click="handleOpenCreate"
         >新建</i-button>
@@ -77,7 +77,7 @@ export default {
           align: "right",
           width: 220,
           render: (h, { row }) => {
-            if (this.$store.getters.hasPermissionToCreate) {
+            if (this.$hasPermission("view", "POST")) {
               return h("div", [
                 h("btn-edit", {
                   on: {

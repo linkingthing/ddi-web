@@ -8,7 +8,7 @@
         type="primary"
         style="margin-right: 20px"
         @click="handleAddPlan"
-        v-if="$store.getters.hasPermissionToCreate"
+        v-if="$hasPermissionCreate('plan')"
       >新建规划</Button>
       <!-- <Button
         type="primary"

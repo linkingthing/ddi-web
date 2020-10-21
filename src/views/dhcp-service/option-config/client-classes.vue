@@ -9,7 +9,7 @@
     >
       <template slot="top-right">
         <Button
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermissionCreate('clientclass')"
           type="primary"
           @click="handleAdd"
           class="top-button button-add"
@@ -57,7 +57,7 @@ export default {
           title: "操作",
           align: "right",
           render: (h, { row }) => {
-            if (this.$store.getters.hasPermissionToCreate) {
+            if (this.$hasPermissionCreate("clientclass")) {
               return h("div", [h("btn-edit", {
                 on: {
                   click: () => {

@@ -38,7 +38,7 @@
         <div class="user">
           <Badge
             :count="alarmCount"
-            v-if="$store.getters.hasPermissionToCreate"
+            v-if="$hasPermission('alarm', 'GET')"
           >
             <i
               class="icon-notice"

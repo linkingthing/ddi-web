@@ -213,19 +213,21 @@ Vue.prototype.$formatQuerys = (params = {}, url) => {
   return query;
 };
 
-export function hasPermisson() {
+export function hasPermission(resource, operation) {
   const { userInfo } = store.getters;
-  console.log(userInfo);
   if (userInfo) {
     const { userType, menuList } = userInfo;
     if (userType === USERTYPE_SUPER) {
       return true;
     } else {
-      console.log(menuList)
+      const item = menuList.find(item => item.resource === resource);
+      if (item) {
+        return item.operations.includes(operation);
+      }
     }
   }
 }
 
-
-Vue.prototype.$hasPermisson = hasPermisson;
-
+Vue.prototype.$hasPermission = hasPermission;
+Vue.prototype.$hasPermissionCreate = resource =>
+  hasPermission(resource, "POST");
