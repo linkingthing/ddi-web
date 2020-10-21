@@ -1,4 +1,4 @@
-VERSION=v1.0.1
+VERSION=v1.2.0
 
 build:
 	npm run install && npm run build

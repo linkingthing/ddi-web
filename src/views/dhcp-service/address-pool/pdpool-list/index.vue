@@ -86,7 +86,10 @@ export default {
       ],
       showEdit: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      current: 0,
+      total: 0
+
     };
   },
   watch: {

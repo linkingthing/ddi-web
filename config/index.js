@@ -11,7 +11,7 @@ let assetsPublicPath = "./";
 // const url = "https://10.0.0.172:58081";
 // const url = "https://jlccwss.vicp.cc:58081"
 
-const url = "https://10.0.0.32:58081";
+const url = "https://10.0.0.112:58081";
 
 module.exports = {
   build: {
