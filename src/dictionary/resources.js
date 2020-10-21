@@ -11,7 +11,7 @@ export default {
   clientclass: "DHCP自定义属性",
   subnet: "DHCP子网",
   pool: "地址池",
-  pdpool: "前缀委托",
+  pdpool: "前缀委派",
   reservation: "固定地址",
   /** DNS */
   acl: "访问控制列表",
