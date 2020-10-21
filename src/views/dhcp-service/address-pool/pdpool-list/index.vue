@@ -96,7 +96,7 @@ export default {
     getDataList() {
       this.loading = true;
 
-      this.$axios.get(this.$getApiByRoute().url).then(({ data: { data, links } }) => {
+      this.$axios.get(this.$getApiByRoute().url).then(({ data, links }) => {
         this.tableData = data;
         this.links = links;
       }).catch().finally(() => {
