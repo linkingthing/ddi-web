@@ -84,13 +84,20 @@ export default {
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
-      let name;
+      let name = transfer(data.name);
+      const isSearch = this.keywords.length > 0 && data.name.includes(this.keywords);
 
-      if (this.keywords.length > 0 && data.name.includes(this.keywords)) {
-        name = data.name.split(this.keywords).join(`<span style="color: #f02828">${this.keywords}</span>`);
-      } else {
-        name = data.name;
+      function transfer(str) {
+        return str
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
       }
+
+
+      if (isSearch) {
+        name = name.split(this.keywords).join(`<span style="color: #f02828">${transfer(this.keywords)}</span>`);
+      }
+
       return h("span", {
         props: {
         },
@@ -110,7 +117,7 @@ export default {
           }),
           h("span", {
             domProps: {
-              innerText: name
+              innerHTML: name
             }
           })
         ])
