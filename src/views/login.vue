@@ -76,6 +76,7 @@
 <script>
 import services from "@/services";
 import { mapMutations } from "vuex";
+import { resetRouter } from "@/router";
 
 export default {
   name: "login",
@@ -134,6 +135,7 @@ export default {
               if (res.code === 200) {
                 this.SET_USERINFO(false);
                 this.setRoutes([]);
+                resetRouter();
                 this.$router.push({
                   path: "/"
                 });

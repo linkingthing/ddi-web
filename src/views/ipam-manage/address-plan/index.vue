@@ -247,6 +247,10 @@ export default {
     },
 
     handleAddPlan() {
+      if (!this.$hasPermissionCreate("plan")) {
+        this.$Message.info("当前用户无创建权限");
+        return;
+      }
       const id = uuidv4();
       this.addPlan({
         id,

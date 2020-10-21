@@ -76,7 +76,6 @@
 </template>
 
 <script>
-import { filter } from 'shelljs/commands';
 
 export default {
   name: "menuNav",
@@ -128,7 +127,8 @@ export default {
             return item;
           }
         });
-
+      console.log(routes)
+      console.log(result, "menu")
       return result;
 
     }
@@ -182,7 +182,7 @@ export default {
       return result;
 
     }
-   
+
 
   }
 };

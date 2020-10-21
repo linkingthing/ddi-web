@@ -23,7 +23,8 @@ export default {
       name: "global-config",
       meta: {
         title: "全局配置",
-        range: "dns"
+        range: "dns",
+        permission: "dnsGlobalConfig"
       },
       path: "/dns/dns/config",
       component: () =>

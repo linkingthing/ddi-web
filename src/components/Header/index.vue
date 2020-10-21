@@ -81,6 +81,7 @@ import { mapGetters, mapMutations } from "vuex";
 import store from "@/store";
 import logoSrc from "@/assets/images/logo.png";
 import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
+import { resetRouter } from "@/router";
 
 import ChangePassword from "@/components/ChangePassword";
 
@@ -210,7 +211,7 @@ export default {
   },
 
   created() {
-
+    console.log(this.$router, 55)
 
   },
 
@@ -234,6 +235,7 @@ export default {
         this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=logout", params }).finally(() => {
           self.setToken("");
           self.setRoutes([]);
+          resetRouter();
           self.$router.push({
             path: "/login"
           });

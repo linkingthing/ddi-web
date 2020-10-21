@@ -1,7 +1,6 @@
 import { post } from "@/util/axios";
 import store from "@/util/store";
-import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
-
+import { cloneDeep } from "lodash";
 const Cache = store("localStorage");
 
 const state = {
@@ -12,7 +11,8 @@ const state = {
   alarmCount: 0,
   agentEventList: [],
 
-  routes: []
+  routes: [],
+  routesCounter: 1
 };
 
 const getters = {
@@ -53,34 +53,31 @@ const mutations = {
   },
 
   setRoutes(state, routes) {
+    console.log("setRouter", routes)
     state.routes = routes;
   }
 };
 
 const actions = {
   getUserInfo({ commit }) {
-    const { token, userInfo } = state;
+    const { token } = state;
     const params = {
       token
     };
     return new Promise((resolve, reject) => {
-      if (userInfo) {
-        resolve(userInfo);
-      } else {
-        post({
-          url:
-            "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser",
-          params
+      post({
+        url:
+          "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser",
+        params
+      })
+        .then(userInfo => {
+          console.log(userInfo);
+          commit("SET_USERINFO", userInfo);
+          resolve(userInfo);
         })
-          .then(userInfo => {
-            console.log(userInfo);
-            commit("SET_USERINFO", userInfo);
-            resolve(userInfo);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      }
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 };
