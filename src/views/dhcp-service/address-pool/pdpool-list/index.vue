@@ -12,6 +12,7 @@
         <Button
           type="primary"
           @click="handleAdd"
+          v-if="$hasPermissionCreate('pdpool')"
           class="top-button button-add"
         >
           新建

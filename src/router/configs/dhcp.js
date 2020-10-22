@@ -49,7 +49,9 @@ export default {
           meta: {
             notInMenu: true,
             from: "subnet-pool-subnet",
-            title: ":ipnet"
+            title: ":ipnet",
+            permission: "addressPoolManage"
+
           }
         },
         {
@@ -62,7 +64,8 @@ export default {
           meta: {
             notInMenu: true,
             from: "subnet-pool-subnet",
-            title: ":ipnet"
+            title: ":ipnet",
+            permission: "addressPoolpdpool"
           }
         },
         {
@@ -75,7 +78,9 @@ export default {
           meta: {
             notInMenu: true,
             from: "subnet-pool-subnet",
-            title: ":ipnet"
+            title: ":ipnet",
+            permission: "addressPoolReservation"
+
           }
         },
         {
@@ -88,7 +93,9 @@ export default {
           meta: {
             notInMenu: true,
             from: "subnet-pool-subnet",
-            title: ":ipnet"
+            title: ":ipnet",
+            permission: "addressPoolStatic"
+
           }
         }
       ]
@@ -130,7 +137,7 @@ export default {
             notInMenu: true,
             from: "dhcp-config",
             title: "option60",
-            permission: "clientclass"
+            permission: "option60"
           }
         }
       ]

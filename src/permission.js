@@ -12,7 +12,6 @@ router.beforeEach((to, from, next) => {
     const { token, routes } = store.getters;
     if (token) {
       const hasRouter = routes.length;
-      console.log(routes, 88, hasRouter);
       if (hasRouter) {
         next();
       } else {
@@ -21,7 +20,6 @@ router.beforeEach((to, from, next) => {
           if (userType === USERTYPE_SUPER) {
             router.addRoutes(allConfig);
             store.commit("setRoutes", allConfig);
-            console.log("超管 全加");
             next({ ...to, replace: true });
           } else {
             /**

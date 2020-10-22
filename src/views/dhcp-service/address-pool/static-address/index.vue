@@ -13,6 +13,7 @@
         <Button
           type="primary"
           @click="handleAdd"
+          v-if="$hasPermissionCreate('staticaddress')"
           class="top-button button-add"
         >
           新建
@@ -99,7 +100,7 @@ export default {
       };
       this.loading = true;
 
-      this.$axios.get(this.$getApiByRoute().url, { params }).then(({ data: { data, links, pagination } }) => {
+      this.$axios.get(this.$getApiByRoute().url, { params }).then(({ data, links, pagination }) => {
         this.tableData = data;
         this.links = links;
         this.total = pagination.total;
