@@ -25,26 +25,7 @@ export default {
         title: "IP地址规划"
       }
     },
-    {
-      name: 'ipam-address-layouts',
-      path: '/address/ipam/plans/:plansId/layouts',
-      component: () => import(/* webpackChuckName: "ipam-address-layouts" */ '@/views/ipam-manage/address-layout'),
-      meta: {
-        notInMenu: true,
-        from: "ipam-address-plan",
-        title: ":prefix"
-      }
-    },
-    {
-      name: 'ipam-address-plan-subnet',
-      path: '/address/ipam/plans/:plansId/layouts/:layoutsId/plannedsubnets',
-      component: () => import(/* webpackChuckName: "ipam-address-plan-subnet" */ '@/views/ipam-manage/address-plan-subnet'),
-      meta: {
-        notInMenu: true,
-        from: "ipam-address-layouts",
-        title: ":layoutName"
-      }
-    },
+
     {
       name: 'ipam-address-manage',
       path: '/address/ipam/scannedsubnets',

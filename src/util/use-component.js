@@ -21,6 +21,9 @@ Vue.component("btn-reset", BaseBtnReset);
 import BaseLineEdit from "@/components/BaseLineEdit";
 Vue.component("line-edit", BaseLineEdit);
 
+import BaseBtnLine from "@/components/BaseBtnLine";
+Vue.component("btn-line", BaseBtnLine);
+
 import BaseBtnMove from "@/components/BaseBtnMove";
 Vue.component("btn-move", BaseBtnMove);
 

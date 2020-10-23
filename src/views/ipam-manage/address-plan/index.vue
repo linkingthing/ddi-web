@@ -1,24 +1,10 @@
 <template>
   <div class="plan">
-    <div
-      class="top-right"
-      v-if="planList.length"
-    >
-      <Button
-        type="primary"
-        style="margin-right: 20px"
-        @click="handleAddPlan"
-        v-if="$store.getters.hasPermissionToCreate"
-      >新建规划</Button>
-      <!-- <Button
-        type="primary"
-        @click="handleImport"
-      >导入规划</Button> -->
-    </div>
+
     <div class="plan-content">
 
       <NoDataList
-        style="margin-top: 100px"
+        :top="200"
         v-if="!planList.length && $store.getters.hasPermissionToCreate"
         button-text="新建规划"
         @add="handleAddPlan"
@@ -27,18 +13,30 @@
           text:'导入规划',
           event: handleImport
         }]" -->
-      <template v-else>
-        <PlanTab
-          @onDeletePlan="handleDelete"
-          :plan-list="planList"
-        />
-        <PlanProcess @onchange="handleProcessChange" />
+      <table-page
+        v-else
+        :data="planList"
+        :columns="columns"
+        :total="0"
+      >
+        <template slot="top-right">
 
-        <component :is="stepComponent" />
+          <Button
+            type="primary"
+            @click="handleAddPlan"
+            v-if="$store.getters.hasPermissionToCreate"
+          >新建规划</Button>
 
-      </template>
+        </template>
+      </table-page>
 
     </div>
+
+    <PlanModal
+      :visible.sync="visible"
+      :links="paramsLinks"
+      @success="getPlanList"
+    />
 
   </div>
 </template>
@@ -60,6 +58,9 @@ import { list2Tree } from "./modules/helper";
 
 import eventBus from "@/util/bus";
 
+import SafeLock from "./modules/SafeLock";
+import PlanModal from "./modules/PlanModal";
+
 export default {
   components: {
     NoDataList,
@@ -69,22 +70,80 @@ export default {
     PlanStepCreatePrefix,
     PlanStepSemantic,
     PlanStepTree,
-    PlanStepAddressAssign
+    PlanStepAddressAssign,
+
+    PlanModal
+
   },
 
   data() {
     return {
+      visible: false,
+      planList: [],
+      columns: [{
+        title: "IPv6前缀",
+        key: "prefix",
+        align: "left"
+      },
+      {
+        title: "规划名称",
+        key: "description",
+        align: "left"
+      },
+      {
+        title: "安全锁",
+        key: "name",
+        align: "left",
+        render: (h, { row }) => {
+          return h(SafeLock, {
+            props: {
+              isLock: !row.isLock,
+              message: row.lockedby
+            },
+            nativeOn: {
+              click: () => this.handleToggleLock(row, row.isLock)
+            }
+          });
+        }
+      },
+      {
+        title: "操作",
+        key: "name",
+        align: "right",
+        render: (h, { row }) => {
+          return h("div", [
+            h("btn-line", {
+              props: {
+                title: "子网列表"
+              }
+            }),
+            h("btn-line", {
+              props: {
+                title: "地图"
+              }
+            }),
+            h("btn-line", {
+              props: {
+                title: "删除"
+              }
+            })
+          ]);
+        }
+      }],
       url: this.$getApiByRoute().url,
       loading: true,
       netnodesurl: "",
-      oneLayoutLinks: null
+      oneLayoutLinks: null,
+
+      links: {},
+      paramsLinks: {}
+
 
     };
   },
 
   computed: {
     ...mapGetters({
-      planList: "planList",
       currentPlan: "currentPlan",
       currentLayout: "currentLayout",
       stepComponent: "currentPlanProcessId",
@@ -134,12 +193,13 @@ export default {
   },
 
   mounted() {
-    this.handleQuery();
-    eventBus.$on("getLayout", this.getLayout)
+    this.getPlanList();
   },
 
 
   methods: {
+
+
     ...mapMutations([
       "setPlanProcessListInit",
       "setPlanProcessListAccessible",
@@ -151,6 +211,32 @@ export default {
       "setCurrentNodeId",
       "setNetnodes"
     ]),
+
+    getPlanList() {
+      this.$get({ url: this.url }).then(({ data, links }) => {
+        const tableData = data.map(item => {
+          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
+          item.title = item.description;
+          item.isLock = !!item.lockedby;
+          return item;
+        });
+        this.planList = tableData;
+        this.links = links;
+
+      }).catch((err) => {
+        this.$handleError(err);
+      });
+    },
+    handleToggleLock({ links }, lock) {
+      const action = lock ? "releaselock" : "requirelock";
+      const url = `${links.self}?action=${action}`;
+      this.$post({ url }).then(() => {
+        this.$Message.success("操作成功");
+        this.getPlanList();
+      }).catch(err => {
+        this.$Message.error(err.data.message);
+      });
+    },
 
     handleQuery() {
 
@@ -243,15 +329,8 @@ export default {
     },
 
     handleAddPlan() {
-      const id = uuidv4();
-      this.addPlan({
-        id,
-        prefix: "",
-        description: "New Plan",
-        maxLen: 64,
-        planType: "temp"
-      });
-      this.setCurrentPlanId(id);
+      this.paramsLinks = this.links;
+      this.visible = true;
     },
     handleProcessChange(process, isHandle) {
       if (isHandle) {
@@ -267,15 +346,7 @@ export default {
 
 <style lang="less">
 .plan {
-  padding-top: 60px;
-  .top-right {
-    position: absolute;
-    right: 10px;
-    top: 16px;
-  }
 }
 .plan-content {
-  padding: 16px 24px;
-  border-top: 1px solid #efefef;
 }
 </style>
