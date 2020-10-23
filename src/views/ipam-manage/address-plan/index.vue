@@ -59,7 +59,12 @@ import { list2Tree } from "./modules/helper";
 import eventBus from "@/util/bus";
 
 import SafeLock from "./modules/SafeLock";
+import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
+
 import PlanModal from "./modules/PlanModal";
+
+
+console.log(SafeLock)
 
 export default {
   components: {
@@ -97,7 +102,7 @@ export default {
         render: (h, { row }) => {
           return h(SafeLock, {
             props: {
-              isLock: !row.isLock,
+              type: row.lockType,
               message: row.lockedby
             },
             nativeOn: {
@@ -111,7 +116,9 @@ export default {
         key: "name",
         align: "right",
         render: (h, { row }) => {
-          return h("div", [
+          return h("div", {
+            class: "table-btn-box"
+          }, [
             h("btn-line", {
               props: {
                 title: "子网列表"
@@ -123,6 +130,9 @@ export default {
               }
             }),
             h("btn-line", {
+              nativeOn: {
+                click: () => this.handleDelete(row)
+              },
               props: {
                 title: "删除"
               }
@@ -214,10 +224,22 @@ export default {
 
     getPlanList() {
       this.$get({ url: this.url }).then(({ data, links }) => {
+        const { user } = this.$store.getters.userInfo;
         const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
           item.title = item.description;
           item.isLock = !!item.lockedby;
+
+          if (typeof item.lockedby === "string") {
+            if (item.lockedby === user) {
+              item.lockType = LOCK_STATUS_ENUM.OPEN;
+            } else {
+              item.lockType = LOCK_STATUS_ENUM.DISABLED;
+            }
+          } else {
+            item.lockType = LOCK_STATUS_ENUM.CLOSE;
+          }
+
           return item;
         });
         this.planList = tableData;
@@ -318,12 +340,17 @@ export default {
       });
     }, 300),
 
-    handleDelete(id) {
-      this.$delete({ url: this.url + "/" + id }).then(() => {
-        this.$$success("删除成功！");
-        this.handleQuery();
-      }).catch(() => {
-        this.clearTempPlan();
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定删除？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(() => {
+            this.getPlanList();
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
       });
 
     },
