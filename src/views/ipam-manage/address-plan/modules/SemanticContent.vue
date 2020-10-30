@@ -1,0 +1,592 @@
+<template>
+  <div class="SemanticContent">
+    <div class="SemanticContent-header">
+      <p>政务网规划</p>
+      <img
+        src="./title-bar.png"
+        alt=""
+      >
+    </div>
+    <div class="SemanticContent-statistics">
+      <div class="SemanticContent-statistics-item">
+        <strong>{{ currentNodePrefix.join(",")}}</strong>
+        <p>前缀(共{{currentNodePrefix.length}}个)</p>
+      </div>
+      <div class="SemanticContent-statistics-item">
+        <strong>{{ surplus}} </strong>
+        <p>剩余地址块</p>
+      </div>
+    </div>
+
+    <SegmentAxis
+      style="width: 700px;margin-bottom: 20px"
+      :enable-prefix-len="+prefixLen"
+      :prefix-len="Number(currentNodePrefixLen)"
+      :bit-width="Number(currentNodeBitWidth)"
+    />
+
+    <div class="SemanticContent-action">
+      <div class="action-input-item">
+        <label class="label">占位</label>
+        <div class="action-box">
+          <input
+            class="action-box-input"
+            type="text"
+            placeholder="请输入占位数"
+            v-model="bitWidth"
+          >
+
+          <Tooltip
+            placement="bottom"
+            theme="light"
+            max-width="700"
+            style="white-space:none"
+            class="detail-tooltip"
+          >
+            <Button
+              class="action-box-btn"
+              size="small"
+              type="primary"
+            >详情</Button>
+            <div
+              slot="content"
+              style="padding: 10px 12px;width: 660px"
+            >
+              <div style="font-size: 14px;color:#333;margin-bottom: 10px">占位详情</div>
+              <Table
+                :columns="columnsDetail"
+                :data="dataDetail"
+              />
+            </div>
+          </Tooltip>
+
+        </div>
+
+      </div>
+
+      <div class="action-input-item">
+        <label class="label">语义节点数</label>
+        <div class="action-box">
+          <span class="action-box-input">{{nodeCount}}</span>
+          <Button
+            class="action-box-btn"
+            size="small"
+            type="primary"
+            @click="handleAddOne"
+          >+1</Button>
+          <Button
+            class="action-box-btn"
+            size="small"
+            type="primary"
+            @click="customNodeCountVisible = true"
+          >自定义添加数量</Button>
+        </div>
+      </div>
+
+      <div class="action-input-item-right">
+        <Input placeholder="请输入名称关键字" />
+        <Button type="primary">搜索</Button>
+        <Button class="reset">重置</Button>
+
+      </div>
+
+    </div>
+
+    <div class="modal">
+
+      <common-modal
+        :visible.sync="customNodeCountVisible"
+        title="自定义添加节点数量"
+        :width="413"
+        @confirm="handleConfirmCustomNodeCount"
+      >
+        <div class="custome-node-count">
+          <label class="label">455+</label>
+          <Input
+            class="input"
+            placeholder="请填写添加数量"
+          />
+        </div>
+      </common-modal>
+
+      <common-modal
+        :visible.sync="nodeEditVisible"
+        title="节点编辑"
+        :width="690"
+        @confirm="handleSaveChildNode"
+      >
+        <Form :label-width="80">
+          <FormItem label="节点名称">
+            <Input
+              placeholder="请输入节点名称"
+              v-model="currentNodeofChooseChild.name"
+            />
+          </FormItem>
+          <FormItem label="IPv4子网">
+            <Input
+              placeholder="请输入IPv4子网"
+              v-model="currentNodeofChooseChild.ipv4"
+            />
+          </FormItem>
+
+          <h3 style="margin-bottom: 12px;">地址块序号设置</h3>
+          <div>
+            <table class="o-table">
+              <colgroup>
+                <col style="width: 200px">
+                <col>
+              </colgroup>
+              <tr
+                v-for="item in currentNodeofChooseChild.valueMap"
+                :key="item.id"
+              >
+                <td>
+                  {{item.prefix}}
+                </td>
+                <td>
+                  <Input
+                    v-model="item.values"
+                    placeholder="间隔序号用“,”隔开，连续序号用“-”连接，例：1,4-9"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </Form>
+      </common-modal>
+
+    </div>
+
+    <div class="SemanticContent-table">
+      <Table
+        :columns="columns"
+        :data="filterCurrentNodeChildren"
+      />
+
+    </div>
+    <div class="SemanticContent-opera">
+      <Button
+        type="primary"
+        size="large"
+        style="width: 300px;"
+        @click="handleSave"
+      >保存</Button>
+    </div>
+  </div>
+</template>
+
+<script>
+// 经历过一个需求 迭代四版的人，使用一个文件写完所有功能必须被理解，不需要解释
+import SegmentAxis from "@/components/SegmentAxis";
+import { mapGetters, mapMutations } from "vuex";
+import { debounce, cloneDeep } from "lodash";
+import { v4 as uuidv4 } from "uuid";
+
+import { parserValueStr2Arr, executeNextIpv6Segment } from "./helper";
+
+
+export default {
+  components: {
+    SegmentAxis
+  },
+  props: {},
+  data() {
+    return {
+
+      currentNodePrefix: [],
+
+      prefixLen: 64,
+      currentNodePrefixLen: 0,
+      currentNodeBitWidth: 0,
+
+      bitWidth: "",
+      detailVisible: false,
+      columnsDetail: [
+        {
+          title: "前缀",
+          key: "prefix"
+        },
+        {
+          title: "地址块数量",
+          key: "count"
+        },
+        {
+          title: "可规划地址",
+          key: "name"
+        }
+      ],
+      nodeCount: 0,
+      customNodeCountVisible: false,
+      nodeEditVisible: false,
+      columns: [
+        {
+          title: "节点名称",
+          key: "name",
+          width: 250
+        },
+
+        {
+          title: "使用地址块",
+          key: "name",
+          width: 300
+
+        },
+        {
+          title: "IPv6地址范围",
+          key: "name",
+          width: 200
+
+        },
+        {
+          title: "IPv4子网",
+          key: "ipv4",
+          maxWidth: 300
+
+        },
+        {
+          title: "操作",
+          key: "action",
+          width: 200,
+          render: (h, { row }) => {
+            return h("div", [
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEditNode(row)
+                }
+              }),
+              h("btn-del")
+            ]);
+          }
+
+        }
+      ],
+
+      currentNodeofChooseChild: {},
+    };
+  },
+  computed: {
+    ...mapGetters([
+      "planName",
+      "perfix",
+      "nodes",
+      "tree",
+      "currentNode",
+      "currentNodeChildren",
+
+    ]),
+
+    surplus() {
+      let result = "_ _";
+      if (this.currentNode && this.currentNode.prefix && this.currentNode.prefix.length) {
+        const [, len] = this.currentNode.prefix[0].split("/")
+        result = 64 - len;
+      }
+      return result;
+    },
+    dataDetail() {
+      const prefix = this.currentNodePrefix;
+      const nextBitWidth = this.currentNode ? this.currentNode.nextBitWidth : 0;
+      const count = 2 ** Number(nextBitWidth);
+      return prefix.map(item => {
+        return {
+          prefix: item,
+          count,
+          name: "3333sss"
+        };
+      });
+    },
+    filterCurrentNodeChildren() {
+      const currentNodeChildren = cloneDeep(this.currentNodeChildren);
+      return currentNodeChildren;
+    }
+  },
+  watch: {
+    currentNode: {
+      deep: true,
+      handler(val) {
+        console.log(val);
+
+        if (val.prefix && Array.isArray(val.prefix) && val.prefix.length) {
+          this.currentNodePrefix = val.prefix;
+          const [, len] = val.prefix[0].split("/");
+          this.currentNodePrefixLen = len;
+        } else {
+          this.currentNodePrefixLen = 0;
+        }
+
+        if (val.nextBitWidth) {
+          this.currentNodeBitWidth = val.nextBitWidth;
+        } else {
+          this.currentNodeBitWidth = 0;
+        }
+
+        if (this.bitWidth !== val.nextBitWidth) {
+          this.bitWidth = val.nextBitWidth;
+        }
+
+
+      }
+    },
+    bitWidth(val) {
+      if (val === "") {
+        this.changeCurrentNode(0);
+      }
+      const notNumber = !(/\D/.test(val));
+      if (notNumber) {
+        this.changeCurrentNode(val);
+      } else {
+        this.$Message.info("请输入数字");
+      }
+    }
+  },
+  created() { },
+  mounted() { },
+  methods: {
+    ...mapMutations([
+      "saveCurrentNode",
+      "addNodes"
+    ]),
+    changeCurrentNode: debounce(function (val) {
+      console.log(this)
+
+      const currentNode = cloneDeep(this.currentNode);
+      currentNode.nextBitWidth = val;
+      console.log(currentNode, val)
+
+      this.saveCurrentNode(currentNode);
+    }, 600),
+    handleToggleDetail() {
+      this.detailVisible = !this.detailVisible;
+    },
+    handleAddOne() {
+      this.nodeCount += 1;
+      const pid = this.currentNode.id;
+      const nodes = [{
+        expand: true,
+        nextBitWidth: 0, // 下一级位宽
+        bitWidth: 0,
+        id: uuidv4(),
+        ipv4: "",
+        modified: 1,
+        name: "new node name",
+        pid: pid,
+        value: 0,
+        prefix: "",
+        nodes: []
+      }];
+      this.addNodes(nodes);
+
+    },
+    handleConfirmCustomNodeCount() {
+
+    },
+
+    handleOpenEditNode(row) {
+      console.log(row, "child")
+      this.nodeEditVisible = true;
+      this.currentNodeofChooseChild = row;
+
+      // TODO:比较不确定对没对,初始化的时候估计还得考虑
+      this.currentNodeofChooseChild.valueMap = this.currentNode.prefix.map(prefix => {
+        return {
+          id: uuidv4(),
+          prefix,
+          values: ""
+        };
+      });
+    },
+    handleSaveChildNode() {
+      // this.nodeEditVisible = false;
+
+      const node = this.currentNodeofChooseChild;
+
+
+      console.log(this.currentNodeofChooseChild, "currentNodeofChooseChild")
+      console.log(this.currentNode)
+
+      const nodeBitWidth = this.currentNode.nextBitWidth;
+
+      node.prefix = node.valueMap.map(({ prefix, values }) => {
+        // values => valueArray
+        const valueArray = parserValueStr2Arr(values);
+        return valueArray.map(value => {
+          return executeNextIpv6Segment(prefix, value, nodeBitWidth);
+        });
+      }).flat();
+
+
+      console.log(node.prefix)
+
+      this.saveCurrentNode(this.currentNodeofChooseChild);
+
+    },
+    handleSave() {
+      console.log(123)
+      console.log(this.tree)
+      const { url } = this.$getApiByRoute();
+      console.log(url)
+      console.log(this.$route)
+
+      const isDetail = this.$route.name === "ipam-address-plan-layout-one";
+
+
+      const methods = isDetail ? "$put" : "$post";
+
+      console.log(this.nodes)
+      const params = {
+        nodes: this.nodes,
+        name: "layout"
+      };
+      this[methods]({ url, params }).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      });
+    }
+  }
+};
+</script>
+
+
+
+<style lang="less" scoped>
+.SemanticContent {
+  position: relative;
+  flex: 1;
+  padding: 0 24px;
+
+  .SemanticContent-header {
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+    img {
+      display: block;
+    }
+  }
+
+  .SemanticContent-statistics {
+    display: inline-flex;
+    .SemanticContent-statistics-item {
+      margin-right: 95px;
+      strong {
+        font-size: 18px;
+        color: #333;
+        font-weight: bold;
+        max-width: 260px;
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+      }
+      p {
+        font-size: 14px;
+        color: #999;
+      }
+    }
+  }
+
+  .SemanticContent-action {
+    display: flex;
+    min-width: 1100px;
+    margin-bottom: 20px;
+
+    .action-input-item {
+      display: inline-flex;
+      border: 1px solid #e6e6e6;
+      border-radius: 4px;
+      margin-right: 40px;
+      .label {
+        font-size: 14px;
+        color: #333;
+        padding: 4px 10px;
+        line-height: 25px;
+      }
+
+      .action-box {
+        display: flex;
+        flex: 1;
+        padding: 4px;
+        border-left: 1px solid #e6e6e6;
+        .action-box-input {
+          width: 150px;
+          font-size: 14px;
+          color: #333;
+          line-height: 25px;
+        }
+        .action-box-btn {
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-left: 4px;
+        }
+      }
+    }
+    .action-input-item-right {
+      display: flex;
+      margin-left: auto;
+      > .reset {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .SemanticContent-opera {
+    position: absolute;
+    bottom: 0;
+  }
+}
+</style>
+
+<style lang="less">
+.detail-tooltip {
+  .ivu-tooltip-inner-with-width {
+    white-space: inherit;
+  }
+}
+
+.custome-node-count {
+  display: flex;
+  border-radius: 4px;
+  .label {
+    display: block;
+    padding: 4px 12px;
+    background: #ccc;
+    color: #333;
+    font-size: 14px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+  .ivu-input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.SemanticContent {
+  display: flex;
+  flex-direction: column;
+  .SemanticContent-table {
+    flex: 1;
+    margin-bottom: 40px;
+    .ivu-table-body {
+      overflow-x: hidden;
+      overflow-y: auto;
+      flex: 1;
+      height: calc(~"100vh - 500px");
+      margin-right: -4px;
+    }
+  }
+}
+
+.o-table {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-spacing: 0;
+  border-collapse: collapse;
+  td {
+    border: 1px solid #ddd;
+    padding: 4px 16px;
+    line-height: 20px;
+    min-height: 40px;
+  }
+}
+</style>

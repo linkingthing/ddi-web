@@ -1,30 +1,23 @@
 <template>
   <div class="SemanticTree">
     <SemanticTreeHeader
-      :prefix="prefix"
+      prefix="语义树"
       @search="handleSearch"
     />
 
     <Tree
+      class="tree"
       :data="treeData"
       children-key="nodes"
       @on-select-change="handleSelectNode"
       :render="renderContent"
     />
-
-    <Button
-      type="primary"
-      long
-      @click="handleFinish"
-    > 语义规划完成</Button>
-
-    <ChoosePlanWayModal :visible.sync="visible" />
   </div>
 </template>
 
 <script>
 import { mapMutations, mapGetters, mapState } from "vuex";
-import _, { cloneDeep } from "lodash";
+import { cloneDeep } from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
@@ -50,32 +43,32 @@ export default {
   computed: {
     ...mapGetters([
       "currentNodeId",
-      "currentLayout"
+      "tree"
     ])
 
   },
   watch: {
-    currentLayout: {
+    tree: {
       deep: true,
       immediate: true,
       handler(val) {
-        this.treeData = _.cloneDeep(val.nodes);
-        if (!this.currentNodeId) {
-          this.setCurrentNodeId(val.nodes[0].id);
+        if (Array.isArray(val) && val.length) {
+          this.treeData = cloneDeep(val);
+          if (!this.currentNodeId) {
+            this.setCurrentNodeId(val[0].id);
+          }
         }
       }
     }
+
   },
   created() { },
   mounted() {
-
-
   },
   methods: {
     ...mapMutations([
-      "setCurrentNodeId",
-      "nextPlanStep",
-      "setLayout"
+      "initTree",
+      "setCurrentNodeId"
     ]),
     handleSearch(val) {
       this.keywords = val;
@@ -162,9 +155,11 @@ export default {
 
 <style lang="less" scoped>
 .SemanticTree {
-  width: 430px;
-  background: #f6f6f6;
+  width: 330px;
+  background: #f4f4f4;
   border-radius: 4px;
-  padding: 20px;
+  .tree {
+    padding: 20px;
+  }
 }
 </style>

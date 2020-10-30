@@ -27,6 +27,41 @@ export default {
     },
 
     {
+      name: 'ipam-address-plan-semantics',
+      path: '/address/ipam/plans/:planId/layouts',
+      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
+      meta: {
+        title: "语义规划",
+        notInMenu: true,
+        from: "ipam-address-plan",
+      }
+    },
+
+    {
+      name: 'ipam-address-plan-layout-one',
+      path: '/address/ipam/plans/:planId/layouts/:layoutId',
+      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
+      meta: {
+        title: "语义规划",
+        notInMenu: true,
+        from: "ipam-address-plan",
+      }
+    },
+
+
+    {
+      name: 'ipam-address-list',
+      path: '/address/ipam/address/list',
+      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/address-list'),
+      meta: {
+        title: "IP地址列表",
+        notInMenu: true,
+        from: "ipam-address-plan",
+      }
+    },
+
+
+    {
       name: 'ipam-address-manage',
       path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),

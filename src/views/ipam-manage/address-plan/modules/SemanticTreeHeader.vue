@@ -1,13 +1,13 @@
 <template>
   <div class="SemanticTreeHeader">
     <h3 class="prefix">{{prefix}}</h3>
-    <Input
+    <!-- <Input
       class="search"
       search
       enter-button
       placeholder="搜索分支"
       @on-search="handleSearch"
-    />
+    /> -->
 
   </div>
 </template>
@@ -41,8 +41,10 @@ export default {
 .SemanticTreeHeader {
   display: flex;
   justify-content: space-between;
+  background: #EBEBEB;
+  padding: 2px 16px;
   .prefix {
-    font-size: 16px;
+    font-size: 14px;
     color: #333;
     line-height: 32px;
   }

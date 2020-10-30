@@ -1,38 +1,47 @@
 <template>
   <div class="PlanStepSemantic">
-    <SemanticTree :prefix="currentPrefix" />
-    <SemanticList title="业务" />
+    <SemanticTree prefix="语义树" />
+    <SemanticContent />
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import SemanticTree from "./SemanticTree";
-import SemanticList from "./SemanticList";
+import SemanticContent from "./SemanticContent";
 export default {
   components: {
     SemanticTree,
-    SemanticList
+    SemanticContent
   },
   props: {},
   data() {
     return {
     };
   },
-  computed: {
-    ...mapGetters([
-      "currentPrefix"
-    ])
-  },
+
   watch: {},
   created() { },
-  mounted() { },
-  methods: {}
+  mounted() {
+    const { name, prefix } = this.$route.query;
+    this.setPlanName(name);
+    this.setPrefix(prefix);
+    this.initTree();
+  },
+  methods: {
+    ...mapMutations([
+      "setPlanName",
+      "setPrefix",
+      "initTree"
+    ])
+  }
 };
 </script>
 
 <style lang="less" scoped>
 .PlanStepSemantic {
   display: flex;
+  padding: 60px 20px 20px;
+  flex: 1;
 }
 </style>

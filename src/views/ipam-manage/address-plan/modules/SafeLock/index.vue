@@ -14,7 +14,7 @@
 
 <script>
 
-import {LOCK_STATUS_ENUM} from "./config";
+import { LOCK_STATUS_ENUM } from "./config";
 
 export default {
   components: {},

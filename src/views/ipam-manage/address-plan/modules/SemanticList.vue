@@ -40,9 +40,9 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 
-import { mapGetters, mapMutations, mapState } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import SemanticListItem from "./SemanticListItem";
-import { defaultBitWidth, findNodeById, executeBitWidthSum, getTreeLeaf } from "./helper";
+import { defaultBitWidth, executeBitWidthSum, getTreeLeaf } from "./helper";
 
 export default {
   components: {
@@ -78,7 +78,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "planList",
       "currentNode",
       "currentNodeChildrenList",
       "currentLayout"

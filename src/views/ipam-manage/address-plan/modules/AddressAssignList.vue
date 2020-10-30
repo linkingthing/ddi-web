@@ -15,12 +15,12 @@
           @change="handleIpTypeChange"
         />
 
-        <Input
+        <!-- <Input
           placeholder="输入关键字查询"
           style="width: 260px;margin-right: 16px"
           v-model="query"
         />
-        <btn-search @click="handleSearch" />
+        <btn-search @click="handleSearch" /> -->
 
       </div>
     </table-page>
@@ -277,7 +277,8 @@ export default {
 }
 .AddressAssignList-header {
   display: flex;
-  padding: 20px 0;
+  padding: 20px 26px;
+  margin-top: 60px;
 }
 
 .btn-line {

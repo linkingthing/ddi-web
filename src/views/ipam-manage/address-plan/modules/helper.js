@@ -309,3 +309,23 @@ export function executeNextIpv6Segment(
 
 export const binary = (nodecode, bitWidth) =>
   (Array(bitWidth).join("0") + nodecode.toString(2)).slice(-bitWidth);
+
+export const parserValueStr2Arr = values => {
+  const result = [];
+  const arr = values.split(",");
+
+  arr.forEach(item => {
+    if (item.includes("-")) {
+      let [start, end] = item.split("-");
+      let time = end - start + 1;
+      while (time--) {
+        result.push(start++);
+      }
+    } else {
+      result.push(+item);
+    }
+  });
+
+  return result;
+};
+

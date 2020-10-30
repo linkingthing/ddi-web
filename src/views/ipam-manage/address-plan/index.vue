@@ -38,6 +38,14 @@
       @success="getPlanList"
     />
 
+    <Modal
+      v-model="mapVisible"
+      fullscreen
+      :title="mapTitle"
+    >
+      <div>This is a fullscreen modal</div>
+    </Modal>
+
   </div>
 </template>
 
@@ -64,8 +72,6 @@ import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
 import PlanModal from "./modules/PlanModal";
 
 
-console.log(SafeLock)
-
 export default {
   components: {
     NoDataList,
@@ -88,7 +94,31 @@ export default {
       columns: [{
         title: "IPv6前缀",
         key: "prefix",
-        align: "left"
+        align: "left",
+        render: (h, { row }) => {
+          return h("a", {
+            attrs: {
+              href: "javascript:;"
+            },
+            on: {
+              click: () => {
+                const { layouts } = row;
+                let url = this.$getRouteByLink(row.links.layouts, "address")
+                if (Array.isArray(layouts) && layouts.length) {
+                  let layoutId = layouts[0];
+                  url += `/${layoutId}`;
+                }
+                this.$router.push({
+                  path: url,
+                  query: {
+                    prefix: row.prefix,
+                    name: row.description
+                  }
+                });
+              }
+            }
+          }, row.prefix);
+        }
       },
       {
         title: "规划名称",
@@ -120,11 +150,23 @@ export default {
             class: "table-btn-box"
           }, [
             h("btn-line", {
+              nativeOn: {
+                click: () => {
+                  this.$router.push({ name: "ipam-address-list" });
+                }
+              },
               props: {
                 title: "子网列表"
               }
             }),
             h("btn-line", {
+              nativeOn: {
+                click: () => {
+                  this.mapVisible = true;
+                  this.mapTitle = row.description;
+                }
+              },
+
               props: {
                 title: "地图"
               }
@@ -146,9 +188,10 @@ export default {
       oneLayoutLinks: null,
 
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
 
-
+      mapVisible: false,
+      mapTitle: ""
     };
   },
 

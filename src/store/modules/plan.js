@@ -136,17 +136,17 @@ const getters = {
       }
     }
   },
-  currentNodeId: state => {
-    if (state.count) {
-      return state.planList.find(item => item.id === state.currentPlanId).layout
-        .currentNodeId;
-    }
-  },
-  currentNode: state => {
-    if (state.count) {
-      return _.cloneDeep(getCurrentNode(state));
-    }
-  },
+  // currentNodeId: state => {
+  //   if (state.count) {
+  //     return state.planList.find(item => item.id === state.currentPlanId).layout
+  //       .currentNodeId;
+  //   }
+  // },
+  // currentNode: state => {
+  //   if (state.count) {
+  //     return _.cloneDeep(getCurrentNode(state));
+  //   }
+  // },
   currentNodeChildrenList: state => {
     if (state.count) {
       const currentNode = getCurrentNode(state);
@@ -267,12 +267,12 @@ const mutations = {
     state.layoutCount++;
   },
 
-  setCurrentNodeId(state, id) {
-    state.planList.find(
-      item => item.id === state.currentPlanId
-    ).layout.currentNodeId = id;
-    state.count++;
-  },
+  // setCurrentNodeId(state, id) {
+  //   state.planList.find(
+  //     item => item.id === state.currentPlanId
+  //   ).layout.currentNodeId = id;
+  //   state.count++;
+  // },
 
   setCurrentNodeChildrenList(state, currentNodeChildrenList) {
     const currentNode = getCurrentNode(state);
