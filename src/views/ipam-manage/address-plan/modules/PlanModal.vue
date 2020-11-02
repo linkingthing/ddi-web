@@ -64,7 +64,7 @@ export default {
 
     return {
       formModel: {
-        prefix: "",
+        prefixs: "",
         description: ""
       },
       loading: false,
@@ -85,8 +85,8 @@ export default {
       return [
         {
           label: "IPv6前缀",
-          model: "prefix",
-          type: "input",
+          model: "prefixs",
+          type: "textarea",
           placeholder: "请填写IPv6前缀"
 
         },
@@ -110,7 +110,12 @@ export default {
 
       if (this.links.update) {
         this.$get({ url: this.links.self }).then(data => {
-          this.formModel = data;
+          this.formModel = {
+            prefixs: data.prefixs.join(","),
+            ...data
+          };
+
+
         }).catch();
       }
       this.dialogVisible = val;
@@ -133,6 +138,9 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
+          params.prefixs = params.prefixs.split(",").map(item => item.trim());
+          params.maxmaskwidths = Array.from(params.prefixs).fill(64);
+
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(() => {
               this.$$success("编辑成功");
@@ -142,9 +150,6 @@ export default {
               this.$$error(err.response.data.message);
             });
           } else {
-            // params.id = uuidv4();
-            params.maskLen = 64;
-            // params.lockedby = "admin";
 
             this.$post({ url: this.links.self, params }).then(() => {
               this.$$success("新建成功");

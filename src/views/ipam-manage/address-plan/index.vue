@@ -93,7 +93,7 @@ export default {
       planList: [],
       columns: [{
         title: "IPv6前缀",
-        key: "prefix",
+        key: "prefixs",
         align: "left",
         render: (h, { row }) => {
           return h("a", {
@@ -102,22 +102,25 @@ export default {
             },
             on: {
               click: () => {
-                const { layouts } = row;
-                let url = this.$getRouteByLink(row.links.layouts, "address")
-                if (Array.isArray(layouts) && layouts.length) {
-                  let layoutId = layouts[0];
+                const { layoutids } = row;
+                let url = this.$getRouteByLink(row.links.layouts, "address");
+                let isCreate = true;
+                if (Array.isArray(layoutids) && layoutids.length) {
+                  let layoutId = layoutids[0];
                   url += `/${layoutId}`;
+                  isCreate = false;
                 }
                 this.$router.push({
                   path: url,
                   query: {
-                    prefix: row.prefix,
-                    name: row.description
+                    prefixs: row.prefixs,
+                    name: row.description,
+                    isCreate
                   }
                 });
               }
             }
-          }, row.prefix);
+          }, row.prefixs);
         }
       },
       {
@@ -283,6 +286,7 @@ export default {
             item.lockType = LOCK_STATUS_ENUM.CLOSE;
           }
 
+          item.prefixs = item.prefixs && item.prefixs.join(",");
           return item;
         });
         this.planList = tableData;

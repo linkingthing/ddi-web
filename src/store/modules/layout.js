@@ -52,7 +52,7 @@ const mutations = {
         name: state.planName,
         pid: "0",
         value: 0,
-        prefix: [state.prefix],
+        prefix: state.prefix,
         nodes: []
       }
     ];
@@ -69,7 +69,7 @@ const mutations = {
         newNodes.push(node);
       }
     });
-    state.nodes = newNodes;
+    state.nodes = cloneDeep(newNodes);
   },
   addNodes(state, nodes) {
     state.nodes = [...state.nodes, ...nodes];

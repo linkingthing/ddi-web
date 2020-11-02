@@ -313,13 +313,19 @@ export const binary = (nodecode, bitWidth) =>
 export const parserValueStr2Arr = values => {
   const result = [];
   const arr = values.split(",");
+  result.isValid = true;
 
   arr.forEach(item => {
     if (item.includes("-")) {
       let [start, end] = item.split("-");
       let time = end - start + 1;
-      while (time--) {
-        result.push(start++);
+      console.log(time);
+      if (Number(time) > 0) {
+        while (time--) {
+          result.push(start++);
+        }
+      } else {
+        result.isValid = false;
       }
     } else {
       result.push(+item);
@@ -328,4 +334,3 @@ export const parserValueStr2Arr = values => {
 
   return result;
 };
-

@@ -115,22 +115,36 @@
         :width="690"
         @confirm="handleSaveChildNode"
       >
-        <Form :label-width="80">
-          <FormItem label="节点名称">
+        <Form
+          :model="currentNodeofChooseChild"
+          :label-width="80"
+          :rules="currentNodeofChooseChildRule"
+          ref="currentNodeofChooseChildRef"
+        >
+          <FormItem
+            label="节点名称"
+            prop="name"
+          >
             <Input
               placeholder="请输入节点名称"
-              v-model="currentNodeofChooseChild.name"
+              v-model.trim="currentNodeofChooseChild.name"
             />
           </FormItem>
-          <FormItem label="IPv4子网">
+          <FormItem
+            label="IPv4子网"
+            prop="ipv4"
+          >
             <Input
               placeholder="请输入IPv4子网"
-              v-model="currentNodeofChooseChild.ipv4"
+              v-model.trim="currentNodeofChooseChild.ipv4"
             />
           </FormItem>
 
           <h3 style="margin-bottom: 12px;">地址块序号设置</h3>
-          <div>
+          <FormItem
+            prop="valueMap"
+            :label-width="0"
+          >
             <table class="o-table">
               <colgroup>
                 <col style="width: 200px">
@@ -145,13 +159,13 @@
                 </td>
                 <td>
                   <Input
-                    v-model="item.values"
+                    v-model.trim="item.values"
                     placeholder="间隔序号用“,”隔开，连续序号用“-”连接，例：1,4-9"
                   />
                 </td>
               </tr>
             </table>
-          </div>
+          </FormItem>
         </Form>
       </common-modal>
 
@@ -182,6 +196,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
+import { ipv4IsValid, isIpv4Segment } from "@/util/common";
 import { parserValueStr2Arr, executeNextIpv6Segment } from "./helper";
 
 
@@ -191,6 +206,8 @@ export default {
   },
   props: {},
   data() {
+
+
     return {
 
       currentNodePrefix: [],
@@ -261,7 +278,82 @@ export default {
         }
       ],
 
-      currentNodeofChooseChild: {},
+      currentNodeofChooseChild: {
+        valueMap: [],
+        name: "",
+        ipv4: ""
+      },
+      currentNodeofChooseChildRule: {
+        name: [{
+          validator: (rule, value, callback) => {
+            if (value.length > 25) {
+              callback("名称长度不超过25个字符");
+            } else {
+              callback();
+            }
+          }
+        }],
+        ipv4: [{
+          validator: (rule, value, callback) => {
+
+            if (value === "") {
+              callback();
+            }
+            const ispass = value.split(",").every(item => {
+              const isNetSegment = (item.split("/").length === 2);
+              const [, len] = item.split("/");
+              return ipv4IsValid(item.trim()) && isNetSegment && len < 32 && len > 0 && isIpv4Segment(item.trim());
+            });
+
+            if (ispass) {
+              callback();
+            } else {
+              callback("IP地址输入有误，请查证");
+            }
+
+          }
+        }],
+        valueMap: [{
+          validator: (rule, value, callback) => {
+            const nodeBitWidth = this.currentNode.nextBitWidth;
+            const maxValue = 2 ** nodeBitWidth;
+            if (!nodeBitWidth) {
+              callback("请先设置位宽");
+            }
+
+            const isPass = value.every(({ values }) => {
+              const valueArray = parserValueStr2Arr(values);
+              console.log(valueArray)
+
+
+
+              // [1, 255] bitwidth 8 [1, 2**8 - 1], 0代表没填
+
+
+              if (valueArray.isValid) {
+                return valueArray.every(element => {
+                  const num = Number(element);
+                  return typeof num === "number" && !Number.isNaN(num) && (num > -1 && num < maxValue);
+                });
+              } else {
+                return valueArray.isValid;
+              }
+
+            });
+
+            console.log(isPass)
+
+            if (isPass) {
+              callback();
+            } else {
+              callback("地址块序号有误");
+            }
+
+          }
+        }]
+      },
+
+
     };
   },
   computed: {
@@ -384,7 +476,7 @@ export default {
     handleOpenEditNode(row) {
       console.log(row, "child")
       this.nodeEditVisible = true;
-      this.currentNodeofChooseChild = row;
+      this.currentNodeofChooseChild = cloneDeep(row);
 
       // TODO:比较不确定对没对,初始化的时候估计还得考虑
       this.currentNodeofChooseChild.valueMap = this.currentNode.prefix.map(prefix => {
@@ -396,28 +488,28 @@ export default {
       });
     },
     handleSaveChildNode() {
-      // this.nodeEditVisible = false;
 
-      const node = this.currentNodeofChooseChild;
+      const node = cloneDeep(this.currentNodeofChooseChild);
+
+      this.$refs["currentNodeofChooseChildRef"].validate(valid => {
+        if (valid) {
+          const nodeBitWidth = this.currentNode.nextBitWidth;
+
+          node.prefix = node.valueMap.map(({ prefix, values }) => {
+            // values => valueArray
+            const valueArray = parserValueStr2Arr(values);
+            return valueArray.map(value => {
+              return executeNextIpv6Segment(prefix, value, nodeBitWidth);
+            });
+          }).flat();
+
+          this.saveCurrentNode(this.currentNodeofChooseChild);
+
+          // this.nodeEditVisible = false;
+        }
 
 
-      console.log(this.currentNodeofChooseChild, "currentNodeofChooseChild")
-      console.log(this.currentNode)
-
-      const nodeBitWidth = this.currentNode.nextBitWidth;
-
-      node.prefix = node.valueMap.map(({ prefix, values }) => {
-        // values => valueArray
-        const valueArray = parserValueStr2Arr(values);
-        return valueArray.map(value => {
-          return executeNextIpv6Segment(prefix, value, nodeBitWidth);
-        });
-      }).flat();
-
-
-      console.log(node.prefix)
-
-      this.saveCurrentNode(this.currentNodeofChooseChild);
+      });
 
     },
     handleSave() {
@@ -427,10 +519,10 @@ export default {
       console.log(url)
       console.log(this.$route)
 
-      const isDetail = this.$route.name === "ipam-address-plan-layout-one";
+      const isCreate = this.$route.query.isCreate === "true";
 
-
-      const methods = isDetail ? "$put" : "$post";
+      console.log(isCreate, this.$route.query.isCreate, "新建时候可能问题");
+      const methods = isCreate ? "$post" : "$put";
 
       console.log(this.nodes)
       const params = {

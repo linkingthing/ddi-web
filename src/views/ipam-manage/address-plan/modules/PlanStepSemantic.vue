@@ -23,17 +23,29 @@ export default {
   watch: {},
   created() { },
   mounted() {
-    const { name, prefix } = this.$route.query;
+    const { name, prefixs, isCreate } = this.$route.query;
     this.setPlanName(name);
-    this.setPrefix(prefix);
+    this.setPrefix(prefixs.split(","));
     this.initTree();
+
+    const shouldRequst = this.$route.query.isCreate === "false";
+    if (shouldRequst) {
+      this.getLayoutInfo();
+    }
+
+    console.log("mounted")
   },
   methods: {
     ...mapMutations([
       "setPlanName",
       "setPrefix",
       "initTree"
-    ])
+    ]),
+    getLayoutInfo() {
+      this.$get(this.$getApiByRoute()).then(res => {
+        console.log(res)
+      })
+    }
   }
 };
 </script>
