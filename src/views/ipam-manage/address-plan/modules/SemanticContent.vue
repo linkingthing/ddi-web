@@ -325,7 +325,11 @@ export default {
               const valueArray = parserValueStr2Arr(values);
               console.log(valueArray)
 
-
+              const distinctValueArray = [...new Set(valueArray)];
+              if (distinctValueArray.length !== valueArray.length) {
+                callback("地址块序号有重复，请更正");
+                return false;
+              }
 
               // [1, 255] bitwidth 8 [1, 2**8 - 1], 0代表没填
 
