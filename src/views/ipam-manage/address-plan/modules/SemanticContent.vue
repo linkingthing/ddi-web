@@ -257,7 +257,10 @@ export default {
         {
           title: "IPv4子网",
           key: "ipv4",
-          maxWidth: 300
+          maxWidth: 300,
+          render: (h, { row }) => {
+            return h("div", row.ipv4 ? row.ipv4 : "--");
+          }
 
         },
         {
@@ -323,7 +326,6 @@ export default {
 
             const isPass = value.every(({ values }) => {
               const valueArray = parserValueStr2Arr(values);
-              console.log(valueArray)
 
               const distinctValueArray = [...new Set(valueArray)];
               if (distinctValueArray.length !== valueArray.length) {
@@ -344,8 +346,6 @@ export default {
               }
 
             });
-
-            console.log(isPass)
 
             if (isPass) {
               callback();
@@ -464,11 +464,12 @@ export default {
         id: uuidv4(),
         ipv4: "",
         modified: 1,
-        name: "new node name",
+        name: `新增节点 ${this.nodeCount}`,
         pid: pid,
         value: 0,
         prefix: "",
-        nodes: []
+        nodes: [],
+        plannodes: []
       }];
       this.addNodes(nodes);
 
@@ -478,18 +479,17 @@ export default {
     },
 
     handleOpenEditNode(row) {
-      console.log(row, "child")
       this.nodeEditVisible = true;
       this.currentNodeofChooseChild = cloneDeep(row);
 
       // TODO:比较不确定对没对,初始化的时候估计还得考虑
-      this.currentNodeofChooseChild.valueMap = this.currentNode.prefix.map(prefix => {
+      this.currentNodeofChooseChild.valueMap = Array.isArray(this.currentNode.prefix) ? this.currentNode.prefix.map(prefix => {
         return {
           id: uuidv4(),
           prefix,
           values: ""
         };
-      });
+      }) : [];
     },
     handleSaveChildNode() {
 
@@ -499,15 +499,18 @@ export default {
         if (valid) {
           const nodeBitWidth = this.currentNode.nextBitWidth;
 
-          node.prefix = node.valueMap.map(({ prefix, values }) => {
+          node.prefixObject = node.valueMap.map(({ prefix, values }) => {
             // values => valueArray
             const valueArray = parserValueStr2Arr(values);
             return valueArray.map(value => {
-              return executeNextIpv6Segment(prefix, value, nodeBitWidth);
+              return { prefix, value, nodeBitWidth, planNodePrefix: executeNextIpv6Segment(prefix, value, nodeBitWidth) };
             });
           }).flat();
 
-          this.saveCurrentNode(this.currentNodeofChooseChild);
+          node.prefix = node.prefixObject.map(item => item.planNodePrefix);
+          console.log(node, 66)
+
+          this.saveCurrentNode(node);
 
           // this.nodeEditVisible = false;
         }
@@ -517,26 +520,45 @@ export default {
 
     },
     handleSave() {
-      console.log(123)
-      console.log(this.tree)
       const { url } = this.$getApiByRoute();
-      console.log(url)
-      console.log(this.$route)
-
       const isCreate = this.$route.query.isCreate === "true";
 
       console.log(isCreate, this.$route.query.isCreate, "新建时候可能问题");
+
       const methods = isCreate ? "$post" : "$put";
 
-      console.log(this.nodes)
+      console.log(this.nodes, "nodes")
+
+      const nodes = cloneDeep(this.nodes);
+
+
+      nodes.forEach(node => {
+        console.log(node)
+        const bitWidth = +node.nextBitWidth;
+        node.plannodes = Array.isArray(node.prefixObject) ? node.prefixObject.map((item, index) => {
+          return {
+            prefix: item.planNodePrefix,
+            psid: node.id,
+            ppid: node.pid,
+            sequence: "",
+            value: item.value,
+            name: `plannodes${index}`,
+            ipv4: [],
+            bitWidth
+          };
+        }) : [];
+
+      });
+
       const params = {
-        nodes: this.nodes,
+        nodes,
         name: "layout"
       };
+
       this[methods]({ url, params }).then(res => {
         console.log(res)
       }).catch(err => {
-        console.log(err)
+        this.$Message.error(err.response.data.message);
       });
     }
   }
