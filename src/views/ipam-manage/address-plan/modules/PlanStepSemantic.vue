@@ -28,12 +28,12 @@ export default {
     this.setPrefix(prefixs.split(","));
     this.initTree();
 
-    const shouldRequst = this.$route.query.isCreate === "false";
+    const shouldRequst = String(isCreate) === "false";
     if (shouldRequst) {
       this.getLayoutInfo();
     }
 
-    console.log("mounted")
+    console.log("mounted", shouldRequst, this.$route.query)
   },
   methods: {
     ...mapMutations([
@@ -44,11 +44,20 @@ export default {
     ]),
     getLayoutInfo() {
       this.$get(this.$getApiByRoute()).then(({ nodes }) => {
-        console.log(nodes)
+
+        // set nextBitWidth,语义节点的父节点的属性值，来源于当前节点的plannode 的 bitwidth
+        nodes.forEach(node => {
+          if (Array.isArray(node.plannodes) && node.plannodes.length) {
+            const { bitWidth } = node.plannodes[0];
+            const pNode = nodes.find(item => item.id === node.pid);
+            pNode.nextBitWidth = bitWidth;
+          }
+        });
+
         this.setNodes(nodes);
         this.initTree();
 
-      })
+      });
     }
   }
 };
