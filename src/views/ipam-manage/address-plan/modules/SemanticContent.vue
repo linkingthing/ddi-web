@@ -551,9 +551,21 @@ export default {
 
 
       nodes.forEach(node => {
-        console.log(node)
-        const bitWidth = +node.nextBitWidth;
+        console.log(node, "node")
 
+
+        node.modified = 1;
+
+        /**
+         * nextBitWidth 是当前语义节点 的子节点的planNode节点的位宽
+        */
+        const pNode = nodes.find(item => item.id === node.pid);
+        console.log(pNode, "pNode")
+        const bitWidth = pNode && +pNode.nextBitWidth;
+
+        Array.isArray(node.plannodes) && node.plannodes.forEach(plannode => {
+          plannode.bitWidth = bitWidth;
+        });
         if (node.hasPrefixObject) {
           node.plannodes = Array.isArray(node.prefixObject) ? node.prefixObject.map((item, index) => {
             return {
