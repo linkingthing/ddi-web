@@ -28,6 +28,13 @@ const getters = {
     return list2Tree(cloneDeep(state.nodes), "0");
   },
   nodes: state => state.nodes,
+  allPlanNodes: state => { 
+    return state.nodes
+      .map(item => item.plannodes || [])
+      .reduce((prev, result) => {
+        return result.concat(prev);
+      }, []);
+  },
   currentNodeChildren: state => {
     return state.nodes.filter(item => item.pid === state.currentNodeId);
   }
@@ -47,15 +54,15 @@ const mutations = {
     if (state.nodes.length) {
       state.nodes[0].name = state.planName;
       state.nodes[0].prefix = state.prefix;
-      const { plannodes } = state.nodes[0];
-      if (plannodes) {
-        state.nodes[0].nextBitWidth = plannodes[0].bitWidth;
-      }
+      // const { plannodes } = state.nodes[0];
+      // if (plannodes) {
+      //   state.nodes[0].nextBitWidth = plannodes[0].bitWidth;
+      // }
     } else {
       state.nodes = [
         {
           expand: true,
-          nextBitWidth: 0, // 下一级位宽
+          nextBitWidth: 0, // 下一级位宽, 必须是数字,默认为0
           bitWidth: 0,
           id: uuid,
           ipv4: "",

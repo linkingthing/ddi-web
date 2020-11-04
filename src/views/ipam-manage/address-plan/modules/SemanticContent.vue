@@ -368,14 +368,26 @@ export default {
       "tree",
       "currentNode",
       "currentNodeChildren",
-
+      "allPlanNodes",
     ]),
 
     surplus() {
       let result = "_ _";
       if (this.currentNode && this.currentNode.prefix && this.currentNode.prefix.length) {
-        const [, len] = this.currentNode.prefix[0].split("/")
-        result = 64 - len;
+        console.log(this.currentNode, 0)
+        const { nextBitWidth, plannodes } = this.currentNode;
+        const currentNodeChildren = this.nodes.filter(item => item.pid === this.currentNode.id);
+        console.log(currentNodeChildren, 22)
+
+        const childrenLen =
+          currentNodeChildren
+            .map(({ plannodes }) =>
+              Array.isArray(plannodes) ? plannodes.length : 0)
+            .reduce((prev, result) => {
+              return result + prev;
+            }, 0);
+
+        result = 2 ** nextBitWidth - 1 - childrenLen;
       }
       return result;
     },
@@ -410,6 +422,7 @@ export default {
           const [, len] = val.prefix[0].split("/");
           this.currentNodePrefixLen = len;
         } else {
+          this.currentNodePrefix = [];
           this.currentNodePrefixLen = 0;
         }
 
@@ -419,7 +432,7 @@ export default {
           this.currentNodeBitWidth = 0;
         }
 
-        if (val.nextBitWidth && this.bitWidth !== val.nextBitWidth) {
+        if ((typeof val.nextBitWidth === "number") && (this.bitWidth !== val.nextBitWidth)) {
           this.bitWidth = val.nextBitWidth;
         }
 
@@ -432,7 +445,7 @@ export default {
       }
       const notNumber = !(/\D/.test(val));
       if (notNumber) {
-        this.changeCurrentNode(val);
+        this.changeCurrentNode(+val);
       } else {
         this.$Message.info("请输入数字");
       }
@@ -446,13 +459,14 @@ export default {
       "addNodes"
     ]),
     changeCurrentNode: debounce(function (val) {
-      console.log(this)
 
       const currentNode = cloneDeep(this.currentNode);
-      currentNode.nextBitWidth = val;
-      console.log(currentNode, val)
 
-      this.saveCurrentNode(currentNode);
+      if (currentNode) {
+        currentNode.nextBitWidth = val;
+        this.saveCurrentNode(currentNode);
+      }
+
     }, 600),
     handleToggleDetail() {
       this.detailVisible = !this.detailVisible;
@@ -497,7 +511,7 @@ export default {
 
 
 
-      if (row.plannodes) {
+      if (false) {
 
       } else {
         this.currentNodeofChooseChild.valueMap = Array.isArray(this.currentNode.prefix) ? this.currentNode.prefix.map(prefix => {
@@ -556,6 +570,19 @@ export default {
 
         node.modified = 1;
 
+
+        if (node.pid === "0" && !node.plannodes) {
+          node.plannodes = node.prefix.map(item => {
+            return {
+              id: uuidv4(),
+              prefix: item,
+              ppid: "0",  // 当前网络节点的上层（生成它的）网络节点，
+              psid: node.id,  // psid plannode 的node也就是，当前网络节点的语义节点
+              name: node.name
+            };
+          });
+        }
+
         /**
          * nextBitWidth 是当前语义节点 的子节点的planNode节点的位宽
         */
@@ -568,10 +595,19 @@ export default {
         });
         if (node.hasPrefixObject) {
           node.plannodes = Array.isArray(node.prefixObject) ? node.prefixObject.map((item, index) => {
+
+            console.log(item.prefix)
+
+            // ppid的算法可以优化？，只从语义节点父节点种plannodes里面找？缩小范围可乎？
+            const ppidOfPrefix = item.prefix; // ppid 对应的plannode的prefix;
+            const ppNode = this.allPlanNodes.find(item => item.prefix === ppidOfPrefix) || {};
+            // ppNode ,ppNode.id 不一定拿得到
+
             return {
+              id: uuidv4(),
               prefix: item.planNodePrefix,
               psid: node.id,
-              ppid: node.pid,
+              ppid: ppNode.id, // 网络节点的上层网络节点
               sequence: "",
               value: item.value,
               name: `plannodes${index}`,
@@ -625,6 +661,7 @@ export default {
         font-size: 18px;
         color: #333;
         font-weight: bold;
+        min-height: 27px;
         max-width: 260px;
         overflow: hidden;
         display: block;
