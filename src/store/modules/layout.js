@@ -40,22 +40,34 @@ const mutations = {
   setPrefix(state, prefix) {
     state.prefix = prefix;
   },
+  setNodes(state, nodes) {
+    state.nodes = nodes;
+  },
   initTree(state) {
-    state.nodes = [
-      {
-        expand: true,
-        nextBitWidth: 0, // 下一级位宽
-        bitWidth: 0,
-        id: uuid,
-        ipv4: "",
-        modified: 1,
-        name: state.planName,
-        pid: "0",
-        value: 0,
-        prefix: state.prefix,
-        nodes: []
+    if (state.nodes.length) {
+      state.nodes[0].name = state.planName;
+      state.nodes[0].prefix = state.prefix;
+      const { plannodes } = state.nodes[0];
+      if (plannodes) {
+        state.nodes[0].nextBitWidth = plannodes[0].bitWidth;
       }
-    ];
+    } else {
+      state.nodes = [
+        {
+          expand: true,
+          nextBitWidth: 0, // 下一级位宽
+          bitWidth: 0,
+          id: uuid,
+          ipv4: "",
+          modified: 1,
+          name: state.planName,
+          pid: "0",
+          value: 0,
+          prefix: state.prefix,
+          nodes: []
+        }
+      ];
+    }
   },
   setCurrentNodeId(state, currentNodeId) {
     state.currentNodeId = currentNodeId;

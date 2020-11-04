@@ -39,11 +39,15 @@ export default {
     ...mapMutations([
       "setPlanName",
       "setPrefix",
-      "initTree"
+      "initTree",
+      "setNodes"
     ]),
     getLayoutInfo() {
-      this.$get(this.$getApiByRoute()).then(res => {
-        console.log(res)
+      this.$get(this.$getApiByRoute()).then(({ nodes }) => {
+        console.log(nodes)
+        this.setNodes(nodes);
+        this.initTree();
+
       })
     }
   }

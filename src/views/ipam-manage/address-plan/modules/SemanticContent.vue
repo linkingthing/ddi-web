@@ -400,7 +400,10 @@ export default {
     currentNode: {
       deep: true,
       handler(val) {
-        console.log(val);
+        console.log(val, 33)
+        if (!val) {
+          return;
+        }
 
         if (val.prefix && Array.isArray(val.prefix) && val.prefix.length) {
           this.currentNodePrefix = val.prefix;
@@ -416,7 +419,7 @@ export default {
           this.currentNodeBitWidth = 0;
         }
 
-        if (this.bitWidth !== val.nextBitWidth) {
+        if (val.nextBitWidth && this.bitWidth !== val.nextBitWidth) {
           this.bitWidth = val.nextBitWidth;
         }
 
@@ -479,17 +482,33 @@ export default {
     },
 
     handleOpenEditNode(row) {
+
+      console.log(row)
+      console.log(this.currentNode)
       this.nodeEditVisible = true;
       this.currentNodeofChooseChild = cloneDeep(row);
 
-      // TODO:比较不确定对没对,初始化的时候估计还得考虑
-      this.currentNodeofChooseChild.valueMap = Array.isArray(this.currentNode.prefix) ? this.currentNode.prefix.map(prefix => {
-        return {
-          id: uuidv4(),
-          prefix,
-          values: ""
-        };
-      }) : [];
+      /**
+       * 构造 valueMap 渲染填写每个planNode的value的列表项
+       * 
+       * 1. 新增时候，根据url prefix映射出 等长度得  {id, prefix, values}
+       * 2. 编辑时候，通过plannodes，逆运算（prefix分组，valueStr） [但是父级前缀怎么判定呢，一个planNode根据什么判定属于那个父级语义节点]
+       */
+
+
+
+      if (row.plannodes) {
+
+      } else {
+        this.currentNodeofChooseChild.valueMap = Array.isArray(this.currentNode.prefix) ? this.currentNode.prefix.map(prefix => {
+          return {
+            id: uuidv4(),
+            prefix,
+            values: ""
+          };
+        }) : [];
+      }
+
     },
     handleSaveChildNode() {
 
@@ -498,7 +517,7 @@ export default {
       this.$refs["currentNodeofChooseChildRef"].validate(valid => {
         if (valid) {
           const nodeBitWidth = this.currentNode.nextBitWidth;
-
+          node.hasPrefixObject = true;
           node.prefixObject = node.valueMap.map(({ prefix, values }) => {
             // values => valueArray
             const valueArray = parserValueStr2Arr(values);
@@ -508,11 +527,10 @@ export default {
           }).flat();
 
           node.prefix = node.prefixObject.map(item => item.planNodePrefix);
-          console.log(node, 66)
 
           this.saveCurrentNode(node);
 
-          // this.nodeEditVisible = false;
+          this.nodeEditVisible = false;
         }
 
 
@@ -535,18 +553,22 @@ export default {
       nodes.forEach(node => {
         console.log(node)
         const bitWidth = +node.nextBitWidth;
-        node.plannodes = Array.isArray(node.prefixObject) ? node.prefixObject.map((item, index) => {
-          return {
-            prefix: item.planNodePrefix,
-            psid: node.id,
-            ppid: node.pid,
-            sequence: "",
-            value: item.value,
-            name: `plannodes${index}`,
-            ipv4: [],
-            bitWidth
-          };
-        }) : [];
+
+        if (node.hasPrefixObject) {
+          node.plannodes = Array.isArray(node.prefixObject) ? node.prefixObject.map((item, index) => {
+            return {
+              prefix: item.planNodePrefix,
+              psid: node.id,
+              ppid: node.pid,
+              sequence: "",
+              value: item.value,
+              name: `plannodes${index}`,
+              ipv4: [],
+              bitWidth
+            };
+          }) : [];
+        }
+
 
       });
 
