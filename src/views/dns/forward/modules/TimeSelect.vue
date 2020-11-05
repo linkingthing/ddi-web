@@ -19,7 +19,7 @@ export default {
   },
   data() {
     // 空槽位 数组map不识别
-    this.weekdayList = Array.from({ length: 24 }, (item, index) => {
+    this.weekdayList = Array.from({ length: 25 }, (item, index) => {
       return {
         label: `${index}: 00`,
         value: index
