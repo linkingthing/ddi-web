@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       date: void 0,
-      time: void 0
+      time: ""
     };
   },
   computed: {
@@ -48,7 +48,7 @@ export default {
     innerValue: {
       deep: true,
       handler({ timestamp, time }) {
-        if (timestamp !== void 0 && time !== void 0) {
+        if (timestamp !== void 0 && time !== "") {
           const value = `${timestamp}-${time}`;
           if (value !== this.value) {
             this.$emit("input", value);
@@ -57,6 +57,12 @@ export default {
       }
     },
     value(value) {
+
+      if (value === "") {
+        this.date = void 0;
+        this.time = "";
+        return;
+      }
       const [date, time] = value.split("-");
       if (isNumber(+date) && isNumber(+time) && !isNaN(+date) && !isNaN(+time)) {
         this.date = date && new Date(+date);

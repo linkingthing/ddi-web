@@ -274,7 +274,15 @@ export default {
   watch: {
     visible(val) {
       if (!val) {
-        this.$refs.formInline.resetFields();
+        this.formModel = {
+          timetype: DateType.Date,
+          name: "",
+          startTime: "",
+          endTime: ""
+        };
+        this.$nextTick().then(() => {
+          this.$refs.formInline.resetFields();
+        });
         return;
       }
 

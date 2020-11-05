@@ -30,7 +30,7 @@ export default {
       route: "time-policy"
     }];
     return {
-      tab: this.$route.path.split("/").pop(),
+      tab: this.$route.path.split("/")[3],
       addressType: ""
     };
   },

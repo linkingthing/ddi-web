@@ -13,7 +13,8 @@ export default {
   components: {},
   props: {
     value: {
-      type: Number,
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: Number | String,
       default: undefined
     }
   },
@@ -34,6 +35,9 @@ export default {
     value: {
       immediate: true,
       handler(val, old) {
+        if (typeof val === "string") {
+          this.innervalue = "";
+        }
         if (typeof val === "number" && val !== old) {
           this.innervalue = val;
         }
