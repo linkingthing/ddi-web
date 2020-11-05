@@ -35,12 +35,17 @@ export default {
 
     console.log("mounted", shouldRequst, this.$route.query)
   },
+  destroyed() {
+    console.log("reset resetLayoutData")
+    this.resetLayoutData();
+  },
   methods: {
     ...mapMutations([
       "setPlanName",
       "setPrefix",
       "initTree",
-      "setNodes"
+      "setNodes",
+      "resetLayoutData"
     ]),
     getLayoutInfo() {
       this.$get(this.$getApiByRoute()).then(({ nodes }) => {

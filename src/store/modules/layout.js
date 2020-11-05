@@ -28,7 +28,7 @@ const getters = {
     return list2Tree(cloneDeep(state.nodes), "0");
   },
   nodes: state => state.nodes,
-  allPlanNodes: state => { 
+  allPlanNodes: state => {
     return state.nodes
       .map(item => item.plannodes || [])
       .reduce((prev, result) => {
@@ -41,6 +41,13 @@ const getters = {
 };
 
 const mutations = {
+  resetLayoutData(state) {
+    state.prefix = "";
+    state.planName = "";
+    state.layout = {};
+    state.nodes = [];
+    state.currentNodeId = "";
+  },
   setPlanName(state, planName) {
     state.planName = planName;
   },
