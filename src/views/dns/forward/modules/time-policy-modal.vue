@@ -64,6 +64,22 @@ export default {
         {
           required: true,
           message: "请选择开始时间"
+        },
+        {
+          validator: (rule, value, callback) => {
+            const { timetype } = this.formModel;
+
+            if (timetype !== DateType.Day) {
+              const reg = /\d+-\d+/;
+              if (reg.test(value)) {
+                callback();
+              } else {
+                callback("请选择开始时间");
+              }
+            } else {
+              callback();
+            }
+          }
         }
       ],
       endTime: [

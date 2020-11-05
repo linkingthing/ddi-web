@@ -1,6 +1,9 @@
 <template>
   <div class="date-time">
-    <DatePicker v-model="date" />
+    <DatePicker
+      v-model="date"
+      clearable
+    />
     <TimeSelect
       class="time"
       v-model="time"
@@ -56,7 +59,7 @@ export default {
     value(value) {
       const [date, time] = value.split("-");
       if (isNumber(+date) && isNumber(+time) && !isNaN(+date) && !isNaN(+time)) {
-        this.date = new Date(+date);
+        this.date = date && new Date(+date);
         this.time = +time;
       }
     }
