@@ -34,7 +34,7 @@ export default {
     value: {
       immediate: true,
       handler(val, old) {
-        if (val && val !== old) {
+        if (typeof val === "number" && val !== old) {
           this.innervalue = val;
         }
       }
