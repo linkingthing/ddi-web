@@ -359,10 +359,12 @@ export default {
   methods: {
 
     handleConfirm(name) {
+      console.log("click", name, this.$refs[name], this.$refs[name].validate)
       this.$refs[name].validate((valid) => {
+        console.log("click3", valid)
+
         if (valid) {
           const params = { ...this.formModel };
-
           const strategy = {
             [DateType.Date]: function (params) {
               const { startTime, endTime } = params;
