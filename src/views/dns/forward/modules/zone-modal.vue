@@ -27,9 +27,7 @@
 </template>
 
 <script>
-import ForwardSelectName from "./forward-select-name";
 import { v4 as uuidv4 } from "uuid";
-
 
 export default {
   props: {
@@ -185,6 +183,17 @@ export default {
 
     visible(val) {
       if (!val) {
+        this.formModel = {
+          nametype: "domain",
+          comment: "",
+          domain: "",
+          domaingroupids: [],
+          forwarderids: [],
+          forwarders: [],
+          forwardtimepolicyname: "",
+          forwardtype: "",
+          name: ""
+        };
         this.$refs["formInline"].resetFields();
         return;
       }
@@ -192,9 +201,6 @@ export default {
       if (this.links.update) {
         this.$get({ url: this.links.self }).then((data) => {
           this.formModel = data;
-
-
-
 
         }).catch();
       }
