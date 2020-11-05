@@ -47,8 +47,11 @@ export default {
   data() {
 
     this.rules = {
-      name: [
-        { required: true, message: "请填写区名称" }
+      domain: [
+        { required: true, message: "请填写域名" }
+      ],
+      domaingroupids: [
+        { required: true, message: "请选择域名组" }
       ],
       forwarderids: [
         { required: true, message: "请选择转发分组" }
@@ -190,7 +193,7 @@ export default {
         this.$get({ url: this.links.self }).then((data) => {
           this.formModel = data;
 
-   
+
 
 
         }).catch();
