@@ -20,12 +20,12 @@ export default {
       label: "转发规则",
       route: "forward-view"
     }, {
-      name: "forwards",
+      name: "forwarders",
       label: "转发组",
       route: "forward-group"
     },
     {
-      name: "timepolicy",
+      name: "forwardtimepolicies",
       label: "时间策略",
       route: "time-policy"
     }];
@@ -36,7 +36,6 @@ export default {
   },
   computed: {},
   created() {
-
   },
   methods: {
     handleTab(tab) {
