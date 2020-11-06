@@ -3,7 +3,8 @@
     <table-page
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :current.sync="current"
+      :total="total"
     >
       <template slot="top-right">
         <i-button
@@ -92,17 +93,28 @@ export default {
       links: {},
       paramsLinks: {},
       cpvisible: false,
-      username: ""
+      username: "",
+
+      current: 0,
+      total: 0
     };
   },
-  mounted() {
-    this.getDataList();
+  watch: {
+    current() {
+      this.getDataList();
+    }
   },
   methods: {
     getDataList() {
-      this.$getData({}, "/auth/auth/ddiusers").then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$getData(params, "/auth/auth/ddiusers").then(({ data, links, pagination }) => {
         this.links = links;
         this.list = data;
+        this.total = pagination.total;
+        this.current = pagination.pageNum;
       });
     },
     handleOpenCreate() {
