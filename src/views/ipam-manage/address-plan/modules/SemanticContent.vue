@@ -564,6 +564,8 @@ export default {
       const nodes = cloneDeep(this.nodes);
 
 
+      const maxmaskwidth = 64;
+
       nodes.forEach(node => {
         console.log(node, "node")
 
@@ -572,13 +574,15 @@ export default {
 
 
         if (node.pid === "0" && !node.plannodes) {
+          node.ppid = "0";
           node.plannodes = node.prefix.map(item => {
             return {
               id: uuidv4(),
               prefix: item,
               ppid: "0",  // 当前网络节点的上层（生成它的）网络节点，
               psid: node.id,  // psid plannode 的node也就是，当前网络节点的语义节点
-              name: node.name
+              name: node.name,
+              maxmaskwidth
             };
           });
         }
@@ -600,9 +604,10 @@ export default {
 
             // ppid的算法可以优化？，只从语义节点父节点种plannodes里面找？缩小范围可乎？
             const ppidOfPrefix = item.prefix; // ppid 对应的plannode的prefix;
-            const ppNode = this.allPlanNodes.find(item => item.prefix === ppidOfPrefix) || {};
+            const ppNode = this.allPlanNodes.find(item => item.prefix === ppidOfPrefix) || { id: "" };
             // ppNode ,ppNode.id 不一定拿得到
 
+            node.ppid = ppNode.id;
             return {
               id: uuidv4(),
               prefix: item.planNodePrefix,
@@ -612,7 +617,8 @@ export default {
               value: item.value,
               name: `plannodes${index}`,
               ipv4: [],
-              bitWidth
+              bitWidth,
+              maxmaskwidth
             };
           }) : [];
         }
