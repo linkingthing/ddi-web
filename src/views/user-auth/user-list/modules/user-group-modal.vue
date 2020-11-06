@@ -274,8 +274,6 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
-          return
-
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
               this.$$success("编辑成功");
