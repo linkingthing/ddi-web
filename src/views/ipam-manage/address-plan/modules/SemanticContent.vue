@@ -101,6 +101,19 @@
 
     </div>
 
+    <div class="SemanticContent-action">
+      <div class="action-input-item">
+        <label class="label">地址步长</label>
+        <div class="action-box">
+          <input
+            class="action-box-input"
+            v-model="stepsize"
+          >
+        </div>
+      </div>
+
+    </div>
+
     <div class="modal">
 
       <common-modal
@@ -226,6 +239,7 @@ export default {
       currentNodeBitWidth: 0,
 
       bitWidth: "",
+      stepsize: "",
       detailVisible: false,
       columnsDetail: [
         {
@@ -410,12 +424,15 @@ export default {
     dataDetail() {
       const prefix = this.currentNodePrefix;
       const nextBitWidth = this.currentNode ? this.currentNode.nextBitWidth : 0;
-      const count = 2 ** Number(nextBitWidth);
+      const count = 2 ** Number(nextBitWidth) - 1;
+
       return prefix.map(item => {
+        const minAblePlan = executeNextIpv6Segment(item, 1, nextBitWidth);
+        const maxAblePlan = executeNextIpv6Segment(item, count, nextBitWidth);
         return {
           prefix: item,
           count,
-          name: "3333sss"
+          name: `${minAblePlan}~${maxAblePlan}`
         };
       });
     },
@@ -465,6 +482,9 @@ export default {
       } else {
         this.$Message.info("请输入数字");
       }
+    },
+    stepsize(value) {
+
     }
   },
   created() { },
@@ -476,7 +496,7 @@ export default {
       "removeNodeById"
     ]),
     changeCurrentNode: debounce(function (val) {
-
+      // 在语义节点上 设置位宽，便于planNode获取
       const currentNode = cloneDeep(this.currentNode);
 
       if (currentNode) {
