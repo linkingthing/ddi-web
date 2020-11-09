@@ -141,7 +141,7 @@ export default {
           params.prefixs = params.prefixs.split(",").map(item => item.trim());
           params.maxmaskwidths = Array.from(params.prefixs).fill(64);
 
-          const parentsemanticid = uuidv4();
+          const parentsemanticid = uuidv4(); // 语义节点id，也就是planNode的parentsemanticid
           const rootPlanNodes = params.prefixs.map((prefix, index) => {
             return {
               id: uuidv4(),

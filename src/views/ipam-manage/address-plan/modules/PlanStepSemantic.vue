@@ -49,22 +49,21 @@ export default {
         // set nextBitWidth,语义节点的父节点的属性值，来源于当前节点的plannode 的 bitwidth
         semanticnodes.forEach(node => {
           node.nextBitWidth = 0; // 默认为0,必须是数字，typeof node.nextBitWidth === "number"
-          console.log(node)
           if (Array.isArray(node.plannodes) && node.plannodes.length) {
             const { bitWidth } = node.plannodes[0];
             node.nextBitWidth = bitWidth;
           }
+
+          // 从plannodes节点中将prefix捞出，用于聚焦树节点时候面板展示
+          const prefixArr = node.plannodes.reduce((result, plannode) => {
+            return result.concat(plannode.prefix);
+          }, []);
+          node.prefix = prefixArr;
+
+
         });
 
-        // TODO： 语义节点初始设置prefix（返回数据中没有语义prefix，但是后面的若干操作设置value，选中axis都依赖prefix）
-
-
-        //
-
-
-        console.log(semanticnodes)
         this.setNodes(semanticnodes);
-        // this.initTree();
 
       });
     }

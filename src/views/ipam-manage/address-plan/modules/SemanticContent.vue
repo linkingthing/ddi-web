@@ -473,19 +473,16 @@ export default {
     },
     handleAddOne() {
       this.nodeCount += 1;
-      const pid = this.currentNode.id;
+      const parentsemanticid = this.currentNode.id;
       const nodes = [{
-        expand: true,
-        nextBitWidth: 0, // 下一级位宽
-        bitWidth: 0,
         id: uuidv4(),
-        ipv4: "",
         modified: 1,
         name: `新增节点 ${this.nodeCount}`,
-        pid: pid,
-        value: 0,
-        prefix: "",
-        nodes: [],
+        parentsemanticid,
+        stepsize: 2,
+        sequence: 1,
+        autocreate: false,  // TODO：这里交互来源
+        ipv4s: [],
         plannodes: []
       }];
       this.addNodes(nodes);
@@ -555,7 +552,7 @@ export default {
       const { url } = this.$getApiByRoute();
 
 
-      const methods =  "$put";
+      const methods = "$put";
 
       console.log(this.nodes, "nodes")
 

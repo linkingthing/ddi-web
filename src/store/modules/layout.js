@@ -25,7 +25,7 @@ const getters = {
     return state.nodes.find(item => item.id === state.currentNodeId);
   },
   tree: state => {
-    return list2Tree(cloneDeep(state.nodes), "0", "semanticnodes");
+    return list2Tree(cloneDeep(state.nodes), "0");
   },
   nodes: state => state.nodes,
   allPlanNodes: state => {
@@ -36,7 +36,7 @@ const getters = {
       }, []);
   },
   currentNodeChildren: state => {
-    return state.nodes.filter(item => item.pid === state.currentNodeId);
+    return state.nodes.filter(item => item.parentsemanticid === state.currentNodeId);
   }
 };
 
