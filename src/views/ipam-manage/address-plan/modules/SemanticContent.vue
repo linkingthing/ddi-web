@@ -84,9 +84,18 @@
       </div>
 
       <div class="action-input-item-right">
-        <Input placeholder="请输入名称关键字" />
-        <Button type="primary">搜索</Button>
-        <Button class="reset">重置</Button>
+        <Input
+          placeholder="请输入名称关键字"
+          v-model="search"
+        />
+        <Button
+          type="primary"
+          @click="handleFilter"
+        >搜索</Button>
+        <Button
+          class="reset"
+          @click="handleResetSearch"
+        >重置</Button>
 
       </div>
 
@@ -281,6 +290,9 @@ export default {
         }
       ],
 
+      search: "",
+      filterKeyword: "",
+
       currentNodeofChooseChild: {
         valueMap: [],
         name: "",
@@ -405,7 +417,7 @@ export default {
     },
     filterCurrentNodeChildren() {
       const currentNodeChildren = cloneDeep(this.currentNodeChildren);
-      return currentNodeChildren;
+      return currentNodeChildren.filter(item => item.name.includes(this.filterKeyword.trim()));
     }
   },
   watch: {
@@ -490,6 +502,14 @@ export default {
     },
     handleConfirmCustomNodeCount() {
 
+    },
+
+    handleFilter() {
+      this.filterKeyword = this.search;
+    },
+
+    handleResetSearch() {
+      this.filterKeyword = "";
     },
 
     handleOpenEditNode(row) {
