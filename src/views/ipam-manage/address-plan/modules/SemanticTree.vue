@@ -2,7 +2,6 @@
   <div class="SemanticTree">
     <SemanticTreeHeader
       prefix="语义树"
-      @search="handleSearch"
     />
 
     <Tree
@@ -52,6 +51,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
+        console.log(val, "tree")
         if (Array.isArray(val) && val.length) {
           this.treeData = cloneDeep(val);
           if (!this.currentNodeId) {
@@ -70,10 +70,9 @@ export default {
       "initTree",
       "setCurrentNodeId"
     ]),
-    handleSearch(val) {
-      this.keywords = val;
-    },
+
     handleSelectNode(nodes, node) {
+      console.log(node)
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
@@ -115,40 +114,8 @@ export default {
           })
         ])
       ]);
-    },
-    handleFinish() {
-
-      const isValid = hasAllBitWidth(this.currentLayout.nodes);
-      if (!isValid) {
-        this.$Message.error("请检查设置节点位宽");
-        return;
-      }
-
-      const { autofill } = this.currentLayout; // true, false, undefined
-      if (typeof (autofill) === "undefined") {
-        this.visible = true;
-      } else if (autofill) {
-        const params = buildLayoutParams(this.currentLayout);
-        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-          this.$get({ url: this.currentLayout.links.self }).then(res => {
-            this.nextPlanStep();
-            this.setLayout(res);
-          });
-        });
-      } else {
-        const layout = cloneDeep(this.currentLayout);
-        executeTreeNodePrefix(layout.nodes, autofill, "nodes");
-        const params = buildLayoutParams(layout, false);
-        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-          this.$get({ url: this.currentLayout.links.self }).then(res => {
-            this.nextPlanStep();
-            this.setLayout(res);
-          });
-        });
-
-
-      }
     }
+
   }
 };
 </script>

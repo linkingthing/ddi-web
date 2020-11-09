@@ -102,20 +102,13 @@ export default {
             },
             on: {
               click: () => {
-                const { layoutids } = row;
-                let url = this.$getRouteByLink(row.links.layouts, "address");
-                let isCreate = true;
-                if (Array.isArray(layoutids) && layoutids.length) {
-                  let layoutId = layoutids[0];
-                  url += `/${layoutId}`;
-                  isCreate = false;
-                }
+                const { links } = row;
+                let url = this.$getRouteByLink(links.self, "address");
                 this.$router.push({
                   path: url,
                   query: {
                     prefixs: row.prefixs,
-                    name: row.description,
-                    isCreate
+                    name: row.name,
                   }
                 });
               }

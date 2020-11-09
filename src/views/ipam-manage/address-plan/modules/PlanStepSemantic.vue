@@ -23,17 +23,13 @@ export default {
   watch: {},
   created() { },
   mounted() {
-    const { name, prefixs, isCreate } = this.$route.query;
+    const { name, prefixs, } = this.$route.query;
     this.setPlanName(name);
     this.setPrefix(prefixs.split(","));
-    this.initTree();
 
-    const shouldRequst = String(isCreate) === "false";
-    if (shouldRequst) {
-      this.getLayoutInfo();
-    }
 
-    console.log("mounted", shouldRequst, this.$route.query)
+    this.getLayoutInfo();
+
   },
   destroyed() {
     console.log("reset resetLayoutData")
@@ -48,15 +44,15 @@ export default {
       "resetLayoutData"
     ]),
     getLayoutInfo() {
-      this.$get(this.$getApiByRoute()).then(({ nodes }) => {
+      this.$get(this.$getApiByRoute()).then(({ semanticnodes }) => {
 
         // set nextBitWidth,语义节点的父节点的属性值，来源于当前节点的plannode 的 bitwidth
-        nodes.forEach(node => {
+        semanticnodes.forEach(node => {
           node.nextBitWidth = 0; // 默认为0,必须是数字，typeof node.nextBitWidth === "number"
+          console.log(node)
           if (Array.isArray(node.plannodes) && node.plannodes.length) {
             const { bitWidth } = node.plannodes[0];
-            const pNode = nodes.find(item => item.id === node.pid);
-            pNode.nextBitWidth = bitWidth;
+            node.nextBitWidth = bitWidth;
           }
         });
 
@@ -65,8 +61,10 @@ export default {
 
         //
 
-        this.setNodes(nodes);
-        this.initTree();
+
+        console.log(semanticnodes)
+        this.setNodes(semanticnodes);
+        // this.initTree();
 
       });
     }

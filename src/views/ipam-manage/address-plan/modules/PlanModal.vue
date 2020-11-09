@@ -65,7 +65,7 @@ export default {
     return {
       formModel: {
         prefixs: "",
-        description: ""
+        name: ""
       },
       loading: false,
       dialogVisible: false,
@@ -92,7 +92,7 @@ export default {
         },
         {
           label: "规划名称",
-          model: "description",
+          model: "name",
           type: "input",
           placeholder: "请填写规划名称",
         }
@@ -141,6 +141,33 @@ export default {
           params.prefixs = params.prefixs.split(",").map(item => item.trim());
           params.maxmaskwidths = Array.from(params.prefixs).fill(64);
 
+          const parentsemanticid = uuidv4();
+          const rootPlanNodes = params.prefixs.map((prefix, index) => {
+            return {
+              id: uuidv4(),
+              prefix: prefix,
+              parentsemanticid,
+              parentplannodeid: "0", // 网络节点的上层网络节点
+              sequence: index,
+              value: index + 1,
+              name: `plannodes root`,
+              bitWidth: 4,
+              maxmaskwidth: 64
+            };
+          });
+
+          params.semanticnodes = [{
+            id: parentsemanticid,
+            modified: 1,
+            name: "语义节点1",
+            parentsemanticid: "0",
+            stepsize: 2,
+            sequence: 1,
+            autocreate: false,
+            ipv4s: [],
+            plannodes: rootPlanNodes
+          }];
+
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(() => {
               this.$$success("编辑成功");
@@ -151,6 +178,7 @@ export default {
             });
           } else {
 
+            // this.$router.push({ name: "ipam-address-plan-create", query: params });
             this.$post({ url: this.links.self, params }).then(() => {
               this.$$success("新建成功");
               this.$emit("success");

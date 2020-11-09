@@ -25,7 +25,7 @@ const getters = {
     return state.nodes.find(item => item.id === state.currentNodeId);
   },
   tree: state => {
-    return list2Tree(cloneDeep(state.nodes), "0");
+    return list2Tree(cloneDeep(state.nodes), "0", "semanticnodes");
   },
   nodes: state => state.nodes,
   allPlanNodes: state => {
@@ -61,10 +61,6 @@ const mutations = {
     if (state.nodes.length) {
       state.nodes[0].name = state.planName;
       state.nodes[0].prefix = state.prefix;
-      // const { plannodes } = state.nodes[0];
-      // if (plannodes) {
-      //   state.nodes[0].nextBitWidth = plannodes[0].bitWidth;
-      // }
     } else {
       state.nodes = [
         {

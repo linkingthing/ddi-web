@@ -27,8 +27,8 @@ export default {
     },
 
     {
-      name: 'ipam-address-plan-semantics',
-      path: '/address/ipam/plans/:planId/layouts',
+      name: 'ipam-address-plan-create',
+      path: '/address/ipam/plans/create',
       component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
       meta: {
         title: "语义规划",
@@ -38,8 +38,8 @@ export default {
     },
 
     {
-      name: 'ipam-address-plan-layout-one',
-      path: '/address/ipam/plans/:planId/layouts/:layoutId',
+      name: 'ipam-address-plan-semantics',
+      path: '/address/ipam/plans/:planId',
       component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
       meta: {
         title: "语义规划",

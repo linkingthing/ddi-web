@@ -553,16 +553,13 @@ export default {
     },
     handleSave() {
       const { url } = this.$getApiByRoute();
-      const isCreate = this.$route.query.isCreate === "true";
 
-      console.log(isCreate, this.$route.query.isCreate, "新建时候可能问题");
 
-      const methods = isCreate ? "$post" : "$put";
+      const methods =  "$put";
 
       console.log(this.nodes, "nodes")
 
       const nodes = cloneDeep(this.nodes);
-
 
       const maxmaskwidth = 64;
 
@@ -627,8 +624,10 @@ export default {
       });
 
       const params = {
+        maxmaskwidths: [],
         nodes,
-        name: "layout"
+        name: "layout",
+        semanticnodes: []
       };
 
       this[methods]({ url, params }).then(res => {

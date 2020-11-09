@@ -243,12 +243,12 @@ export function executeTreeNodePrefix(
 /**
  *
  */
-export function list2Tree(data, pid) {
+export function list2Tree(data, parentsemanticid, children = "nodes") {
   let res = [];
   data.forEach(item => {
-    if (item.pid === pid) {
-      let itemChildren = list2Tree(data, item.id);
-      if (itemChildren.length) item.nodes = itemChildren;
+    if (item.parentsemanticid === parentsemanticid) {
+      let itemChildren = list2Tree(data, item.id, children);
+      if (itemChildren.length) item[children] = itemChildren;
       item.expand = true;
       res.push(item);
     }
@@ -334,3 +334,5 @@ export const parserValueStr2Arr = values => {
 
   return result;
 };
+
+

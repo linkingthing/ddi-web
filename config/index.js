@@ -12,6 +12,7 @@ let assetsPublicPath = "./";
 // const url = "https://jlccwss.vicp.cc:58081"
 
 const url = "https://10.0.0.183:58081";
+// const url = "https://10.0.0.190:58081";
 
 module.exports = {
   build: {
@@ -83,14 +84,5 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
   }
-  // PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,monitor,address,system'"
 };
 
-// console.log(
-// 	'正在生成',
-// 	process.argv.slice(2).length ? process.argv.slice(2) : [ 'dns', 'monitor', 'address', 'system' ],
-// 	'相关模块'
-// );
-// console.log('正在生成...');
-// console.log('正在生成......');
-// console.log('正在生成.........');
