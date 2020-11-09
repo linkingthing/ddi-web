@@ -45,7 +45,7 @@ export default [
     name: "资源记录",
     id: "rrs",
     module: "dns",
-    resouces: ["rrs"]
+    resouces: ["rr"]
   },
   {
     name: "重定向视图",
