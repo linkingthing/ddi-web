@@ -36,7 +36,9 @@ const getters = {
       }, []);
   },
   currentNodeChildren: state => {
-    return state.nodes.filter(item => item.parentsemanticid === state.currentNodeId);
+    return state.nodes.filter(
+      item => item.parentsemanticid === state.currentNodeId
+    );
   }
 };
 
@@ -95,6 +97,9 @@ const mutations = {
   },
   addNodes(state, nodes) {
     state.nodes = [...state.nodes, ...nodes];
+  },
+  removeNodeById(state, nodeId) {
+    state.nodes = state.nodes.filter(item => item.id !== nodeId);
   }
 };
 

@@ -67,7 +67,7 @@
       <div class="action-input-item">
         <label class="label">语义节点数</label>
         <div class="action-box">
-          <span class="action-box-input">{{nodeCount}}</span>
+          <span class="action-box-input">{{currentNodeChildren.length}}</span>
           <Button
             class="action-box-btn"
             size="small"
@@ -283,7 +283,11 @@ export default {
                   click: () => this.handleOpenEditNode(row)
                 }
               }),
-              h("btn-del")
+              h("btn-del", {
+                on: {
+                  click: () => this.handleDeleteSemantic(row)
+                }
+              })
             ]);
           }
 
@@ -468,7 +472,8 @@ export default {
   methods: {
     ...mapMutations([
       "saveCurrentNode",
-      "addNodes"
+      "addNodes",
+      "removeNodeById"
     ]),
     changeCurrentNode: debounce(function (val) {
 
@@ -512,6 +517,10 @@ export default {
       this.filterKeyword = "";
     },
 
+    handleDeleteSemantic(row) {
+      // TODO:删除语义节点的限制条件
+      this.removeNodeById(row.id);
+    },
     handleOpenEditNode(row) {
 
       console.log(row)
@@ -642,9 +651,8 @@ export default {
 
       const params = {
         maxmaskwidths: [],
-        nodes,
         name: "layout",
-        semanticnodes: []
+        semanticnodes: nodes
       };
 
       this[methods]({ url, params }).then(res => {
