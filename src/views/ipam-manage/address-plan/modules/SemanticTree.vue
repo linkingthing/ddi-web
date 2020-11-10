@@ -125,6 +125,7 @@ export default {
   width: 330px;
   background: #f4f4f4;
   border-radius: 4px;
+  margin-bottom: 20px;
   .tree {
     padding: 20px;
   }

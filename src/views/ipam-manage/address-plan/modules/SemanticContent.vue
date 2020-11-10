@@ -1,218 +1,264 @@
 <template>
   <div class="SemanticContent">
-    <div class="SemanticContent-header">
-      <p>政务网规划</p>
-      <img
-        src="./title-bar.png"
-        alt=""
-      >
-    </div>
-    <div class="SemanticContent-statistics">
-      <div class="SemanticContent-statistics-item">
-        <strong>{{ currentNodePrefix.join(",")}}</strong>
-        <p>前缀(共{{currentNodePrefix.length}}个)</p>
+    <div class="SemanticContent-inner">
+
+      <div class="SemanticContent-header">
+        <p>政务网规划</p>
+        <img
+          src="./title-bar.png"
+          alt=""
+        >
       </div>
-      <div class="SemanticContent-statistics-item">
-        <strong>{{ surplus}} </strong>
-        <p>剩余地址块</p>
-      </div>
-    </div>
-
-    <SegmentAxis
-      style="width: 700px;margin-bottom: 20px"
-      :enable-prefix-len="+prefixLen"
-      :prefix-len="Number(currentNodePrefixLen)"
-      :bit-width="Number(currentNodeBitWidth)"
-    />
-
-    <div class="SemanticContent-action">
-      <div class="action-input-item">
-        <label class="label">占位</label>
-        <div class="action-box">
-          <input
-            class="action-box-input"
-            type="text"
-            placeholder="请输入占位数"
-            v-model="bitWidth"
+      <section>
+        <div class="step-bar">
+          <div class="step-bar-inner">
+            <span class="step-bar-index">1</span>
+            <h3 class="step-bar-name">地址位宽设定</h3>
+          </div>
+          <img
+            class="step-bar-tip"
+            src="./question.png"
           >
+        </div>
+        <div class="SemanticContent-action">
+          <div class="action-input-item">
+            <label class="label">地址位宽</label>
+            <div class="action-box">
 
-          <Tooltip
-            placement="bottom"
-            theme="light"
-            max-width="700"
-            style="white-space:none"
-            class="detail-tooltip"
-          >
-            <Button
-              class="action-box-btn"
-              size="small"
-              type="primary"
-            >详情</Button>
-            <div
-              slot="content"
-              style="padding: 10px 12px;width: 660px"
-            >
-              <div style="font-size: 14px;color:#333;margin-bottom: 10px">占位详情</div>
-              <Table
-                :columns="columnsDetail"
-                :data="dataDetail"
+              <Input
+                class="action-box-input"
+                v-model="bitWidth"
+                placeholder="Enter text"
               />
+
+              <Tooltip
+                placement="bottom"
+                theme="light"
+                max-width="700"
+                style="white-space:none"
+                class="detail-tooltip"
+              >
+                <Icon
+                  custom="icon-detail"
+                  class="action-box-icon"
+                />
+
+                <div
+                  slot="content"
+                  style="padding: 10px 12px;width: 660px"
+                >
+                  <div style="font-size: 14px;color:#333;margin-bottom: 10px">占位详情</div>
+                  <Table
+                    :columns="columnsDetail"
+                    :data="dataDetail"
+                  />
+                </div>
+              </Tooltip>
+
+              <Button
+                type="primary"
+                style="margin-left: 20px"
+              >确定</Button>
             </div>
-          </Tooltip>
+
+          </div>
+
+          <div>
+            <SegmentAxis
+              style="width: 700px;"
+              :enable-prefix-len="+prefixLen"
+              :prefix-len="Number(currentNodePrefixLen)"
+              :bit-width="Number(currentNodeBitWidth)"
+            />
+          </div>
 
         </div>
+      </section>
+
+      <!-- <div class="SemanticContent-statistics">
+
+        <div class="SemanticContent-statistics-item">
+          <strong>{{ currentNodePrefix.join(",")}}</strong>
+          <p>前缀(共{{currentNodePrefix.length}}个)</p>
+        </div>
+        <div class="SemanticContent-statistics-item">
+          <strong>{{ surplus}} </strong>
+          <p>剩余地址块</p>
+        </div>
+      </div> -->
+
+      <section>
+
+        <div class="step-bar">
+          <div class="step-bar-inner">
+            <span class="step-bar-index">2</span>
+            <h3 class="step-bar-name">语义节点规划</h3>
+          </div>
+          <img
+            class="step-bar-tip"
+            src="./question.png"
+          >
+        </div>
+
+      </section>
+
+      <div class="SemanticContent-action">
+
+        <div class="action-input-item">
+          <label class="label">语义节点数</label>
+          <div class="action-box">
+            <Input
+              class="action-box-input"
+              v-model="nodeCount"
+              placeholder="请输入语义节点数"
+              search
+              enter-button="+1"
+              @on-search="handleAddOne"
+            />
+            <!-- TODO：需要修改变量 -->
+
+          </div>
+        </div>
+
+        <div class="action-input-item">
+          <label class="label">地址步长</label>
+          <div class="action-box">
+            <Input
+              class="action-box-input"
+              v-model="stepsize"
+              placeholder="请输入每个节点的地址数"
+            />
+          </div>
+        </div>
+        <div class="action-input-item">
+          <Button
+            type="primary"
+            @click="handleClickCreateSemanticNode"
+          >确定</Button>
+        </div>
+
+        <div class="action-input-item">
+          <label class="label">剩余地址块:</label>
+          <span class="action-box-input">
+            {{surplus}}
+          </span>
+        </div>
+      </div>
+
+      <div class="modal">
+
+        <common-modal
+          :visible.sync="nodeEditVisible"
+          title="节点编辑"
+          :width="690"
+          @confirm="handleSaveChildNode"
+        >
+          <Form
+            :model="currentNodeofChooseChild"
+            :label-width="80"
+            :rules="currentNodeofChooseChildRule"
+            ref="currentNodeofChooseChildRef"
+          >
+            <FormItem
+              label="节点名称"
+              prop="name"
+            >
+              <Input
+                placeholder="请输入节点名称"
+                v-model.trim="currentNodeofChooseChild.name"
+              />
+            </FormItem>
+            <FormItem
+              label="IPv4子网"
+              prop="ipv4"
+            >
+              <Input
+                placeholder="请输入IPv4子网"
+                v-model.trim="currentNodeofChooseChild.ipv4"
+              />
+            </FormItem>
+
+            <h3 style="margin-bottom: 12px;">地址块序号设置</h3>
+            <FormItem
+              prop="valueMap"
+              :label-width="0"
+            >
+              <table class="o-table">
+                <colgroup>
+                  <col style="width: 200px">
+                  <col>
+                </colgroup>
+                <tr
+                  v-for="item in currentNodeofChooseChild.valueMap"
+                  :key="item.id"
+                >
+                  <td>
+                    {{item.prefix}}
+                  </td>
+                  <td>
+                    <Input
+                      v-model.trim="item.values"
+                      placeholder="间隔序号用“,”隔开，连续序号用“-”连接，例：1,4-9"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </FormItem>
+          </Form>
+        </common-modal>
 
       </div>
 
-      <div class="action-input-item">
-        <label class="label">语义节点数</label>
-        <div class="action-box">
-          <span class="action-box-input">{{currentNodeChildren.length}}</span>
-          <Button
-            class="action-box-btn"
-            size="small"
-            type="primary"
-            @click="handleAddOne"
-          >+1</Button>
-          <Button
-            class="action-box-btn"
-            size="small"
-            type="primary"
-            @click="customNodeCountVisible = true"
-          >自定义添加数量</Button>
-        </div>
-      </div>
+      <div class="SemanticContent-table">
+        <div class="SemanticContent-table-operate">
+          <div>
+            <Button type="primary">一键规划</Button>
+            <Button
+              type="primary"
+              ghost
+            >自定义规划</Button>
 
-      <div class="action-input-item-right">
-        <Input
-          placeholder="请输入名称关键字"
-          v-model="search"
+            <Button type="warning">清空规划</Button>
+          </div>
+          <div class="action-input-item-right">
+            <Input
+              placeholder="请输入名称关键字"
+              v-model="search"
+            />
+            <Button
+              type="primary"
+              @click="handleFilter"
+            >搜索</Button>
+            <Button
+              class="reset"
+              @click="handleResetSearch"
+            >重置</Button>
+
+          </div>
+        </div>
+
+        <Table
+          style="border: 1px solid #E6E6E6;border-bottom: none"
+          :columns="columns"
+          :data="filterCurrentNodeChildren"
         />
+
+      </div>
+      <div class="SemanticContent-opera">
         <Button
           type="primary"
-          @click="handleFilter"
-        >搜索</Button>
-        <Button
-          class="reset"
-          @click="handleResetSearch"
-        >重置</Button>
-
+          size="large"
+          style="width: 300px;"
+          @click="handleSave"
+        >保存</Button>
       </div>
-
-    </div>
-
-    <div class="SemanticContent-action">
-      <div class="action-input-item">
-        <label class="label">地址步长</label>
-        <div class="action-box">
-          <input
-            class="action-box-input"
-            v-model="stepsize"
-          >
-        </div>
-      </div>
-
-    </div>
-
-    <div class="modal">
-
-      <common-modal
-        :visible.sync="customNodeCountVisible"
-        title="自定义添加节点数量"
-        :width="413"
-        @confirm="handleConfirmCustomNodeCount"
-      >
-        <div class="custome-node-count">
-          <label class="label">455+</label>
-          <Input
-            class="input"
-            placeholder="请填写添加数量"
-          />
-        </div>
-      </common-modal>
-
-      <common-modal
-        :visible.sync="nodeEditVisible"
-        title="节点编辑"
-        :width="690"
-        @confirm="handleSaveChildNode"
-      >
-        <Form
-          :model="currentNodeofChooseChild"
-          :label-width="80"
-          :rules="currentNodeofChooseChildRule"
-          ref="currentNodeofChooseChildRef"
-        >
-          <FormItem
-            label="节点名称"
-            prop="name"
-          >
-            <Input
-              placeholder="请输入节点名称"
-              v-model.trim="currentNodeofChooseChild.name"
-            />
-          </FormItem>
-          <FormItem
-            label="IPv4子网"
-            prop="ipv4"
-          >
-            <Input
-              placeholder="请输入IPv4子网"
-              v-model.trim="currentNodeofChooseChild.ipv4"
-            />
-          </FormItem>
-
-          <h3 style="margin-bottom: 12px;">地址块序号设置</h3>
-          <FormItem
-            prop="valueMap"
-            :label-width="0"
-          >
-            <table class="o-table">
-              <colgroup>
-                <col style="width: 200px">
-                <col>
-              </colgroup>
-              <tr
-                v-for="item in currentNodeofChooseChild.valueMap"
-                :key="item.id"
-              >
-                <td>
-                  {{item.prefix}}
-                </td>
-                <td>
-                  <Input
-                    v-model.trim="item.values"
-                    placeholder="间隔序号用“,”隔开，连续序号用“-”连接，例：1,4-9"
-                  />
-                </td>
-              </tr>
-            </table>
-          </FormItem>
-        </Form>
-      </common-modal>
-
-    </div>
-
-    <div class="SemanticContent-table">
-      <Table
-        :columns="columns"
-        :data="filterCurrentNodeChildren"
-      />
-
-    </div>
-    <div class="SemanticContent-opera">
-      <Button
-        type="primary"
-        size="large"
-        style="width: 300px;"
-        @click="handleSave"
-      >保存</Button>
     </div>
   </div>
 </template>
 
 <script>
 // 经历过一个需求 迭代四版的人，使用一个文件写完所有功能必须被理解，不需要解释
+// 别提复用，ui各种变，操作交随时变，提交的数据格式也在变
 import SegmentAxis from "@/components/SegmentAxis";
 import { mapGetters, mapMutations } from "vuex";
 import { debounce, cloneDeep } from "lodash";
@@ -256,25 +302,35 @@ export default {
         }
       ],
       nodeCount: 0,
-      customNodeCountVisible: false,
       nodeEditVisible: false,
+      semanticNodeList: [],
       columns: [
+        {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        {
+          type: "index",
+          width: 80,
+          align: "center"
+        },
         {
           title: "语义名称",
           key: "name",
-          width: 250
+          width: 200
         },
 
         {
           title: "地址个数",
-          key: "name",
-          width: 300
+          key: "addressCount",
+          width: 150
 
         },
         {
           title: "IPv6地址",
           key: "name",
-          width: 200
+          width: 250
 
         },
         {
@@ -388,7 +444,7 @@ export default {
 
           }
         }]
-      },
+      }
 
 
     };
@@ -405,12 +461,11 @@ export default {
     ]),
 
     surplus() {
+      // 剩余地址数
       let result = "_ _";
       if (this.currentNode && this.currentNode.prefix && this.currentNode.prefix.length) {
-        console.log(this.currentNode, 0)
         const { nextBitWidth, plannodes } = this.currentNode;
         const currentNodeChildren = this.nodes.filter(item => item.pid === this.currentNode.id);
-        console.log(currentNodeChildren, 22)
 
         const childrenLen =
           currentNodeChildren
@@ -440,7 +495,7 @@ export default {
       });
     },
     filterCurrentNodeChildren() {
-      const currentNodeChildren = cloneDeep(this.currentNodeChildren);
+      const currentNodeChildren = cloneDeep(this.semanticNodeList);
       return currentNodeChildren.filter(item => item.name.includes(this.filterKeyword.trim()));
     }
   },
@@ -481,11 +536,11 @@ export default {
     },
     bitWidth(val) {
       if (val === "") {
-        this.changeCurrentNode("bitwidth", 0);
+        this.changeCurrentNode("nextBitWidth", 0);
       }
       const notNumber = !(/\D/.test(val));
       if (notNumber) {
-        this.changeCurrentNode("bitwidth", +val);
+        this.changeCurrentNode("nextBitWidth", +val);
       } else {
         this.$Message.info("请输入数字");
       }
@@ -499,6 +554,13 @@ export default {
         this.changeCurrentNode("stepsize", +val);
       } else {
         this.$Message.info("请输入数字");
+      }
+    },
+    currentNodeChildren: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        this.semanticNodeList = val;
       }
     }
   },
@@ -524,23 +586,50 @@ export default {
       this.detailVisible = !this.detailVisible;
     },
     handleAddOne() {
+      // TODO: 考虑必要限制
       this.nodeCount += 1;
-      const parentsemanticid = this.currentNode.id;
-      const nodes = [{
-        id: uuidv4(),
-        modified: 1,
-        name: `新增节点 ${this.nodeCount}`,
-        parentsemanticid,
-        stepsize: 2,
-        sequence: 1,
-        autocreate: false,  // TODO：这里交互来源
-        ipv4s: [],
-        plannodes: []
-      }];
-      this.addNodes(nodes);
+      // const parentsemanticid = this.currentNode.id;
+      // const node = {
+      //   id: uuidv4(),
+      //   modified: 1,
+      //   name: `新增节点 ${this.nodeCount}`,
+      //   parentsemanticid,
+      //   stepsize: 2,
+      //   sequence: 1,
+      //   autocreate: false,  // TODO：这里交互来源
+      //   ipv4s: [],
+      //   plannodes: [],
+      //   addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
+      // };
+
+      // this.addNodes(nodes);
 
     },
-    handleConfirmCustomNodeCount() {
+    handleClickCreateSemanticNode() {
+      const currentSemanticNodeListLength = this.semanticNodeList.length;
+      const willCreateSemanticNodeListLength = this.nodeCount;
+      const shouldCreateLength = willCreateSemanticNodeListLength - currentSemanticNodeListLength;
+      if (shouldCreateLength > 0) {
+        const parentsemanticid = this.currentNode.id;
+
+        const semanticNodes = Array.from({ length: shouldCreateLength }, function (item) {
+          return {
+            id: uuidv4(),
+            modified: 1,
+            name: `新增节点`,
+            parentsemanticid,
+            stepsize: 2,
+            sequence: 1,
+            autocreate: false,  // TODO：这里交互来源
+            ipv4s: [],
+            plannodes: [],
+            addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
+          };
+        });
+
+        this.semanticNodeList.push(...semanticNodes);
+
+      }
 
     },
 
@@ -708,6 +797,12 @@ export default {
   flex: 1;
   padding: 0 24px;
 
+  .SemanticContent-inner {
+    border-left: 1px solid #e6e6e6;
+    padding-left: 20px;
+    height: 100vh;
+  }
+
   .SemanticContent-header {
     font-size: 14px;
     color: #333;
@@ -742,35 +837,40 @@ export default {
   .SemanticContent-action {
     display: flex;
     min-width: 1100px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    align-items: flex-end;
 
     .action-input-item {
       display: inline-flex;
-      border: 1px solid #e6e6e6;
-      border-radius: 4px;
       margin-right: 40px;
       .label {
+        display: block;
+        min-width: 90px;
         font-size: 14px;
         color: #333;
-        padding: 4px 10px;
+        padding: 2px 10px;
+        line-height: 28px;
+      }
+      .action-box-input {
+        width: 200px;
+        font-size: 14px;
+        color: #333;
         line-height: 25px;
       }
-
       .action-box {
         display: flex;
         flex: 1;
-        padding: 4px;
-        border-left: 1px solid #e6e6e6;
-        .action-box-input {
-          width: 150px;
-          font-size: 14px;
-          color: #333;
-          line-height: 25px;
-        }
+
         .action-box-btn {
           padding-left: 10px;
           padding-right: 10px;
           margin-left: 4px;
+        }
+        .action-box-icon {
+          font-size: 20px;
+          color: #b3b3b3;
+          margin-left: 6px;
+          cursor: pointer;
         }
       }
     }
@@ -785,7 +885,7 @@ export default {
 
   .SemanticContent-opera {
     position: absolute;
-    bottom: 0;
+    bottom: 20px;
   }
 }
 </style>
@@ -797,35 +897,29 @@ export default {
   }
 }
 
-.custome-node-count {
-  display: flex;
-  border-radius: 4px;
-  .label {
-    display: block;
-    padding: 4px 12px;
-    background: #ccc;
-    color: #333;
-    font-size: 14px;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-  }
-  .ivu-input {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-}
-
 .SemanticContent {
   display: flex;
   flex-direction: column;
   .SemanticContent-table {
+    .SemanticContent-table-operate {
+      margin-bottom: 10px;
+      display: flex;
+      .action-input-item-right {
+        display: flex;
+        margin-left: auto;
+        > .reset {
+          margin-left: 10px;
+        }
+      }
+    }
+
     flex: 1;
     margin-bottom: 40px;
     .ivu-table-body {
       overflow-x: hidden;
       overflow-y: auto;
       flex: 1;
-      height: calc(~"100vh - 500px");
+      height: calc(~"100vh - 600px");
       margin-right: -4px;
     }
   }
@@ -841,6 +935,37 @@ export default {
     padding: 4px 16px;
     line-height: 20px;
     min-height: 40px;
+  }
+}
+
+.step-bar {
+  display: flex;
+  margin-left: -30px;
+  margin-bottom: 20px;
+
+  .step-bar-inner {
+    display: flex;
+    background: #ededed;
+    border-radius: 10px;
+    color: #333;
+    line-height: 20px;
+
+    .step-bar-index {
+      display: block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #cccccc;
+      text-align: center;
+    }
+    .step-bar-name {
+      font-size: 14px;
+      padding: 0 8px;
+    }
+  }
+  .step-bar-tip {
+    height: 20px;
+    margin-left: 6px;
   }
 }
 </style>

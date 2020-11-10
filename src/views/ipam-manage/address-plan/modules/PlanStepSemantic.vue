@@ -74,7 +74,7 @@ export default {
 <style lang="less" scoped>
 .PlanStepSemantic {
   display: flex;
-  padding: 60px 20px 20px;
+  padding: 60px 20px 0px;
   flex: 1;
 }
 </style>

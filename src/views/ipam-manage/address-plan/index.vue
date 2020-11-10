@@ -118,7 +118,7 @@ export default {
       },
       {
         title: "规划名称",
-        key: "description",
+        key: "name",
         align: "left"
       },
       {

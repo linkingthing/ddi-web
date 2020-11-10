@@ -159,7 +159,7 @@ export default {
           params.semanticnodes = [{
             id: parentsemanticid,
             modified: 1,
-            name: "语义节点1",
+            name: params.name,
             parentsemanticid: "0",
             stepsize: 2,
             sequence: 1,
