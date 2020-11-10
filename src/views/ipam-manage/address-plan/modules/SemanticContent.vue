@@ -260,19 +260,19 @@ export default {
       nodeEditVisible: false,
       columns: [
         {
-          title: "节点名称",
+          title: "语义名称",
           key: "name",
           width: 250
         },
 
         {
-          title: "使用地址块",
+          title: "地址个数",
           key: "name",
           width: 300
 
         },
         {
-          title: "IPv6地址范围",
+          title: "IPv6地址",
           key: "name",
           width: 200
 
@@ -292,6 +292,9 @@ export default {
           width: 200,
           render: (h, { row }) => {
             return h("div", [
+              h("a", {
+
+              }, "分发"),
               h("btn-edit", {
                 on: {
                   click: () => this.handleOpenEditNode(row)
@@ -469,22 +472,34 @@ export default {
           this.bitWidth = val.nextBitWidth;
         }
 
+        // stepsize
+        if ((typeof val.stepsize === "number") && (this.stepsize !== val.stepsize)) {
+          this.stepsize = val.stepsize;
+        }
 
       }
     },
     bitWidth(val) {
       if (val === "") {
-        this.changeCurrentNode(0);
+        this.changeCurrentNode("bitwidth", 0);
       }
       const notNumber = !(/\D/.test(val));
       if (notNumber) {
-        this.changeCurrentNode(+val);
+        this.changeCurrentNode("bitwidth", +val);
       } else {
         this.$Message.info("请输入数字");
       }
     },
-    stepsize(value) {
-
+    stepsize(val) {
+      if (val === "") {
+        this.changeCurrentNode("stepsize", 0);
+      }
+      const notNumber = !(/\D/.test(val));
+      if (notNumber) {
+        this.changeCurrentNode("stepsize", +val);
+      } else {
+        this.$Message.info("请输入数字");
+      }
     }
   },
   created() { },
@@ -495,12 +510,12 @@ export default {
       "addNodes",
       "removeNodeById"
     ]),
-    changeCurrentNode: debounce(function (val) {
+    changeCurrentNode: debounce(function (attr, val) {
       // 在语义节点上 设置位宽，便于planNode获取
       const currentNode = cloneDeep(this.currentNode);
 
       if (currentNode) {
-        currentNode.nextBitWidth = val;
+        currentNode[attr] = val;
         this.saveCurrentNode(currentNode);
       }
 

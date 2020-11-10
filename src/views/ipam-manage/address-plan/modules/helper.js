@@ -259,8 +259,10 @@ export function list2Tree(data, parentsemanticid, children = "nodes") {
 const ipv6ToBigInt = ip => {
   const ipArr = ipaddr.parse(ip).parts;
   let len = ipArr.length;
+  // eslint-disable-next-line no-undef
   let bigNum = BigInt(0);
   for (let i = 0; i < len; i++) {
+    // eslint-disable-next-line no-undef
     bigNum += BigInt(ipArr[i] * Math.pow(2, 2 * (len - i - 1) * 8));
   }
   return bigNum;
@@ -268,6 +270,7 @@ const ipv6ToBigInt = ip => {
 
 // n 偏移位数，默认为一
 const excutePrefixIncrement = (ipv6BigInt, prefix, bitWidth, n = 1) => {
+  // eslint-disable-next-line no-undef
   return ipv6BigInt + BigInt(n * Math.pow(2, 128 - (prefix + bitWidth)));
 };
 
@@ -288,6 +291,9 @@ export const excuteNextIPv6 = (ip, prefix, subtreebitnum, n = 1) => {
   return bigIntToIPv6(newIpBigInt);
 };
 
+/**
+ * 计算ipv6，计算下一个ipv6地址段
+ */
 export function executeNextIpv6Segment(
   prefix,
   offset,
@@ -319,7 +325,6 @@ export const parserValueStr2Arr = values => {
     if (item.includes("-")) {
       let [start, end] = item.split("-");
       let time = end - start + 1;
-      console.log(time);
       if (Number(time) > 0) {
         while (time--) {
           result.push(start++);
@@ -335,4 +340,21 @@ export const parserValueStr2Arr = values => {
   return result;
 };
 
+/**
+ * 自动生成地址value值
+ */
+export const autoCreateAddressValue = (bitWidth, stepSize) => {
+  const start = 1;
+  const maxValue = 2 ** bitWidth - 1;
+  const result = [];
+  let currentValue = start;
+  while (currentValue <= maxValue) {
+    result.push(currentValue);
+    currentValue += stepSize;
+  }
 
+  return result;
+};
+
+
+console.log("test", autoCreateAddressValue(4, 2))
