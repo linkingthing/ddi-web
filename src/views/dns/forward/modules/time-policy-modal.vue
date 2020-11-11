@@ -117,10 +117,11 @@ export default {
                 }
                 if (Number(weekEnd) === Number(weekStart)) {
                   return {
-                    isValid: Number(timeEnd) <= Number(timeStart),
+                    isValid: Number(timeStart) >= Number(timeEnd),
                     message
                   };
                 }
+                callback();
               },
               [DateType.Date]: function () {
                 const [strampStart, timeStart] = String(startTime).split("-");
@@ -159,6 +160,7 @@ export default {
             };
 
             {
+
               const { isValid, message } = policyMap[timetype]();
               if (isValid) {
                 callback(message);
@@ -176,7 +178,8 @@ export default {
         timetype: DateType.Date,
         name: "",
         startTime: "",
-        endTime: ""
+        endTime: "",
+        comment: ""
       },
       loading: false,
       dialogVisible: false
@@ -278,7 +281,8 @@ export default {
           timetype: DateType.Date,
           name: "",
           startTime: "",
-          endTime: ""
+          endTime: "",
+          comment: ""
         };
         this.$nextTick().then(() => {
           this.$refs.formInline.resetFields();
@@ -359,97 +363,123 @@ export default {
   methods: {
 
     handleConfirm(name) {
-      console.log("click", name, this.$refs[name], this.$refs[name].validate)
-      this.$refs[name].validate((valid) => {
-        console.log("click3", valid)
+
+      // const allFields = Object.keys(this.formModel).map((key, index) => {
+      //   return new Promise((resolve, reject) => {
+      //     this.$refs[name].validateField(key, function (valid) {
+      //       resolve(!!valid);
+      //     });
+      //   });
+      // });
+
+      // Promise.all(allFields).then((valids) => {
+      //   const isValid = valids.reduce((result, item) => {
+      //     return result + item;
+      //   }, 0); // 0 通过
+
+      //   if (!isValid) {
+      //     this.submit();
+      //   }
+
+      // });
+
+
+
+      this.$refs[name].validate().then((valid) => {
 
         if (valid) {
-          const params = { ...this.formModel };
-          const strategy = {
-            [DateType.Date]: function (params) {
-              const { startTime, endTime } = params;
-              const [timestamp1, time1] = startTime.split("-");
-              const [timestamp2, time2] = endTime.split("-");
-              const oneMinute = 60 * 60 * 1000;
-              params.begindaytime = moment.tz(new Date(+timestamp1 + time1 * oneMinute), "Asia/Shanghai").format();
-              params.enddaytime = moment.tz(new Date(+timestamp2 + time2 * oneMinute), "Asia/Shanghai").format();
-            },
-            [DateType.Week]: function (params) {
-              const { startTime, endTime } = params;
-              const [week1, time1] = startTime.split("-");
-              const [week2, time2] = endTime.split("-");
-
-              if (Number(week1) < Number(week2)) {
-                const startDay = {
-                  beginminute: time1 * 60,
-                  endminute: 24 * 60,
-                  weekday: Number(week1)
-                };
-                const wholeDayGroup = Array.from({ length: Number(week2) - Number(week1) - 1 }, function wholeDay(item, index) {
-                  return {
-                    beginminute: 0,
-                    endminute: 24 * 60,
-                    weekday: Number(week1) + index + 1
-                  };
-                });
-                const endDay = {
-                  beginminute: 0,
-                  endminute: time2 * 60,
-                  weekday: Number(week2)
-                };
-
-                return [startDay, ...wholeDayGroup, endDay];
-              }
-              if (Number(week1) === Number(week2)) {
-                return [{
-                  beginminute: time1 * 60,
-                  endminute: time2 * 60,
-                  weekday: Number(week1)
-                }];
-              }
-
-              //  "起始星期大于结束星期"; 在输入的时候预先做校验，这里的场景就永远不会出现
-
-            },
-            [DateType.Day]: function (params) {
-              const { startTime, endTime } = params;
-              return Array.from({ length: 1 }, function (item, index) {
-                return {
-                  beginminute: startTime * 60,
-                  endminute: endTime * 60,
-                  weekday: index
-                };
-              });
-            }
-
-          };
-          const weekdaygroup = strategy[params.timetype](params);
-          params.weekdaygroup = weekdaygroup;
-
-          Reflect.deleteProperty(params, "startTime");
-          Reflect.deleteProperty(params, "endTime");
-          Reflect.deleteProperty(params, "type");
-
-          if (this.isEdit) {
-            this.$put({ url: this.links.update, params }).then(res => {
-              this.$$success("编辑成功");
-              this.$emit("success");
-              this.dialogVisible = false;
-            }).catch(err => {
-              this.$$error(err.response.data.message);
-            });
-          } else {
-            this.$post({ url: this.links.self, params }).then(res => {
-              this.$$success("新建成功");
-              this.$emit("success");
-              this.dialogVisible = false;
-            }).catch(err => {
-              this.$$error(err.response.data.message);
-            });
-          }
+          this.submit();
         }
+
       });
 
+
+    },
+    submit() {
+
+      const params = { ...this.formModel };
+      const strategy = {
+        [DateType.Date]: function (params) {
+          const { startTime, endTime } = params;
+          const [timestamp1, time1] = startTime.split("-");
+          const [timestamp2, time2] = endTime.split("-");
+          const oneMinute = 60 * 60 * 1000;
+          params.begindaytime = moment.tz(new Date(+timestamp1 + time1 * oneMinute), "Asia/Shanghai").format();
+          params.enddaytime = moment.tz(new Date(+timestamp2 + time2 * oneMinute), "Asia/Shanghai").format();
+        },
+        [DateType.Week]: function (params) {
+          const { startTime, endTime } = params;
+          const [week1, time1] = startTime.split("-");
+          const [week2, time2] = endTime.split("-");
+
+          if (Number(week1) < Number(week2)) {
+            const startDay = {
+              beginminute: time1 * 60,
+              endminute: 24 * 60,
+              weekday: Number(week1)
+            };
+            const wholeDayGroup = Array.from({ length: Number(week2) - Number(week1) - 1 }, function wholeDay(item, index) {
+              return {
+                beginminute: 0,
+                endminute: 24 * 60,
+                weekday: Number(week1) + index + 1
+              };
+            });
+            const endDay = {
+              beginminute: 0,
+              endminute: time2 * 60,
+              weekday: Number(week2)
+            };
+
+            return [startDay, ...wholeDayGroup, endDay];
+          }
+          if (Number(week1) === Number(week2)) {
+            return [{
+              beginminute: time1 * 60,
+              endminute: time2 * 60,
+              weekday: Number(week1)
+            }];
+          }
+
+          //  "起始星期大于结束星期"; 在输入的时候预先做校验，这里的场景就永远不会出现
+
+        },
+        [DateType.Day]: function (params) {
+          const { startTime, endTime } = params;
+          return Array.from({ length: 1 }, function (item, index) {
+            return {
+              beginminute: startTime * 60,
+              endminute: endTime * 60,
+              weekday: index
+            };
+          });
+        }
+
+      };
+      const weekdaygroup = strategy[params.timetype](params);
+      params.weekdaygroup = weekdaygroup;
+
+      Reflect.deleteProperty(params, "startTime");
+      Reflect.deleteProperty(params, "endTime");
+      Reflect.deleteProperty(params, "type");
+
+      if (this.isEdit) {
+        this.$put({ url: this.links.update, params }).then(res => {
+          this.$$success("编辑成功");
+          this.$emit("success");
+          this.dialogVisible = false;
+        }).catch(err => {
+          this.$$error(err.response.data.message);
+        });
+      } else {
+        this.$post({ url: this.links.self, params }).then(res => {
+          this.$$success("新建成功");
+          this.$emit("success");
+          this.dialogVisible = false;
+        }).catch(err => {
+          this.$$error(err.response.data.message);
+        });
+      }
 
     }
 
