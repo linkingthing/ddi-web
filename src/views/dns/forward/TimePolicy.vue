@@ -47,18 +47,7 @@ export default {
         {
           title: "名称",
           key: "name",
-          align: "left",
-          render: (h, { row }) => {
-            return h(
-              "a",
-              {
-                props: {
-                  href: "javascript:;"
-                }
-              },
-              row.name
-            );
-          }
+          align: "left"
         },
         {
           title: "开始时间",
