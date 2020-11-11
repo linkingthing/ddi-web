@@ -23,13 +23,7 @@ export default {
   watch: {},
   created() { },
   mounted() {
-    const { name, prefixs, } = this.$route.query;
-    this.setPlanName(name);
-    this.setPrefix(prefixs.split(","));
-
-
     this.getLayoutInfo();
-
   },
   destroyed() {
     console.log("reset resetLayoutData")
@@ -38,13 +32,16 @@ export default {
   methods: {
     ...mapMutations([
       "setPlanName",
-      "setPrefix",
+      "setPrefixs",
       "initTree",
       "setNodes",
       "resetLayoutData"
     ]),
     getLayoutInfo() {
-      this.$get(this.$getApiByRoute()).then(({ semanticnodes }) => {
+      this.$get(this.$getApiByRoute()).then(({ name, prefixs, semanticnodes }) => {
+
+        this.setPlanName(name);
+        this.setPrefixs(prefixs);
 
         // set nextBitWidth,语义节点的父节点的属性值，来源于当前节点的plannode 的 bitwidth
         semanticnodes.forEach(node => {

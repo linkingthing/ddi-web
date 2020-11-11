@@ -3,11 +3,12 @@
     <div class="SemanticContent-inner">
 
       <div class="SemanticContent-header">
-        <p>政务网规划</p>
-        <img
-          src="./title-bar.png"
-          alt=""
-        >
+        <h1 title="政务网规划">政务网规划</h1>
+        <div>
+          <label for="">前缀：</label>
+          <span :title="currentNodePrefix.join(',')">{{ currentNodePrefix.join(",")}}</span>
+        </div>
+
       </div>
       <section>
         <div class="step-bar">
@@ -22,7 +23,7 @@
         </div>
         <div class="SemanticContent-action">
           <div class="action-input-item">
-            <label class="label">地址位宽</label>
+            <label class="label">地址位宽：</label>
             <div class="action-box">
 
               <Input
@@ -105,7 +106,7 @@
       <div class="SemanticContent-action">
 
         <div class="action-input-item">
-          <label class="label">语义节点数</label>
+          <label class="label">语义节点数：</label>
           <div class="action-box">
             <Input
               class="action-box-input"
@@ -121,7 +122,7 @@
         </div>
 
         <div class="action-input-item">
-          <label class="label">地址步长</label>
+          <label class="label">地址步长：</label>
           <div class="action-box">
             <Input
               class="action-box-input"
@@ -139,7 +140,10 @@
 
         <div class="action-input-item">
           <label class="label">剩余地址块:</label>
-          <span class="action-box-input">
+          <span
+            class="action-box-input"
+            style="padding: 3px 0;"
+          >
             {{surplus}}
           </span>
         </div>
@@ -212,7 +216,10 @@
       <div class="SemanticContent-table">
         <div class="SemanticContent-table-operate">
           <div>
-            <Button type="primary">一键规划</Button>
+            <Button
+              type="primary"
+              @click="handleOneKeyPlan"
+            >一键规划</Button>
             <Button
               type="primary"
               ghost
@@ -265,7 +272,7 @@ import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
-import { parserValueStr2Arr, executeNextIpv6Segment } from "./helper";
+import { parserValueStr2Arr, executeNextIpv6Segment, planSemanticNodesValue } from "./helper";
 
 
 export default {
@@ -452,7 +459,7 @@ export default {
   computed: {
     ...mapGetters([
       "planName",
-      "perfix",
+      "prefixs",
       "nodes",
       "tree",
       "currentNode",
@@ -475,7 +482,7 @@ export default {
               return result + prev;
             }, 0);
 
-        result = 2 ** nextBitWidth - 1 - childrenLen;
+        result = this.currentNode.prefix.length * (2 ** nextBitWidth - 1) - childrenLen;
       }
       return result;
     },
@@ -504,6 +511,9 @@ export default {
       deep: true,
       handler(val) {
         console.log(val, 33)
+        console.log("nodes", this.nodes)
+        console.log("currentNodeChildren", this.currentNodeChildren)
+
         if (!val) {
           return;
         }
@@ -568,7 +578,8 @@ export default {
   mounted() { },
   methods: {
     ...mapMutations([
-      "saveCurrentNode",
+      "saveNode",
+      "saveNodes",
       "addNodes",
       "removeNodeById"
     ]),
@@ -578,7 +589,7 @@ export default {
 
       if (currentNode) {
         currentNode[attr] = val;
-        this.saveCurrentNode(currentNode);
+        this.saveNode(currentNode);
       }
 
     }, 600),
@@ -588,22 +599,6 @@ export default {
     handleAddOne() {
       // TODO: 考虑必要限制
       this.nodeCount += 1;
-      // const parentsemanticid = this.currentNode.id;
-      // const node = {
-      //   id: uuidv4(),
-      //   modified: 1,
-      //   name: `新增节点 ${this.nodeCount}`,
-      //   parentsemanticid,
-      //   stepsize: 2,
-      //   sequence: 1,
-      //   autocreate: false,  // TODO：这里交互来源
-      //   ipv4s: [],
-      //   plannodes: [],
-      //   addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
-      // };
-
-      // this.addNodes(nodes);
-
     },
     handleClickCreateSemanticNode() {
       const currentSemanticNodeListLength = this.semanticNodeList.length;
@@ -612,7 +607,7 @@ export default {
       if (shouldCreateLength > 0) {
         const parentsemanticid = this.currentNode.id;
 
-        const semanticNodes = Array.from({ length: shouldCreateLength }, function (item) {
+        const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
           return {
             id: uuidv4(),
             modified: 1,
@@ -626,7 +621,7 @@ export default {
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
           };
         });
-
+        console.log(semanticNodes)
         this.semanticNodeList.push(...semanticNodes);
 
       }
@@ -646,7 +641,7 @@ export default {
       this.removeNodeById(row.id);
     },
     handleOpenEditNode(row) {
-
+      // TODO：整体设计改变，这部分代码基本无意义
       console.log(row)
       console.log(this.currentNode)
       this.nodeEditVisible = true;
@@ -675,6 +670,7 @@ export default {
 
     },
     handleSaveChildNode() {
+      // TODO：整体设计改变，这部分代码基本无意义
 
       const node = cloneDeep(this.currentNodeofChooseChild);
 
@@ -692,13 +688,51 @@ export default {
 
           node.prefix = node.prefixObject.map(item => item.planNodePrefix);
 
-          this.saveCurrentNode(node);
+          this.saveNode(node);
 
           this.nodeEditVisible = false;
         }
 
 
       });
+
+    },
+
+    handleOneKeyPlan() {
+
+      const surplus = +this.surplus; // 剩余地址块数
+
+      const prefixList = this.currentNodePrefix;
+
+      const semanticNodeList = this.semanticNodeList;
+      const stepSize = +this.currentNode.stepsize;
+      const nextBitWidth = this.currentNode.nextBitWidth;
+      const allPlanNodes = this.allPlanNodes;
+
+      console.log("currentNode", this.currentNode)
+      console.log("semanticNodeList", semanticNodeList)
+      console.log("prefixList", prefixList)
+      console.log("stepSize", stepSize)
+      console.log("nextBitWidth", nextBitWidth)
+
+      if (stepSize * semanticNodeList.length <= surplus) {
+        const nodeList = planSemanticNodesValue({
+          prefixList,
+          semanticNodeList,
+          bitWidth: nextBitWidth,
+          stepSize,
+          allPlanNodes
+        });
+        console.log(nodeList, 999);
+
+        this.saveNodes(nodeList);
+
+      }
+
+
+
+
+      // const 
 
     },
     handleSave() {
@@ -708,74 +742,17 @@ export default {
       const methods = "$put";
 
       console.log(this.nodes, "nodes")
+      console.log(this.prefixs, "prefixs")
 
       const nodes = cloneDeep(this.nodes);
 
       const maxmaskwidth = 64;
 
-      nodes.forEach(node => {
-        console.log(node, "node")
-
-
-        node.modified = 1;
-
-
-        if (node.pid === "0" && !node.plannodes) {
-          node.ppid = "0";
-          node.plannodes = node.prefix.map(item => {
-            return {
-              id: uuidv4(),
-              prefix: item,
-              ppid: "0",  // 当前网络节点的上层（生成它的）网络节点，
-              psid: node.id,  // psid plannode 的node也就是，当前网络节点的语义节点
-              name: node.name,
-              maxmaskwidth
-            };
-          });
-        }
-
-        /**
-         * nextBitWidth 是当前语义节点 的子节点的planNode节点的位宽
-        */
-        const pNode = nodes.find(item => item.id === node.pid);
-        console.log(pNode, "pNode")
-        const bitWidth = pNode && +pNode.nextBitWidth;
-
-        Array.isArray(node.plannodes) && node.plannodes.forEach(plannode => {
-          plannode.bitWidth = bitWidth;
-        });
-        if (node.hasPrefixObject) {
-          node.plannodes = Array.isArray(node.prefixObject) ? node.prefixObject.map((item, index) => {
-
-            console.log(item.prefix)
-
-            // ppid的算法可以优化？，只从语义节点父节点种plannodes里面找？缩小范围可乎？
-            const ppidOfPrefix = item.prefix; // ppid 对应的plannode的prefix;
-            const ppNode = this.allPlanNodes.find(item => item.prefix === ppidOfPrefix) || { id: "" };
-            // ppNode ,ppNode.id 不一定拿得到
-
-            node.ppid = ppNode.id;
-            return {
-              id: uuidv4(),
-              prefix: item.planNodePrefix,
-              psid: node.id,
-              ppid: ppNode.id, // 网络节点的上层网络节点
-              sequence: "",
-              value: item.value,
-              name: `plannodes${index}`,
-              ipv4: [],
-              bitWidth,
-              maxmaskwidth
-            };
-          }) : [];
-        }
-
-
-      });
-
+      const planMaskWidths = Array.from({ length: this.prefixs.length }, () => maxmaskwidth);
       const params = {
-        maxmaskwidths: [],
-        name: "layout",
+        maxmaskwidths: planMaskWidths,
+        name: this.planName,
+        prefixs: this.prefixs,
         semanticnodes: nodes
       };
 
@@ -795,7 +772,7 @@ export default {
 .SemanticContent {
   position: relative;
   flex: 1;
-  padding: 0 24px;
+  padding-left: 24px;
 
   .SemanticContent-inner {
     border-left: 1px solid #e6e6e6;
@@ -804,10 +781,44 @@ export default {
   }
 
   .SemanticContent-header {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
     font-size: 14px;
     color: #333;
     font-weight: bold;
     margin-bottom: 20px;
+    line-height: 1;
+    &::before {
+      position: absolute;
+      left: -23px;
+      top: 0;
+      display: block;
+      content: "";
+      width: 5px;
+      height: 20px;
+      border-radius: 2px;
+      background: #4586fe;
+    }
+    h1 {
+      font-size: 20px;
+    }
+    > * {
+      display: flex;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      margin-right: 24px;
+      word-break: keep-all;
+      > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        margin-right: 24px;
+        word-break: keep-all;
+      }
+    }
     img {
       display: block;
     }
@@ -842,13 +853,13 @@ export default {
 
     .action-input-item {
       display: inline-flex;
-      margin-right: 40px;
+      margin-right: 16px;
       .label {
         display: block;
-        min-width: 90px;
+        min-width: 80px;
         font-size: 14px;
         color: #333;
-        padding: 2px 10px;
+        padding: 2px 0;
         line-height: 28px;
       }
       .action-box-input {
@@ -964,8 +975,10 @@ export default {
     }
   }
   .step-bar-tip {
-    height: 20px;
+    width: 16px;
+    height: 16px;
     margin-left: 6px;
+    margin-top: 2px;
   }
 }
 </style>

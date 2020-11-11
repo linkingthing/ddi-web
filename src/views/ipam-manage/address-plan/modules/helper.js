@@ -3,6 +3,7 @@ import ipaddr from "ipaddr.js";
 
 import _, { isNumber } from "lodash";
 export const defaultBitWidth = 4;
+import { v4 as uuidv4 } from "uuid";
 
 export function buildLayoutParams(
   currentLayout,
@@ -356,5 +357,137 @@ export const autoCreateAddressValue = (bitWidth, stepSize) => {
   return result;
 };
 
+export const planSemanticNodesValue = ({
+  prefixList,
+  semanticNodeList,
+  bitWidth,
+  stepSize,
+  allPlanNodes
+}) => {
+  const result = [];
+  const availableValueList = executeValueRecyclePool(
+    prefixList,
+    semanticNodeList,
+    bitWidth
+  );
+  let index = 0;
+  semanticNodeList.forEach(semanticNode => {
+    const plannodes = Array.from({ length: stepSize }, () => {
+      const { prefix, value } = availableValueList[index++];
+      const parentPlanNode = allPlanNodes.find(
+        item => item.prefix === prefix
+      ) || { id: "0" };
+      const parentplannodeid = parentPlanNode.id;
+      return createPlanNode({
+        prefix: executeNextIpv6Segment(prefix, value, bitWidth),
+        value,
+        parentsemanticid: semanticNode.id,
+        parentplannodeid,
+        sequence: 1,
+        name: "",
+        bitWidth
+      });
+    });
 
-console.log("test", autoCreateAddressValue(4, 2))
+    result.push({
+      ...semanticNode,
+      plannodes
+    });
+  });
+
+  return result;
+};
+
+/**
+ * value回收池，计算可以使用的 [{ prefix, value }]
+ * */
+export const executeValueRecyclePool = (
+  prefixList,
+  semanticNodeList,
+  bitWidth
+) => {
+  const result = [];
+  const maxValue = 2 ** bitWidth - 1;
+  const allValueList = prefixList
+    .map(prefix => {
+      return Array.from({ length: maxValue }, function (item, index) {
+        return {
+          prefix,
+          value: index + 1
+        };
+      });
+    })
+    .flat();
+
+  // console.log(allValueList, "allValueList");
+  const uesedValueList = semanticNodeList
+    .map(semanticNode => {
+      semanticNode.plannodes = semanticNode.plannodes || [];
+      return semanticNode.plannodes.map(planNode => {
+        return {
+          prefix: planNode.prefix,
+          value: planNode.value
+        };
+      });
+    })
+    .flat();
+
+  // console.log(uesedValueList, "uesedValueList");
+
+  allValueList.forEach(item => {
+    const hasValue = uesedValueList.some(used => {
+      return used.prefix === item.prefix && used.value === item.value;
+    });
+    if (!hasValue) {
+      result.push(item);
+    }
+  });
+
+  // console.log(result, "result");
+  return result;
+};
+
+// executeValueRecyclePool(
+//   ["32::/32", "33::/33"],
+//   [{ plannodes: [{ prefix: "32::/32", value: 1 }] }],
+//   4
+// );
+
+export const createSemanticNode = () => {
+  return {
+    id: uuidv4(),
+    modified: 1,
+    name: "语义节点1",
+    parentsemanticid: "0",
+    stepsize: 2,
+    sequence: 1,
+    autocreate: false,
+    ipv4s: [],
+    plannodes: []
+  };
+};
+
+/**
+ * 创建网络节点 planNode，定义结构避免参数情况
+ */
+export const createPlanNode = ({
+  prefix,
+  parentsemanticid, // 当前节点的父节点（是一个语义节点）的id
+  parentplannodeid,
+  sequence,
+  value,
+  name,
+  bitWidth
+}) => {
+  return {
+    id: uuidv4(),
+    prefix,
+    parentsemanticid,
+    parentplannodeid, // 网络节点的上层网络节点
+    sequence,
+    value,
+    name,
+    bitWidth,
+    maxmaskwidth: 64
+  };
+};

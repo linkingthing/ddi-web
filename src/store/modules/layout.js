@@ -10,7 +10,7 @@ import {
 const uuid = uuidv4();
 
 const state = {
-  prefix: "",
+  prefixs: [],
   planName: "",
   layout: {},
   nodes: [],
@@ -18,7 +18,7 @@ const state = {
 };
 
 const getters = {
-  prefix: state => state.prefix,
+  prefixs: state => state.prefixs,
   planName: state => state.planName,
   currentNodeId: state => state.currentNodeId,
   currentNode: state => {
@@ -53,8 +53,8 @@ const mutations = {
   setPlanName(state, planName) {
     state.planName = planName;
   },
-  setPrefix(state, prefix) {
-    state.prefix = prefix;
+  setPrefixs(state, prefixs) {
+    state.prefixs = prefixs;
   },
   setNodes(state, nodes) {
     state.nodes = nodes;
@@ -84,11 +84,26 @@ const mutations = {
   setCurrentNodeId(state, currentNodeId) {
     state.currentNodeId = currentNodeId;
   },
-  saveCurrentNode(state, currentNode) {
+  // 传入node，有则修改，无则追加，所以叫save
+  saveNode(state, currentNode) {
     const newNodes = [];
     state.nodes.forEach(node => {
       if (node.id === currentNode.id) {
         newNodes.push(currentNode);
+      } else {
+        newNodes.push(node);
+      }
+    });
+    state.nodes = cloneDeep(newNodes);
+  },
+  saveNodes(state, nodes) {
+    const newNodes = cloneDeep(state.nodes);
+    nodes.forEach(function (node) {
+      const index = newNodes.findIndex(item => {
+        return item.id === node.id;
+      });
+      if (~index) {
+        newNodes.splice(index, 1, node);
       } else {
         newNodes.push(node);
       }
