@@ -1,14 +1,15 @@
 <template>
   <div class="SemanticTree">
     <SemanticTreeHeader prefix="语义树" />
+    <div class="tree">
+      <Tree
+        :data="treeData"
+        children-key="nodes"
+        @on-select-change="handleSelectNode"
+        :render="renderContent"
+      />
+    </div>
 
-    <Tree
-      class="tree"
-      :data="treeData"
-      children-key="nodes"
-      @on-select-change="handleSelectNode"
-      :render="renderContent"
-    />
   </div>
 </template>
 
@@ -124,8 +125,11 @@ export default {
   background: #f4f4f4;
   border-radius: 4px;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
   .tree {
     padding: 20px;
+    overflow: auto;
   }
 }
 </style>

@@ -29,7 +29,8 @@
               <Input
                 class="action-box-input"
                 v-model="bitWidth"
-                placeholder="Enter text"
+                placeholder="请输入地址位宽"
+                :disabled="settableNextBitWidth"
               />
 
               <Tooltip
@@ -59,6 +60,8 @@
               <Button
                 type="primary"
                 style="margin-left: 20px"
+                :disabled="settableNextBitWidth"
+                @click="handleSetNextBitWidth"
               >确定</Button>
             </div>
 
@@ -127,7 +130,7 @@
             <Input
               class="action-box-input"
               v-model="stepsize"
-              placeholder="请输入每个节点的地址数"
+              placeholder="请输入地址步长"
             />
           </div>
         </div>
@@ -267,7 +270,7 @@
 // 经历过一个需求 迭代四版的人，使用一个文件写完所有功能必须被理解，不需要解释
 // 别提复用，ui各种变，操作交随时变，提交的数据格式也在变
 import SegmentAxis from "@/components/SegmentAxis";
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
@@ -466,7 +469,10 @@ export default {
       "currentNodeChildren",
       "allPlanNodes",
     ]),
-
+    settableNextBitWidth() {
+      // 位宽是否可修改
+      return this.currentNode && this.currentNode.nextBitWidth !== 0;
+    },
     surplus() {
       // 剩余地址数
       let result = "_ _";
@@ -518,6 +524,8 @@ export default {
           return;
         }
 
+        this.nodeCount = this.currentNodeChildren.length;
+
         if (val.prefixs && Array.isArray(val.prefixs) && val.prefixs.length) {
           this.currentNodePrefix = val.prefixs;
           const [, len] = val.prefixs[0].split("/");
@@ -544,33 +552,22 @@ export default {
 
       }
     },
-    bitWidth(val) {
-      if (val === "") {
-        this.changeCurrentNode("nextBitWidth", 0);
-      }
-      const notNumber = !(/\D/.test(val));
-      if (notNumber) {
-        this.changeCurrentNode("nextBitWidth", +val);
-      } else {
-        this.$Message.info("请输入数字");
-      }
-    },
     stepsize(val) {
-      if (val === "") {
-        this.changeCurrentNode("stepsize", 0);
-      }
-      const notNumber = !(/\D/.test(val));
-      if (notNumber) {
-        this.changeCurrentNode("stepsize", +val);
-      } else {
-        this.$Message.info("请输入数字");
-      }
+      // if (val === "") {
+      //   this.changeCurrentNode("stepsize", 0);
+      // }
+      // const notNumber = !(/\D/.test(val));
+      // if (notNumber) {
+      //   this.changeCurrentNode("stepsize", +val);
+      // } else {
+      //   this.$Message.info("请输入数字");
+      // }
     },
     currentNodeChildren: {
       deep: true,
       immediate: true,
       handler(val) {
-        this.semanticNodeList = val;
+        this.semanticNodeList = cloneDeep(val);  // 为了避免 nodeCount 先改大再改小
       }
     }
   },
@@ -583,6 +580,38 @@ export default {
       "addNodes",
       "removeNodeById"
     ]),
+    ...mapActions([
+      "getCurrentPlanInfo"
+    ]),
+
+    handleSetNextBitWidth() {
+      const bitWidth = Number(this.bitWidth);
+      if (Number.isNaN(bitWidth)) {
+        this.$Message.info("请输入数字");
+        return;
+      }
+
+      if (bitWidth <= 0) {
+        this.$Message.info("请输入正整数");
+        return;
+      }
+
+      console.log(this.currentNodePrefix)
+      const [prefix] = this.currentNodePrefix;
+      const [, len] = prefix.split("/");
+      const maxBitwidth = 64 - len; // 根据剩余
+
+      if (bitWidth > maxBitwidth) {
+        this.$Message.info(`当前层级位宽不能超过 ${maxBitwidth}`);
+        return;
+      }
+
+      this.changeCurrentNode("nextBitWidth", bitWidth);
+      this.$Message.success("位宽设置成功");
+
+      // 需要标识？后者自身就是标识
+
+    },
     changeCurrentNode: debounce(function (attr, val) {
       // 在语义节点上 设置位宽，便于planNode获取
       const currentNode = cloneDeep(this.currentNode);
@@ -601,12 +630,37 @@ export default {
       this.nodeCount = +this.nodeCount + 1;
     },
     handleClickCreateSemanticNode() {
+      const oldNodeCount = this.currentNodeChildren.length;
+
       const currentSemanticNodeListLength = this.semanticNodeList.length;
-      const willCreateSemanticNodeListLength = this.nodeCount;
-      const shouldCreateLength = willCreateSemanticNodeListLength - currentSemanticNodeListLength;
+      const willCreateSemanticNodeListLength = Number(this.nodeCount);
+      const shouldCreateLength = willCreateSemanticNodeListLength - oldNodeCount;
+
+      // 语义节点数校验
+      if (Number.isNaN(willCreateSemanticNodeListLength)) {
+        this.$Message.info(`语义节点数输入有误，请更正`);
+        return;
+      }
+
+      if (oldNodeCount > willCreateSemanticNodeListLength) {
+        this.$Message.info(`语义节点数低于原有语义节点数，请继续增加至${oldNodeCount}个及以上`);
+        return;
+      }
+
+
+      const surplus = this.surplus;
+
+      const willUseAddressBlockCount = currentSemanticNodeListLength * this.stepsize;
+      if (surplus < willUseAddressBlockCount) {
+        this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
+        return;
+      }
+
+
+
       if (shouldCreateLength > 0) {
         const parentsemanticid = this.currentNode.id;
-
+        const semanticNodeList = this.semanticNodeList.filter(item => item.temporaryCreated !== "createing");
         const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
           return {
             id: uuidv4(),
@@ -619,11 +673,12 @@ export default {
             ipv4s: [],
             plannodes: [],
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
+
+            temporaryCreated: "createing",  // 零时创建但未保存的语义节点标识
+
           };
         });
-        console.log(semanticNodes)
-        this.semanticNodeList.push(...semanticNodes);
-
+        this.semanticNodeList = semanticNodeList.concat(semanticNodes);
       }
 
     },
@@ -724,12 +779,14 @@ export default {
           stepSize,
           allPlanNodes
         }).map(item => {
+          Reflect.deleteProperty(item, "temporaryCreated");
           return {
             ...item,
             addressCount: item.plannodes.length,
             prefixs: item.plannodes.map(item => item.prefix)
           };
         });
+
         this.saveNodes(nodeList);
       }
 
@@ -767,6 +824,9 @@ export default {
 
       this[methods]({ url, params }).then(res => {
         console.log(res)
+
+        this.getCurrentPlanInfo(this.$getApiByRoute());
+        this.$Message.success("保存成功");
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
