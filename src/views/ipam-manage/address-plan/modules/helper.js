@@ -362,7 +362,8 @@ export const planSemanticNodesValue = ({
   semanticNodeList,
   bitWidth,
   stepSize,
-  allPlanNodes
+  allPlanNodes,
+  isChangeWhole = false
 }) => {
   const result = [];
   const availableValueList = executeValueRecyclePool(
@@ -372,14 +373,14 @@ export const planSemanticNodesValue = ({
   );
   let index = 0;
   semanticNodeList.forEach(semanticNode => {
-    // 规划过的语义节点保持不变
-    // if (
-    //   Array.isArray(semanticNode.plannodes) &&
-    //   semanticNode.plannodes.length
-    // ) {
-    //   result.push(semanticNode);
-    //   return;
-    // }
+    // TODO isChangeWhole  规划过的语义节点保持不变？？ 定义一个参数名，控制是否操作原来的值
+    if (
+      Array.isArray(semanticNode.plannodes) &&
+      semanticNode.plannodes.length
+    ) {
+      result.push(semanticNode);
+      return;
+    }
 
     const plannodes = Array.from({ length: stepSize }, () => {
       const { prefix, value } = availableValueList[index++];
@@ -499,4 +500,20 @@ export const createPlanNode = ({
     bitWidth,
     maxmaskwidth: 64
   };
+};
+
+export const hasGrandson = (nodes, id) => {
+  const children = nodes.filter(node => {
+    return node.parentsemanticid === id;
+  });
+  if (children.length) {
+    const grandsonIds = children.map(item => item.id);
+    const grandson = nodes.find(node => {
+      return grandsonIds.includes(node.parentsemanticid);
+    });
+
+    return !!grandson;
+  } else {
+    return false;
+  }
 };

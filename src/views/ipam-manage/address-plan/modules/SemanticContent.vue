@@ -79,18 +79,6 @@
         </div>
       </section>
 
-      <!-- <div class="SemanticContent-statistics">
-
-        <div class="SemanticContent-statistics-item">
-          <strong>{{ currentNodePrefix.join(",")}}</strong>
-          <p>前缀(共{{currentNodePrefix.length}}个)</p>
-        </div>
-        <div class="SemanticContent-statistics-item">
-          <strong>{{ surplus}} </strong>
-          <p>剩余地址块</p>
-        </div>
-      </div> -->
-
       <section>
 
         <div class="step-bar">
@@ -228,7 +216,11 @@
               ghost
             >自定义规划</Button>
 
-            <Button type="warning">清空规划</Button>
+            <Button
+              type="warning"
+              @click="handleClearPlan"
+              :disabled="availableClearPlan"
+            >清空规划</Button>
           </div>
           <div class="action-input-item-right">
             <Input
@@ -275,9 +267,9 @@ import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
-import { parserValueStr2Arr, executeNextIpv6Segment, planSemanticNodesValue } from "./helper";
+import { parserValueStr2Arr, executeNextIpv6Segment, planSemanticNodesValue, hasGrandson } from "./helper";
 
-
+let nodeIndex = 1;
 export default {
   components: {
     SegmentAxis
@@ -473,6 +465,11 @@ export default {
       // 位宽是否可修改
       return this.currentNode && this.currentNode.nextBitWidth !== 0;
     },
+    availableClearPlan() {
+      const currentNodeId = this.currentNode && this.currentNode.id;
+      console.log(hasGrandson(this.nodes, currentNodeId))
+      return hasGrandson(this.nodes, currentNodeId);
+    },
     surplus() {
       // 剩余地址数
       let result = "_ _";
@@ -552,17 +549,7 @@ export default {
 
       }
     },
-    stepsize(val) {
-      // if (val === "") {
-      //   this.changeCurrentNode("stepsize", 0);
-      // }
-      // const notNumber = !(/\D/.test(val));
-      // if (notNumber) {
-      //   this.changeCurrentNode("stepsize", +val);
-      // } else {
-      //   this.$Message.info("请输入数字");
-      // }
-    },
+
     currentNodeChildren: {
       deep: true,
       immediate: true,
@@ -612,16 +599,14 @@ export default {
       // 需要标识？后者自身就是标识
 
     },
-    changeCurrentNode: debounce(function (attr, val) {
-      // 在语义节点上 设置位宽，便于planNode获取
+    changeCurrentNode(attr, val) {
+      // 设置当前节点的属性
       const currentNode = cloneDeep(this.currentNode);
-
       if (currentNode) {
         currentNode[attr] = val;
         this.saveNode(currentNode);
       }
-
-    }, 600),
+    },
     handleToggleDetail() {
       this.detailVisible = !this.detailVisible;
     },
@@ -682,7 +667,7 @@ export default {
           return {
             id: uuidv4(),
             modified: 1,
-            name: `新增节点`,
+            name: `新增节点${nodeIndex++}`,
             parentsemanticid,
             stepsize,
             sequence: 1,
@@ -696,8 +681,8 @@ export default {
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
-        console.log(this.semanticNodeList, 55)
       }
+      this.$Message.success("操作成功");
 
     },
 
@@ -782,13 +767,6 @@ export default {
       const nextBitWidth = this.currentNode.nextBitWidth;
       const allPlanNodes = this.allPlanNodes;
 
-      console.log("currentNode", this.currentNode)
-      console.log("semanticNodeList", semanticNodeList)
-      console.log("prefixList", prefixList)
-      console.log("stepSize", stepSize)
-      console.log("nextBitWidth", nextBitWidth)
-
-      console.log("surplus", surplus)
       if (stepSize * semanticNodeList.length <= surplus) {
         const nodeList = planSemanticNodesValue({
           prefixList,
@@ -804,20 +782,29 @@ export default {
             prefixs: item.plannodes.map(item => item.prefix)
           };
         });
-
-        this.saveNodes(nodeList);
+        this.semanticNodeList = nodeList;
+        this.$Message.success("操作成功");
       }
 
 
+    },
 
-
-      // const 
-
+    handleClearPlan() {
+      const semanticNodeList = this.semanticNodeList;
+      this.semanticNodeList = semanticNodeList.map(item => {
+        return {
+          ...item,
+          plannodes: [],
+          prefixs: [],
+          addressCount: 0
+        };
+      });
+      this.$Message.success("操作成功");
     },
     handleSave() {
 
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize
-
+      this.saveNodes(cloneDeep(this.semanticNodeList));
       const { url } = this.$getApiByRoute();
 
 

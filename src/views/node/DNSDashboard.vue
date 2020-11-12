@@ -266,7 +266,6 @@ export default {
           }
 
           if (item.id === "cachehitratio") {
-            // todo, 可能会改
             const [labels, values] = valuesParser(item.cachehitratio.ratios || []);
             this.memoHitRateLabels = labels;
             this.memoHitRateValues = values;
