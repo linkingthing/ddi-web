@@ -129,17 +129,24 @@ const actions = {
       semanticnodes.forEach(node => {
         node.nextBitWidth = 0; // 默认为0,必须是数字，typeof node.nextBitWidth === "number"
 
-        const childSemanticNode = semanticnodes.find(
+        const childrenSemanticNode = semanticnodes.filter(
           item => item.parentsemanticid === node.id
         );
-        if (
-          childSemanticNode &&
-          Array.isArray(childSemanticNode.plannodes) &&
-          childSemanticNode.plannodes.length
-        ) {
-          const { bitWidth } = childSemanticNode.plannodes[0];
-          node.nextBitWidth = bitWidth;
+
+        // console.log(childSemanticNode, 999);
+        if (childrenSemanticNode.length) {
+          childrenSemanticNode.some(childSemanticNode => {
+            return (
+              Array.isArray(childSemanticNode.plannodes) &&
+              childSemanticNode.plannodes.some(item => {
+                if (item.bitWidth) {
+                  node.nextBitWidth = item.bitWidth;
+                }
+              })
+            );
+          });
         }
+
         node.plannodes = node.plannodes || [];
         // 从plannodes节点中将prefix捞出，用于聚焦树节点时候面板展示
         const prefixArr = node.plannodes.reduce((result, plannode) => {

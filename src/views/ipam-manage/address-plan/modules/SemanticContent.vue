@@ -845,7 +845,6 @@ export default {
         if (valid) {
           const { choosePrefix } = this.customPlan;
 
-
           const prefixList = [choosePrefix];
           const semanticNodeList = this.semanticNodeList;
 
@@ -899,9 +898,6 @@ export default {
 
       const methods = "$put";
 
-      console.log(this.nodes, "nodes")
-      console.log(this.prefixs, "prefixs")
-
       const nodes = cloneDeep(this.nodes);
 
       const maxmaskwidth = 64;
@@ -922,8 +918,6 @@ export default {
       };
 
       this[methods]({ url, params }).then(res => {
-        console.log(res)
-
         this.getCurrentPlanInfo(this.$getApiByRoute());
         this.$Message.success("保存成功");
       }).catch(err => {
