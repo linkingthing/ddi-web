@@ -336,7 +336,7 @@ export default {
         },
         {
           title: "IPv6地址",
-          key: "name",
+          key: "prefixs",
           width: 250
 
         },
@@ -470,7 +470,7 @@ export default {
     surplus() {
       // 剩余地址数
       let result = "_ _";
-      if (this.currentNode && this.currentNode.prefix && this.currentNode.prefix.length) {
+      if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
         const { nextBitWidth, plannodes } = this.currentNode;
         const currentNodeChildren = this.nodes.filter(item => item.pid === this.currentNode.id);
 
@@ -482,14 +482,14 @@ export default {
               return result + prev;
             }, 0);
 
-        result = this.currentNode.prefix.length * (2 ** nextBitWidth - 1) - childrenLen;
+        result = this.currentNode.prefixs.length * (2 ** nextBitWidth - 1) - childrenLen;
       }
       return result;
     },
     dataDetail() {
       const prefix = this.currentNodePrefix;
       const nextBitWidth = this.currentNode ? this.currentNode.nextBitWidth : 0;
-      const count = 2 ** Number(nextBitWidth) - 1;
+      const count = 2 ** Number(nextBitWidth) - 1 || 0;
 
       return prefix.map(item => {
         const minAblePlan = executeNextIpv6Segment(item, 1, nextBitWidth);
@@ -510,17 +510,17 @@ export default {
     currentNode: {
       deep: true,
       handler(val) {
-        console.log(val, 33)
-        console.log("nodes", this.nodes)
-        console.log("currentNodeChildren", this.currentNodeChildren)
+        console.log(val, "currentNode")
+        // console.log("nodes", this.nodes)
+        // console.log("currentNodeChildren", this.currentNodeChildren)
 
         if (!val) {
           return;
         }
 
-        if (val.prefix && Array.isArray(val.prefix) && val.prefix.length) {
-          this.currentNodePrefix = val.prefix;
-          const [, len] = val.prefix[0].split("/");
+        if (val.prefixs && Array.isArray(val.prefixs) && val.prefixs.length) {
+          this.currentNodePrefix = val.prefixs;
+          const [, len] = val.prefixs[0].split("/");
           this.currentNodePrefixLen = len;
         } else {
           this.currentNodePrefix = [];
@@ -598,7 +598,7 @@ export default {
     },
     handleAddOne() {
       // TODO: 考虑必要限制
-      this.nodeCount += 1;
+      this.nodeCount = +this.nodeCount + 1;
     },
     handleClickCreateSemanticNode() {
       const currentSemanticNodeListLength = this.semanticNodeList.length;
@@ -715,6 +715,7 @@ export default {
       console.log("stepSize", stepSize)
       console.log("nextBitWidth", nextBitWidth)
 
+      console.log("surplus", surplus)
       if (stepSize * semanticNodeList.length <= surplus) {
         const nodeList = planSemanticNodesValue({
           prefixList,
@@ -722,11 +723,14 @@ export default {
           bitWidth: nextBitWidth,
           stepSize,
           allPlanNodes
+        }).map(item => {
+          return {
+            ...item,
+            addressCount: item.plannodes.length,
+            prefixs: item.plannodes.map(item => item.prefix)
+          };
         });
-        console.log(nodeList, 999);
-
         this.saveNodes(nodeList);
-
       }
 
 
@@ -753,7 +757,12 @@ export default {
         maxmaskwidths: planMaskWidths,
         name: this.planName,
         prefixs: this.prefixs,
-        semanticnodes: nodes
+        semanticnodes: nodes.map(item => {
+          return {
+            ...item,
+            modified: true
+          };
+        })
       };
 
       this[methods]({ url, params }).then(res => {

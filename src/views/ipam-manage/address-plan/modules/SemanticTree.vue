@@ -1,8 +1,6 @@
 <template>
   <div class="SemanticTree">
-    <SemanticTreeHeader
-      prefix="语义树"
-    />
+    <SemanticTreeHeader prefix="语义树" />
 
     <Tree
       class="tree"
@@ -51,7 +49,7 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val, "tree")
+        // console.log(val, "tree")
         if (Array.isArray(val) && val.length) {
           this.treeData = cloneDeep(val);
           if (!this.currentNodeId) {
@@ -72,7 +70,7 @@ export default {
     ]),
 
     handleSelectNode(nodes, node) {
-      console.log(node)
+      console.log("handleSelectNode", node)
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
