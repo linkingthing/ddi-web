@@ -357,13 +357,20 @@ export const autoCreateAddressValue = (bitWidth, stepSize) => {
   return result;
 };
 
+/**
+ * 对semanticNodeList中的语义节点计算planNodes
+ * selectSemanticNodeList 默认 为空，如果不为空，则只处理selectSemanticNodeList 里面的值
+ * keepExistPlanNode true 时标识保持原来的PlanNodes不变（如果之前有）
+ *
+ */
 export const planSemanticNodesValue = ({
   prefixList,
   semanticNodeList,
   bitWidth,
   stepSize,
   allPlanNodes,
-  isChangeWhole = false
+  selectSemanticNodeList = [],
+  keepExistPlanNode = true
 }) => {
   const result = [];
   const availableValueList = executeValueRecyclePool(
@@ -373,8 +380,9 @@ export const planSemanticNodesValue = ({
   );
   let index = 0;
   semanticNodeList.forEach(semanticNode => {
-    // TODO isChangeWhole  规划过的语义节点保持不变？？ 定义一个参数名，控制是否操作原来的值
+    //  规划过的语义节点保持不变
     if (
+      keepExistPlanNode &&
       Array.isArray(semanticNode.plannodes) &&
       semanticNode.plannodes.length
     ) {
@@ -398,6 +406,28 @@ export const planSemanticNodesValue = ({
         bitWidth
       });
     });
+
+    if (selectSemanticNodeList.length) {
+      // 如果传入selectSemanticNodeList不为空，只更新选中部分
+
+      const target = selectSemanticNodeList.find(
+        selectNode => selectNode.id === semanticNode.id
+      );
+      console.log(target);
+      if (target) {
+        result.push({
+          ...semanticNode,
+          plannodes
+        });
+      } else {
+        console.log(semanticNode, "nonde");
+
+        Array.from({ length: stepSize }, () => index--);
+        result.push(semanticNode);
+      }
+
+      return;
+    }
 
     result.push({
       ...semanticNode,
@@ -423,13 +453,14 @@ export const executeValueRecyclePool = (
       return Array.from({ length: maxValue }, function (item, index) {
         return {
           prefix,
+          realPrefix: executeNextIpv6Segment(prefix, index + 1, bitWidth),
           value: index + 1
         };
       });
     })
     .flat();
 
-  // console.log(allValueList, "allValueList");
+  console.log(allValueList, "allValueList");
   const uesedValueList = semanticNodeList
     .map(semanticNode => {
       semanticNode.plannodes = semanticNode.plannodes || [];
@@ -442,18 +473,18 @@ export const executeValueRecyclePool = (
     })
     .flat();
 
-  // console.log(uesedValueList, "uesedValueList");
+  console.log(uesedValueList, "uesedValueList");
 
   allValueList.forEach(item => {
     const hasValue = uesedValueList.some(used => {
-      return used.prefix === item.prefix && used.value === item.value;
+      return used.prefix === item.realPrefix && used.value === item.value;
     });
     if (!hasValue) {
       result.push(item);
     }
   });
 
-  // console.log(result, "result");
+  console.log(result, "result");
   return result;
 };
 

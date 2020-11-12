@@ -107,8 +107,6 @@
               enter-button="+1"
               @on-search="handleAddOne"
             />
-            <!-- TODO：需要修改变量 -->
-
           </div>
         </div>
 
@@ -141,6 +139,34 @@
       </div>
 
       <div class="modal">
+
+        <common-modal
+          :visible.sync="customPlanVisible"
+          title="自定义规划"
+          :width="413"
+          @confirm="handleCustomPlan('customPlan')"
+        >
+          <Form
+            :label-width="100"
+            ref="customPlan"
+            :model="customPlan"
+          >
+            <FormItem
+              label="选择IP前缀"
+              prop="choosePrefix"
+              :rules="{required: true, message: '请选择IP前缀'}"
+            >
+              <Select v-model="customPlan.choosePrefix">
+                <Option
+                  v-for="item in currentNodePrefix"
+                  :value="item"
+                  :key="item"
+                >{{ item }}</Option>
+
+              </Select>
+            </FormItem>
+          </Form>
+        </common-modal>
 
         <common-modal
           :visible.sync="nodeEditVisible"
@@ -210,10 +236,12 @@
             <Button
               type="primary"
               @click="handleOneKeyPlan"
+              :disabled="availableOneKeyPlan"
             >一键规划</Button>
             <Button
               type="primary"
               ghost
+              @click="handleOpenCustomPlan"
             >自定义规划</Button>
 
             <Button
@@ -240,9 +268,11 @@
         </div>
 
         <Table
+          ref="selection"
           style="border: 1px solid #E6E6E6;border-bottom: none"
           :columns="columns"
           :data="filterCurrentNodeChildren"
+          @on-selection-change="handleSelectSemanticList"
         />
 
       </div>
@@ -304,6 +334,14 @@ export default {
         }
       ],
       nodeCount: 0,
+
+      customPlanVisible: false,
+      customPlan: {
+        choosePrefix: "",
+      },
+
+      selectSemanticList: [], // 自定义规划时
+
       nodeEditVisible: false,
       semanticNodeList: [],
       columns: [
@@ -463,11 +501,18 @@ export default {
     ]),
     settableNextBitWidth() {
       // 位宽是否可修改
-      return this.currentNode && this.currentNode.nextBitWidth !== 0;
+      const currentNodeId = this.currentNode && this.currentNode.id;
+      return hasGrandson(this.nodes, currentNodeId);
+    },
+    availableOneKeyPlan() {
+      if (this.currentNode) {
+        const { autocreate } = this.currentNode;
+        return autocreate && !(this.semanticNodeList.length);
+      }
+      return true;
     },
     availableClearPlan() {
       const currentNodeId = this.currentNode && this.currentNode.id;
-      console.log(hasGrandson(this.nodes, currentNodeId))
       return hasGrandson(this.nodes, currentNodeId);
     },
     surplus() {
@@ -671,7 +716,7 @@ export default {
             parentsemanticid,
             stepsize,
             sequence: 1,
-            autocreate: false,  // TODO：这里交互来源
+            autocreate: null,
             ipv4s: [],
             plannodes: [],
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
@@ -763,8 +808,8 @@ export default {
       const prefixList = this.currentNodePrefix;
 
       const semanticNodeList = this.semanticNodeList;
-      const stepSize = +this.currentNode.stepsize;
-      const nextBitWidth = this.currentNode.nextBitWidth;
+      const stepSize = +this.stepsize;
+      const nextBitWidth = this.bitWidth;
       const allPlanNodes = this.allPlanNodes;
 
       if (stepSize * semanticNodeList.length <= surplus) {
@@ -779,13 +824,57 @@ export default {
           return {
             ...item,
             addressCount: item.plannodes.length,
-            prefixs: item.plannodes.map(item => item.prefix)
+            prefixs: item.plannodes.map(item => item.prefix),
+            autocreate: true
           };
         });
         this.semanticNodeList = nodeList;
         this.$Message.success("操作成功");
       }
 
+    },
+    handleSelectSemanticList(list) {
+      this.selectSemanticList = list;
+    },
+    handleOpenCustomPlan() {
+      this.customPlanVisible = true;
+    },
+
+    handleCustomPlan(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const { choosePrefix } = this.customPlan;
+
+
+          const prefixList = [choosePrefix];
+          const semanticNodeList = this.semanticNodeList;
+
+          const selectSemanticNodeList = this.selectSemanticList;
+          const stepSize = +this.stepsize;
+          const nextBitWidth = this.bitWidth;
+          const allPlanNodes = this.allPlanNodes;
+
+          const nodeList = planSemanticNodesValue({
+            prefixList,
+            semanticNodeList,
+            selectSemanticNodeList,
+            bitWidth: nextBitWidth,
+            stepSize,
+            allPlanNodes
+          }).map(item => {
+            Reflect.deleteProperty(item, "temporaryCreated");
+            return {
+              ...item,
+              addressCount: item.plannodes.length,
+              prefixs: item.plannodes.map(item => item.prefix),
+              autocreate: false
+            };
+          });
+          this.semanticNodeList = nodeList;
+          this.$Message.success("操作成功");
+
+        }
+      });
 
     },
 
@@ -825,7 +914,9 @@ export default {
         semanticnodes: nodes.map(item => {
           return {
             ...item,
-            modified: true
+            modified: true,
+            autocreate: true,
+
           };
         })
       };
