@@ -630,6 +630,8 @@ export default {
       this.nodeCount = +this.nodeCount + 1;
     },
     handleClickCreateSemanticNode() {
+
+      const bitWidth = this.bitWidth;
       const oldNodeCount = this.currentNodeChildren.length;
 
       const currentSemanticNodeListLength = this.semanticNodeList.length;
@@ -646,6 +648,21 @@ export default {
         this.$Message.info(`语义节点数低于原有语义节点数，请继续增加至${oldNodeCount}个及以上`);
         return;
       }
+
+      // 地址步长校验
+
+      const stepsize = Number(this.stepsize); // 拿到最新值
+      if (Number.isNaN(stepsize)) {
+        this.$Message.info("地址步长输入有误，请更正");
+        return;
+      }
+
+      if (stepsize < 1) {
+        this.$Message.info("地址步长请输入数字");
+        return;
+      }
+
+
 
 
       const surplus = this.surplus;
@@ -667,7 +684,7 @@ export default {
             modified: 1,
             name: `新增节点`,
             parentsemanticid,
-            stepsize: 2,
+            stepsize,
             sequence: 1,
             autocreate: false,  // TODO：这里交互来源
             ipv4s: [],
@@ -679,6 +696,7 @@ export default {
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
+        console.log(this.semanticNodeList, 55)
       }
 
     },
@@ -797,6 +815,9 @@ export default {
 
     },
     handleSave() {
+
+      this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize
+
       const { url } = this.$getApiByRoute();
 
 

@@ -372,7 +372,15 @@ export const planSemanticNodesValue = ({
   );
   let index = 0;
   semanticNodeList.forEach(semanticNode => {
-    // TODO: 如果已有语义节点存在planNode情况，可以在这里 判断 planNode
+    // 规划过的语义节点保持不变
+    // if (
+    //   Array.isArray(semanticNode.plannodes) &&
+    //   semanticNode.plannodes.length
+    // ) {
+    //   result.push(semanticNode);
+    //   return;
+    // }
+
     const plannodes = Array.from({ length: stepSize }, () => {
       const { prefix, value } = availableValueList[index++];
       const parentPlanNode = allPlanNodes.find(
