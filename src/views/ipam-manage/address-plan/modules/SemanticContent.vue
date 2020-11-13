@@ -699,8 +699,6 @@ export default {
 
       const willUseAddressBlockCount = willCreateSemanticNodeListLength * stepsize;
 
-
-      console.log(surplus, willUseAddressBlockCount, stepsize)
       if (surplus < willUseAddressBlockCount) {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
@@ -764,7 +762,6 @@ export default {
       const ipv4s = ipv4str.split(",");
       const valid = ipv4s.every(item => {
         const [ip, len] = item.split("/");
-        console.log(ip, len)
         return ipv4IsValid(ip.trim()) && !!len;
       });
       if (!valid) {
@@ -789,12 +786,34 @@ export default {
       this.nodeEditVisible = true;
       const prefixList = this.currentNodePrefix;
 
-      console.log(row, prefixList)
+      const plannodes = row.plannodes;
+
+      console.log(row, prefixList, plannodes)
+      const allPlanNodes = this.allPlanNodes;
+      const prefixMap = {};
+      row.plannodes = row.plannodes || [];
+      row.plannodes.forEach(plannode => {
+        if (prefixMap[plannode.parentplannodeid]) {
+          prefixMap[plannode.parentplannodeid].count += 1;
+        } else {
+          const { prefix } = allPlanNodes.find(item => item.id === plannode.parentplannodeid)
+
+          prefixMap[plannode.parentplannodeid] = {
+            prefix,
+            count: 1
+          };
+        }
+      });
+
+      console.log(prefixMap, Object.values(prefixMap))
+
+
       this.currentNodeofChooseChild.row = row;
       this.currentNodeofChooseChild.prefixMap = prefixList.map(prefix => {
+        const { count } = Object.values(prefixMap).find(item => item.prefix === prefix) || { count: 0 };
         return {
           prefix,
-          count: 0
+          count
         };
       });
 

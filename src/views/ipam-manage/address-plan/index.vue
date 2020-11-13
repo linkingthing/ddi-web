@@ -191,7 +191,7 @@ export default {
       links: {},
       paramsLinks: {},
 
-      mapVisible: true,
+      mapVisible: false,
       mapTitle: "",
       treeData: []
     };
@@ -237,9 +237,6 @@ export default {
         this.planList = tableData;
         this.links = links;
 
-        this.getMapData(data[0].links.self); // temp
-
-
       }).catch((err) => {
         this.$handleError(err);
       });
@@ -274,10 +271,8 @@ export default {
 
     getMapData(url) {
       this.$get({ url }).then(({ semanticnodes }) => {
-        console.log(semanticnodes);
         const treeData = list2Tree(semanticnodes, "0");
         this.treeData = treeData;
-        console.log(treeData)
       });
     },
     handleDelete({ links }) {

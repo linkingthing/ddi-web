@@ -392,6 +392,7 @@ export default {
       };
     },
     onClickNode(index) {
+      console.log(index)
       // const curNode = this.nodeDataList[index];
       // if (curNode.data.children) {
       //   curNode.data._children = curNode.data.children;
