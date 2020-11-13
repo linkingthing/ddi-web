@@ -43,7 +43,7 @@
       fullscreen
       :title="mapTitle"
     >
-      <div>This is a fullscreen modal</div>
+      <PlanTree :data="treeData" />
     </Modal>
 
   </div>
@@ -52,19 +52,14 @@
 <script>
 
 import { mapGetters, mapMutations } from "vuex";
-import { v4 as uuidv4 } from "uuid";
 import { debounce } from "lodash";
 
 import NoDataList from "@/components/NoDataList";
-import PlanTab from "./modules/PlanTab";
-import PlanProcess from "./modules/PlanProcess";
-import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
-import PlanStepSemantic from "./modules/PlanStepSemantic";
-import PlanStepTree from "./modules/PlanStepTree";
-import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
 import { list2Tree } from "./modules/helper";
 
-import eventBus from "@/util/bus";
+
+import PlanTree from "./modules/PlanTree";
+
 
 import SafeLock from "./modules/SafeLock";
 import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
@@ -75,7 +70,8 @@ import PlanModal from "./modules/PlanModal";
 export default {
   components: {
     NoDataList,
-    PlanModal
+    PlanModal,
+    PlanTree
   },
 
   data() {
@@ -168,8 +164,8 @@ export default {
               h("btn-line", {
                 nativeOn: {
                   click: () => {
-                    this.mapVisible = true;
-                    this.mapTitle = row.description;
+
+                    this.handleOpenMap(row);
                   }
                 },
 
@@ -188,7 +184,6 @@ export default {
             ]);
           }
         }],
-      url: this.$getApiByRoute().url,
       loading: true,
       netnodesurl: "",
       oneLayoutLinks: null,
@@ -196,58 +191,18 @@ export default {
       links: {},
       paramsLinks: {},
 
-      mapVisible: false,
-      mapTitle: ""
+      mapVisible: true,
+      mapTitle: "",
+      treeData: []
     };
   },
 
   computed: {
-    ...mapGetters({
-      currentPlan: "currentPlan",
-      currentLayout: "currentLayout",
-      stepComponent: "currentPlanProcessId",
-      planProcessList: "planProcessList",
-      netType: "netType"
-    })
+
   },
 
   watch: {
-    "currentPlan.links": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        if (val && val.layouts) {
-          this.getLayout(val);
-        }
-      }
-    },
-    "currentLayout": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        if (val && val.links && val.links.netnodes) {
-          this.getNetnodes(val.links);
-        }
-      }
-    },
-    currentPlanProcessId(val) {
-      console.log(22, val)
-    },
-    netType(netType) {
-      const params = {
-        nettype: netType
-      };
-      this.$get({ url: this.netnodesurl, params }).then(({ data }) => {
-        if (data[0]) {
-          const netNodes = data[0].netitems;
-          this.setNetnodes(netNodes);
-        } else {
-          this.setNetnodes([]);
-        }
-      }).catch((err) => {
-        this.$Message.error(err.response.data.message);
-      });
-    }
+
 
   },
 
@@ -258,21 +213,8 @@ export default {
 
   methods: {
 
-
-    ...mapMutations([
-      "setPlanProcessListInit",
-      "setPlanProcessListAccessible",
-      "setCurrentPlanId",
-      "setPlanList",
-      "addPlan",
-      "clearTempPlan",
-      "setLayout",
-      "setCurrentNodeId",
-      "setNetnodes"
-    ]),
-
     getPlanList() {
-      this.$get({ url: this.url }).then(({ data, links }) => {
+      this.$get(this.$getApiByRoute()).then(({ data, links }) => {
         const { user } = this.$store.getters.userInfo;
         const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
@@ -294,6 +236,9 @@ export default {
         });
         this.planList = tableData;
         this.links = links;
+
+        this.getMapData(data[0].links.self); // temp
+
 
       }).catch((err) => {
         this.$handleError(err);
@@ -321,86 +266,20 @@ export default {
       });
     },
 
-    handleQuery() {
-
-      this.$get({ url: this.url }).then(({ data }) => {
-        const tableData = data.map(item => {
-          item.creationTimestamp = this.$trimDate(item.creationTimestamp);
-          item.title = item.description;
-          return item;
-        });
-
-        this.setPlanList(tableData);
-
-        if (tableData.length) {
-          this.setCurrentPlanId(tableData[0].id);
-          this.setPlanProcessListAccessible("PlanStepSemantic");
-
-        }
-      }).catch((err) => {
-        this.$handleError(err);
-      });
-
+    handleOpenMap({ name, links }) {
+      this.mapVisible = true;
+      this.mapTitle = name;
+      this.getMapData(links.self);
     },
 
-    getLayout({ layouts } = this.currentPlan.links) {
-      this.$get({ url: layouts }).then(({ data, links }) => {
-
-        if (data.length) {
-          const oneLinks = data[0].links;
-          this.oneLayoutLinks = oneLinks;
-          this.getLayoutOne(oneLinks);
-        } else {
-          this.oneLayoutLinks = null;
-          this.setLayout({
-            id: uuidv4(),
-            planProcessAccessList: ["PlanStepSemantic"],
-            name: "layout",
-            nodes: null,
-            links: {
-              create: links.self
-            },
-            prefix: this.currentPlan.prefix
-          });
-        }
-
-      });
-
-    },
-
-    getLayoutOne({ self }) {
-      this.$get({ url: self }).then(data => {
-        this.setLayout(data);
-        this.setPlanProcessListAccessible("PlanStepSemantic");
-        this.setPlanProcessListAccessible("PlanStepTree");
-
-        if (Array.isArray(data.nodes) && data.nodes.length) {
-          const id = data.nodes[0].id;
-          this.setCurrentNodeId(id);
-        }
-
-        if (data.firstfinished) {
-          this.setPlanProcessListAccessible("PlanStepAddressAssign");
-        }
+    getMapData(url) {
+      this.$get({ url }).then(({ semanticnodes }) => {
+        console.log(semanticnodes);
+        const treeData = list2Tree(semanticnodes, "0");
+        this.treeData = treeData;
+        console.log(treeData)
       });
     },
-
-    getNetnodes: debounce(function ({ netnodes }) {
-      const params = {
-        nettype: this.netType
-      };
-      this.netnodesurl = netnodes;
-      this.$get({ url: netnodes, params }).then(({ data }) => {
-        let netNodes = [];
-        if (data.length) {
-          netNodes = data[0].netitems;
-        }
-        this.setNetnodes(netNodes);
-      }).catch((err) => {
-        this.setNetnodes([]);
-      });
-    }, 300),
-
     handleDelete({ links }) {
       this.$Modal.confirm({
         title: "提示",
@@ -419,14 +298,6 @@ export default {
     handleAddPlan() {
       this.paramsLinks = this.links;
       this.visible = true;
-    },
-    handleProcessChange(process, isHandle) {
-      if (isHandle) {
-        const shouldRequestLayout = ["PlanStepSemantic", "PlanStepTree"].includes(process);
-        if (shouldRequestLayout && this.oneLayoutLinks) {
-          this.getLayoutOne(this.oneLayoutLinks);
-        }
-      }
     }
   }
 };

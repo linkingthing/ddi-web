@@ -223,8 +223,8 @@ export default {
       return rootNode;
     },
     initTransform() {
-      const containerWidth = this.$refs.container.offsetWidth;
-      const containerHeight = this.$refs.container.offsetHeight;
+      const containerWidth = document.body.offsetWidth;
+      const containerHeight = document.body.offsetHeight;
       if (this.isVertial()) {
         this.initTransformX = Math.floor(containerWidth / 2);
         this.initTransformY = Math.floor(this.config.nodeHeight);
