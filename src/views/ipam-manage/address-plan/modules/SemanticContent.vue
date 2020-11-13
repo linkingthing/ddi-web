@@ -356,17 +356,14 @@ export default {
         {
           title: "IPv6地址",
           key: "prefixs",
-          width: 250
-
+          width: 250,
+          tooltip: true
         },
         {
           title: "IPv4子网",
-          key: "ipv4",
+          key: "ipv4s",
           maxWidth: 300,
-          render: (h, { row }) => {
-            return h("div", row.ipv4 ? row.ipv4 : "--");
-          }
-
+          tooltip: true
         },
         {
           title: "操作",
@@ -501,7 +498,13 @@ export default {
     },
     filterCurrentNodeChildren() {
       const currentNodeChildren = cloneDeep(this.semanticNodeList);
-      return currentNodeChildren.filter(item => item.name.includes(this.filterKeyword.trim()));
+      return currentNodeChildren.filter(item => item.name.includes(this.filterKeyword.trim())).map(item => {
+        return {
+          ...item,
+          prefixs: item.prefixs.length ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "__",
+          ipv4s: (Array.isArray(item.ipv4s) && item.ipv4s.length) ? `[\n  ${item.ipv4s.join(",\n  ")}\n]` : "__"
+        };
+      });
     }
   },
   watch: {
