@@ -151,7 +151,7 @@ export default {
               sequence: index,
               value: index + 1,
               name: `plannodes root`,
-              bitWidth: 4,
+              bitWidth: 0,
               maxmaskwidth: 64
             };
           });

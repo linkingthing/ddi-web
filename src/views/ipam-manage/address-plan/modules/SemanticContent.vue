@@ -3,7 +3,7 @@
     <div class="SemanticContent-inner">
 
       <div class="SemanticContent-header">
-        <h1 title="政务网规划">政务网规划</h1>
+        <h1 :title="currentNodeName">{{currentNodeName}}</h1>
         <div>
           <label for="">前缀：</label>
           <span :title="currentNodePrefix.join(',')">{{ currentNodePrefix.join(",")}}</span>
@@ -220,6 +220,7 @@
               type="primary"
               ghost
               @click="handleOpenCustomPlan"
+              :disabled="availableCustomPlan"
             >自定义规划</Button>
 
             <Button
@@ -408,20 +409,36 @@ export default {
       "currentNodeChildren",
       "allPlanNodes",
     ]),
+    currentNodeName() {
+      return this.currentNode && this.currentNode.name;
+    },
     settableNextBitWidth() {
       // 位宽是否可修改
       const currentNodeId = this.currentNode && this.currentNode.id;
       return hasGrandson(this.nodes, currentNodeId);
     },
-    availableOneKeyPlan() {
-      if (this.currentNode) {
-        const { autocreate } = this.currentNode;
-        return autocreate && !(this.semanticNodeList.length);
+    currentTargetNodeAutoCreate() {
+      // 目标节点，也就是当前语义节点节点的子节点，也就是将去设置的节点以及兄弟节点 autoCreate
+      const currentNodeChildren = this.currentNodeChildren;
+      if (currentNodeChildren.length) {
+        const { autocreate } = currentNodeChildren[0];
+        return autocreate;
       }
-      return true;
+      return void 0;
+    },
+    availableOneKeyPlan() {
+      const autocreate = this.currentTargetNodeAutoCreate === true || this.currentTargetNodeAutoCreate === undefined;
+
+      return !autocreate;
+    },
+    availableCustomPlan() {
+      const autocreate = this.currentTargetNodeAutoCreate === false || this.currentTargetNodeAutoCreate === undefined;
+
+      return !autocreate;
     },
     availableClearPlan() {
       const currentNodeId = this.currentNode && this.currentNode.id;
+
       return hasGrandson(this.nodes, currentNodeId);
     },
     surplus() {
@@ -577,7 +594,7 @@ export default {
 
       const currentSemanticNodeListLength = this.semanticNodeList.length;
       const willCreateSemanticNodeListLength = Number(this.nodeCount);
-      const shouldCreateLength = willCreateSemanticNodeListLength - oldNodeCount;
+      const shouldCreateLength = willCreateSemanticNodeListLength - currentSemanticNodeListLength;
 
       // 语义节点数校验
       if (Number.isNaN(willCreateSemanticNodeListLength)) {
@@ -622,7 +639,7 @@ export default {
             parentsemanticid,
             stepsize,
             sequence: 1,
-            autocreate: null,
+            autocreate: "",
             ipv4s: [],
             plannodes: [],
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
@@ -631,6 +648,18 @@ export default {
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
       }
+
+
+      // autoOneKey
+      if (this.semanticNodeList.length) {
+        const { autocreate } = this.semanticNodeList[0];
+        if (autocreate === true) {
+          this.autoOneKey();
+          return;
+        }
+      }
+
+
       this.$Message.success("操作成功");
 
     },
@@ -759,6 +788,11 @@ export default {
         this.$Message.success("操作成功");
       }
 
+    },
+
+    autoOneKey() {
+      // 进行过一次一键规划的，后面增加的节点默认自动规划
+      this.handleOneKeyPlan();
     },
     handleSelectSemanticList(list) {
       this.selectSemanticList = list;

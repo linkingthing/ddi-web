@@ -88,6 +88,7 @@ export default {
   },
 
   data() {
+    this.LOCK_STATUS_ENUM = LOCK_STATUS_ENUM;
     return {
       visible: false,
       planList: [],
@@ -96,24 +97,26 @@ export default {
         key: "prefixs",
         align: "left",
         render: (h, { row }) => {
-          return h("a", {
-            attrs: {
-              href: "javascript:;"
-            },
-            on: {
-              click: () => {
-                const { links } = row;
-                let url = this.$getRouteByLink(links.self, "address");
-                this.$router.push({
-                  path: url,
-                  query: {
-                    prefixs: row.prefixs,
-                    name: row.name,
-                  }
-                });
+          if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
+            return h("a", {
+              attrs: {
+                href: "javascript:;"
+              },
+              on: {
+                click: () => {
+                  const { links } = row;
+                  let url = this.$getRouteByLink(links.self, "address");
+                  this.$router.push({
+                    path: url
+                  });
+                }
               }
-            }
-          }, row.prefixs);
+            }, row.prefixs);
+          }
+          else {
+            return h("div", row.prefixs);
+          }
+
         }
       },
       {

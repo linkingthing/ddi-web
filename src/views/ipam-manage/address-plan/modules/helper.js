@@ -413,15 +413,12 @@ export const planSemanticNodesValue = ({
       const target = selectSemanticNodeList.find(
         selectNode => selectNode.id === semanticNode.id
       );
-      console.log(target);
       if (target) {
         result.push({
           ...semanticNode,
           plannodes
         });
       } else {
-        console.log(semanticNode, "nonde");
-
         Array.from({ length: stepSize }, () => index--);
         result.push(semanticNode);
       }
@@ -460,7 +457,7 @@ export const executeValueRecyclePool = (
     })
     .flat();
 
-  console.log(allValueList, "allValueList");
+  // console.log(allValueList, "allValueList");
   const uesedValueList = semanticNodeList
     .map(semanticNode => {
       semanticNode.plannodes = semanticNode.plannodes || [];
@@ -473,7 +470,7 @@ export const executeValueRecyclePool = (
     })
     .flat();
 
-  console.log(uesedValueList, "uesedValueList");
+  // console.log(uesedValueList, "uesedValueList");
 
   allValueList.forEach(item => {
     const hasValue = uesedValueList.some(used => {
@@ -484,7 +481,7 @@ export const executeValueRecyclePool = (
     }
   });
 
-  console.log(result, "result");
+  // console.log(result, "result");
   return result;
 };
 
