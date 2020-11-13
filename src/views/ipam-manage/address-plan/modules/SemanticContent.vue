@@ -171,7 +171,7 @@
         <common-modal
           :visible.sync="nodeEditVisible"
           title="节点编辑"
-          :width="690"
+          :width="413"
           @confirm="handleSaveChildNode"
         >
           <Form
@@ -180,28 +180,9 @@
             :rules="currentNodeofChooseChildRule"
             ref="currentNodeofChooseChildRef"
           >
-            <FormItem
-              label="节点名称"
-              prop="name"
-            >
-              <Input
-                placeholder="请输入节点名称"
-                v-model.trim="currentNodeofChooseChild.name"
-              />
-            </FormItem>
-            <FormItem
-              label="IPv4子网"
-              prop="ipv4"
-            >
-              <Input
-                placeholder="请输入IPv4子网"
-                v-model.trim="currentNodeofChooseChild.ipv4"
-              />
-            </FormItem>
 
-            <h3 style="margin-bottom: 12px;">地址块序号设置</h3>
             <FormItem
-              prop="valueMap"
+              prop="prefixMap"
               :label-width="0"
             >
               <table class="o-table">
@@ -210,17 +191,14 @@
                   <col>
                 </colgroup>
                 <tr
-                  v-for="item in currentNodeofChooseChild.valueMap"
+                  v-for="item in currentNodeofChooseChild.prefixMap"
                   :key="item.id"
                 >
                   <td>
                     {{item.prefix}}
                   </td>
                   <td>
-                    <Input
-                      v-model.trim="item.values"
-                      placeholder="间隔序号用“,”隔开，连续序号用“-”连接，例：1,4-9"
-                    />
+                    <Input v-model.trim="item.count" />
                   </td>
                 </tr>
               </table>
@@ -297,7 +275,7 @@ import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
-import { parserValueStr2Arr, executeNextIpv6Segment, planSemanticNodesValue, hasGrandson } from "./helper";
+import { parserValueStr2Arr, executeNextIpv6Segment, planSemanticNodesValue, hasGrandson, createPlanNode, executeValueRecyclePool } from "./helper";
 
 let nodeIndex = 1;
 export default {
@@ -411,81 +389,12 @@ export default {
       filterKeyword: "",
 
       currentNodeofChooseChild: {
-        valueMap: [],
-        name: "",
-        ipv4: ""
+
       },
       currentNodeofChooseChildRule: {
-        name: [{
-          validator: (rule, value, callback) => {
-            if (value.length > 25) {
-              callback("名称长度不超过25个字符");
-            } else {
-              callback();
-            }
-          }
-        }],
-        ipv4: [{
-          validator: (rule, value, callback) => {
-
-            if (value === "") {
-              callback();
-            }
-            const ispass = value.split(",").every(item => {
-              const isNetSegment = (item.split("/").length === 2);
-              const [, len] = item.split("/");
-              return ipv4IsValid(item.trim()) && isNetSegment && len < 32 && len > 0 && isIpv4Segment(item.trim());
-            });
-
-            if (ispass) {
-              callback();
-            } else {
-              callback("IP地址输入有误，请查证");
-            }
-
-          }
-        }],
-        valueMap: [{
-          validator: (rule, value, callback) => {
-            const nodeBitWidth = this.currentNode.nextBitWidth;
-            const maxValue = 2 ** nodeBitWidth;
-            if (!nodeBitWidth) {
-              callback("请先设置位宽");
-            }
-
-            const isPass = value.every(({ values }) => {
-              const valueArray = parserValueStr2Arr(values);
-
-              const distinctValueArray = [...new Set(valueArray)];
-              if (distinctValueArray.length !== valueArray.length) {
-                callback("地址块序号有重复，请更正");
-                return false;
-              }
-
-              // [1, 255] bitwidth 8 [1, 2**8 - 1], 0代表没填
 
 
-              if (valueArray.isValid) {
-                return valueArray.every(element => {
-                  const num = Number(element);
-                  return typeof num === "number" && !Number.isNaN(num) && (num > -1 && num < maxValue);
-                });
-              } else {
-                return valueArray.isValid;
-              }
-
-            });
-
-            if (isPass) {
-              callback();
-            } else {
-              callback("地址块序号有误");
-            }
-
-          }
-        }]
       }
-
 
     };
   },
@@ -585,6 +494,8 @@ export default {
 
         if ((typeof val.nextBitWidth === "number") && (this.bitWidth !== val.nextBitWidth)) {
           this.bitWidth = val.nextBitWidth;
+        } else {
+          this.bitWidth = 0;
         }
 
         // stepsize
@@ -692,9 +603,6 @@ export default {
         return;
       }
 
-
-
-
       const surplus = this.surplus;
 
       const willUseAddressBlockCount = currentSemanticNodeListLength * this.stepsize;
@@ -702,8 +610,6 @@ export default {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
       }
-
-
 
       if (shouldCreateLength > 0) {
         const parentsemanticid = this.currentNode.id;
@@ -720,9 +626,7 @@ export default {
             ipv4s: [],
             plannodes: [],
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
-
             temporaryCreated: "createing",  // 零时创建但未保存的语义节点标识
-
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
@@ -745,58 +649,81 @@ export default {
     },
     handleOpenEditNode(row) {
       // TODO：整体设计改变，这部分代码基本无意义
-      console.log(row)
-      console.log(this.currentNode)
+
       this.nodeEditVisible = true;
-      this.currentNodeofChooseChild = cloneDeep(row);
+      const prefixList = this.currentNodePrefix;
 
-      /**
-       * 构造 valueMap 渲染填写每个planNode的value的列表项
-       * 
-       * 1. 新增时候，根据url prefix映射出 等长度得  {id, prefix, values}
-       * 2. 编辑时候，通过plannodes，逆运算（prefix分组，valueStr） [但是父级前缀怎么判定呢，一个planNode根据什么判定属于那个父级语义节点]
-       */
-
-
-
-      if (false) {
-
-      } else {
-        this.currentNodeofChooseChild.valueMap = Array.isArray(this.currentNode.prefix) ? this.currentNode.prefix.map(prefix => {
-          return {
-            id: uuidv4(),
-            prefix,
-            values: ""
-          };
-        }) : [];
-      }
+      console.log(row, prefixList)
+      this.currentNodeofChooseChild.row = row;
+      this.currentNodeofChooseChild.prefixMap = prefixList.map(prefix => {
+        return {
+          prefix,
+          count: 0
+        };
+      });
 
     },
     handleSaveChildNode() {
-      // TODO：整体设计改变，这部分代码基本无意义
 
-      const node = cloneDeep(this.currentNodeofChooseChild);
-
+      const node = (this.currentNodeofChooseChild);
       this.$refs["currentNodeofChooseChildRef"].validate(valid => {
         if (valid) {
-          const nodeBitWidth = this.currentNode.nextBitWidth;
-          node.hasPrefixObject = true;
-          node.prefixObject = node.valueMap.map(({ prefix, values }) => {
-            // values => valueArray
-            const valueArray = parserValueStr2Arr(values);
-            return valueArray.map(value => {
-              return { prefix, value, nodeBitWidth, planNodePrefix: executeNextIpv6Segment(prefix, value, nodeBitWidth) };
+
+          console.log(node)
+          let index = 0;
+          const allPlanNodes = this.allPlanNodes;
+          const bitWidth = this.bitWidth;
+          const prefixList = this.currentNodePrefix;
+
+          const { prefixMap } = node;
+          const semanticNode = node.row;
+
+          const semanticNodeList = this.semanticNodeList;
+
+          const availableValueList = executeValueRecyclePool(
+            prefixList,
+            semanticNodeList,
+            bitWidth
+          );
+          const plannodes = prefixMap.reduce((result, { prefix, count }) => {
+
+            const plannodes = Array.from({ length: +count }, () => {
+              const { prefix, value } = availableValueList[index++];
+
+              const parentPlanNode = allPlanNodes.find(
+                item => item.prefix === prefix
+              ) || { id: "0" };
+              const parentplannodeid = parentPlanNode.id;
+              return createPlanNode({
+                prefix: executeNextIpv6Segment(prefix, value, bitWidth),
+                value,
+                parentsemanticid: semanticNode.id,
+                parentplannodeid,
+                sequence: 1,
+                name: "",
+                bitWidth
+              });
             });
-          }).flat();
 
-          node.prefix = node.prefixObject.map(item => item.planNodePrefix);
+            return result.concat(plannodes);
+          }, []);
+          node.row.plannodes.push(...plannodes);
 
-          this.saveNode(node);
+          console.log(node, 6666)
 
-          this.nodeEditVisible = false;
+
+          const temp = [];
+          semanticNodeList.forEach(semanticNode => {
+            if (semanticNode.id === node.row.id) {
+              semanticNode.plannodes = node.row.plannodes;
+              temp.push(node.row)
+            } else {
+              temp.push(semanticNode);
+            }
+          });
+
+          this.semanticNodeList = temp;
         }
-
-
       });
 
     },
