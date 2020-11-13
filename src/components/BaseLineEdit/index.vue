@@ -2,8 +2,8 @@
   <div class="line-eidt">
     <Input
       v-if="contenteditable"
-      v-model.number="innerValue"
-      style="width: 60px"
+      v-model="innerValue"
+      :style="{width}"
     />
     <span v-else>
       {{innerValue}}
@@ -30,6 +30,10 @@ export default {
       // eslint-disable-next-line vue/require-prop-type-constructor
       type: Number | String,
       default: 0
+    },
+    width: {
+      type: String,
+      default: "60px"
     }
   },
   data() {
@@ -54,7 +58,11 @@ export default {
   methods: {
     handleToggleEdit() {
       if (this.contenteditable) {
-        this.$emit("on-edit-finish", this.innerValue);
+        let innerValue = this.innerValue;
+        if (typeof this.value === "number") {
+          innerValue = Number(innerValue);
+        }
+        this.$emit("on-edit-finish", innerValue);
       }
       this.contenteditable = !this.contenteditable;
     },
@@ -72,13 +80,16 @@ export default {
 
 .line-eidt {
   cursor: pointer;
-
+  display: flex;
   .ivu-input {
     height: initial;
     padding: 0 5px;
   }
   span {
     padding: 0 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   img {
     width: 32px;

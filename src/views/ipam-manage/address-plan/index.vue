@@ -87,7 +87,22 @@ export default {
         {
           title: "规划名称",
           key: "name",
-          align: "left"
+          align: "left",
+          // render: (h, { row }) => {
+          //   return h("line-edit",
+          //     {
+          //       on: {
+          //         "on-edit-finish": val => {
+          //           this.handleSavePlanName(row.links.update, val, row);
+          //         }
+          //       },
+          //       props: {
+          //         isPercent: false,
+          //         value: row.name
+          //       }
+          //     }
+          //   );
+          // }
         },
         {
           title: "IPv6前缀",
@@ -282,6 +297,17 @@ export default {
 
       }).catch((err) => {
         this.$handleError(err);
+      });
+    },
+    handleSavePlanName(url, value, row) {
+      // 接口暂不支持单字段修改，但是列表中又没携带完整字段
+      const params = { ...row, value };
+      params.prefixs = params.prefixs.split(",");
+      this.$put({ url, params }).then(() => {
+        this.$Message.success("更新成功");
+        this.getPlanList();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
     },
     handleToggleLock({ links }, lock) {

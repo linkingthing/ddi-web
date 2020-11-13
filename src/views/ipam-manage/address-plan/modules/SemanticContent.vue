@@ -378,13 +378,38 @@ export default {
         {
           title: "IPv4子网",
           key: "ipv4s",
-          maxWidth: 300,
-          tooltip: true
+          maxWidth: 400,
+          render: (h, { row }) => {
+            const content = row.ipv4s.length ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
+
+
+            return h("Tooltip", {
+              class: {
+                "ipToolTip": true
+              },
+              props: {
+                placement: "bottom",
+                content
+              }
+            }, [h("line-edit", {
+              on: {
+                "on-edit-finish": val => {
+                  this.handleSaveIpv4s(row, val);
+                }
+              },
+              props: {
+                isPercent: false,
+                value: row.ipv4s,
+                width: "100%"
+              }
+            })]
+            );
+          }
         },
         {
           title: "操作",
           key: "action",
-          width: 200,
+          width: 180,
           render: (h, { row }) => {
             return h("div", [
               h("a", {
@@ -518,7 +543,6 @@ export default {
         return {
           ...item,
           prefixs: item.prefixs.length ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "__",
-          ipv4s: (Array.isArray(item.ipv4s) && item.ipv4s.length) ? `[\n  ${item.ipv4s.join(",\n  ")}\n]` : "__"
         };
       });
     }
@@ -735,6 +759,25 @@ export default {
         return false;
       });
 
+    },
+    handleSaveIpv4s(row, ipv4str) {
+      const ipv4s = ipv4str.split(",");
+      const valid = ipv4s.every(item => {
+        const [ip, len] = item.split("/");
+        console.log(ip, len)
+        return ipv4IsValid(ip.trim()) && !!len;
+      });
+      if (!valid) {
+        this.$Message.error("ipv4s输入有误，请更正");
+        return;
+      }
+      this.semanticNodeList.some(item => {
+        if (item.id === row.id) {
+          item.ipv4s = ipv4s;
+          return true;
+        }
+        return false;
+      });
     },
     handleDeleteSemantic(row) {
       // TODO:删除语义节点的限制条件
@@ -1165,6 +1208,12 @@ export default {
     height: 16px;
     margin-left: 6px;
     margin-top: 2px;
+  }
+}
+
+.ipToolTip {
+  .ivu-tooltip-inner {
+    white-space: pre;
   }
 }
 </style>
