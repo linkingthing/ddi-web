@@ -25,10 +25,10 @@ export default {
   data() {
     this.tabList = [{
       title: "IPv6",
-      id: "netv6"
+      id: "listviewv6"
     }, {
       title: "IPv4",
-      id: "netv4"
+      id: "listviewv4"
     }];
     return {
     };

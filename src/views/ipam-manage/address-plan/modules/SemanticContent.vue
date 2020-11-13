@@ -380,7 +380,7 @@ export default {
           key: "ipv4s",
           maxWidth: 400,
           render: (h, { row }) => {
-            const content = row.ipv4s.length ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
+            const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
 
 
             return h("Tooltip", {
@@ -1212,6 +1212,7 @@ export default {
 }
 
 .ipToolTip {
+  width: 100%;
   .ivu-tooltip-inner {
     white-space: pre;
   }

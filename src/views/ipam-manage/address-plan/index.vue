@@ -158,7 +158,7 @@ export default {
               h("btn-line", {
                 nativeOn: {
                   click: () => {
-                    this.$router.push({ name: "ipam-address-list" });
+                    this.$router.push({ name: "ipam-address-list", query: { self: row.links.self, action: "listviewv6" } });
                   }
                 },
                 props: {
