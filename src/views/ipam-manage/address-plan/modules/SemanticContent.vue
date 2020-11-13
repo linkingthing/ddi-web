@@ -106,6 +106,7 @@
               search
               enter-button="+1"
               @on-search="handleAddOne"
+              :disabled="settableSemanticNodeCount"
             />
           </div>
         </div>
@@ -117,6 +118,7 @@
               class="action-box-input"
               v-model="stepsize"
               placeholder="请输入地址步长"
+              :disabled="settableStepSize"
             />
           </div>
         </div>
@@ -124,6 +126,7 @@
           <Button
             type="primary"
             @click="handleClickCreateSemanticNode"
+            :disabled="settableCreateSemanticNode"
           >确定</Button>
         </div>
 
@@ -208,61 +211,65 @@
 
       </div>
 
-      <div class="SemanticContent-table">
-        <div class="SemanticContent-table-operate">
-          <div>
-            <Button
-              type="primary"
-              @click="handleOneKeyPlan"
-              :disabled="availableOneKeyPlan"
-            >一键规划</Button>
-            <Button
-              type="primary"
-              ghost
-              @click="handleOpenCustomPlan"
-              :disabled="availableCustomPlan"
-            >自定义规划</Button>
+      <section v-if="semanticNodeList.length">
 
-            <Button
-              type="warning"
-              @click="handleClearPlan"
-              :disabled="availableClearPlan"
-            >清空规划</Button>
-          </div>
-          <div class="action-input-item-right">
-            <Input
-              placeholder="请输入名称关键字"
-              v-model="search"
-            />
-            <Button
-              type="primary"
-              @click="handleFilter"
-            >搜索</Button>
-            <Button
-              class="reset"
-              @click="handleResetSearch"
-            >重置</Button>
+        <div class="SemanticContent-table">
+          <div class="SemanticContent-table-operate">
+            <div>
+              <Button
+                type="primary"
+                @click="handleOneKeyPlan"
+                :disabled="availableOneKeyPlan"
+              >一键规划</Button>
+              <Button
+                type="primary"
+                ghost
+                @click="handleOpenCustomPlan"
+                :disabled="availableCustomPlan"
+              >自定义规划</Button>
 
+              <Button
+                type="warning"
+                @click="handleClearPlan"
+                :disabled="availableClearPlan"
+              >清空规划</Button>
+            </div>
+            <div class="action-input-item-right">
+              <Input
+                placeholder="请输入名称关键字"
+                v-model="search"
+              />
+              <Button
+                type="primary"
+                @click="handleFilter"
+              >搜索</Button>
+              <Button
+                class="reset"
+                @click="handleResetSearch"
+              >重置</Button>
+
+            </div>
           </div>
+
+          <Table
+            ref="selection"
+            style="border: 1px solid #E6E6E6;border-bottom: none"
+            :columns="columns"
+            :data="filterCurrentNodeChildren"
+            @on-selection-change="handleSelectSemanticList"
+          />
+
         </div>
+        <div class="SemanticContent-opera">
+          <Button
+            type="primary"
+            size="large"
+            style="width: 300px;"
+            @click="handleSave"
+          >保存</Button>
+        </div>
+      </section>
 
-        <Table
-          ref="selection"
-          style="border: 1px solid #E6E6E6;border-bottom: none"
-          :columns="columns"
-          :data="filterCurrentNodeChildren"
-          @on-selection-change="handleSelectSemanticList"
-        />
-
-      </div>
-      <div class="SemanticContent-opera">
-        <Button
-          type="primary"
-          size="large"
-          style="width: 300px;"
-          @click="handleSave"
-        >保存</Button>
-      </div>
     </div>
   </div>
 </template>
@@ -417,6 +424,23 @@ export default {
       const currentNodeId = this.currentNode && this.currentNode.id;
       return hasGrandson(this.nodes, currentNodeId);
     },
+
+    bitWidthValid() {
+      const bitWidth = Number(this.bitWidth);
+      return !Number.isNaN(bitWidth) && bitWidth;
+    },
+
+    settableSemanticNodeCount() {
+      return !this.bitWidthValid;
+    },
+    settableStepSize() {
+      return !this.bitWidthValid;
+    },
+
+    settableCreateSemanticNode() {
+      return !this.bitWidthValid;
+    },
+
     currentTargetNodeAutoCreate() {
       // 目标节点，也就是当前语义节点节点的子节点，也就是将去设置的节点以及兄弟节点 autoCreate
       const currentNodeChildren = this.semanticNodeList;
@@ -650,7 +674,7 @@ export default {
             parentsemanticid,
             stepsize,
             sequence: 1,
-            autocreate: "",
+            autocreate: void 0,
             ipv4s: [],
             plannodes: [],
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
@@ -883,9 +907,7 @@ export default {
         semanticnodes: nodes.map(item => {
           return {
             ...item,
-            modified: true,
-            autocreate: true,
-
+            modified: true
           };
         })
       };
