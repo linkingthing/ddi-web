@@ -27,7 +27,8 @@ export default {
       default: false
     },
     value: {
-      type: Number,
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: Number | String,
       default: 0
     }
   },

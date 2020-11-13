@@ -344,7 +344,23 @@ export default {
         {
           title: "语义名称",
           key: "name",
-          width: 200
+          width: 200,
+          render: (h, { row }) => {
+            return h("line-edit",
+              {
+                on: {
+                  "on-edit-finish": val => {
+                    this.handleSaveSemanticName(row, val);
+                  }
+                },
+                props: {
+                  isPercent: false,
+                  value: row.name
+                }
+              }
+
+            );
+          }
         },
 
         {
@@ -710,6 +726,16 @@ export default {
       this.filterKeyword = "";
     },
 
+    handleSaveSemanticName(row, name) {
+      this.semanticNodeList.some(item => {
+        if (item.id === row.id) {
+          item.name = name;
+          return true;
+        }
+        return false;
+      });
+
+    },
     handleDeleteSemantic(row) {
       // TODO:删除语义节点的限制条件
       this.removeNodeById(row.id);

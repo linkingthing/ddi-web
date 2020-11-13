@@ -75,16 +75,7 @@ import PlanModal from "./modules/PlanModal";
 export default {
   components: {
     NoDataList,
-    PlanTab,
-    PlanProcess,
-
-    PlanStepCreatePrefix,
-    PlanStepSemantic,
-    PlanStepTree,
-    PlanStepAddressAssign,
-
     PlanModal
-
   },
 
   data() {
@@ -92,95 +83,96 @@ export default {
     return {
       visible: false,
       planList: [],
-      columns: [{
-        title: "IPv6前缀",
-        key: "prefixs",
-        align: "left",
-        render: (h, { row }) => {
-          if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
-            return h("a", {
-              attrs: {
-                href: "javascript:;"
-              },
-              on: {
-                click: () => {
-                  const { links } = row;
-                  let url = this.$getRouteByLink(links.self, "address");
-                  this.$router.push({
-                    path: url
-                  });
+      columns: [
+        {
+          title: "规划名称",
+          key: "name",
+          align: "left"
+        },
+        {
+          title: "IPv6前缀",
+          key: "prefixs",
+          align: "left",
+          render: (h, { row }) => {
+            if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
+              return h("a", {
+                attrs: {
+                  href: "javascript:;"
+                },
+                on: {
+                  click: () => {
+                    const { links } = row;
+                    let url = this.$getRouteByLink(links.self, "address");
+                    this.$router.push({
+                      path: url
+                    });
+                  }
                 }
-              }
-            }, row.prefixs);
-          }
-          else {
-            return h("div", row.prefixs);
-          }
-
-        }
-      },
-      {
-        title: "规划名称",
-        key: "name",
-        align: "left"
-      },
-      {
-        title: "安全锁",
-        key: "name",
-        align: "left",
-        render: (h, { row }) => {
-          return h(SafeLock, {
-            props: {
-              type: row.lockType,
-              message: row.lockedby
-            },
-            nativeOn: {
-              click: () => this.handleToggleLock(row, row.isLock)
+              }, row.prefixs);
             }
-          });
-        }
-      },
-      {
-        title: "操作",
-        key: "name",
-        align: "right",
-        render: (h, { row }) => {
-          return h("div", {
-            class: "table-btn-box"
-          }, [
-            h("btn-line", {
-              nativeOn: {
-                click: () => {
-                  this.$router.push({ name: "ipam-address-list" });
-                }
-              },
-              props: {
-                title: "子网列表"
-              }
-            }),
-            h("btn-line", {
-              nativeOn: {
-                click: () => {
-                  this.mapVisible = true;
-                  this.mapTitle = row.description;
-                }
-              },
+            else {
+              return h("div", row.prefixs);
+            }
 
+          }
+        },
+        {
+          title: "安全锁",
+          key: "name",
+          align: "left",
+          render: (h, { row }) => {
+            return h(SafeLock, {
               props: {
-                title: "地图"
-              }
-            }),
-            h("btn-line", {
-              nativeOn: {
-                click: () => this.handleDelete(row)
+                type: row.lockType,
+                message: row.lockedby
               },
-              props: {
-                title: "删除"
+              nativeOn: {
+                click: () => this.handleToggleLock(row, row.isLock)
               }
-            })
-          ]);
-        }
-      }],
+            });
+          }
+        },
+        {
+          title: "操作",
+          key: "name",
+          align: "right",
+          render: (h, { row }) => {
+            return h("div", {
+              class: "table-btn-box"
+            }, [
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+                    this.$router.push({ name: "ipam-address-list" });
+                  }
+                },
+                props: {
+                  title: "子网列表"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+                    this.mapVisible = true;
+                    this.mapTitle = row.description;
+                  }
+                },
+
+                props: {
+                  title: "地图"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => this.handleDelete(row)
+                },
+                props: {
+                  title: "删除"
+                }
+              })
+            ]);
+          }
+        }],
       url: this.$getApiByRoute().url,
       loading: true,
       netnodesurl: "",
