@@ -419,7 +419,7 @@ export default {
     },
     currentTargetNodeAutoCreate() {
       // 目标节点，也就是当前语义节点节点的子节点，也就是将去设置的节点以及兄弟节点 autoCreate
-      const currentNodeChildren = this.currentNodeChildren;
+      const currentNodeChildren = this.semanticNodeList;
       if (currentNodeChildren.length) {
         const { autocreate } = currentNodeChildren[0];
         return autocreate;
@@ -589,12 +589,20 @@ export default {
     },
     handleClickCreateSemanticNode() {
 
-      const bitWidth = this.bitWidth;
+      const bitWidth = Number(this.bitWidth);
       const oldNodeCount = this.currentNodeChildren.length;
 
       const currentSemanticNodeListLength = this.semanticNodeList.length;
       const willCreateSemanticNodeListLength = Number(this.nodeCount);
       const shouldCreateLength = willCreateSemanticNodeListLength - currentSemanticNodeListLength;
+
+
+      // 校验位宽
+
+      if (Number.isNaN(bitWidth) || !bitWidth) {
+        this.$Message.info(`请输入正确输入位宽`);
+        return;
+      }
 
       // 语义节点数校验
       if (Number.isNaN(willCreateSemanticNodeListLength)) {
@@ -622,7 +630,10 @@ export default {
 
       const surplus = this.surplus;
 
-      const willUseAddressBlockCount = currentSemanticNodeListLength * this.stepsize;
+      const willUseAddressBlockCount = willCreateSemanticNodeListLength * stepsize;
+
+
+      console.log(surplus, willUseAddressBlockCount, stepsize)
       if (surplus < willUseAddressBlockCount) {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
@@ -845,7 +856,8 @@ export default {
           ...item,
           plannodes: [],
           prefixs: [],
-          addressCount: 0
+          addressCount: 0,
+          autocreate: void 0
         };
       });
       this.$Message.success("操作成功");
