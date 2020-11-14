@@ -201,7 +201,10 @@
                     {{item.prefix}}
                   </td>
                   <td>
-                    <Input v-model.trim="item.count">
+                    <Input
+                      v-model.trim="item.count"
+                      @on-change="handleCountChange(item)"
+                    >
                     <span
                       class="btn-count"
                       slot="prepend"
@@ -520,6 +523,9 @@ export default {
       let result = "_ _";
       if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
         const { nextBitWidth, plannodes } = this.currentNode;
+        if (!nextBitWidth) {
+          return result;
+        }
         const currentNodeChildren = this.nodes.filter(item => item.parentsemanticid === this.currentNode.id);
 
         const childrenLen =
@@ -844,7 +850,15 @@ export default {
       console.log(prefixMapTemp)
 
     },
-
+    handleCountChange(item) {
+      const maxCount = item.availableValueList.length + item.initCount;
+      if (item.count > maxCount || item.count < item.initCount || Number.isNaN(Number(item.count))) {
+        this.$Message.info(`请输入${item.initCount}到${maxCount}的数字`);
+        this.$nextTick().then(() => {
+          item.count = item.initCount;
+        });
+      }
+    },
     handleSubtractionCount(item) {
       if (item.initCount < item.count) {
         // vue 响应式的极限,通过引用，解决了这个问题 => console.log(this.prefixMap)
@@ -860,14 +874,11 @@ export default {
     },
     handleSaveChildNode() {
 
-      console.log(888)
 
       const node = (this.currentNodeofChooseChild);
       this.$refs["currentNodeofChooseChildRef"].validate(valid => {
         if (valid) {
 
-          console.log(node)
-          // let index = 0;
           const allPlanNodes = this.allPlanNodes;
           const bitWidth = this.bitWidth;
           const prefixList = this.currentNodePrefix;
@@ -879,11 +890,6 @@ export default {
 
           const semanticNodeList = this.semanticNodeList;
 
-          // const availableValueList = executeValueRecyclePool(
-          //   prefixList,
-          //   semanticNodeList,
-          //   bitWidth
-          // );
           const plannodes = prefixMap.reduce((result, { prefix, count, initCount, availableValueList }) => {
 
             const stepSize = Number(count - initCount);
@@ -914,7 +920,6 @@ export default {
 
           node.row.plannodes.push(...plannodes);
 
-          console.log(node, 6666)
 
 
           const temp = [];
@@ -930,6 +935,8 @@ export default {
 
           console.log(temp, "temp")
           this.semanticNodeList = temp;
+
+          this.nodeEditVisible = false;
         }
       });
 
@@ -1010,6 +1017,7 @@ export default {
           });
           this.semanticNodeList = nodeList;
           this.$Message.success("操作成功");
+          this.customPlanVisible = false;
 
         }
       });
