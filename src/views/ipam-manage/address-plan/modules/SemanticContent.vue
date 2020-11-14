@@ -323,7 +323,7 @@ export default {
 
       customPlanVisible: false,
       customPlan: {
-        choosePrefix: "",
+        choosePrefix: ""
       },
 
       selectSemanticList: [], // 自定义规划时
@@ -371,14 +371,12 @@ export default {
         },
         {
           title: "IPv6地址",
-          key: "prefixs",
-          width: 250,
+          key: "showprefixs",
           tooltip: true
         },
         {
           title: "IPv4子网",
           key: "ipv4s",
-          maxWidth: 400,
           render: (h, { row }) => {
             const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
 
@@ -452,7 +450,7 @@ export default {
       "tree",
       "currentNode",
       "currentNodeChildren",
-      "allPlanNodes",
+      "allPlanNodes"
     ]),
     currentNodeName() {
       return this.currentNode && this.currentNode.name;
@@ -540,9 +538,10 @@ export default {
     filterCurrentNodeChildren() {
       const currentNodeChildren = cloneDeep(this.semanticNodeList);
       return currentNodeChildren.filter(item => item.name.includes(this.filterKeyword.trim())).map(item => {
+        // console.log(item)
         return {
           ...item,
-          prefixs: item.prefixs.length ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "__",
+          showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "__"
         };
       });
     }
@@ -576,7 +575,7 @@ export default {
           this.currentNodeBitWidth = 0;
         }
 
-        if ((typeof val.nextBitWidth === "number") && (this.bitWidth !== val.nextBitWidth)) {
+        if ((typeof val.nextBitWidth === "number")) {
           this.bitWidth = val.nextBitWidth;
         } else {
           this.bitWidth = 0;
@@ -777,11 +776,10 @@ export default {
       });
     },
     handleDeleteSemantic(row) {
-      // TODO:删除语义节点的限制条件
+      // TODO:删除语义节点的限制条件，删除方式也需要改变
       this.removeNodeById(row.id);
     },
     handleOpenEditNode(row) {
-      // TODO：整体设计改变，这部分代码基本无意义
 
       this.nodeEditVisible = true;
       const prefixList = this.currentNodePrefix;
@@ -790,6 +788,9 @@ export default {
 
       console.log(row, prefixList, plannodes)
       const allPlanNodes = this.allPlanNodes;
+      const semanticNodeList = this.semanticNodeList;
+      const bitWidth = this.bitWidth;
+
       const prefixMap = {};
       row.plannodes = row.plannodes || [];
       row.plannodes.forEach(plannode => {
@@ -805,27 +806,43 @@ export default {
         }
       });
 
-      console.log(prefixMap, Object.values(prefixMap))
-
-
       this.currentNodeofChooseChild.row = row;
       this.currentNodeofChooseChild.prefixMap = prefixList.map(prefix => {
         const { count } = Object.values(prefixMap).find(item => item.prefix === prefix) || { count: 0 };
+
+        const availableValueList = executeValueRecyclePool(
+          [prefix],
+          semanticNodeList,
+          bitWidth
+        );
+        console.log("============")
+
+        console.log(prefix)
+        console.log(semanticNodeList)
+        console.log(bitWidth)
+        console.log(availableValueList)
+
+        console.log("============")
+
         return {
           prefix,
-          count
+          count,
+          availableValueList,
+          initCount: count
         };
       });
 
     },
     handleSaveChildNode() {
 
+      console.log(888)
+
       const node = (this.currentNodeofChooseChild);
       this.$refs["currentNodeofChooseChildRef"].validate(valid => {
         if (valid) {
 
           console.log(node)
-          let index = 0;
+          // let index = 0;
           const allPlanNodes = this.allPlanNodes;
           const bitWidth = this.bitWidth;
           const prefixList = this.currentNodePrefix;
@@ -833,35 +850,43 @@ export default {
           const { prefixMap } = node;
           const semanticNode = node.row;
 
+          console.log(prefixMap, "prefixMap")
+
           const semanticNodeList = this.semanticNodeList;
 
-          const availableValueList = executeValueRecyclePool(
-            prefixList,
-            semanticNodeList,
-            bitWidth
-          );
-          const plannodes = prefixMap.reduce((result, { prefix, count }) => {
+          // const availableValueList = executeValueRecyclePool(
+          //   prefixList,
+          //   semanticNodeList,
+          //   bitWidth
+          // );
+          const plannodes = prefixMap.reduce((result, { prefix, count, initCount, availableValueList }) => {
 
-            const plannodes = Array.from({ length: +count }, () => {
-              const { prefix, value } = availableValueList[index++];
+            const stepSize = Number(count - initCount);
 
-              const parentPlanNode = allPlanNodes.find(
-                item => item.prefix === prefix
-              ) || { id: "0" };
-              const parentplannodeid = parentPlanNode.id;
-              return createPlanNode({
-                prefix: executeNextIpv6Segment(prefix, value, bitWidth),
-                value,
-                parentsemanticid: semanticNode.id,
-                parentplannodeid,
-                sequence: 1,
-                name: "",
-                bitWidth
+            if (!Number.isNaN(stepSize) && stepSize > 0) {
+              const plannodes = Array.from({ length: stepSize }, (item, index) => {
+                const { prefix, value } = availableValueList[index];
+
+                const parentPlanNode = allPlanNodes.find(
+                  item => item.prefix === prefix
+                ) || { id: "0" };
+                const parentplannodeid = parentPlanNode.id;
+                return createPlanNode({
+                  prefix: executeNextIpv6Segment(prefix, value, bitWidth),
+                  value,
+                  parentsemanticid: semanticNode.id,
+                  parentplannodeid,
+                  sequence: 1,
+                  name: "",
+                  bitWidth
+                });
               });
-            });
-
-            return result.concat(plannodes);
+              return result.concat(plannodes);
+            }
+            return result;
           }, []);
+
+
           node.row.plannodes.push(...plannodes);
 
           console.log(node, 6666)
@@ -870,13 +895,15 @@ export default {
           const temp = [];
           semanticNodeList.forEach(semanticNode => {
             if (semanticNode.id === node.row.id) {
+              semanticNode.prefixs = node.row.plannodes.map(item => item.prefix);
               semanticNode.plannodes = node.row.plannodes;
-              temp.push(node.row)
+              temp.push(node.row);
             } else {
               temp.push(semanticNode);
             }
           });
 
+          console.log(temp, "temp")
           this.semanticNodeList = temp;
         }
       });
@@ -982,7 +1009,6 @@ export default {
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize
       this.saveNodes(cloneDeep(this.semanticNodeList));
       const { url } = this.$getApiByRoute();
-
 
       const methods = "$put";
 
