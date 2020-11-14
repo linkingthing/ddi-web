@@ -201,7 +201,18 @@
                     {{item.prefix}}
                   </td>
                   <td>
-                    <Input v-model.trim="item.count" />
+                    <Input v-model.trim="item.count">
+                    <span
+                      class="btn-count"
+                      slot="prepend"
+                      @click="handleSubtractionCount(item)"
+                    >-</span>
+                    <span
+                      slot="append"
+                      class="btn-count"
+                      @click="handlePlusCount(item)"
+                    >+</span>
+                    </Input>
                   </td>
                 </tr>
               </table>
@@ -372,11 +383,13 @@ export default {
         {
           title: "IPv6地址",
           key: "showprefixs",
-          tooltip: true
+          tooltip: true,
+          maxWidth: 300,
         },
         {
           title: "IPv4子网",
           key: "ipv4s",
+          maxWidth: 300,
           render: (h, { row }) => {
             const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
 
@@ -438,7 +451,8 @@ export default {
       currentNodeofChooseChildRule: {
 
 
-      }
+      },
+      prefixMap: [], // 看似无用，但别乱删
 
     };
   },
@@ -506,7 +520,7 @@ export default {
       let result = "_ _";
       if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
         const { nextBitWidth, plannodes } = this.currentNode;
-        const currentNodeChildren = this.nodes.filter(item => item.pid === this.currentNode.id);
+        const currentNodeChildren = this.nodes.filter(item => item.parentsemanticid === this.currentNode.id);
 
         const childrenLen =
           currentNodeChildren
@@ -516,7 +530,7 @@ export default {
               return result + prev;
             }, 0);
 
-        result = this.currentNode.prefixs.length * (2 ** nextBitWidth - 1) - childrenLen;
+        result = this.currentNode.prefixs.length * (2 ** nextBitWidth - 2) - childrenLen;
       }
       return result;
     },
@@ -807,7 +821,7 @@ export default {
       });
 
       this.currentNodeofChooseChild.row = row;
-      this.currentNodeofChooseChild.prefixMap = prefixList.map(prefix => {
+      const prefixMapTemp = prefixList.map(prefix => {
         const { count } = Object.values(prefixMap).find(item => item.prefix === prefix) || { count: 0 };
 
         const availableValueList = executeValueRecyclePool(
@@ -815,14 +829,6 @@ export default {
           semanticNodeList,
           bitWidth
         );
-        console.log("============")
-
-        console.log(prefix)
-        console.log(semanticNodeList)
-        console.log(bitWidth)
-        console.log(availableValueList)
-
-        console.log("============")
 
         return {
           prefix,
@@ -831,7 +837,26 @@ export default {
           initCount: count
         };
       });
+      this.currentNodeofChooseChild.prefixMap = prefixMapTemp;
 
+      this.prefixMap = prefixMapTemp;
+
+      console.log(prefixMapTemp)
+
+    },
+
+    handleSubtractionCount(item) {
+      if (item.initCount < item.count) {
+        // vue 响应式的极限,通过引用，解决了这个问题 => console.log(this.prefixMap)
+        item.count -= 1;
+        // this.$set(item, "count", item.count); 这种方式在这里无效
+      }
+    },
+    handlePlusCount(item) {
+      const maxCount = item.availableValueList.length + item.initCount;
+      if (item.count < maxCount) {
+        item.count += 1;
+      }
     },
     handleSaveChildNode() {
 
@@ -1261,5 +1286,9 @@ export default {
   .ivu-tooltip-inner {
     white-space: pre;
   }
+}
+
+.btn-count {
+  cursor: pointer;
 }
 </style>

@@ -444,7 +444,7 @@ export const executeValueRecyclePool = (
   bitWidth
 ) => {
   const result = [];
-  const maxValue = 2 ** bitWidth - 1;
+  const maxValue = 2 ** bitWidth - 2;
   const allValueList = prefixList
     .map(prefix => {
       return Array.from({ length: maxValue }, function (item, index) {
