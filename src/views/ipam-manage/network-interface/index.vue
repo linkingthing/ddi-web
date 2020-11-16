@@ -149,7 +149,7 @@
           <btn-search
             type="primary"
             icon="ios-search"
-            @click="getList"
+            @click="handleClickSearch"
             class="top-button"
           >查询</btn-search>
         </template>
@@ -269,6 +269,10 @@ export default {
         this.loading = false;
       }
     },
+    handleClickSearch() {
+      this.getPieData();
+      this.getList();
+    },
 
     async getPieData() {
       try {
@@ -332,8 +336,6 @@ export default {
         if (ipstate) {
           params.ipstate = ipstate;
         }
-
-        console.log(params)
 
         let { data, pagination } = await this.$get({ url, params });
         this.total = pagination.total;
