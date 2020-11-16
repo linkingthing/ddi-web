@@ -37,12 +37,21 @@ export default {
         },
         {
           name: "forward-group",
-          path: "/dns/dns/forwards",
+          path: "/dns/dns/forwarders",
           component: () => import("@/views/dns/forward/ForwardGroup"),
           meta: {
-            title: "转发配置"
+            title: "转发组"
           }
         },
+        {
+          name: "time-policy",
+          path: "/dns/dns/forwardtimepolicies",
+          component: () => import("@/views/dns/forward/TimePolicy"),
+          meta: {
+            title: "时间策略"
+          }
+        },
+
 
         {
           name: "zone-query-forward",
@@ -56,7 +65,18 @@ export default {
         }
       ]
     },
-
+    
+    {
+      name: "domain-group",
+      path: "/dns/dns/domaingroups",
+      component: () =>
+        import(
+          /* webpackChunkName: "domain-group" */ "@/views/dns/domain-group"
+        ),
+      meta: {
+        title: "域名组"
+      }
+    },
     {
       name: "concurrency-control",
       path: "/dns/forward/concurrency-control",

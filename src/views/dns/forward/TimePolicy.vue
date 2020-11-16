@@ -1,11 +1,10 @@
 <template>
-  <div class="ForwardView">
+  <div class="TimePolicy">
     <table-page
       title="转发视图"
       :data="list"
       :columns="columns"
-      :total="total"
-      :current.sync="current"
+      :total="list.length"
     >
       <template slot="top-right">
         <i-button
@@ -15,7 +14,7 @@
         >新建</i-button>
       </template>
     </table-page>
-    <ForwardModal
+    <TimePolicyModal
       :links="paramsLinks"
       :visible.sync="visible"
       @success="getDataList"
@@ -24,49 +23,45 @@
 </template>
 
 <script>
-import ForwardModal from "./modules/forward-modal";
+import { sortBy } from "lodash";
+import TimePolicyModal from "./modules/time-policy-modal";
+import { DateType } from "./modules/helper";
+const weekMap = {
+  0: "星期日",
+  1: "星期一",
+  2: "星期二",
+  3: "星期三",
+  4: "星期四",
+  5: "星期五",
+  6: "星期六"
+};
 
 export default {
   name: "applicationFirewall",
   components: {
-    ForwardModal
+    TimePolicyModal
   },
   data() {
     return {
       columns: [
         {
-          title: "组名称",
+          title: "名称",
           key: "name",
-          align: "left",
-          render: (h, { row }) => {
-            return h(
-              "span",
-              {
-                props: {
-                  href: "javascript:;"
-                }
-              },
-              row.name
-            );
-          }
+          align: "left"
         },
         {
-          title: "服务器",
-          key: "ips",
-          align: "left",
-          render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.ips,
-                field: row
-              }
-            });
-          }
+          title: "开始时间",
+          key: "startTime",
+          align: "left"
+        },
+        {
+          title: "结束时间",
+          key: "endTime",
+          align: "left"
         },
         {
           title: "备注",
-          key: "comment",
-          align: "center"
+          key: "comment"
         },
         {
           title: "操作",
@@ -94,31 +89,59 @@ export default {
           }
         }
       ],
-      total: 0,
-      current: 0,
       list: [],
       links: {},
       paramsLinks: {},
       visible: false
     };
   },
-  watch: {
-    current: {
-      handler() {
-        this.getDataList();
-      }
-    }
+  mounted() {
+    this.getDataList();
   },
   methods: {
     getDataList() {
-      const params = {
-        page_num: this.current,
-        page_size: 10
-      };
-      this.$getData(params).then(({ data, links, pagination }) => {
-        this.list = data;
+      this.$getDataAndLinks().then(({ data, links }) => {
+        this.list = data.map(item => {
+          let startTime, endTime;
+
+          let { weekdaygroup, timetype } = item;
+          weekdaygroup = sortBy(weekdaygroup, function (o) {
+            return o.weekday;
+          });
+
+          if (timetype === DateType.Day) {
+            if (weekdaygroup.length) {
+              const { beginminute, endminute } = weekdaygroup[0];
+              startTime = `${beginminute / 60}:00`;
+              endTime = `${endminute / 60}:00`;
+            }
+          }
+          if (timetype === DateType.Week) {
+            if (weekdaygroup.length) {
+              {
+                const { beginminute, weekday } = weekdaygroup[0];
+                startTime = `${weekMap[weekday]} ${beginminute / 60}:00`;
+              }
+              {
+                const { endminute, weekday } = weekdaygroup[weekdaygroup.length - 1];
+                endTime = `${weekMap[weekday]} ${endminute / 60}:00`;
+              }
+            }
+          }
+
+          if (timetype === DateType.Date) {
+            const { begindaytime, enddaytime } = item;
+            startTime = this.$trimDate(begindaytime, "YYYY-MM-DD HH:mm");
+            endTime = this.$trimDate(enddaytime, "YYYY-MM-DD HH:mm");
+          }
+
+          return {
+            ...item,
+            startTime,
+            endTime
+          };
+        });
         this.links = links;
-        this.total = pagination.total;
       });
     },
     handleOpenCreate() {

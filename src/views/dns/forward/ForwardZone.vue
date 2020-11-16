@@ -31,45 +31,49 @@ export default {
     return {
       columns: [
         {
-          title: "域名",
-          key: "name",
-          align: "left",
-          render: (h, { row }) => {
-            return h("div", row.name === "." ? "根区" : row.name);
-          }
-        },
-
-        {
-          title: "转发组",
-          key: "forwards",
-          align: "center",
-          render: (h, { row }) => {
-            return h("Tags", {
-              props: {
-                list: row.forwards
-              }
-            });
-          }
-        },
-
-        {
           title: "转发类型",
-          key: "forwardtype",
-          align: "center"
+          key: "domain",
+          align: "left",
+          width: 120,
+          render: (h, { row }) => {
+            const typeMap = {
+              root: "根区",
+              domain: "域名",
+              domaingroup: "域名组"
+            };
+            return h("div", typeMap[row.nametype]);
+          }
         },
 
+        {
+          title: "转发项",
+          key: "forwardItem"
+        },
+
+        {
+          title: "转发服务器组",
+          key: "forwardtype",
+          width: 150,
+          render: (h, { row }) => {
+            return h("div", row.forwarders.map(item => item.name).join(","));
+          }
+        },
+
+        {
+          title: "时间策略",
+          key: "forwardtimepolicyname"
+        },
         {
           title: "创建时间",
           key: "creationTimestamp",
-          algin: "center",
+          width: 190,
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
           }
         },
         {
           title: "备注",
-          key: "comment",
-          align: "center"
+          key: "comment"
         },
         {
           title: "操作",
@@ -97,7 +101,8 @@ export default {
       dsliteList: [],
       visible: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      domainGroupList: []
     };
   },
   watch: {
@@ -110,7 +115,12 @@ export default {
   created() {
     this.viewId = this.$route.params.viewsId;
   },
-
+  mounted() {
+    this.getDataList();
+    this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
+      this.domainGroupList = data;
+    });
+  },
   methods: {
     getDataList() {
       const params = {
@@ -118,7 +128,18 @@ export default {
         page_size: 10
       };
       this.$getData(params).then(({ data, links, pagination }) => {
-        this.dsliteList = data;
+        this.dsliteList = data.map(item => {
+          const forwardItemMap = {
+            root: "@",
+            domain: item.domain,
+            domaingroup: item.domaingroupids.map(item => this.domainGroupList.find(domain => domain.id === item).name || "").join(",")
+          };
+          const forwardItem = forwardItemMap[item.nametype];
+          return {
+            ...item,
+            forwardItem
+          };
+        });
         this.links = links;
         this.total = pagination.total;
       }).catch(err => {

@@ -16,6 +16,7 @@ const getters = {
   userType: state => state.userType,
   userInfo: state => state.userInfo,
   hasPermissionToCreate: state =>
+<<<<<<< HEAD
     state.userInfo && state.userInfo.userType === "superUser",
 
   alarmCount: state => state.alarmCount,
@@ -27,6 +28,9 @@ const getters = {
     const endPage = current * size;
     return state.agentEventList.slice(startPage, endPage);
   }
+=======
+    state.userInfo && state.userInfo.userType === "superUser"
+>>>>>>> feat-domain-group
 };
 
 const mutations = {
@@ -68,8 +72,6 @@ const actions = {
             resolve(userInfo);
           })
           .catch(err => {
-            // commit("SET_USERINFO", {userType: "superUser"});
-            // resolve({userType: "superUser"});
             reject(err);
           });
       }

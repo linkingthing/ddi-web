@@ -20,18 +20,22 @@ export default {
       label: "转发规则",
       route: "forward-view"
     }, {
-      name: "forwards",
+      name: "forwarders",
       label: "转发组",
       route: "forward-group"
+    },
+    {
+      name: "forwardtimepolicies",
+      label: "时间策略",
+      route: "time-policy"
     }];
     return {
-      tab: this.$route.path.split("/").pop(),
+      tab: this.$route.path.split("/")[3],
       addressType: ""
     };
   },
   computed: {},
   created() {
- 
   },
   methods: {
     handleTab(tab) {

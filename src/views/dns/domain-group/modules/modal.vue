@@ -1,6 +1,6 @@
 <template>
   <common-modal
-    class="zone-modal"
+    class="domain-group-modal"
     :visible.sync="dialogVisible"
     :title="getTitle"
     :width="413"
@@ -10,7 +10,7 @@
     <Form
       ref="formInline"
       label-position="left"
-      :label-width="80"
+      :label-width="100"
       :label-colon="true"
       :rules="rules"
       :model="formModel"
@@ -27,10 +27,7 @@
 </template>
 
 <script>
-import {
-  ipv4IsValid,
-  ipv6IsValid
-} from "@/util/common";
+import { domainIsValid } from "@/util/common";
 
 export default {
   props: {
@@ -46,64 +43,53 @@ export default {
   },
 
   data() {
-    this.formItemList = [
-      {
-        label: "组名称",
-        model: "name",
-        type: "input",
-        placeholder: "请填写组名称"
-      },
-      {
-        label: "服务器",
-        model: "forwarderips",
-        type: "textarea",
-        placeholder: "可以添加多个转发服务器，多个服务器必须用逗号分隔，每次最多填写10条",
-        autosize: { minRows: 4, maxRows: 8 }
-      },
-
-      {
-        label: "备注",
-        model: "comment",
-        type: "input",
-        placeholder: "请填写备注"
-      }
-    ];
 
     this.rules = {
       name: [
-        { required: true, message: "请填写组名称" }
+        { required: true, message: "请填写名称" }
       ],
-      forwarderips: [
-        { required: true, message: "请填写组名称" },
+      domains: [
         {
           validator: (rule, value, callback) => {
-            if (value.trim() === "") {
-              callback("请输入服务器地址");
+            if (value === "") {
+              callback();
             }
-            const ipList = value.split(",");
-            const isPass = ipList.every(item => {
-              return (ipv4IsValid(item.trim()) || ipv6IsValid(item.trim())) && !item.includes("/");
-            });
-
-            if (ipList.length > 10) {
-              callback(new Error("每次最多填写10条"));
-            }
-
-            if (isPass) {
+            const isValid = value.split("\n").every(item => domainIsValid(item.trim()));
+            if (isValid) {
               callback();
             } else {
-              callback(new Error("请正确填写服务器地址"));
+              callback("请填写正确的域名，且换行分隔");
             }
-
-
           }
         }
       ]
+
     };
     return {
+      formItemList: [
+        {
+          label: "名称",
+          model: "name",
+          type: "input",
+          placeholder: "请填写名称"
+        },
+
+        {
+          label: "域名",
+          model: "domains",
+          type: "textarea",
+          autosize: { minRows: 4, maxRows: 8 },
+          placeholder: "可以添加多个域名，并以换行符分隔",
+        },
+
+        {
+          label: "备注",
+          model: "comment",
+          type: "input",
+          placeholder: "请填写备注"
+        }
+      ],
       formModel: {
-        zonetype: "master",
-        forwarderips: "",
         name: ""
       },
       loading: false,
@@ -113,7 +99,7 @@ export default {
 
   computed: {
     getTitle() {
-      return (this.isEdit ? "编辑" : "新建") + "组";
+      return (this.isEdit ? "编辑" : "新建") + "域名组";
     },
     isEdit() {
       return !!this.links.update;
@@ -121,19 +107,21 @@ export default {
   },
 
   watch: {
+
     visible(val) {
       if (!val) {
-        this.$refs.formInline.resetFields();
+        this.$refs["formInline"].resetFields();
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, forwarderips, comment }) => {
+        this.$get({ url: this.links.self }).then((data) => {
           this.formModel = {
-            name,
-            forwarderips: forwarderips.join(","),
-            comment
+            ...data,
+            domains: data.domains.join("\n")
           };
+
+
         }).catch();
       }
       this.dialogVisible = val;
@@ -142,6 +130,7 @@ export default {
     dialogVisible(val) {
       this.$emit("update:visible", val);
     }
+
   },
 
   created() {
@@ -151,20 +140,11 @@ export default {
   methods: {
 
     handleConfirm(name) {
-      this.$refs[name].validate((valid) => {
+
+      this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
-
-          if (typeof params.forwarderips === "string") {
-            if (params.forwarderips.trim().length) {
-              params.forwarderips = params.forwarderips.split(",").map(item => item.trim());
-            } else {
-              params.forwarderips = [];
-            }
-          } else {
-            params.forwarderips = [];
-          }
-
+          params.domains = params.domains.split("\n");
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
               this.$$success("编辑成功");
@@ -186,6 +166,7 @@ export default {
       });
 
 
+
     }
 
   }
@@ -193,9 +174,4 @@ export default {
 </script>
 
 <style lang="less">
-.zone-modal {
-  .ivu-radio-wrapper {
-    margin-right: 34px;
-  }
-}
 </style>

@@ -3,7 +3,7 @@
     <FormItem
       :label="item.label"
       v-for="(item) in formItemListParser"
-      :key="item.name"
+      :key="item.model"
       :prop="item.model"
       :style="item.style"
     >
