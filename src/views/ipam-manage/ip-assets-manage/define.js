@@ -37,21 +37,23 @@ function renderIp(h, row, field, status, scope) {
     style: {
       width: "100%"
     },
-    props: {},
+    props: {
+      disabled: !(Array.isArray(row[field]) && row[field].length)
+    },
     scopedSlots: {
       default: function (props) {
         return h(
           "div",
           {
             style: {
-              color: row[status] && "#168068",
+              color: row[status] && "#4586FE",
               cursor: row[status] && "pointer",
               overflow: "hidden",
               "text-overflow": "ellipsis",
               "white-space": "nowrap"
             }
           },
-          row[field]
+          Array.isArray(row[field]) && row[field].length ? row[field] : "__"
         );
       },
       content: function () {

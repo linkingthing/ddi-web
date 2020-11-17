@@ -220,8 +220,12 @@ export default {
 
 
     const { ip, ipstate } = this.$route.query;
-    this.condition.ipAddress = ip;
-    this.condition.ipstate = ipstate;
+    if (ip) {
+      this.condition.ipAddress = ip;
+    }
+    if (ipstate) {
+      this.condition.ipstate = ipstate;
+    }
 
   },
 
