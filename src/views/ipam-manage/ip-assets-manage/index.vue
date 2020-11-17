@@ -21,6 +21,21 @@
         </div>
 
         <div class="condition-item">
+          <label class="condition-item-label">终端状态</label>
+          <Select
+            v-model="condition.deviceState"
+            style="width:100px"
+            class="top-input"
+          >
+            <Option
+              v-for="item in deviceStateList"
+              :value="item.value"
+              :key="item.value"
+            >{{ item.label }}</Option>
+          </Select>
+        </div>
+
+        <div class="condition-item">
           <label class="condition-item-label">IP地址</label>
           <Input
             v-model="condition.ip"
@@ -109,6 +124,20 @@ export default {
   },
 
   data() {
+    this.deviceStateList = [
+      {
+        label: "在线",
+        value: "online"
+      },
+      {
+        label: "离线",
+        value: "offline"
+      },
+      {
+        label: "异常",
+        value: "abnormal"
+      }
+    ];
     return {
       url: this.$getApiByRoute().url,
       loading: true,
@@ -248,6 +277,20 @@ export default {
       finally {
         this.loading = false;
       }
+    },
+
+    handleGoto({ link, ip, ipstate }) {
+
+      console.log(link)
+      const path = this.$getRouteByLink(link, "address");
+      console.log(path)
+      this.$router.push({
+        path,
+        query: {
+          ip,
+          ipstate
+        }
+      })
     },
 
     handleAdd() {

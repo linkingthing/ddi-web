@@ -217,6 +217,12 @@ export default {
   mounted() {
     this.initChart();
     this.getData();
+
+
+    const { ip, ipstate } = this.$route.query;
+    this.condition.ipAddress = ip;
+    this.condition.ipstate = ipstate;
+
   },
 
   methods: {

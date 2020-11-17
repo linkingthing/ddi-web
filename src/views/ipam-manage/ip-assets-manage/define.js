@@ -1,3 +1,4 @@
+import { statusLegends } from "../network-interface/define";
 const tooltip = true;
 
 export const deviceTypes = [
@@ -31,27 +32,121 @@ export const deviceTypes = [
   }
 ];
 
+function renderIp(h, row, field, status, scope) {
+  return h("Tooltip", {
+    style: {
+      width: "100%"
+    },
+    props: {},
+    scopedSlots: {
+      default: function (props) {
+        return h(
+          "div",
+          {
+            style: {
+              color: row[status] && "#168068",
+              cursor: row[status] && "pointer",
+              overflow: "hidden",
+              "text-overflow": "ellipsis",
+              "white-space": "nowrap"
+            }
+          },
+          row[field]
+        );
+      },
+      content: function () {
+        const ipList = row[field]
+          .map(item => {
+            let config = {};
+            if (row[status]) {
+              const target = row[status].find(i => i.ip === item);
+              config = { ...target };
+              if (target) {
+                const statusConfig = statusLegends.find(
+                  item => item.type === target.ipstate
+                );
+                if (statusConfig) {
+                  config = {
+                    hasState: item === target.ip,
+                    ...config,
+                    ...statusConfig
+                  };
+                }
+              }
+            }
+
+            return [
+              h(
+                "span",
+                {
+                  style: {
+                    color: config.hasState ? "#4586FE" : "",
+                    cursor: config.hasState ? "pointer" : ""
+                  },
+                  on: {
+                    click: () => scope.handleGoto(config)
+                  }
+                },
+                item
+              ),
+              h("br")
+            ];
+          })
+          .flat();
+        return h("div", [h("span", "["), h("br"), ...ipList, h("span", "]")]);
+      }
+    }
+  });
+}
+
 export const columns = scope => [
   {
     title: "MAC",
     key: "mac",
     align: "left",
     width: 180,
-    tooltip
+    tooltip,
+    fixed: "left"
+  },
+  {
+    title: "终端状态",
+    key: "deviceState",
+    align: "left",
+    width: 110,
+    render: (h, { row }) => {
+      const colorMap = {
+        online: "#51CA3D",
+        offline: "#B1B1B1",
+        abnormal: "#EF2E2E"
+      };
+      return h("div", {
+        style: {
+          width: "12px",
+          height: "12px",
+          borderRadius: "50%",
+          background: colorMap[row.deviceState]
+        }
+      });
+    }
   },
   {
     title: "IPv4地址",
     key: "showipv4s",
     align: "center",
     width: 180,
-    tooltip
+    tooltip,
+    render: (h, { row }) => {
+      return renderIp(h, row, "ipv4s", "ipv4sStatus", scope);
+    }
   },
   {
     title: "IPv6地址",
     key: "showipv6s",
     align: "center",
     width: 180,
-    tooltip
+    render: (h, { row }) => {
+      return renderIp(h, row, "ipv6s", "ipv6sStatus", scope);
+    }
   },
 
   {
@@ -70,9 +165,16 @@ export const columns = scope => [
   },
   {
     title: "上联设备",
-    key: "switchName",
+    key: "uplinkEquipment",
     align: "center",
     width: 160,
+    tooltip
+  },
+  {
+    title: "端口",
+    key: "uplinkPort",
+    align: "center",
+    width: 120,
     tooltip
   },
   {
@@ -89,13 +191,7 @@ export const columns = scope => [
     width: 140,
     tooltip
   },
-  {
-    title: "端口",
-    key: "switchPort",
-    align: "center",
-    width: 120,
-    tooltip
-  },
+
   {
     title: "vlan",
     key: "vlanId",

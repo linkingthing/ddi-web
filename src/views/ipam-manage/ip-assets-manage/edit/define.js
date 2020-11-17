@@ -52,7 +52,7 @@ export const formItemList = isNew => [
   },
   {
     label: "上联设备",
-    model: "switchName",
+    model: "uplinkEquipment",
     type: "input",
     maxlength: 50,
     placeholder: "请输上联设备"
@@ -73,7 +73,7 @@ export const formItemList = isNew => [
   },
   {
     label: "端口",
-    model: "switchPort",
+    model: "uplinkPort",
     type: "input",
     maxlength: 50,
     placeholder: "请输入端口"
