@@ -276,6 +276,13 @@ export default {
       }
     },
     handleClickSearch() {
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          ...this.condition
+        }
+      });
+
       this.getPieData();
       this.getList();
     },
@@ -452,6 +459,14 @@ export default {
       this.currentType = type;
 
       this.condition.ipstate = type;
+
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          ...this.condition
+        }
+      });
+
       this.getList();
     },
 
