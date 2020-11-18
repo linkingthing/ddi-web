@@ -165,10 +165,15 @@
 
       <div class="base-upload">
 
-        <div class="base-upload-filename">{{file.name}}</div>
-        <div>
+        <!-- <div class="base-upload-filename">{{file.name}}</div> -->
+        <!-- <div> -->
+        <Input
+          style="width: 100%"
+          placeholder="请输入文件路径"
+          v-model="uploadParams.path"
+        />
 
-          <Upload
+        <!-- <Upload
             ref="upload"
             :action="`${links.self}?action=importcsv`"
             :before-upload="beforeUpload"
@@ -179,8 +184,8 @@
                 alt=""
                 style="vertical-align: bottom;margin-right: 6px;"
               >浏览文件</Button>
-          </Upload>
-        </div>
+          </Upload> -->
+        <!-- </div> -->
       </div>
     </common-modal>
 
@@ -237,17 +242,19 @@ export default {
       current: 0,
 
       always: false,
-      importVisible: true,
+      importVisible: false,
       file: "",
       links: {
         self: ""
+      },
+      uploadParams: {
+        path: ""
       }
     };
   },
   watch: {
     current() {
       this.handleQuery();
-
     }
   },
 
@@ -391,13 +398,21 @@ export default {
       this.importVisible = true;
     },
     beforeUpload(file) {
-      console.log(file)
       this.file = file;
       return false;
     },
     handleUpload() {
-      console.log(this.$refs.upload);
-      this.$refs.upload.post(this.file);
+      // console.log(this.$refs.upload);
+      // this.$refs.upload.post(this.file);
+      const url = `${this.links.self}?action=importcsv`;
+      const params = this.uploadParams;
+      this.$post({ url, params }).then(() => {
+        this.$Message.success("指定成功"); // 指定csv所在路径
+        this.importVisible = false;
+        this.always = false;
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
     },
     handleClickExportTable() {
       const url = `${this.links.self}?action=exportcsv`;
