@@ -21,7 +21,19 @@ export const columns = scope => [
     title: "地址状态",
     key: "ipStateText",
     minWidth: 120,
-    align: "center"
+    align: "center",
+    render: (h, { row }) => {
+      const target = statusLegends.find(item => item.type === row.ipState);
+      return h(
+        "div",
+        {
+          style: {
+            color: target && target.color
+          }
+        },
+        row.ipStateText
+      );
+    }
   },
   {
     title: "租赁时间(s)",
@@ -215,7 +227,7 @@ export const generatePieOption = ({ data, title, color, noData }) => {
     },
     series: [
       {
-        selectedOffset: 0,  // 选中扇区偏移
+        selectedOffset: 0, // 选中扇区偏移
         silent: noData,
         selectedMode: "single",
         color: noData ? noDataColors : color,
