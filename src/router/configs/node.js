@@ -12,7 +12,8 @@ export default {
 	meta: {
 		range: 'monitor',
 		title: '监控分析',
-		isFlat: true
+    isFlat: true,
+    permission: "*",
 	},
 	name: 'monitor',
 	children: [
@@ -23,7 +24,8 @@ export default {
 			icon: 'icon-node-monitor',
 			meta: {
 				range: 'monitor',
-				title: '概览',
+        title: '概览',
+        permission: "overview"
 			}
 		},
 		{
@@ -32,7 +34,8 @@ export default {
 			component: () => import('@/views/node/DNSDashboard'),
 			icon: 'icon-dns-monitor',
 			meta: {
-				title: 'DNS统计'
+        title: 'DNS统计',
+        permission: "dnsStatistics"
 			}
 		},
 		{
@@ -42,7 +45,8 @@ export default {
 			icon: 'icon-dhcp-monitor',
 			meta: {
 				from: 'monitor',
-				title: 'DHCP统计'
+        title: 'DHCP统计',
+        permission: "dhcpStatistics"
 			}
 		},
 		{
@@ -51,8 +55,9 @@ export default {
 			component: () => import('@/views/node/ControllerDashboard'),
 			icon: 'icon-controller-monitor',
 			meta: {
-				range: 'nodeManage',
-				title: '节点监控'
+				range: 'monitor',
+        title: '节点监控',
+        permission: "nodeMonitor"
 			}
 		}
 	]

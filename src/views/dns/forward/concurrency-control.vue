@@ -71,8 +71,8 @@ export default {
     getView() {
       services
         .getRecursiveConcurrents()
-        .then(res => {
-          const result = res.data.data;
+        .then(({ data }) => {
+          const result = data;
           if (Array.isArray(result) && result.length > 0) {
             this.formItem = result[0];
           }

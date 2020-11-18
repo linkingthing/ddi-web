@@ -131,9 +131,9 @@ export default {
       };
       services
         .geRedirectionsByViewId(this.id, params)
-        .then(function (res) {
-          _self.list = res.data.data;
-          _self.total = res.data.pagination.total;
+        .then(function ({ data, pagination }) {
+          _self.list = data;
+          _self.total = pagination.total;
         })
         .catch(function (err) {
           console.log(err);

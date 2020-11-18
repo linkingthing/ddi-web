@@ -2,9 +2,13 @@
   <div class="DeviceInformation">
     <Row>
       <h3>设备信息</h3>
-      <i-col span="8" v-for="dash in dashboardList" :key="dash.type">
+      <i-col
+        span="8"
+        v-for="dash in dashboardList"
+        :key="dash.type"
+      >
         <div>
-          <my-chart :values="dash"/>
+          <my-chart :values="dash" />
         </div>
       </i-col>
     </Row>
@@ -12,14 +16,20 @@
     <div class="line-graph">
       <div class="filter-wrapper">
         <div class="tab-device">
-          <Tabs active-key="lineParams.type" @on-click="handleChangeType">
+          <Tabs
+            active-key="lineParams.type"
+            @on-click="handleChangeType"
+          >
             <Tab-pane
               :name="dash.type"
               :label="dash.name"
               v-for="dash in dashboardList"
               :key="dash.type"
             ></Tab-pane>
-            <Tab-pane name="qps" label="qps"></Tab-pane>
+            <Tab-pane
+              name="qps"
+              label="qps"
+            ></Tab-pane>
           </Tabs>
         </div>
         <div class="date-pick-content">
@@ -27,8 +37,15 @@
         </div>
       </div>
 
-      <line-bar :values="usageData" :labels="dateData"></line-bar>
-      <Spin size="large" fix v-if="spinShow"></Spin>
+      <line-bar
+        :values="usageData"
+        :labels="dateData"
+      ></line-bar>
+      <Spin
+        size="large"
+        fix
+        v-if="spinShow"
+      ></Spin>
     </div>
   </div>
 </template>
@@ -85,16 +102,16 @@ export default {
   methods: {
     getDeviceHistoryInfo(params) {
       this.spinShow = true;
-      services.getDeviceHistoryInfo(params).then(res => {
-        if (res.data.status === "success") {
+      services.getDeviceHistoryInfo(params).then(({ data }) => {
+        if (data.status === "success") {
           // optimize：一行代码解决
-          this.dateData = Array.isArray(res.data.data.values)
-            ? res.data.data.values.map(item =>
-                dateFormat(item[0], "yyyy-MM-dd")
-              )
+          this.dateData = Array.isArray(data.values)
+            ? data.values.map(item =>
+              dateFormat(item[0], "yyyy-MM-dd")
+            )
             : [];
-          this.usageData = Array.isArray(res.data.data.values)
-            ? res.data.data.values.map(item => item[1])
+          this.usageData = Array.isArray(data.values)
+            ? data.values.map(item => item[1])
             : [];
         }
         this.spinShow = false;

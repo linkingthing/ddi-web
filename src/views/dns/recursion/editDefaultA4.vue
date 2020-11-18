@@ -8,7 +8,10 @@
   >
     <div slot="header">修改默认A4地址列表</div>
     <div>
-      <vue-scroll style="height: 500px;" ref="vs">
+      <vue-scroll
+        style="height: 500px;"
+        ref="vs"
+      >
         <i-form
           :model="params"
           label-position="right"
@@ -19,34 +22,45 @@
           <div class="pop-content">
             <div class="pop-box">
               <!-- <p class="title">应用域名</p> -->
-              <div class="pop-body" style="padding-bottom:0">
+              <div
+                class="pop-body"
+                style="padding-bottom:0"
+              >
                 <form-item
                   label="前缀"
                   :label-width="110"
-                  prop="prefix">
-                  <i-input v-model="params.prefix" placeholder="请填写前缀"/>
+                  prop="prefix"
+                >
+                  <i-input
+                    v-model="params.prefix"
+                    placeholder="请填写前缀"
+                  />
                 </form-item>
                 <form-item
                   label="客户IP地址"
                   prop="clientacl"
-                  :label-width="110">
+                  :label-width="110"
+                >
                   <i-select v-model="params.clientacl">
                     <i-option
                       v-for="item in list"
                       :key="item.id"
-                      :value="item.id">{{item.name}}</i-option>
+                      :value="item.id"
+                    >{{item.name}}</i-option>
                   </i-select>
                 </form-item>
 
                 <form-item
                   label="目标IPv4地址"
                   prop="aaddress"
-                  :label-width="110">
+                  :label-width="110"
+                >
                   <i-select v-model="params.aaddress">
                     <i-option
                       v-for="item in list"
                       :key="item.id"
-                      :value="item.id">{{item.name}}</i-option>
+                      :value="item.id"
+                    >{{item.name}}</i-option>
                   </i-select>
                 </form-item>
               </div>
@@ -56,11 +70,15 @@
       </vue-scroll>
     </div>
     <div slot="footer">
-      <i-button class="me-button k-btn" @click="networkModal = false">取消</i-button>
+      <i-button
+        class="me-button k-btn"
+        @click="networkModal = false"
+      >取消</i-button>
       <i-button
         type="primary"
         class="me-button add-btn"
-        @click="handleSubmit">确定</i-button>
+        @click="handleSubmit"
+      >确定</i-button>
     </div>
   </modal>
 </template>
@@ -119,8 +137,8 @@ export default {
     getChoose() {
       services
         .getAccessList()
-        .then(res => {
-          this.list = res.data.data;
+        .then(({ data }) => {
+          this.list = data;
         })
         .catch(err => {
           console.log(err);

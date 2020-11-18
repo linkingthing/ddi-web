@@ -13,6 +13,7 @@
         <Button
           type="primary"
           @click="handleAdd"
+          v-if="$hasPermissionCreate('pdpool')"
           class="top-button button-add"
         >
           新建
@@ -102,7 +103,7 @@ export default {
     getDataList() {
       this.loading = true;
 
-      this.$axios.get(this.$getApiByRoute().url).then(({ data: { data, links, pagination } }) => {
+      this.$axios.get(this.$getApiByRoute().url).then(({ data, links, pagination }) => {
         this.tableData = data;
         this.links = links;
         this.total = pagination.total;

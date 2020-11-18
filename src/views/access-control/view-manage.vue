@@ -8,7 +8,7 @@
     >
       <template slot="top-right">
         <i-button
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermission('view', 'POST')"
           type="primary"
           @click="handleOpenCreate"
         >新建</i-button>
@@ -77,7 +77,7 @@ export default {
           align: "right",
           width: 220,
           render: (h, { row }) => {
-            if (this.$store.getters.hasPermissionToCreate) {
+            if (this.$hasPermission("view", "POST")) {
               return h("div", [
                 h("btn-edit", {
                   on: {
@@ -149,12 +149,12 @@ export default {
       };
       services
         .getViewList(params)
-        .then(res => {
-          this.list = res.data.data;
-          this.links = res.data.links;
+        .then(({ data, links, pagination }) => {
+          this.list = data;
+          this.links = links;
 
           this.default = this.list.find(item => item.id === "default") || {};
-          this.total = res.data.pagination.total;
+          this.total = pagination.total;
         })
         .catch(function (err) {
           console.log(err);

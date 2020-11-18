@@ -13,6 +13,7 @@ export default {
   meta: {
     title: "权威服务",
     range: "dns",
+    permission: "authorityServe"
   },
   name: "dns-service",
   redirect: { name: "config-group" },
@@ -27,6 +28,8 @@ export default {
         ),
       meta: {
         title: "区配置",
+        permission: "zoneConfig"
+
       },
     },
     {
@@ -41,6 +44,8 @@ export default {
         title: "区域查询",
         notInMenu: true,
         from: "config-group",
+        permission: "authorityZone"
+
       },
     },
     {
@@ -55,6 +60,8 @@ export default {
         title: "资源记录",
         notInMenu: true,
         from: "authority-zone-query",
+        permission: "rrs"
+
       },
     },
     {
@@ -67,6 +74,8 @@ export default {
         ),
       meta: {
         title: "重定向",
+        permission: "redirectView"
+
       },
     },
     {
@@ -81,6 +90,8 @@ export default {
         title: "重定向",
         notInMenu: true,
         from: "redirect-view",
+        permission: "redirect"
+
       },
     },
 
@@ -93,6 +104,7 @@ export default {
         ),
       meta: {
         title: "URL重定向",
+        permission: "urlRedirectView"
       },
     },
 
@@ -107,33 +119,9 @@ export default {
         title: "URL重定向",
         notInMenu: true,
         from: "urlredirects-view",
+        permission: "urlRedirect"
       },
     },
 
-    {
-      name: "a4-compose-view",
-      path: "/dns/recursion/A4ComposeView",
-      component: () =>
-        import(
-          /* webpackChunkName: "option-config" */ "@/views/dns/recursion/A4ComposeView"
-        ),
-      meta: {
-        notInMenu: true,
-        title: "DNS64",
-      },
-    },
-    {
-      name: "a4-compose",
-      path: "/dns/recursion/view/A4Compose",
-      component: () =>
-        import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/recursion/A4Compose"
-        ),
-      meta: {
-        notInMenu: true,
-        from: "a4-compose-view",
-        title: "A4地址合成",
-      },
-    },
   ],
 };

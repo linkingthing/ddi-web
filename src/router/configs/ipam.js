@@ -11,7 +11,9 @@ export default {
   component: Layout,
   meta: {
     title: "IPAM管理",
-    range: "address"
+    range: "address",
+    permission: "ipamManage"
+
   },
   name: "ipam-manage",
   icon: "icon-ipam",
@@ -22,35 +24,20 @@ export default {
       path: '/address/ipam/plans',
       component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan'),
       meta: {
-        title: "IP地址规划"
+        title: "IP地址规划",
+        permission: "ipAddressPlan"
+
       }
     },
-    {
-      name: 'ipam-address-layouts',
-      path: '/address/ipam/plans/:plansId/layouts',
-      component: () => import(/* webpackChuckName: "ipam-address-layouts" */ '@/views/ipam-manage/address-layout'),
-      meta: {
-        notInMenu: true,
-        from: "ipam-address-plan",
-        title: ":prefix"
-      }
-    },
-    {
-      name: 'ipam-address-plan-subnet',
-      path: '/address/ipam/plans/:plansId/layouts/:layoutsId/plannedsubnets',
-      component: () => import(/* webpackChuckName: "ipam-address-plan-subnet" */ '@/views/ipam-manage/address-plan-subnet'),
-      meta: {
-        notInMenu: true,
-        from: "ipam-address-layouts",
-        title: ":layoutName"
-      }
-    },
+
     {
       name: 'ipam-address-manage',
       path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
-        title: "IP地址监测"
+        title: "IP地址监测",
+        permission: "ipAddressMonitor"
+
       }
     },
     {
@@ -60,7 +47,9 @@ export default {
       meta: {
         notInMenu: true,
         from: "ipam-address-manage",
-        title: ":subnet"
+        title: ":subnet",
+        permission: "networkinterfaces"
+
       }
     },
     {
@@ -68,7 +57,9 @@ export default {
       path: '/address/ipam/assets',
       component: () => import(/* webpackChuckName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
       meta: {
-        title: "终端管理"
+        title: "终端管理",
+        permission: "terminalManage"
+
       }
     },
     {
@@ -76,7 +67,9 @@ export default {
       path: '/address/ipam/networkequipments',
       component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
-        title: "设备管理"
+        title: "设备管理",
+        permission: "deviceManage"
+
       }
     },
     {
@@ -84,7 +77,8 @@ export default {
       path: '/address/ipam/topology',
       component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/topology"),
       meta: {
-        title: "网络拓扑"
+        title: "网络拓扑",
+        permission: "netTopology"
       }
     }
   ]

@@ -6,6 +6,8 @@ export default {
   meta: {
     range: "auth",
     title: "访问控制",
+    permission: "accessControl"
+
   },
   name: "auth-user",
   icon: "icon-access",
@@ -18,6 +20,8 @@ export default {
       meta: {
         range: "auth",
         title: "用户组",
+        permission: "userGroup"
+
       },
     },
     {
@@ -28,6 +32,8 @@ export default {
       meta: {
         range: "auth",
         title: "用户",
+        permission: "user"
+
       },
     },
     {
@@ -38,6 +44,8 @@ export default {
       meta: {
         range: "auth",
         title: "角色",
+        permission: "role"
+
       },
     },
     {
@@ -48,6 +56,8 @@ export default {
       meta: {
         range: "auth",
         title: "访问白名单",
+        permission: "accessWhiteList"
+
       },
     }
   ],

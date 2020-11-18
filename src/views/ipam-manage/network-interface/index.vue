@@ -276,7 +276,6 @@ export default {
 
     async getPieData() {
       try {
-        const { data } = await this.$getParantData();
         const {
           activeRatio,
           assignedRatio,
@@ -287,7 +286,7 @@ export default {
           zombieRatio,
           reservationRatio,
           staticAddressRatio
-        } = data;
+        } = await this.$getParantData();
 
         this.unmanagedRatio = unmanagedRatio;
 

@@ -73,7 +73,7 @@
         </Button> -->
 
         <Button
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermissionCreate('networkequipment')"
           type="primary"
           @click="handleAdd"
           class="top-button"

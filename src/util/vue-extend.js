@@ -4,6 +4,7 @@ import { del, post, put, get, axios } from "./axios";
 import * as requestMethods from "./request";
 import router from "@/router";
 import "./ws";
+import { USERTYPE_SUPER } from "@/config";
 
 import moment from "moment";
 moment.locale("zh-cn");
@@ -211,3 +212,22 @@ Vue.prototype.$formatQuerys = (params = {}, url) => {
 
   return query;
 };
+
+export function hasPermission(resource, operation) {
+  const { userInfo } = store.getters;
+  if (userInfo) {
+    const { userType, menuList } = userInfo;
+    if (userType === USERTYPE_SUPER) {
+      return true;
+    } else {
+      const item = menuList.find(item => item.resource === resource);
+      if (item) {
+        return item.operations.includes(operation);
+      }
+    }
+  }
+}
+
+Vue.prototype.$hasPermission = hasPermission;
+Vue.prototype.$hasPermissionCreate = resource =>
+  hasPermission(resource, "POST");

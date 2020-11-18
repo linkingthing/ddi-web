@@ -246,7 +246,6 @@ export default {
 
     curve() {
       const svgCurveList = this.svgPathGroup.map(item => {
-        console.log(item)
 
         const qox = item.startX + (item.endX - item.startX) / 2;
         const qoy = item.startY + (item.endY - item.startY) / 4;
@@ -277,7 +276,6 @@ export default {
         let lineGroup = [];
 
         value.forEach(item => {
-          console.log(item)
           if (item.type === "child") {
             startXPointMap[item.ip] = item;
           }
@@ -303,8 +301,6 @@ export default {
   },
 
   mounted() {
-
-    // console.log(this.findNodeFromTree(treeData, "10.0.0.73", "children"))
 
     this.nodeMapRef = this.$refs.nodeMapRef;
 
@@ -381,52 +377,55 @@ export default {
       return null;
 
     },
-    async getNodeInfo() {
+    getNodeInfo() {
+
       let requestCount = 0;
       let totalQps = 0;
       let totalLps = 0;
 
-      const { data } = await this.$get(this.$getApiByRoute("/monitor/metric/nodes"));
+      this.$get(this.$getApiByRoute("/monitor/metric/nodes")).then(({ data }) => {
+        this.nodeList = data;
 
-      this.nodeList = data;
+        Array.isArray(data) && data.forEach(async ({ startTime, roles, links }) => {
+          if (roles.includes("controller")) {
 
-      Array.isArray(data) && data.forEach(async ({ startTime, roles, links }) => {
-        if (roles.includes("controller")) {
+            this.bootTime = moment(startTime).format("YYYY.MM.DD HH:mm");
+            this.bootTimestamp = startTime;
 
-          this.bootTime = moment(startTime).format("YYYY.MM.DD HH:mm");
-          this.bootTimestamp = startTime;
+          }
 
-        }
+          const { data: dnsData } = await this.$get({ url: links.dnses });
 
-        const { data: dnsData } = await this.$get({ url: links.dnses });
+          const qpsList = dnsData.find(item => item.id === "qps").qps.values;
 
-        const qpsList = dnsData.find(item => item.id === "qps").qps.values;
-
-        const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
-
-
-        if (typeof lastQps.value === "number") {
-          totalQps += lastQps.value;
-        }
+          const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
 
 
-        const { data: dhcpData } = await this.$get({ url: links.dhcps });
+          if (typeof lastQps.value === "number") {
+            totalQps += lastQps.value;
+          }
 
-        const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
-        const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : {};
+
+          const { data: dhcpData } = await this.$get({ url: links.dhcps });
+
+          const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
+          const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : {};
 
 
-        if (typeof lastLps.value === "number") {
-          totalLps += lastLps.value;
-        }
+          if (typeof lastLps.value === "number") {
+            totalLps += lastLps.value;
+          }
 
-        requestCount++;
+          requestCount++;
 
-        if (requestCount === data.length) {
-          this.totalQps = totalQps;
-          this.totalLps = totalLps;
-        }
+          if (requestCount === data.length) {
+            this.totalQps = totalQps;
+            this.totalLps = totalLps;
+          }
 
+        });
+      }).catch(err => {
+        console.log(err, "node");
       });
 
     },
