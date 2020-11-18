@@ -138,7 +138,7 @@ export default {
 
           // action 注册, 只有存在的情况才注册
           if (this.data && this.data.shouldRegister) {
-            url += `?action=register`;
+            url += `?action=refresh`;
             action = "$post";
           }
 

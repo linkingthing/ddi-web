@@ -139,7 +139,7 @@ export default {
           case "exportcsv": return "导出";
           case "changingrrs": return "A和AAAA记录切换";
           case "snmp": return "更新地址探测";
-          case "register": return "终端登记";
+          case "refresh": return "终端登记";
         }
       };
 

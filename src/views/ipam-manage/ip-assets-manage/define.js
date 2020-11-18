@@ -83,10 +83,11 @@ function renderIp(h, row, field, status, scope) {
                 {
                   style: {
                     color: config.hasState ? "#4586FE" : "",
-                    cursor: config.hasState ? "pointer" : ""
+                    cursor: config.hasState ? "pointer" : "",
+                    "white-space": "normal"
                   },
                   on: {
-                    click: () => scope.handleGoto(config)
+                    click: () => config.hasState && scope.handleGoto(config)
                   }
                 },
                 item

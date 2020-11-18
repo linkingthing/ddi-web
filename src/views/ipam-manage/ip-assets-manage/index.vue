@@ -89,6 +89,51 @@
         >
           新建
         </Button>
+        <Tooltip
+          placement="bottom-end"
+          :always="always"
+          class="import-export-tooltip"
+        >
+          <Button
+            type="primary"
+            @click="handleOpenImport"
+            class="top-button"
+          >
+            导入/导出
+          </Button>
+          <div slot="content">
+            <div class="import-export-menu">
+              <div
+                class="import-export-menu-item"
+                @click="handleClickImportTable"
+              >
+                <img
+                  src="./import.png"
+                  alt=""
+                > 导入终端表格
+              </div>
+              <div
+                class="import-export-menu-item"
+                @click="handleClickExportTable"
+              >
+                <img
+                  src="./export.png"
+                  alt=""
+                > 导出终端表格
+              </div>
+              <div
+                class="import-export-menu-item"
+                @click="handleClickDownloadTemplate"
+              >
+                <img
+                  src="./template.png"
+                  alt=""
+                > 终端表格模板
+              </div>
+            </div>
+          </div>
+        </Tooltip>
+
       </template>
     </table-page>
 
@@ -102,6 +147,43 @@
       :visible.sync="showAdvance"
       @comfirmed="handleAdvancedQuery"
     />
+
+    <common-modal
+      :visible.sync="importVisible"
+      :width="415"
+      title="导入终端表格"
+      @confirm="handleUpload"
+    >
+      <div class="tips-info">
+        <img
+          class="tips-info-icon"
+          src="./icon-info.png"
+          alt=""
+        >
+        <span>请使用为您准备的“终端表格模板”填写终端信息</span>
+      </div>
+
+      <div class="base-upload">
+
+        <div class="base-upload-filename">{{file.name}}</div>
+        <div>
+
+          <Upload
+            ref="upload"
+            :action="`${links.self}?action=importcsv`"
+            :before-upload="beforeUpload"
+          >
+            <Button size="small">
+              <img
+                src="./icon-file.png"
+                alt=""
+                style="vertical-align: bottom;margin-right: 6px;"
+              >浏览文件</Button>
+          </Upload>
+        </div>
+      </div>
+    </common-modal>
+
   </div>
 </template>
 
@@ -115,7 +197,7 @@ import AdvancedSearch from "./advanced-query";
 
 import { columns, deviceTypes } from "./define";
 
-import { ipv4IsValid } from "@/util/common";
+import { ipv4IsValid, downloadFile } from "@/util/common";
 
 export default {
   components: {
@@ -152,7 +234,14 @@ export default {
       showEdit: false,
       currentData: null,
       total: 0,
-      current: 0
+      current: 0,
+
+      always: false,
+      importVisible: true,
+      file: "",
+      links: {
+        self: ""
+      }
     };
   },
   watch: {
@@ -258,8 +347,8 @@ export default {
           page_num: this.current,
           page_size: 10
         };
-        let { data, pagination } = await this.$get({ url: this.$formatQuerys({ ...params, deviceType }, url), params: aparams });
-
+        let { data, pagination, links } = await this.$get({ url: this.$formatQuerys({ ...params, deviceType }, url), params: aparams });
+        this.links = links;
         this.tableData = data.map(item => {
           const type = deviceTypes.find(({ label }) => label === item.deviceType);
 
@@ -280,10 +369,7 @@ export default {
     },
 
     handleGoto({ link, ip, ipstate }) {
-
-      console.log(link)
       const path = this.$getRouteByLink(link, "address");
-      console.log(path)
       this.$router.push({
         path,
         query: {
@@ -298,6 +384,33 @@ export default {
       this.currentData = null;
     },
 
+    handleOpenImport() {
+      this.always = !this.always;
+    },
+    handleClickImportTable() {
+      this.importVisible = true;
+    },
+    beforeUpload(file) {
+      console.log(file)
+      this.file = file;
+      return false;
+    },
+    handleUpload() {
+      console.log(this.$refs.upload);
+      this.$refs.upload.post(this.file);
+    },
+    handleClickExportTable() {
+      const url = `${this.links.self}?action=exportcsv`;
+      this.$post({ url }).then(({ path }) => {
+        downloadFile(path);
+      });
+    },
+    handleClickDownloadTemplate() {
+      const url = `${this.links.self}?action=exportcsvtemplate`;
+      this.$post({ url }).then(({ path }) => {
+        downloadFile(path);
+      });
+    },
     handleEdit(res) {
       this.showEdit = true;
       this.currentData = { ...res };

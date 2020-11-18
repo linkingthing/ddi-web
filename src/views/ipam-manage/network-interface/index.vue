@@ -492,7 +492,7 @@ export default {
         // 能查询到，进行注册操作
 
         if (data.length) {
-          const url = `${res.links.self}?action=register`;
+          const url = `${res.links.self}?action=refresh`;
           const params = {
             computerRack,
             computerRoom,
