@@ -84,6 +84,17 @@ export default {
           subnet: data.ipnet
         }
       });
+    },
+    handleGoIpHistory(data) {
+      this.$router.push({
+        name: "ipam-network-ipassets",
+        params: {
+          scannedsubnetsId: data.id
+        },
+        query: {
+          subnet: data.ipnet
+        }
+      });
     }
   }
 };

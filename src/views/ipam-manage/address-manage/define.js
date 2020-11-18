@@ -15,18 +15,15 @@ export const columns = scope => [
         row.ipnet
       );
     },
-    width: "440",
-    align: "left"
+    width: "440"
   },
   {
     title: "名称",
-    key: "tags",
-    align: "center"
+    key: "tags"
   },
   {
     title: "使用率",
     key: "usedRatio",
-    align: "right",
     width: "180",
     render: (h, { row }) => {
       return h("common-process", {
@@ -34,6 +31,29 @@ export const columns = scope => [
           percent: row.usedRatio
         }
       });
+    }
+  },
+  {
+    title: "操作",
+    key: "action",
+    // align: "right",
+    width: "180",
+    render: (h, { row }) => {
+      return h(
+        "a",
+        {
+          class: "is-link",
+
+          attr: {
+            href: "javscript:;"
+          },
+          on: {
+            click: () => scope.handleGoIpHistory(row)
+          }
+          
+        },
+        "IP历史"
+      );
     }
   }
 ];

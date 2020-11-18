@@ -50,13 +50,23 @@ export default {
       path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
-        title: "IP地址监测"
+        title: "IP资产管理"
       }
     },
     {
       name: 'ipam-network-interface',
       path: '/address/ipam/scannedsubnets/:scannedsubnetsId/networkinterfaces',
       component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
+      meta: {
+        notInMenu: true,
+        from: "ipam-address-manage",
+        title: ":subnet"
+      }
+    },
+    {
+      name: 'ipam-network-ipassets',
+      path: '/address/ipam/scannedsubnets/:scannedsubnetsId/ipassets',
+      component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/ipassets"),
       meta: {
         notInMenu: true,
         from: "ipam-address-manage",
