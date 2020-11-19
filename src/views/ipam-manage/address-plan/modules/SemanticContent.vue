@@ -297,7 +297,15 @@ import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
-import { parserValueStr2Arr, executeNextIpv6Segment, planSemanticNodesValue, hasGrandson, createPlanNode, executeValueRecyclePool } from "./helper";
+import {
+  parserValueStr2Arr,
+  executeNextIpv6Segment,
+  planSemanticNodesValue,
+  hasGrandson,
+  createPlanNode,
+  executeValueRecyclePool,
+  modifiedEnum
+} from "./helper";
 
 let nodeIndex = 1;
 export default {
@@ -571,7 +579,7 @@ export default {
       deep: true,
       handler(val) {
         console.log(val, "currentNode")
-        // console.log("nodes", this.nodes)
+        console.log("nodes", this.nodes)
         // console.log("currentNodeChildren", this.currentNodeChildren)
 
         if (!val) {
@@ -729,7 +737,7 @@ export default {
         const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
           return {
             id: uuidv4(),
-            modified: 1,
+            modified: modifiedEnum.STRUCTURED,
             name: `新增节点${nodeIndex++}`,
             parentsemanticid,
             stepsize,
@@ -796,8 +804,26 @@ export default {
       });
     },
     handleDeleteSemantic(row) {
-      // TODO:删除语义节点的限制条件，删除方式也需要改变
-      this.removeNodeById(row.id);
+      this.$Modal.confirm({
+        title: "语义节点删除确认",
+        content: "<p>请再次语义节点删除确认</p>",
+        loading: true,
+        onOk: () => {
+          this.removeNodeById(row.id);
+          const nodes = this.nodes.filter(node => node.id !== row.id);
+          nodes.forEach(node => {
+            if (node.id === row.parentsemanticid) {
+              node.modified = modifiedEnum.STRUCTURED;
+            }
+          });
+          this.updatePlan(nodes).then(() => {
+            this.$Modal.remove();
+            this.$Message.info("语义节点删除成功");
+          });
+
+        }
+      });
+
     },
     handleOpenEditNode(row) {
 
@@ -927,7 +953,8 @@ export default {
             if (semanticNode.id === node.row.id) {
               semanticNode.prefixs = node.row.plannodes.map(item => item.prefix);
               semanticNode.plannodes = node.row.plannodes;
-              temp.push(node.row);
+              semanticNode.modified = modifiedEnum.INFO;
+              temp.push(semanticNode);
             } else {
               temp.push(semanticNode);
             }
@@ -1038,15 +1065,16 @@ export default {
       this.$Message.success("操作成功");
     },
     handleSave() {
-
+      // 对编辑过的属性进行保存，TODO：切换的时候提示保存
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize
       this.saveNodes(cloneDeep(this.semanticNodeList));
-      const { url } = this.$getApiByRoute();
-
-      const methods = "$put";
-
       const nodes = cloneDeep(this.nodes);
-
+      this.updatePlan(nodes).then(() => {
+        this.$Message.success("保存成功");
+      });
+    },
+    updatePlan(semanticnodes) {
+      const { url } = this.$getApiByRoute();
       const maxmaskwidth = 64;
 
       const planMaskWidths = Array.from({ length: this.prefixs.length }, () => maxmaskwidth);
@@ -1054,17 +1082,11 @@ export default {
         maxmaskwidths: planMaskWidths,
         name: this.planName,
         prefixs: this.prefixs,
-        semanticnodes: nodes.map(item => {
-          return {
-            ...item,
-            modified: true
-          };
-        })
+        semanticnodes
       };
 
-      this[methods]({ url, params }).then(res => {
-        this.getCurrentPlanInfo(this.$getApiByRoute());
-        this.$Message.success("保存成功");
+      return this.$put({ url, params }).then(() => {
+        this.getCurrentPlanInfo({ url });
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });

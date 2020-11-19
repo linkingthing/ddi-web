@@ -530,6 +530,12 @@ export const createPlanNode = ({
   };
 };
 
+export const modifiedEnum = {
+  NO: "no",
+  STRUCTURED: "structured",
+  INFO: "info"
+};
+
 export const hasGrandson = (nodes, id) => {
   const children = nodes.filter(node => {
     return node.parentsemanticid === id;

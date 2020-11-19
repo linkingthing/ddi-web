@@ -27,6 +27,12 @@
             v-if="$store.getters.hasPermissionToCreate"
           >新建规划</Button>
 
+          <Button
+            type="primary"
+            @click="handleUploadPlan"
+            v-if="$store.getters.hasPermissionToCreate"
+          >上传规划</Button>
+
         </template>
       </table-page>
 
@@ -151,6 +157,16 @@ export default {
             return h("div", {
               class: "table-btn-box"
             }, [
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+                    this.handleDownloadPlan(row);
+                  }
+                },
+                props: {
+                  title: "下载规划"
+                }
+              }),
               h("btn-line", {
                 nativeOn: {
                   click: () => {
@@ -293,6 +309,15 @@ export default {
     handleAddPlan() {
       this.paramsLinks = this.links;
       this.visible = true;
+    },
+    handleUploadPlan() {
+
+    },
+    handleDownloadPlan({ links }) {
+      const params = { path: "/opt/website/xxxout.csv" };
+      this.$post({ url: `${links.self}?action=export`, params }).then(res => {
+        console.log(res)
+      });
     }
   }
 };

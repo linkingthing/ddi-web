@@ -28,6 +28,7 @@
 
 <script>
 import { v4 as uuidv4 } from "uuid";
+import { modifiedEnum } from "./helper";
 
 export default {
   props: {
@@ -158,7 +159,7 @@ export default {
 
           params.semanticnodes = [{
             id: parentsemanticid,
-            modified: 1,
+            modified: modifiedEnum.STRUCTURED,
             name: params.name,
             parentsemanticid: "0",
             stepsize: 2,
