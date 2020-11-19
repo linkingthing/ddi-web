@@ -139,13 +139,12 @@ export default {
     selectedList: {
       deep: true,
       handler(value) {
-        if (value.trim()) {
-          this.$emit("on-change", value.map(item => item.id));
-        }
+        this.$emit("on-change", value.map(item => item.id));
+
       }
     },
     keywords(value) {
-      if (this.isAsyncSearch) {
+      if (this.isAsyncSearch && value.trim()) {
         this.$emit("onSearch", value);
       }
     }

@@ -73,6 +73,19 @@
       :visible.sync="visible"
       action="changePassword"
     />
+    <common-modal
+      :visible.sync="scopeAuthVisible"
+      :width="750"
+      title="权限范围"
+      @confirm="scopeAuthVisible = false"
+    >
+      <Table
+        style="overflow: visible"
+        :columns="scopeColumns"
+        :data="scopeData"
+      />
+    </common-modal>
+
   </div>
 </template>
 
@@ -127,6 +140,12 @@ const userDropdownMenu = [
     permission: "super"
   },
   {
+    label: "权限范围",
+    key: "getAuthorityInfo",
+    permission: "user",
+    onlyUser: true
+  },
+  {
     label: "退出系统",
     key: "out",
     permission: "*"
@@ -151,7 +170,34 @@ export default {
       rePassword: "",
       username: "",
       userType: "",
-      resourceList: []
+      resourceList: [],
+      scopeAuthVisible: false,
+      scopeColumns: [{
+        title: "数据类型",
+        key: "dataType"
+      }, {
+        title: "内容",
+        key: "content",
+        render: (h, { row }) => {
+          row.prefixs = row.prefixs || [];
+          row.ipv4Subnets = row.ipv4Subnets || [];
+          const list = [...row.prefixs, ...row.ipv4Subnets];
+          return h("Tooltip", {
+            props: {
+              disabled: !list.length
+            },
+            scopedSlots: {
+              content: (props) => {
+                return list.map(item => {
+                  return h("div", item);
+                });
+              }
+            }
+
+          }, row.content)
+        }
+      }],
+      scopeData: []
 
     };
   },
@@ -178,7 +224,7 @@ export default {
       const userType = this.userType;
       const resourceList = this.resourceList;
       if (userType === USERTYPE_SUPER) {
-        return userDropdownMenu;
+        return userDropdownMenu.filter(item => !item.onlyUser);
       } else {
         return userDropdownMenu.filter(item => {
           return resourceList.includes(item.permission) || item.permission === "*";
@@ -247,6 +293,36 @@ export default {
           path: "/auth/auth/user/group"
         });
       }
+
+      if (name === "getAuthorityInfo") {
+        this.scopeAuthVisible = true;
+        const url = "/apis/linkingthing.com/auth/v1/users?action=getAuthorityInfo";
+        this.$post({ url }).then(({ prefixs, views }) => {
+          const result = []
+          if (Array.isArray(prefixs)) {
+            const list = prefixs.map(item => {
+              return {
+                ...item,
+                dataType: "IP网段",
+                content: item.semanticName
+              };
+            });
+            result.push(...list);
+          }
+
+          if (Array.isArray(views)) {
+            const list = views.map(item => {
+              return {
+                dataType: "视图",
+                content: item
+              };
+            });
+            result.push(...list);
+          }
+          this.scopeData = result;
+        });
+      }
+
       if (name === "password") {
         this.visible = true;
       }
