@@ -119,7 +119,7 @@ const userDropdownMenu = [
   {
     label: "修改密码",
     key: "password",
-    permission: "ddiuser"
+    permission: "user"
   },
   {
     label: "访问控制",
@@ -232,7 +232,7 @@ export default {
         const params = {
           token
         };
-        this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=logout", params }).finally(() => {
+        this.$post({ url: "/apis/linkingthing.com/auth/v1/users/user?action=logout", params }).finally(() => {
           self.setToken("");
           self.setRoutes([]);
           resetRouter();

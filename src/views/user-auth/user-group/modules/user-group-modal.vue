@@ -174,7 +174,7 @@ export default {
       this.getRoleList();
     },
     getUserList() {
-      this.$getData({}, "/auth/auth/ddiusers").then(({ data }) => {
+      this.$getData({}, "/auth/auth/users").then(({ data }) => {
         this.userList = data.map(item => {
           return {
             id: item.id,

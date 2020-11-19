@@ -110,7 +110,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
-      this.$getData(params, "/auth/auth/ddiusers").then(({ data, links, pagination }) => {
+      this.$getData(params, "/auth/auth/users").then(({ data, links, pagination }) => {
         this.links = links;
         this.list = data;
         this.total = pagination.total;

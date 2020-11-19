@@ -67,7 +67,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       post({
         url:
-          "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser",
+          "/apis/linkingthing.com/auth/v1/users/user?action=currentUser",
         params
       })
         .then(userInfo => {

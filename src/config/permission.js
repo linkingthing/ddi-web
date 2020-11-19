@@ -292,7 +292,7 @@ export default [
     name: "用户",
     id: "user",
     module: "auth",
-    resouces: ["ddiuser"]
+    resouces: ["user"]
   },
   {
     name: "角色",
@@ -310,6 +310,6 @@ export default [
     name: "用户操作",
     id: "currentUser",
     module: "system",
-    resouces: ["ddiusers"]
+    resouces: ["users"]
   }
 ];
