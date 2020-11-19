@@ -178,6 +178,25 @@ export default {
       if (this.links.update) {
         this.$get({ url: this.links.self }).then(data => {
           this.formModel = data;
+          return data;
+        }).then(({ semantics }) => {
+          const { url } = this.$getApiByRoute(`/auth/auth/users?action=getSemanticInfo`);
+          const params = { semanticIds: semantics };
+          this.$post({ url, params }).then((res) => {
+            const semanticList = res.map(item => {
+              return {
+                ...item,
+                id: item.semanticId,
+                name: item.semanticName,
+                prefixs: item.prefixs
+              };
+            });
+            this.semanticList = semanticList;
+            this.planList = semanticList;
+          }).catch(() => {
+            this.planList = [];
+          });
+
         }).catch();
       }
       this.dialogVisible = val;
@@ -201,25 +220,30 @@ export default {
     getViewList() {
       this.$getData({}, "/dns/dns/views").then(({ data }) => {
         this.viewList = data;
+        return data;
       });
     },
     handleAsyncSearch(search) {
       this.getSemanticList(search);
     },
+    semanticListParser(semanticList) {
+      return semanticList.map(item => {
+        return {
+          ...item,
+          id: item.semanticId,
+          name: `${item.record.join("/")}`,
+          prefixs: item.prefixs
+        };
+      });
+    },
     getSemanticList(semanticName) {
       const { url } = this.$getApiByRoute(`/auth/auth/users?action=getSemanticByName`);
-      const params = { semanticName }
+      const params = { semanticName };
       this.$post({ url, params }).then((res) => {
-        this.planList = res.map(item => {
-          return {
-            ...item,
-            id: item.semanticId,
-            name: `${item.record.join("/")}`,
-            prefixs: item.prefixs
-          };
-        });
+        const semanticList = this.semanticListParser(res);
+        this.planList = [...this.planList, ...semanticList];
       }).catch(() => {
-        this.planList = [];
+        this.planList = this.semanticList;
       });
 
     },

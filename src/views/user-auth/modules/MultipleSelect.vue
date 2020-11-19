@@ -43,7 +43,7 @@
       <div class="multiple-select-head">
         <h3 class="multiple-select-card-title">{{tips}}:</h3>
       </div>
-      <div class=" multiple-select-body">
+      <div class="multiple-select-body">
         <div
           class="selected-labels"
           v-if="selectedList.length"
@@ -56,6 +56,7 @@
             @on-close="handleClose(item)"
           >
             <Tooltip
+              placement="bottom-start"
               :content="item && item.prefixs"
               max-width="300"
               :disabled="item && !item.prefixs"
@@ -136,11 +137,18 @@ export default {
         }
       }
     },
+
+    dataList: {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.selectedList = this.value.map(item => value.find(data => data.id === item) || { id: item, name: item });
+      }
+    },
     selectedList: {
       deep: true,
       handler(value) {
         this.$emit("on-change", value.map(item => item.id));
-
       }
     },
     keywords(value) {
@@ -158,8 +166,6 @@ export default {
       return selectedIds.includes(id);
     },
     handleSelect(item) {
-      console.log(11)
-      console.log(item)
       if (!this.isSelected(item.id)) {
         this.selectedList.push(item);
       }
@@ -236,6 +242,10 @@ export default {
     .selected-labels {
       height: 100%;
       overflow: auto;
+    }
+    .ivu-tooltip-popper {
+      position: relative;
+      z-index: 1000;
     }
   }
   .multiple-select-card {
