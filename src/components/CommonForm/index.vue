@@ -12,6 +12,7 @@
         v-model="formModel[item.model]"
         v-if="item.type === 'component'"
         v-bind="item.props"
+        v-on="item.events"
       />
       <i-input
         v-if="item.type === 'input'"

@@ -21,9 +21,12 @@
           >
             <div
               class="ellipsis"
-              v-if="item.name.length > 20"
+              v-if="item.name.length > 20 || item.prefixs"
             >
-              <Tooltip :content="item.name">
+              <Tooltip
+                :content="item.prefixs || item.name"
+                max-width="300"
+              >
                 {{item.name.slice(0, 20)}}...
               </Tooltip>
             </div>
@@ -45,12 +48,22 @@
           class="selected-labels"
           v-if="selectedList.length"
         >
+
           <Tag
             v-for="item in selectedList"
             :key="item.id"
             closable
             @on-close="handleClose(item)"
-          >{{item.name}}</Tag>
+          >
+            <Tooltip
+              :content="item && item.prefixs"
+              max-width="300"
+              :disabled="item && !item.prefixs"
+            >
+              {{item.name}}
+            </Tooltip>
+          </Tag>
+
         </div>
 
         <div v-else> 暂未选择 </div>
@@ -90,6 +103,10 @@ export default {
     clearKeywords: {
       type: Boolean,
       default: false
+    },
+    isAsyncSearch: {
+      type: Boolean,
+      default: false
     }
 
   },
@@ -115,14 +132,21 @@ export default {
       handler(value, old) {
         // value不存在于 dataList时， value id 和 name 默认为本身
         if (Array.isArray(value) && JSON.stringify(value) !== JSON.stringify(old)) {
-          this.selectedList =  value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item });
+          this.selectedList = value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item });
         }
       }
     },
     selectedList: {
       deep: true,
       handler(value) {
-        this.$emit("on-change", value.map(item => item.id));
+        if (value.trim()) {
+          this.$emit("on-change", value.map(item => item.id));
+        }
+      }
+    },
+    keywords(value) {
+      if (this.isAsyncSearch) {
+        this.$emit("onSearch", value);
       }
     }
   },
@@ -135,6 +159,8 @@ export default {
       return selectedIds.includes(id);
     },
     handleSelect(item) {
+      console.log(11)
+      console.log(item)
       if (!this.isSelected(item.id)) {
         this.selectedList.push(item);
       }

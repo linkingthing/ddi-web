@@ -57,7 +57,7 @@ export default {
           }
         }
       ],
-      plans: [
+      semantics: [
         {
           validator: (rule, value, callback) => {
             let AllLen = 0;
@@ -83,8 +83,8 @@ export default {
             if (value) {
               AllLen += value.length;
             }
-            if (this.formModel && this.formModel.plans) {
-              AllLen += this.formModel.plans.length;
+            if (this.formModel && this.formModel.semantics) {
+              AllLen += this.formModel.semantics.length;
             }
 
             if (AllLen) {
@@ -101,7 +101,7 @@ export default {
     return {
       formModel: {
         name: "",
-        plans: [],
+        semantics: [],
         views: []
 
       },
@@ -142,15 +142,18 @@ export default {
         },
         {
           label: "选择IP前缀",
-          model: "plans",
+          model: "semantics",
           type: "component",
           component: MultipleSelect,
           props: {
             height: 150,
             dataList: this.planList,
             tips: "已选择IP前缀",
-            clearKeywords: this.visible
-
+            clearKeywords: this.visible,
+            isAsyncSearch: true
+          },
+          events: {
+            onSearch: this.handleAsyncSearch
           }
         },
         {
@@ -194,19 +197,25 @@ export default {
 
     init() {
       this.getViewList();
-      this.getRoleList();
     },
     getViewList() {
       this.$getData({}, "/dns/dns/views").then(({ data }) => {
         this.viewList = data;
       });
     },
-    getRoleList() {
-      this.$getData({}, "/dns/ipam/plans").then(({ data }) => {
-        this.planList = data.map(item => {
+    handleAsyncSearch(search) {
+      this.getSemanticList(search);
+    },
+    getSemanticList(semanticName) {
+      const { url } = this.$getApiByRoute(`/auth/auth/users?action=getSemanticByName`);
+      const params = { semanticName }
+      this.$post({ url, params }).then((res) => {
+        this.planList = res.map(item => {
           return {
-            id: item.id,
-            name: item.prefix
+            ...item,
+            id: item.semanticId,
+            name: `${item.record.join("/")}`,
+            prefixs: item.prefixs
           };
         });
       }).catch(() => {
