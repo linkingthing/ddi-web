@@ -180,7 +180,7 @@ export default {
         {
           title: "操作",
           key: "name",
-          width: 310,
+          width: 330,
           render: (h, { row }) => {
             return h("div", {
               class: "table-btn-box"

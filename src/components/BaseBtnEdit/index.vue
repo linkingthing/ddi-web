@@ -1,8 +1,8 @@
 <template>
-  <i
-    class="icon-m-edit btn-edit"
+  <btn-line
+    title="编辑"
     @click="$emit('click')"
-  />
+  ></btn-line>
 </template>
 
 <script>

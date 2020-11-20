@@ -431,12 +431,14 @@ export default {
         {
           title: "操作",
           key: "action",
-          width: 180,
+          width: 210,
           render: (h, { row }) => {
             return h("div", [
-              h("a", {
-
-              }, "分发"),
+              h("btn-line", {
+                props: {
+                  title: "分发"
+                }
+              }),
               h("btn-edit", {
                 on: {
                   click: () => this.handleOpenEditNode(row)
