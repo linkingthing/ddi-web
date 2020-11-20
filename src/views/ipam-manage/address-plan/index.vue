@@ -51,6 +51,33 @@
     >
       <PlanTree :data="treeData" />
     </Modal>
+    <common-modal
+      :visible.sync="importVisible"
+      :width="415"
+      title="导入地址规划"
+      @confirm="handleUpload"
+    >
+      <!-- <div class="tips-info">
+        <img
+          class="tips-info-icon"
+          src="./icon-info.png"
+          alt=""
+        >
+        <span>请使用为您准备的“地址规划”填写信息</span>
+      </div> -->
+
+      <div class="base-upload">
+
+        <!-- <div class="base-upload-filename">{{file.name}}</div> -->
+        <!-- <div> -->
+        <Input
+          style="width: 100%"
+          placeholder="请输入文件路径"
+          v-model="uploadParams.path"
+        />
+
+      </div>
+    </common-modal>
 
   </div>
 </template>
@@ -210,7 +237,12 @@ export default {
 
       mapVisible: false,
       mapTitle: "",
-      treeData: []
+      treeData: [],
+
+      importVisible: false,
+      uploadParams: {
+        path: ""
+      }
     };
   },
 
@@ -312,11 +344,22 @@ export default {
       this.visible = true;
     },
     handleUploadPlan() {
-
+      this.importVisible = true;
+    },
+    handleUpload() {
+      const url = `${this.links.self}?action=import`;
+      const params = this.uploadParams;
+      this.$post({ url, params }).then(() => {
+        this.$Message.success("指定成功"); // 指定csv所在路径
+        this.importVisible = false;
+        this.always = false;
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
     },
     handleDownloadPlan({ links }) {
-      const params = { path: "/opt/website/xxxout.csv" };
-      this.$post({ url: `${links.self}?action=export`, params }).then(({path}) => {
+      const params = { path: "123.csv" };
+      this.$post({ url: `${links.self}?action=export`, params }).then(({ path }) => {
         downloadFile(path);
       });
     }
