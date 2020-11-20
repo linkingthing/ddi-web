@@ -381,3 +381,15 @@ export const portIsValidate = port => {
 
   return integerReg.test(port) && port <= 65535;
 };
+
+/**
+ * action 下载文件
+ */
+export const downloadFile = path => {
+  const pathname = path.substr("/opt/website".length + 1);
+  const downloadPath = `/public/${pathname}`;
+  let a = document.createElement("a");
+  a.download = pathname;
+  a.href = downloadPath;
+  a.click();
+};

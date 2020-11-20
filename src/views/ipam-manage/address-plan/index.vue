@@ -71,6 +71,7 @@ import SafeLock from "./modules/SafeLock";
 import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
 
 import PlanModal from "./modules/PlanModal";
+import { downloadFile } from "@/util/common";
 
 
 export default {
@@ -152,7 +153,7 @@ export default {
         {
           title: "操作",
           key: "name",
-          align: "right",
+          width: 310,
           render: (h, { row }) => {
             return h("div", {
               class: "table-btn-box"
@@ -315,8 +316,8 @@ export default {
     },
     handleDownloadPlan({ links }) {
       const params = { path: "/opt/website/xxxout.csv" };
-      this.$post({ url: `${links.self}?action=export`, params }).then(res => {
-        console.log(res)
+      this.$post({ url: `${links.self}?action=export`, params }).then(({path}) => {
+        downloadFile(path);
       });
     }
   }
