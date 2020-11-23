@@ -28,7 +28,7 @@
 
               <Input
                 class="action-box-input"
-                v-model="bitWidth"
+                v-model="tempBitWidth"
                 placeholder="请输入地址位宽"
                 :disabled="settableNextBitWidth"
               />
@@ -327,6 +327,7 @@ export default {
       currentNodeBitWidth: 0,
 
       bitWidth: "",
+      tempBitWidth: "",
       stepsize: "",
       detailVisible: false,
       columnsDetail: [
@@ -644,18 +645,21 @@ export default {
     ]),
 
     handleSetNextBitWidth() {
-      const bitWidth = Number(this.bitWidth);
+      const bitWidth = Number(this.tempBitWidth);
       if (Number.isNaN(bitWidth)) {
         this.$Message.info("请输入数字");
+        this.bitWidth = 0;
         return;
       }
 
       if (bitWidth <= 0) {
         this.$Message.info("请输入正整数");
+        this.bitWidth = 0;
         return;
       }
 
       console.log(this.currentNodePrefix)
+      this.bitWidth = bitWidth;
       const [prefix] = this.currentNodePrefix;
       if (!prefix) {
         this.$Message.info(`请先设置上层节点信息`);
