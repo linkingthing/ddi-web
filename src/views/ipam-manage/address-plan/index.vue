@@ -17,7 +17,8 @@
         v-else
         :data="planList"
         :columns="columns"
-        :total="0"
+        :total="total"
+        :current.sync="current"
       >
         <template slot="top-right">
 
@@ -242,7 +243,10 @@ export default {
       importVisible: false,
       uploadParams: {
         path: ""
-      }
+      },
+
+      total: 0,
+      current: 0
     };
   },
 
@@ -251,7 +255,9 @@ export default {
   },
 
   watch: {
-
+    current() {
+      this.getPlanList();
+    }
 
   },
 
@@ -263,7 +269,13 @@ export default {
   methods: {
 
     getPlanList() {
-      this.$get(this.$getApiByRoute()).then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
+        this.current = pagination.pageNum;
+        this.total = pagination.total;
         const { user } = this.$store.getters.userInfo;
         const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
