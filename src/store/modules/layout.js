@@ -15,7 +15,8 @@ const state = {
   planName: "",
   layout: {},
   nodes: [],
-  currentNodeId: ""
+  currentNodeId: "",
+  hasChange: false
 };
 
 const getters = {
@@ -40,7 +41,8 @@ const getters = {
     return state.nodes.filter(
       item => item.parentsemanticid === state.currentNodeId
     );
-  }
+  },
+  hasChange: state => state.hasChange
 };
 
 const mutations = {
@@ -116,6 +118,9 @@ const mutations = {
   },
   removeNodeById(state, nodeId) {
     state.nodes = state.nodes.filter(item => item.id !== nodeId);
+  },
+  setHasChange(state, hasChange) {
+    state.hasChange = hasChange;
   }
 };
 
@@ -126,7 +131,6 @@ const actions = {
       commit("setPrefixs", prefixs);
 
       semanticnodes.forEach(node => {
-
         node.plannodes = node.plannodes || [];
         // 从plannodes节点中将prefix捞出，用于聚焦树节点时候面板展示
         const prefixArr = node.plannodes.reduce((result, plannode) => {

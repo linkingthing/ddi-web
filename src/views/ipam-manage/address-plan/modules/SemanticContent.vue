@@ -640,7 +640,8 @@ export default {
       "saveNode",
       "saveNodes",
       "addNodes",
-      "removeNodeById"
+      "removeNodeById",
+      "setHasChange"
     ]),
     ...mapActions([
       "getCurrentPlanInfo"
@@ -676,6 +677,7 @@ export default {
       }
 
       this.changeCurrentNode("subnodebitwidth", bitWidth);
+      this.setHasChange(true);
       this.$Message.success("位宽设置成功");
 
       // 需要标识？后者自身就是标识
@@ -779,6 +781,7 @@ export default {
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
+        this.setHasChange(true);
       } else {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
@@ -793,7 +796,6 @@ export default {
           return;
         }
       }
-
 
       this.$Message.success("操作成功");
 
@@ -816,6 +818,7 @@ export default {
         }
         return false;
       });
+      this.setHasChange(true);
 
     },
     handleSaveIpv4s(row, ipv4str) {
@@ -835,6 +838,8 @@ export default {
         }
         return false;
       });
+      this.setHasChange(true);
+
     },
     handleDeleteSemantic(row) {
       this.$Modal.confirm({
@@ -992,10 +997,10 @@ export default {
             }
           });
 
-          console.log(temp, "temp")
           this.semanticNodeList = temp;
 
           this.nodeEditVisible = false;
+          this.setHasChange(true);
         }
       });
 
@@ -1133,6 +1138,7 @@ export default {
 
       return this.$put({ url, params }).then(() => {
         this.getCurrentPlanInfo({ url });
+        this.setHasChange(false);
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
