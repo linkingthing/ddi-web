@@ -75,6 +75,7 @@ export default {
       this.setCurrentNodeId(node.id);
     },
     renderContent(h, { root, node, data }) {
+      // data.selected = true;
       let name = transfer(data.name);
       const isSearch = this.keywords.length > 0 && data.name.includes(this.keywords);
 
@@ -90,6 +91,9 @@ export default {
       }
 
       return h("span", {
+        class: {
+          "ivu-tree-title-selected": data.id === this.currentNodeId
+        },
         props: {
         },
         style: {
