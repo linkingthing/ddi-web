@@ -305,7 +305,8 @@ import {
   createPlanNode,
   executeValueRecyclePool,
   modifiedEnum,
-  planTypeEnum
+  planTypeEnum,
+  executeUesedValueList
 } from "./helper";
 
 let nodeIndex = 1;
@@ -656,6 +657,10 @@ export default {
 
       console.log(this.currentNodePrefix)
       const [prefix] = this.currentNodePrefix;
+      if (!prefix) {
+        this.$Message.info(`请先设置上层节点信息`);
+        return;
+      }
       const [, len] = prefix.split("/");
       const maxBitwidth = 64 - len; // 根据剩余
 
@@ -729,14 +734,27 @@ export default {
 
       const surplus = this.surplus;
 
-      const willUseAddressBlockCount = willCreateSemanticNodeListLength * stepsize;
+      const willUseAddressBlockCount = shouldCreateLength * stepsize;
+
+      console.log(willUseAddressBlockCount, surplus, surplus < willUseAddressBlockCount);
+
+
+
+      // 空间计算，总共 >= 已使用 + 将分配，
 
       if (surplus < willUseAddressBlockCount) {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
       }
 
-      if (shouldCreateLength > 0) {
+      if (willUseAddressBlockCount === 0) {
+        return;
+      }
+
+      const uesedValueLen = executeUesedValueList(this.semanticNodeList).length;
+      const allValueLen = 2 ** bitWidth - 2;
+
+      if (willUseAddressBlockCount + uesedValueLen <= allValueLen) {
         const parentsemanticid = this.currentNode.id;
         const semanticNodeList = this.semanticNodeList.filter(item => item.temporaryCreated !== "createing");
         const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
@@ -755,6 +773,9 @@ export default {
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
+      } else {
+        this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
+        return;
       }
 
 
@@ -809,14 +830,12 @@ export default {
       });
     },
     handleDeleteSemantic(row) {
-      console.log(1)
       this.$Modal.confirm({
         title: "语义节点删除确认",
         content: "<p>请再次语义节点删除确认</p>",
         loading: true,
         onOk: () => {
-          this.removeNodeById(row.id);
-          const nodes = this.nodes.filter(node => node.id !== row.id);
+          const nodes = cloneDeep(this.nodes.filter(node => node.id !== row.id));
           nodes.forEach(node => {
             if (node.id === row.parentsemanticid) {
               node.modified = modifiedEnum.STRUCTURED;
@@ -986,25 +1005,29 @@ export default {
       const subnodebitwidth = this.bitWidth;
       const allPlanNodes = this.allPlanNodes;
 
-      if (stepSize * semanticNodeList.length <= surplus) {
-        const nodeList = planSemanticNodesValue({
-          prefixList,
-          semanticNodeList,
-          bitWidth: subnodebitwidth,
-          stepSize,
-          allPlanNodes
-        }).map(item => {
-          Reflect.deleteProperty(item, "temporaryCreated");
-          return {
-            ...item,
-            addressCount: item.plannodes.length,
-            prefixs: item.plannodes.map(item => item.prefix),
-            autocreate: planTypeEnum.ONEKEYPLAN
-          };
-        });
-        this.semanticNodeList = nodeList;
-        this.$Message.success("操作成功");
-      }
+
+      const uesedValueLen = executeUesedValueList(semanticNodeList).length;
+
+
+      const nodeList = planSemanticNodesValue({
+        prefixList,
+        semanticNodeList,
+        bitWidth: subnodebitwidth,
+        stepSize,
+        allPlanNodes
+      }).map(item => {
+        Reflect.deleteProperty(item, "temporaryCreated");
+        return {
+          ...item,
+          addressCount: item.plannodes.length,
+          prefixs: item.plannodes.map(item => item.prefix),
+          autocreate: planTypeEnum.ONEKEYPLAN,
+          modified: modifiedEnum.STRUCTURED
+        };
+      });
+      this.semanticNodeList = nodeList;
+      this.$Message.success("操作成功");
+
 
     },
 

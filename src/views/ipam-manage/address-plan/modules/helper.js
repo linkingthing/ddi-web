@@ -491,6 +491,23 @@ export const executeValueRecyclePool = (
 //   4
 // );
 
+export const executeUesedValueList = semanticNodeList => {
+  const uesedValueList = semanticNodeList
+    .map(semanticNode => {
+      semanticNode.plannodes = semanticNode.plannodes || [];
+      return semanticNode.plannodes.map(planNode => {
+        return {
+          prefix: planNode.prefix,
+          value: planNode.value
+        };
+      });
+    })
+    .flat();
+  return uesedValueList;
+};
+
+export const hasAddressBlockToPlan = (bitWidth, semanticList) => {};
+
 export const createSemanticNode = () => {
   return {
     id: uuidv4(),
@@ -535,7 +552,6 @@ export const modifiedEnum = {
   STRUCTURED: "structured",
   INFO: "info"
 };
-
 
 export const planTypeEnum = {
   UNDEFINED: "undefined",
