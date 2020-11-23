@@ -369,7 +369,7 @@ export const planSemanticNodesValue = ({
   bitWidth,
   stepSize,
   allPlanNodes,
-  selectSemanticNodeList = [],
+  selectSemanticNodeList = [], // 一个不选等于全选
   keepExistPlanNode = true
 }) => {
   const result = [];
@@ -416,7 +416,8 @@ export const planSemanticNodesValue = ({
       if (target) {
         result.push({
           ...semanticNode,
-          plannodes
+          plannodes,
+          modified: modifiedEnum.STRUCTURED
         });
       } else {
         Array.from({ length: stepSize }, () => index--);

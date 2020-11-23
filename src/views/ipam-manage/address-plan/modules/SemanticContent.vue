@@ -609,8 +609,10 @@ export default {
 
         if ((typeof val.subnodebitwidth === "number")) {
           this.bitWidth = val.subnodebitwidth;
+          this.tempBitWidth = val.subnodebitwidth;
         } else {
           this.bitWidth = 0;
+          this.tempBitWidth = 0;
         }
 
         // stepsize
@@ -809,6 +811,7 @@ export default {
       this.semanticNodeList.some(item => {
         if (item.id === row.id) {
           item.name = name;
+          item.modified = modifiedEnum.INFO;
           return true;
         }
         return false;
@@ -1043,7 +1046,11 @@ export default {
       this.selectSemanticList = list;
     },
     handleOpenCustomPlan() {
-      this.customPlanVisible = true;
+      if (this.selectSemanticList.length) {
+        this.customPlanVisible = true;
+      } else {
+        this.$Message.info("请先勾选语义节点");
+      }
     },
 
     handleCustomPlan(name) {
@@ -1055,6 +1062,7 @@ export default {
           const semanticNodeList = this.semanticNodeList;
 
           const selectSemanticNodeList = this.selectSemanticList;
+
           const stepSize = +this.stepsize;
           const subnodebitwidth = this.bitWidth;
           const allPlanNodes = this.allPlanNodes;
