@@ -304,7 +304,8 @@ import {
   hasGrandson,
   createPlanNode,
   executeValueRecyclePool,
-  modifiedEnum
+  modifiedEnum,
+  planTypeEnum
 } from "./helper";
 
 let nodeIndex = 1;
@@ -463,7 +464,6 @@ export default {
       },
       currentNodeofChooseChildRule: {
 
-
       },
       prefixMap: [], // 看似无用，但别乱删
 
@@ -514,12 +514,12 @@ export default {
       return void 0;
     },
     availableOneKeyPlan() {
-      const autocreate = this.currentTargetNodeAutoCreate === true || this.currentTargetNodeAutoCreate === undefined;
+      const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.ONEKEYPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
 
       return !autocreate;
     },
     availableCustomPlan() {
-      const autocreate = this.currentTargetNodeAutoCreate === false || this.currentTargetNodeAutoCreate === undefined;
+      const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.HANDLEPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
 
       return !autocreate;
     },
@@ -532,8 +532,8 @@ export default {
       // 剩余地址数
       let result = "_ _";
       if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
-        const { nextBitWidth, plannodes } = this.currentNode;
-        if (!nextBitWidth) {
+        const { subnodebitwidth, plannodes } = this.currentNode;
+        if (!subnodebitwidth) {
           return result;
         }
         const currentNodeChildren = this.nodes.filter(item => item.parentsemanticid === this.currentNode.id);
@@ -546,18 +546,18 @@ export default {
               return result + prev;
             }, 0);
 
-        result = this.currentNode.prefixs.length * (2 ** nextBitWidth - 2) - childrenLen;
+        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 2) - childrenLen;
       }
       return result;
     },
     dataDetail() {
       const prefix = this.currentNodePrefix;
-      const nextBitWidth = this.currentNode ? this.currentNode.nextBitWidth : 0;
-      const count = 2 ** Number(nextBitWidth) - 1 || 0;
+      const subnodebitwidth = this.currentNode ? this.currentNode.subnodebitwidth : 0;
+      const count = 2 ** Number(subnodebitwidth) - 1 || 0;
 
       return prefix.map(item => {
-        const minAblePlan = executeNextIpv6Segment(item, 1, nextBitWidth);
-        const maxAblePlan = executeNextIpv6Segment(item, count, nextBitWidth);
+        const minAblePlan = executeNextIpv6Segment(item, 1, subnodebitwidth);
+        const maxAblePlan = executeNextIpv6Segment(item, count, subnodebitwidth);
         return {
           prefix: item,
           count,
@@ -599,14 +599,14 @@ export default {
           this.currentNodePrefixLen = 0;
         }
 
-        if (val.nextBitWidth) {
-          this.currentNodeBitWidth = val.nextBitWidth;
+        if (val.subnodebitwidth) {
+          this.currentNodeBitWidth = val.subnodebitwidth;
         } else {
           this.currentNodeBitWidth = 0;
         }
 
-        if ((typeof val.nextBitWidth === "number")) {
-          this.bitWidth = val.nextBitWidth;
+        if ((typeof val.subnodebitwidth === "number")) {
+          this.bitWidth = val.subnodebitwidth;
         } else {
           this.bitWidth = 0;
         }
@@ -662,7 +662,7 @@ export default {
         return;
       }
 
-      this.changeCurrentNode("nextBitWidth", bitWidth);
+      this.changeCurrentNode("subnodebitwidth", bitWidth);
       this.$Message.success("位宽设置成功");
 
       // 需要标识？后者自身就是标识
@@ -673,6 +673,7 @@ export default {
       const currentNode = cloneDeep(this.currentNode);
       if (currentNode) {
         currentNode[attr] = val;
+        currentNode.modified = modifiedEnum.INFO;
         this.saveNode(currentNode);
       }
     },
@@ -744,7 +745,7 @@ export default {
             parentsemanticid,
             stepsize,
             sequence: 1,
-            autocreate: void 0,
+            autocreate: planTypeEnum.UNDEFINED,
             ipv4s: [],
             plannodes: [],
             addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
@@ -758,7 +759,7 @@ export default {
       // autoOneKey
       if (this.semanticNodeList.length) {
         const { autocreate } = this.semanticNodeList[0];
-        if (autocreate === true) {
+        if (autocreate === planTypeEnum.ONEKEYPLAN) {
           this.autoOneKey();
           return;
         }
@@ -933,7 +934,7 @@ export default {
                 return createPlanNode({
                   prefix: executeNextIpv6Segment(prefix, value, bitWidth),
                   value,
-                  parentsemanticid: semanticNode.id,
+                  semanticid: semanticNode.id,
                   parentplannodeid,
                   sequence: 1,
                   name: "",
@@ -979,14 +980,14 @@ export default {
 
       const semanticNodeList = this.semanticNodeList;
       const stepSize = +this.stepsize;
-      const nextBitWidth = this.bitWidth;
+      const subnodebitwidth = this.bitWidth;
       const allPlanNodes = this.allPlanNodes;
 
       if (stepSize * semanticNodeList.length <= surplus) {
         const nodeList = planSemanticNodesValue({
           prefixList,
           semanticNodeList,
-          bitWidth: nextBitWidth,
+          bitWidth: subnodebitwidth,
           stepSize,
           allPlanNodes
         }).map(item => {
@@ -995,7 +996,7 @@ export default {
             ...item,
             addressCount: item.plannodes.length,
             prefixs: item.plannodes.map(item => item.prefix),
-            autocreate: true
+            autocreate: planTypeEnum.ONEKEYPLAN
           };
         });
         this.semanticNodeList = nodeList;
@@ -1025,14 +1026,14 @@ export default {
 
           const selectSemanticNodeList = this.selectSemanticList;
           const stepSize = +this.stepsize;
-          const nextBitWidth = this.bitWidth;
+          const subnodebitwidth = this.bitWidth;
           const allPlanNodes = this.allPlanNodes;
 
           const nodeList = planSemanticNodesValue({
             prefixList,
             semanticNodeList,
             selectSemanticNodeList,
-            bitWidth: nextBitWidth,
+            bitWidth: subnodebitwidth,
             stepSize,
             allPlanNodes
           }).map(item => {
@@ -1041,7 +1042,7 @@ export default {
               ...item,
               addressCount: item.plannodes.length,
               prefixs: item.plannodes.map(item => item.prefix),
-              autocreate: false
+              autocreate: planTypeEnum.HANDLEPLAN
             };
           });
           this.semanticNodeList = nodeList;
@@ -1061,7 +1062,8 @@ export default {
           plannodes: [],
           prefixs: [],
           addressCount: 0,
-          autocreate: void 0
+          autocreate: planTypeEnum.UNDEFINED,
+          modified: modifiedEnum.STRUCTURED
         };
       });
       this.$Message.success("操作成功");
@@ -1076,6 +1078,10 @@ export default {
       });
     },
     updatePlan(semanticnodes) {
+
+      // semanticnodes ,sequence
+      this.orderSequence(semanticnodes);
+
       const { url } = this.$getApiByRoute();
       const maxmaskwidth = 64;
 
@@ -1092,6 +1098,9 @@ export default {
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
+    },
+    orderSequence(semanticnodes) {
+      semanticnodes.forEach((item, index) => item.sequence = index + 1);
     }
   }
 };

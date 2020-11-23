@@ -399,7 +399,7 @@ export const planSemanticNodesValue = ({
       return createPlanNode({
         prefix: executeNextIpv6Segment(prefix, value, bitWidth),
         value,
-        parentsemanticid: semanticNode.id,
+        semanticid: semanticNode.id,
         parentplannodeid,
         sequence: 1,
         name: "",
@@ -510,7 +510,7 @@ export const createSemanticNode = () => {
  */
 export const createPlanNode = ({
   prefix,
-  parentsemanticid, // 当前节点的父节点（是一个语义节点）的id
+  semanticid, // 当前节点的父节点（是一个语义节点）的id
   parentplannodeid,
   sequence,
   value,
@@ -520,7 +520,7 @@ export const createPlanNode = ({
   return {
     id: uuidv4(),
     prefix,
-    parentsemanticid,
+    semanticid,
     parentplannodeid, // 网络节点的上层网络节点
     sequence,
     value,
@@ -534,6 +534,13 @@ export const modifiedEnum = {
   NO: "no",
   STRUCTURED: "structured",
   INFO: "info"
+};
+
+
+export const planTypeEnum = {
+  UNDEFINED: "undefined",
+  ONEKEYPLAN: "oneKeyPlan",
+  HANDLEPLAN: "handlePlan"
 };
 
 export const hasGrandson = (nodes, id) => {

@@ -68,7 +68,7 @@ const mutations = {
       state.nodes = [
         {
           expand: true,
-          nextBitWidth: 0, // 下一级位宽, 必须是数字,默认为0
+          subnodebitwidth: 0, // 下一级位宽, 必须是数字,默认为0
           bitWidth: 0,
           id: uuid,
           ipv4: "",
@@ -125,27 +125,7 @@ const actions = {
       commit("setPlanName", name);
       commit("setPrefixs", prefixs);
 
-      // set nextBitWidth,语义节点的父节点的属性值，来源于当前语义节点的子子语义子节点的 plannode 的 bitwidth
       semanticnodes.forEach(node => {
-        node.nextBitWidth = 0; // 默认为0,必须是数字，typeof node.nextBitWidth === "number"
-
-        const childrenSemanticNode = semanticnodes.filter(
-          item => item.parentsemanticid === node.id
-        );
-
-        // console.log(childSemanticNode, 999);
-        if (childrenSemanticNode.length) {
-          childrenSemanticNode.some(childSemanticNode => {
-            return (
-              Array.isArray(childSemanticNode.plannodes) &&
-              childSemanticNode.plannodes.some(item => {
-                if (item.bitWidth) {
-                  node.nextBitWidth = item.bitWidth;
-                }
-              })
-            );
-          });
-        }
 
         node.plannodes = node.plannodes || [];
         // 从plannodes节点中将prefix捞出，用于聚焦树节点时候面板展示

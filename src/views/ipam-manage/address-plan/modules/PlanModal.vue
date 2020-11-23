@@ -147,7 +147,7 @@ export default {
             return {
               id: uuidv4(),
               prefix: prefix,
-              parentsemanticid,
+              semanticid: parentsemanticid,
               parentplannodeid: "0", // 网络节点的上层网络节点
               sequence: index,
               value: index + 1,
