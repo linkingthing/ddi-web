@@ -553,7 +553,7 @@ export default {
     dataDetail() {
       const prefix = this.currentNodePrefix;
       const subnodebitwidth = this.currentNode ? this.currentNode.subnodebitwidth : 0;
-      const count = 2 ** Number(subnodebitwidth) - 2 || 0;
+      const count = subnodebitwidth ? 2 ** Number(subnodebitwidth) - 2 : 0;
 
       return prefix.map(item => {
         const minAblePlan = executeNextIpv6Segment(item, 1, subnodebitwidth);
@@ -561,7 +561,7 @@ export default {
         return {
           prefix: item,
           count,
-          name: `${minAblePlan}~${maxAblePlan}`
+          name: subnodebitwidth ? `${minAblePlan}~${maxAblePlan}` : "--"
         };
       });
     },
