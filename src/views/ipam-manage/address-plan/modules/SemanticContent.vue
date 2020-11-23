@@ -612,8 +612,10 @@ export default {
         }
 
         // stepsize
-        if ((typeof val.stepsize === "number") && (this.stepsize !== val.stepsize)) {
+        if ((typeof val.stepsize === "number")) {
           this.stepsize = val.stepsize;
+        } else {
+          this.stepsize = 0;
         }
 
       }
@@ -807,6 +809,7 @@ export default {
       });
     },
     handleDeleteSemantic(row) {
+      console.log(1)
       this.$Modal.confirm({
         title: "语义节点删除确认",
         content: "<p>请再次语义节点删除确认</p>",

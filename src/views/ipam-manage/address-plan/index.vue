@@ -139,44 +139,44 @@ export default {
           key: "prefixs",
           align: "left",
           render: (h, { row }) => {
-            if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
-              return h("a", {
-                attrs: {
-                  href: "javascript:;"
-                },
-                on: {
-                  click: () => {
-                    const { links } = row;
-                    let url = this.$getRouteByLink(links.self, "address");
-                    this.$router.push({
-                      path: url
-                    });
-                  }
+            // if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
+            return h("a", {
+              attrs: {
+                href: "javascript:;"
+              },
+              on: {
+                click: () => {
+                  const { links } = row;
+                  let url = this.$getRouteByLink(links.self, "address");
+                  this.$router.push({
+                    path: url
+                  });
                 }
-              }, row.prefixs);
-            }
-            else {
-              return h("div", row.prefixs);
-            }
+              }
+            }, row.prefixs);
+            // }
+            // else {
+            //   return h("div", row.prefixs);
+            // }
 
           }
         },
-        {
-          title: "安全锁",
-          key: "name",
-          align: "left",
-          render: (h, { row }) => {
-            return h(SafeLock, {
-              props: {
-                type: row.lockType,
-                message: row.lockedby
-              },
-              nativeOn: {
-                click: () => this.handleToggleLock(row, row.isLock)
-              }
-            });
-          }
-        },
+        // {
+        //   title: "安全锁",
+        //   key: "name",
+        //   align: "left",
+        //   render: (h, { row }) => {
+        //     return h(SafeLock, {
+        //       props: {
+        //         type: row.lockType,
+        //         message: row.lockedby
+        //       },
+        //       nativeOn: {
+        //         click: () => this.handleToggleLock(row, row.isLock)
+        //       }
+        //     });
+        //   }
+        // },
         {
           title: "操作",
           key: "name",
