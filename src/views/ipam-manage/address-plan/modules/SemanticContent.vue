@@ -522,8 +522,8 @@ export default {
     },
     availableCustomPlan() {
       const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.HANDLEPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
-
-      return !autocreate;
+      const hasMorePrefixs = this.currentNodePrefix.length > 1;
+      return !(autocreate && hasMorePrefixs);
     },
     availableClearPlan() {
       const currentNodeId = this.currentNode && this.currentNode.id;
