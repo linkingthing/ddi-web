@@ -20,7 +20,6 @@ export default {
     };
   },
 
-  watch: {},
   created() { },
   mounted() {
     this.getLayoutInfo();
@@ -28,6 +27,7 @@ export default {
   destroyed() {
     this.resetLayoutData();
   },
+
   methods: {
     ...mapMutations([
       "setPlanName",
@@ -43,6 +43,7 @@ export default {
       this.getCurrentPlanInfo(this.$getApiByRoute());
     }
   }
+
 };
 </script>
 

@@ -579,6 +579,9 @@ export default {
     }
   },
   watch: {
+    "$route"(to, from) {
+      console.log(to, from);
+    },
     currentNode: {
       deep: true,
       handler(val) {
