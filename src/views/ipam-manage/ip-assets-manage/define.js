@@ -38,6 +38,7 @@ function renderIp(h, row, field, status, scope) {
       width: "100%"
     },
     props: {
+      theme: "light",
       disabled: !(Array.isArray(row[field]) && row[field].length)
     },
     scopedSlots: {
@@ -76,27 +77,38 @@ function renderIp(h, row, field, status, scope) {
                 }
               }
             }
-
             return [
-              h(
-                "span",
-                {
+              h("span", [
+                h("span", {
                   style: {
-                    color: config.hasState ? "#4586FE" : "",
-                    cursor: config.hasState ? "pointer" : "",
-                    "white-space": "normal"
-                  },
-                  on: {
-                    click: () => config.hasState && scope.handleGoto(config)
+                    display: "inline-block",
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+
+                    color: config.color
                   }
-                },
-                item
-              ),
+                }),
+                h(
+                  "span",
+                  {
+                    style: {
+                      color: config.hasState ? "#4586FE" : "",
+                      cursor: config.hasState ? "pointer" : "",
+                      "white-space": "normal"
+                    },
+                    on: {
+                      click: () => config.hasState && scope.handleGoto(config)
+                    }
+                  },
+                  item
+                )
+              ]),
               h("br")
             ];
           })
           .flat();
-        return h("div", [h("span", "["), h("br"), ...ipList, h("span", "]")]);
+        return h("div", ipList);
       }
     }
   });
@@ -118,18 +130,28 @@ export const columns = scope => [
     width: 110,
     render: (h, { row }) => {
       const colorMap = {
-        online: "#51CA3D",
-        offline: "#B1B1B1",
-        abnormal: "#EF2E2E"
-      };
-      return h("div", {
-        style: {
-          width: "12px",
-          height: "12px",
-          borderRadius: "50%",
-          background: colorMap[row.deviceState]
+        online: {
+          color: "#51CA3D",
+          text: "在线"
+        },
+        offline: {
+          color: "#EF2E2E",
+          text: "异常"
+        },
+        abnormal: {
+          color: "#999999",
+          text: "离线"
         }
-      });
+      };
+      return h(
+        "div",
+        {
+          style: {
+            color: colorMap[row.deviceState].color
+          }
+        },
+        colorMap[row.deviceState].text
+      );
     }
   },
   {

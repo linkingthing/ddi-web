@@ -1,5 +1,46 @@
 <template>
   <div class="ip-assets-manage">
+    <div class="color-card">
+      <div class="color-card-item">
+        <label for="">终端状态指示：</label>
+        <div>
+          <Badge
+            color="#51CA3D"
+            text="在线"
+          />
+          <Badge
+            color="#EF2E2E"
+            text="异常"
+          />
+          <Badge
+            color="#999999"
+            text="离线"
+          />
+
+        </div>
+      </div>
+      <div class="color-card-item">
+        <label for="">IP状态指示：</label>
+        <div>
+          <Badge
+            color="#0070FF"
+            text="活跃地址"
+          />
+          <Badge
+            color="#5935FF"
+            text="冲突地址"
+          />
+          <Badge
+            color="#5CCBFF"
+            text="不活跃地址"
+          />
+          <Badge
+            color="#00CFAF"
+            text="僵尸地址"
+          />
+        </div>
+      </div>
+    </div>
     <IviewLoading v-if="loading" />
 
     <table-page
@@ -457,3 +498,26 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+.color-card {
+  display: inline-flex;
+  height: 60px;
+  align-items: center;
+  float: right;
+  .color-card-item {
+    .ivu-badge {
+      margin: 0 15px 0 10px;
+    }
+
+
+    display: flex;
+    font-size: 12px;
+    color: #333;
+    padding: 0 20px;
+    &:last-child {
+      border-left: 1px solid #ddd;
+    }
+  }
+}
+</style>

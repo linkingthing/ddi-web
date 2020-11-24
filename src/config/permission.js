@@ -162,7 +162,7 @@ export default [
     resouces: ["networkinterface"]
   },
   {
-    name: "终端管理",
+    name: "终端资产管理",
     id: "terminalManage",
     module: "address",
     resouces: ["asset"]

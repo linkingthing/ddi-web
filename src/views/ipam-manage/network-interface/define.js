@@ -142,7 +142,25 @@ function showFix(row) {
 }
 
 export const typeColors = ["#f9904a", "#4586FE", "#63D58B", "#76DCEB"];
-export const statusColors = ["#f9904a", "#4586FE", "#e84141", "#CBCBCB"];
+export const statusColors = ["#0070FF", "#5935FF", "#5CCBFF", "#00CFAF"];
+{
+  /* <Badge
+            color="#0070FF"
+            text="活跃地址"
+          />
+          <Badge
+            color="#5935FF"
+            text="冲突地址"
+          />
+          <Badge
+            color="#5CCBFF"
+            text="不活跃地址"
+          />
+          <Badge
+            color="#00CFAF"
+            text="僵尸地址"
+          /> */
+}
 
 const noDataColors = ["#ebebeb"];
 

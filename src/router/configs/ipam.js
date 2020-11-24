@@ -66,7 +66,7 @@ export default {
       path: '/address/ipam/assets',
       component: () => import(/* webpackChuckName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
       meta: {
-        title: "终端管理",
+        title: "终端资产管理",
         permission: "terminalManage"
 
       }
