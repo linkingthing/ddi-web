@@ -122,7 +122,7 @@ export default {
       this.getGlobalConfig();
     },
     getZoneInfo() {
-      getParantData().then(({ data: { name } }) => {
+      getParantData().then(({ name }) => {
         this.recordSuffix = name;
       });
     },

@@ -82,7 +82,7 @@
         </Button> -->
 
         <Button
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermissionCreate('asset')"
           type="primary"
           @click="handleAdd"
           class="top-button"

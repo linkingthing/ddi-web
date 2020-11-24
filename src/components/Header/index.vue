@@ -38,7 +38,7 @@
         <div class="user">
           <Badge
             :count="alarmCount"
-            v-if="$store.getters.hasPermissionToCreate"
+            v-if="$hasPermission('alarm', 'GET')"
           >
             <i
               class="icon-notice"
@@ -80,6 +80,8 @@
 import { mapGetters, mapMutations } from "vuex";
 import store from "@/store";
 import logoSrc from "@/assets/images/logo.png";
+import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
+import { resetRouter } from "@/router";
 
 import ChangePassword from "@/components/ChangePassword";
 
@@ -87,27 +89,27 @@ const mainMenuList = [
   {
     title: "系统状态",
     url: "/monitor",
-    userType: "normalUser",
+    module: "monitor",
     icon: "icon-statistics"
   },
   {
     title: "DNS管理",
     url: "/dns",
-    userType: "normalUser",
+    module: "dns",
     icon: "icon-dns"
 
   },
   {
     title: "地址管理",
     url: "/address",
-    userType: "normalUser",
+    module: "address",
     icon: "icon-computer"
 
   },
   {
     title: "系统管理",
     url: "/system",
-    userType: "superUser",
+    module: "system",
     icon: "icon-system"
 
   }
@@ -117,17 +119,17 @@ const userDropdownMenu = [
   {
     label: "修改密码",
     key: "password",
-    userType: "normalUser"
+    permission: "user"
   },
   {
     label: "访问控制",
     key: "permissions",
-    userType: "superUser"
+    permission: "super"
   },
   {
     label: "退出系统",
     key: "out",
-    userType: "normalUser"
+    permission: "*"
   }
 ];
 
@@ -148,7 +150,9 @@ export default {
       password: "",
       rePassword: "",
       username: "",
-      userType: ""
+      userType: "",
+      resourceList: []
+
     };
   },
   computed: {
@@ -157,12 +161,13 @@ export default {
     ]),
     mainMenuList() {
       const userType = this.userType;
+      const { rangeList } = this.$store.getters;
       if (userType) {
-        if (userType === "superUser") {
+        if (userType === USERTYPE_SUPER) {
           return mainMenuList;
         } else {
           return mainMenuList.filter(item => {
-            return item.userType === userType;
+            return rangeList.includes(item.module);
           });
         }
       }
@@ -171,11 +176,12 @@ export default {
     },
     userDropdownMenu() {
       const userType = this.userType;
-      if (userType === "superUser") {
+      const resourceList = this.resourceList;
+      if (userType === USERTYPE_SUPER) {
         return userDropdownMenu;
       } else {
         return userDropdownMenu.filter(item => {
-          return item.userType === userType;
+          return resourceList.includes(item.permission) || item.permission === "*";
         });
       }
     }
@@ -195,22 +201,24 @@ export default {
       immediate: true,
       handler({ userInfo }) {
         if (userInfo) {
-          const { user, userType } = userInfo;
-          this.username = user;
+          const { username, userType, menuList } = userInfo;
+          this.username = username;
           this.userType = userType;
+          this.resourceList = Array.isArray(menuList) ? menuList.map(item => item.resource) : [];
         }
       }
     }
   },
 
   created() {
-
+    console.log(this.$router, 55)
 
   },
 
   methods: {
     ...mapMutations({
-      setToken: "SET_TOKEN"
+      setToken: "SET_TOKEN",
+      setRoutes: "setRoutes"
     }),
 
     handleClickMainMenu(menu) {
@@ -224,8 +232,10 @@ export default {
         const params = {
           token
         };
-        this.$post({ url: "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=logout", params }).finally(() => {
+        this.$post({ url: "/apis/linkingthing.com/auth/v1/users/user?action=logout", params }).finally(() => {
           self.setToken("");
+          self.setRoutes([]);
+          resetRouter();
           self.$router.push({
             path: "/login"
           });

@@ -1,5 +1,6 @@
 import { post } from "@/util/axios";
 import store from "@/util/store";
+import { cloneDeep } from "lodash";
 const Cache = store("localStorage");
 
 const state = {
@@ -8,16 +9,16 @@ const state = {
   userInfo: null,
 
   alarmCount: 0,
-  agentEventList: []
+  agentEventList: [],
+
+  routes: [],
+  routesCounter: 1
 };
 
 const getters = {
   token: state => state.token,
   userType: state => state.userType,
   userInfo: state => state.userInfo,
-  hasPermissionToCreate: state =>
-    state.userInfo && state.userInfo.userType === "superUser",
-
   alarmCount: state => state.alarmCount,
   agentEventCount: state => state.agentEventList.length,
   agentEventList: state => (
@@ -26,6 +27,10 @@ const getters = {
     const startPage = (current - 1) * size;
     const endPage = current * size;
     return state.agentEventList.slice(startPage, endPage);
+  },
+  routes: state => state.routes,
+  rangeList: state => {
+    return getRouteRange(state.routes);
   }
 };
 
@@ -45,35 +50,51 @@ const mutations = {
   },
   addAgentEventList(state, agentEvent) {
     state.agentEventList.unshift(agentEvent);
+  },
+
+  setRoutes(state, routes) {
+    console.log("setRouter", routes);
+    state.routes = routes;
   }
 };
 
 const actions = {
   getUserInfo({ commit }) {
-    const { token, userInfo } = state;
+    const { token } = state;
     const params = {
       token
     };
     return new Promise((resolve, reject) => {
-      if (userInfo) {
-        resolve(userInfo);
-      } else {
-        post({
-          url:
-            "/apis/linkingthing.com/auth/v1/ddiusers/ddiuser?action=currentUser",
-          params
+      post({
+        url:
+          "/apis/linkingthing.com/auth/v1/users/user?action=currentUser",
+        params
+      })
+        .then(userInfo => {
+          commit("SET_USERINFO", userInfo);
+          resolve(userInfo);
         })
-          .then(userInfo => {
-            commit("SET_USERINFO", userInfo);
-            resolve(userInfo);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      }
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 };
+
+export function getRouteRange(routes, result = []) {
+  if (Array.isArray(routes)) {
+    routes.forEach(item => {
+      const range = item.meta.range;
+      if (range) {
+        if (!result.includes(range)) {
+          result.push(range);
+        }
+      }
+      getRouteRange(item.children, result);
+    });
+  }
+  return result;
+}
 
 export default {
   state,

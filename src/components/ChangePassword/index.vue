@@ -146,7 +146,7 @@ export default {
             username,
             password
           };
-          this.$post({ url: `/apis/linkingthing.com/auth/v1/ddiusers/${username}?action=${this.action}`, params })
+          this.$post({ url: `/apis/linkingthing.com/auth/v1/users/${username}?action=${this.action}`, params })
             .then(() => {
               this.$Message.success("修改成功");
               this.dialogVisible = false;

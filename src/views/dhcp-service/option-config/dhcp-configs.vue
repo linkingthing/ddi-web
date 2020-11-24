@@ -16,7 +16,7 @@
 
       <div class="btn-submit">
         <Button
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermissionCreate('dhcpconfig')"
           type="primary"
           @click="handleSubmit('formInline')"
         >确认</Button>

@@ -10,6 +10,7 @@
     >
       <FormItem label="DNS日志">
         <i-switch
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
           @on-change="handleToggle"
           :value="params.logEnable"
           :loading="logLoading"
@@ -21,6 +22,7 @@
       </FormItem>
       <FormItem label="DNSSEC">
         <i-switch
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
           @on-change="handleSECToggle"
           :value="params.dnssecEnable"
           :loading="secLoading"
@@ -66,6 +68,7 @@
           style="width: 120px"
         />
         <Button
+          v-if="$hasPermissionCreate('dnsglobalconfig')"
           :loading="ttlLoading"
           type="primary"
           @click="handleSave"

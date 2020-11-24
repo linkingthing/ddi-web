@@ -76,6 +76,7 @@
 <script>
 import services from "@/services";
 import { mapMutations } from "vuex";
+import { resetRouter } from "@/router";
 
 export default {
   name: "login",
@@ -123,7 +124,7 @@ export default {
   created() {
   },
   methods: {
-    ...mapMutations(["SET_TOKEN", "SET_USERINFO"]),
+    ...mapMutations(["SET_TOKEN", "SET_USERINFO", "setRoutes"]),
 
     login() {
       this.$refs["formLogin"].validate(valid => {
@@ -131,9 +132,10 @@ export default {
           services
             .login(this.params)
             .then(res => {
-              if (res.data.code === "200") {
-                this.SET_TOKEN(res.data.token);
+              if (res.code === 200) {
                 this.SET_USERINFO(false);
+                this.setRoutes([]);
+                resetRouter();
                 this.$router.push({
                   path: "/"
                 });

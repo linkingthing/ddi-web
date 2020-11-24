@@ -12,6 +12,7 @@ Vue.config.productionTip = false;
 
 import store from "./store";
 import router from "./router";
+import "./permission";
 
 new Vue({
   el: "#app",

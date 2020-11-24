@@ -47,8 +47,8 @@ export default {
       if (!ip) {
         return;
       }
-      services.getNodeList({ node: ip }).then(res => {
-        const result = res.data.data;
+      services.getNodeList({ node: ip }).then(({ data }) => {
+        const result = data;
         this.deviceState = result.usage[ip] || {};
         const deviceInfo = result.nodes[ip] || {};
         this.infos = [

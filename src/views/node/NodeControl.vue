@@ -58,8 +58,8 @@ export default {
     getList() {
       services
         .getServerList()
-        .then(res => {
-          this.serverList = res.data.data.filter(item => item.role !== "controller");
+        .then(({ data }) => {
+          this.serverList = data.filter(item => item.role !== "controller");
           const firstNode = this.serverList[0];
           this.currentNode = `${firstNode.role}-${firstNode.ip}`;
           this.currentIp = firstNode.ip;

@@ -79,8 +79,8 @@ export default {
     getView() {
       services
         .getViewList()
-        .then(res => {
-          this.list = res.data.data;
+        .then(({ data }) => {
+          this.list = data;
           for (var key in this.list) {
             this.dns64s = this.list[key].links.dns64s;
           }
