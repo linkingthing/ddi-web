@@ -106,13 +106,13 @@ export default {
       this.analysisModal = true;
     },
     getZoneInfo() {
-      getParantData().then(({ data: { name } }) => {
+      getParantData().then(({ name }) => {
         this.recordSuffix = name;
       });
     },
     getResourceRecord(viewId, zoneId, id) {
-      services.getResourceRecordById(viewId, zoneId, id).then(res => {
-        this.params = res.data;
+      services.getResourceRecordById(viewId, zoneId, id).then(data => {
+        this.params = data;
       });
     },
     Modify() {

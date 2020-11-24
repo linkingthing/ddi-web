@@ -5,7 +5,9 @@ export default {
   component: Layout,
   meta: {
     range: "system",
-    title: "告警管理"
+    title: "告警管理",
+    permission: "alarmManage"
+
   },
   name: "system-alarms",
   icon: "icon-alarm",
@@ -17,7 +19,9 @@ export default {
       icon: "icon-node",
       meta: {
         range: "system",
-        title: "告警配置"
+        title: "告警配置",
+        permission: "alarmConfig"
+
       }
     },
     {
@@ -27,7 +31,9 @@ export default {
       icon: "icon-node",
       meta: {
         range: "system",
-        title: "告警信息"
+        title: "告警信息",
+        permission: "alarmInfo"
+
       }
     },
     {
@@ -37,7 +43,9 @@ export default {
       icon: "icon-node",
       meta: {
         range: "system",
-        title: "告警通知"
+        title: "告警通知",
+        permission: "alarmNotice"
+
       }
     }
   ]

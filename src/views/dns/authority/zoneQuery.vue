@@ -143,8 +143,7 @@ export default {
       };
       services
         .getZoneByViewId(this.id, params)
-        .then(res => {
-          const { links, data, pagination } = res.data;
+        .then(({ links, data, pagination }) => {
           this.list = data;
           this.links = links;
           this.total = pagination.total;
@@ -186,7 +185,7 @@ export default {
       const enumRoles = {
         [true]: "main",
         [false]: "backup"
-      }
+      };
       const params = {
         role: enumRoles[value]
       };

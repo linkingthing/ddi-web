@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name'] : []"
+        :show-fields="isEdit ? ['name', 'forwardtype'] : []"
       />
 
     </Form>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import ForwardSelectName from "./forward-select-name";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   props: {
@@ -45,10 +45,13 @@ export default {
   data() {
 
     this.rules = {
-      name: [
-        { required: true, message: "请填写区名称" }
+      domain: [
+        { required: true, message: "请填写域名" }
       ],
-      forwardids: [
+      domaingroupids: [
+        { required: true, message: "请选择域名组" }
+      ],
+      forwarderids: [
         { required: true, message: "请选择转发分组" }
       ],
       forwardtype: [
@@ -57,23 +60,102 @@ export default {
     };
     return {
       forwardList: [],
-      formItemList: [
-        {
-          label: "名称",
-          model: "name",
-          type: "component",
-          placeholder: "请填写名称",
-          component: ForwardSelectName
+      formModel: {
+        nametype: "domain",
+        comment: "",
+        domain: "",
+        domaingroupids: [],
+        forwarderids: [],
+        forwarders: [],
+        forwardtimepolicyname: "",
+        forwardtype: "",
+        name: ""
+      },
+      loading: false,
+      dialogVisible: false,
+      domainGroupList: [],
+      forwardtimepolicyList: []
+    };
+  },
+
+  computed: {
+    getTitle() {
+      return (this.isEdit ? "编辑" : "新建") + "配置";
+    },
+    isEdit() {
+      return !!this.links.update;
+    },
+    formItemList() {
+
+      const { nametype } = this.formModel;
+
+      const forwardItemMap = {
+        "root": null,
+        "domain": {
+          label: "转发项",
+          model: "domain",
+          type: "input",
+          placeholder: "请填写域名"
         },
+        "domaingroup": {
+          label: "转发项",
+          model: "domaingroupids",
+          type: "select",
+          placeholder: "请选择域名组",
+          multiple: true,
+          children: this.domainGroupList.map(item => {
+            return {
+              label: item.id,
+              text: item.name
+            };
+          })
+
+        }
+      };
+
+      return [
+        {
+          label: "类型",
+          model: "nametype",
+          type: "select",
+          placeholder: "请选择转类型",
+          children: [{
+            label: "root",
+            text: "根区"
+          }, {
+            label: "domain",
+            text: "域名"
+          }, {
+            label: "domaingroup",
+            text: "域名组"
+          }]
+        },
+        forwardItemMap[nametype],
         {
           label: "转发分组",
-          model: "forwardids",
+          model: "forwarderids",
           type: "select",
           placeholder: "请选择转发分组",
           multiple: true,
-          children: []
+          children: this.forwardList.map(item => {
+            return {
+              label: item.id,
+              text: item.name
+            };
+          })
         },
-
+        {
+          label: "时间策略",
+          model: "forwardtimepolicyname",
+          type: "select",
+          placeholder: "请选择时间策略",
+          children: this.forwardtimepolicyList.map(item => {
+            return {
+              label: item.name,
+              text: item.name
+            };
+          })
+        },
         {
           label: "转发方式",
           model: "forwardtype",
@@ -93,21 +175,7 @@ export default {
           type: "input",
           placeholder: "请填写备注"
         }
-      ],
-      formModel: {
-        name: ""
-      },
-      loading: false,
-      dialogVisible: false
-    };
-  },
-
-  computed: {
-    getTitle() {
-      return (this.isEdit ? "编辑" : "新建") + "配置";
-    },
-    isEdit() {
-      return !!this.links.update;
+      ].filter(item => item);
     }
   },
 
@@ -115,20 +183,24 @@ export default {
 
     visible(val) {
       if (!val) {
+        this.formModel = {
+          nametype: "domain",
+          comment: "",
+          domain: "",
+          domaingroupids: [],
+          forwarderids: [],
+          forwarders: [],
+          forwardtimepolicyname: "",
+          forwardtype: "",
+          name: ""
+        };
         this.$refs["formInline"].resetFields();
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, comment, forwardtype, forwards }) => {
-          this.formModel = {
-            name,
-            comment,
-            forwardtype,
-            forwards,
-            forwardids: Array.isArray(forwards) ? forwards.map(item => item.id) : []
-          };
-
+        this.$get({ url: this.links.self }).then((data) => {
+          this.formModel = data;
 
         }).catch();
       }
@@ -137,30 +209,22 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    },
-
-    forwardList(value) {
-
-      const optionList = value.map(item => {
-        return {
-          label: item.id,
-          text: item.name
-        };
-      });
-
-      this.formItemList.some(item => {
-        if (item.model === "forwardids") {
-          item.children = optionList;
-        }
-      });
-
     }
+
   },
 
   created() {
-    this.$getData({}, "/dns/dns/forwards").then(({ data }) => {
+    this.$getData({}, "/dns/dns/forwarders").then(({ data }) => {
       this.forwardList = data;
     }).catch();
+
+    this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
+      this.domainGroupList = data;
+    });
+
+    this.$getData({}, "/dns/dns/forwardtimepolicies").then(({ data }) => {
+      this.forwardtimepolicyList = data;
+    });
   },
 
   methods: {
@@ -170,6 +234,15 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           const params = { ...this.formModel };
+          params.name = uuidv4();
+          if (params.nametype === "root") {
+            params.domain = ".";
+          }
+
+          if (params.nametype === "domaingroup") {
+            Reflect.deleteProperty(params, "domain");
+          }
+
 
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
@@ -190,8 +263,6 @@ export default {
           }
         }
       });
-
-
 
     }
 

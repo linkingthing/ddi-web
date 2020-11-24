@@ -64,9 +64,9 @@ export default {
       };
       services
         .getViewList(params)
-        .then(res => {
-          this.list = res.data.data;
-          this.total = res.data.pagination.total;
+        .then(({ data, pagination }) => {
+          this.list = data;
+          this.total = pagination.total;
         })
         .catch(function (err) {
           console.log(err);

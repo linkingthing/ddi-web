@@ -100,7 +100,7 @@ export const columns = scope => [
     fixed: "right",
     align: "center",
     render: (h, { row }) => {
-      if (scope.$store.getters.hasPermissionToCreate) {
+      if (scope.$hasPermissionCreate("networkequipment")) {
         return h("div", [
           h("btn-edit", {
             on: {
@@ -131,8 +131,7 @@ export const columns = scope => [
       } else {
         return h("div");
       }
-    },
-    align: "center"
+    }
   }
 ];
 

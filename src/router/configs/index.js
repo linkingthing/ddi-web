@@ -10,14 +10,9 @@ import systemLog from "./system-log";
 import systemLinkage from "./system-linkage";
 import authControl from "./auth-control";
 
-const constRouter = [
-  node,
-  ipam,
-  dns,
-  forword,
-  accessControl,
-  dhcp
-];
+import DefaultLayout from "@/views/default-layout";
+
+const constRouter = [node, ipam, dns, forword, accessControl, dhcp];
 
 const superUserRouter = [
   // node,
@@ -44,11 +39,23 @@ function addMeta(arr) {
   return arr;
 }
 
-export default addMeta(constRouter);
-
 export const asyncRouter = addMeta(superUserRouter);
 
-export const allConfig = [...addMeta(constRouter), ...asyncRouter];
+export const allConfig = [...addMeta(constRouter), ...asyncRouter].reduce(
+  (result, current) => result.concat(current),
+  []
+);
+
+
+export default [
+  {
+    path: "/",
+    name: "Index",
+    component: DefaultLayout,
+    meta: { permission: "*" },
+    children: allConfig
+  }
+];
 
 export const superUserAllowList = [
   "DNSDashboard",

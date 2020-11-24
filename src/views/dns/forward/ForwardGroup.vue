@@ -11,7 +11,7 @@
         <i-button
           type="primary"
           @click="handleOpenCreate"
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermissionCreate('forward')"
         >新建</i-button>
       </template>
     </table-page>
@@ -40,7 +40,7 @@ export default {
           align: "left",
           render: (h, { row }) => {
             return h(
-              "a",
+              "span",
               {
                 props: {
                   href: "javascript:;"
@@ -75,7 +75,7 @@ export default {
           width: 160,
           render: (h, { row }) => {
 
-            if (this.$store.getters.hasPermissionToCreate) {
+            if (this.$hasPermissionCreate("forward")) {
               return h("div", [
                 h("btn-edit", {
                   on: {

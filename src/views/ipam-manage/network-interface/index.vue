@@ -149,7 +149,7 @@
           <btn-search
             type="primary"
             icon="ios-search"
-            @click="getList"
+            @click="handleClickSearch"
             class="top-button"
           >查询</btn-search>
         </template>
@@ -269,10 +269,13 @@ export default {
         this.loading = false;
       }
     },
+    handleClickSearch() {
+      this.getPieData();
+      this.getList();
+    },
 
     async getPieData() {
       try {
-        const { data } = await this.$getParantData();
         const {
           activeRatio,
           assignedRatio,
@@ -283,7 +286,7 @@ export default {
           zombieRatio,
           reservationRatio,
           staticAddressRatio
-        } = data;
+        } = await this.$getParantData();
 
         this.unmanagedRatio = unmanagedRatio;
 
@@ -333,10 +336,9 @@ export default {
           params.ipstate = ipstate;
         }
 
-
         let { data, pagination } = await this.$get({ url, params });
         this.total = pagination.total;
-        this.current = pagination.pageNum;
+        this.current = pagination.pageNum || 1;
         this.handleFilter(data);
 
       } catch (err) {

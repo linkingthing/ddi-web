@@ -10,7 +10,7 @@
         <i-button
           type="primary"
           @click="handleOpenCreate"
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermission('acl', 'POST')"
         >新建</i-button>
       </template>
     </table-page>
@@ -102,7 +102,7 @@ export default {
           align: "right",
           width: 160,
           render: (h, { row }) => {
-            if (this.$store.getters.hasPermissionToCreate) {
+            if (this.$hasPermission("acl", "POST")) {
 
               return h("div", [
                 !["any", "none"].includes(row.name) &&
@@ -155,10 +155,10 @@ export default {
       };
       services
         .getAccessList(params)
-        .then(res => {
-          this.list = res.data.data;
-          this.links = res.data.links;
-          this.total = res.data.pagination.total;
+        .then(({ data, links, pagination }) => {
+          this.list = data;
+          this.links = links;
+          this.total = pagination.total;
         })
         .catch(err => {
           this.$Message.error(err.message);

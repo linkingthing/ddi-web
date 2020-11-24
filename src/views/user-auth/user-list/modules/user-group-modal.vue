@@ -54,7 +54,7 @@ export default {
       ],
       password: [{
         validator: function (rule, value, callback) {
-          if (!this.isEdit) {
+          if (this.isEdit) {
             callback();
           }
           if (value.trim()) {
@@ -71,7 +71,7 @@ export default {
       repassword: [
         {
           validator: function (rule, value, callback) {
-            if (!this.isEdit) {
+            if (this.isEdit) {
               callback();
             }
             if (value === self.formModel.password) {
@@ -79,15 +79,18 @@ export default {
             } else {
               callback("两次输入的密码不一致");
             }
-            let timer = null;
-            if (!this.isEdit) {
-              clearTimeout(timer);
-              timer = setTimeout(() => {
-                self.$refs["formInline"].validateField("repassword");
-              });
-            } else {
-              clearTimeout(timer);
-            }
+
+            // 重新定义watch 监听搞定这个问题
+            // let timer = null;
+            // if (!this.isEdit) {
+            //   clearTimeout(timer);
+            //   timer = setTimeout(() => {
+            //     self.$refs["formInline"].validateField("repassword");
+            //   });
+            // } else {
+            //   clearTimeout(timer);
+            // }
+
           }
         }
       ]
@@ -97,7 +100,7 @@ export default {
       formModel: {
         username: "",
         userGroupIDs: [],
-        roleIDs: [],
+        roleIds: [],
         password: DEFAULT_PASSWORD,
         repassword: DEFAULT_PASSWORD,
         comment: ""
@@ -181,7 +184,7 @@ export default {
         },
         {
           label: "选择角色",
-          model: "roleIDs",
+          model: "roleIds",
           type: "component",
           component: MultipleSelect,
           props: {
@@ -211,8 +214,8 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ password, comment, username, userGroupIDs, roleIDs }) => {
-          this.formModel = { password, comment, username, userGroupIDs, roleIDs, repassword: password || "" };
+        this.$get({ url: this.links.self }).then(({ password, comment, username, userGroupIds, roleIds }) => {
+          this.formModel = { password, comment, username, userGroupIds, roleIds, repassword: password || "" };
 
         }).catch();
       }
@@ -221,7 +224,17 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    }
+    },
+
+    "formModel.password"() {
+      this.$refs["formInline"].validateField("repassword");
+    },
+
+    "formModel.repassword"() {
+      this.$refs["formInline"].validateField("repassword");
+    },
+
+
   },
 
   created() {
@@ -249,8 +262,8 @@ export default {
 
       this.formModel = {
         username: "",
-        userGroupIDs: [],
-        roleIDs: [],
+        userGroupIds: [],
+        roleIds: [],
         password: DEFAULT_PASSWORD,
         repassword: DEFAULT_PASSWORD,
         comment: ""
@@ -261,7 +274,6 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
-
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
               this.$$success("编辑成功");

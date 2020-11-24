@@ -9,10 +9,6 @@
         button-text="新建规划"
         @add="handleAddPlan"
       />
-      <!-- :buttons="[{
-          text:'导入规划',
-          event: handleImport
-        }]" -->
       <table-page
         v-else
         :data="planList"
@@ -25,13 +21,11 @@
           <Button
             type="primary"
             @click="handleAddPlan"
-            v-if="$store.getters.hasPermissionToCreate"
           >新建规划</Button>
 
           <Button
             type="primary"
             @click="handleUploadPlan"
-            v-if="$store.getters.hasPermissionToCreate"
           >上传规划</Button>
 
         </template>
@@ -252,6 +246,18 @@ export default {
 
   computed: {
 
+    ...mapGetters({
+      planList: "planList",
+      currentPlan: "currentPlan",
+      currentLayout: "currentLayout",
+      stepComponent: "currentPlanProcessId",
+      planProcessList: "planProcessList",
+      netType: "netType"
+    }),
+    showPlanList() {
+      console.log(!!this.planList.length)
+      return !!this.planList.length;
+    }
   },
 
   watch: {

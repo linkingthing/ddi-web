@@ -118,9 +118,10 @@ export default {
       };
       services
         .getResourceRecord(this.viewId, this.zoneId, params)
-        .then(res => {
-          this.resList = res.data.data;
-          this.total = res.data.pagination.total;
+
+        .then(({ data, pagination }) => {
+          this.resList = data;
+          this.total = pagination.total;
         })
         .catch(err => {
           console.log(err);
