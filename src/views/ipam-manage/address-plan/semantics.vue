@@ -6,6 +6,8 @@
 
 <script>
 import PlanStepSemantic from "./modules/PlanStepSemantic";
+import { mapGetters } from "vuex";
+
 export default {
   components: {
     PlanStepSemantic
@@ -15,11 +17,23 @@ export default {
     return {
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters(["hasChange"])
+  },
   created() { },
   mounted() { },
-  methods: {}
+  methods: {},
+  beforeRouteLeave(to, from, next) {
+
+
+    if (this.hasChange) {
+      this.$Message.info("请先保存再切换节点");
+      next(false);
+    } else {
+      next();
+    }
+  }
+
 };
 </script>
 

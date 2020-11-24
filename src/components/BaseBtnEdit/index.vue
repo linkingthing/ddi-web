@@ -1,7 +1,7 @@
 <template>
   <btn-line
     title="编辑"
-    @click="$emit('click')"
+    @click.native="$emit('click')"
   ></btn-line>
 </template>
 

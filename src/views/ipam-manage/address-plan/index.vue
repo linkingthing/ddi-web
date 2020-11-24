@@ -17,7 +17,8 @@
         v-else
         :data="planList"
         :columns="columns"
-        :total="0"
+        :total="total"
+        :current.sync="current"
       >
         <template slot="top-right">
 
@@ -139,44 +140,44 @@ export default {
           key: "prefixs",
           align: "left",
           render: (h, { row }) => {
-            if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
-              return h("a", {
-                attrs: {
-                  href: "javascript:;"
-                },
-                on: {
-                  click: () => {
-                    const { links } = row;
-                    let url = this.$getRouteByLink(links.self, "address");
-                    this.$router.push({
-                      path: url
-                    });
-                  }
+            // if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
+            return h("a", {
+              attrs: {
+                href: "javascript:;"
+              },
+              on: {
+                click: () => {
+                  const { links } = row;
+                  let url = this.$getRouteByLink(links.self, "address");
+                  this.$router.push({
+                    path: url
+                  });
                 }
-              }, row.prefixs);
-            }
-            else {
-              return h("div", row.prefixs);
-            }
+              }
+            }, row.prefixs);
+            // }
+            // else {
+            //   return h("div", row.prefixs);
+            // }
 
           }
         },
-        {
-          title: "安全锁",
-          key: "name",
-          align: "left",
-          render: (h, { row }) => {
-            return h(SafeLock, {
-              props: {
-                type: row.lockType,
-                message: row.lockedby
-              },
-              nativeOn: {
-                click: () => this.handleToggleLock(row, row.isLock)
-              }
-            });
-          }
-        },
+        // {
+        //   title: "安全锁",
+        //   key: "name",
+        //   align: "left",
+        //   render: (h, { row }) => {
+        //     return h(SafeLock, {
+        //       props: {
+        //         type: row.lockType,
+        //         message: row.lockedby
+        //       },
+        //       nativeOn: {
+        //         click: () => this.handleToggleLock(row, row.isLock)
+        //       }
+        //     });
+        //   }
+        // },
         {
           title: "操作",
           key: "name",
@@ -242,7 +243,10 @@ export default {
       importVisible: false,
       uploadParams: {
         path: ""
-      }
+      },
+
+      total: 0,
+      current: 0
     };
   },
 
@@ -251,7 +255,9 @@ export default {
   },
 
   watch: {
-
+    current() {
+      this.getPlanList();
+    }
 
   },
 
@@ -263,7 +269,13 @@ export default {
   methods: {
 
     getPlanList() {
-      this.$get(this.$getApiByRoute()).then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
+        this.current = pagination.pageNum;
+        this.total = pagination.total;
         const { user } = this.$store.getters.userInfo;
         const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);

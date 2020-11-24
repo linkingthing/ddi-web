@@ -41,7 +41,8 @@ export default {
   computed: {
     ...mapGetters([
       "currentNodeId",
-      "tree"
+      "tree",
+      "hasChange"
     ])
 
   },
@@ -71,10 +72,17 @@ export default {
     ]),
 
     handleSelectNode(nodes, node) {
-      console.log("handleSelectNode", node)
-      this.setCurrentNodeId(node.id);
+      console.log("handleSelectNode", node, this.currentNodeId)
+      if (node.id !== this.currentNodeId) {
+        if (this.hasChange) {
+          this.$Message.info("请先保存再切换节点");
+          return;
+        }
+        this.setCurrentNodeId(node.id);
+      }
     },
     renderContent(h, { root, node, data }) {
+      // data.selected = true;
       let name = transfer(data.name);
       const isSearch = this.keywords.length > 0 && data.name.includes(this.keywords);
 
@@ -90,6 +98,9 @@ export default {
       }
 
       return h("span", {
+        class: {
+          "ivu-tree-title-selected": data.id === this.currentNodeId
+        },
         props: {
         },
         style: {

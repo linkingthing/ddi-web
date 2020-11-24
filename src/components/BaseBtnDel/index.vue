@@ -1,7 +1,7 @@
 <template>
   <btn-line
     title="删除"
-    @click="$emit('click')"
+    @click.native="$emit('click')"
   ></btn-line>
 </template>
 
