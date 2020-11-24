@@ -109,8 +109,7 @@
               ></Input>
             </FormItem>
           </template>
-          <!-- v-else -->
-          <template>
+          <template v-else>
             <FormItem
               label="启动下发服务"
               prop="enabledispatch"
@@ -267,27 +266,44 @@ export default {
     handleSaveSystemInfo(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.params.dispatchclients.push(this.systemInfo);
-          this.$refs[name].resetFields();
-          this.singleAddVisible = false;
+          this.params.dispatchclients.push({ ...this.systemInfo });
+          this.$nextTick().then(() => {
+            this.$refs[name].resetFields();
+            this.singleAddVisible = false;
+          });
         }
       });
     },
-    handleDeleteSystemInfo(item) {
-      console.log(item)
+    handleDeleteSystemInfo({ id }) {
+      this.params.dispatchclients = this.params.dispatchclients.filter(item => item.id !== id);
     },
     handleUpload(file) {
-      console.log(file)
-      var reader = new FileReader();
+      // console.log(file)
+      // console.log(file.text())
+      // file.text().then(text => {
+      //   console.log(text)
+      // })
+      const reader = new FileReader();
       reader.readAsText(file, "utf-8");
-      // reader.onprogress = function (e) {
-      //   pro.value = e.loaded;
-      // }
-      reader.onload = function () {
+      reader.onload = () => {
         const str = reader.result;
-        var rows = str.split("\n");
+        const rows = str.split("\n");
         console.log(str, rows)
-      }
+        const [[name, clientaddr], ...data] = rows.map(item => item.split(",").map(i => i.trim())).filter(item => {
+          return item.length >= 2;
+        });
+
+        console.log(name, clientaddr, data)
+        const result = [];
+        data.forEach(([aname, ip]) => {
+          result.push({
+            [name]: aname,
+            [clientaddr]: ip
+          });
+        });
+        console.log(result)
+        this.params.dispatchclients.push(...result);
+      };
 
     },
     handleBatchImport() { },
@@ -410,6 +426,7 @@ export default {
       height: 225px;
       border: 1px solid #ddd;
       border-radius: 6px;
+      padding: 4px 8px;
     }
   }
 }
