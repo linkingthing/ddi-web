@@ -2,14 +2,20 @@
   <div class="system-linkage">
     <div class="system-linkage-content">
       <div class="proccess-bar">
-        <div class="proccess-bar-item">
+        <div
+          class="proccess-bar-item"
+          :style="{opacity: isUp ? 1 : .3}"
+        >
           <img
             src="./system.png"
             alt=""
           >
           <p>上级系统</p>
         </div>
-        <div class="proccess-bar-item proccess-bar-line">
+        <div
+          class="proccess-bar-item proccess-bar-line"
+          :style="{opacity: isUp ? 1 : .3}"
+        >
           <div>......</div>
           <div class="proccess-bar-line-mark">
             上报
@@ -27,7 +33,10 @@
           >
           <p>本系统</p>
         </div>
-        <div class="proccess-bar-item proccess-bar-line">
+        <div
+          class="proccess-bar-item proccess-bar-line"
+          :style="{opacity: !isUp ? 1 : .3}"
+        >
           <div>......</div>
           <div class="proccess-bar-line-mark">
             下发
@@ -39,7 +48,10 @@
           <div>......</div>
 
         </div>
-        <div class="proccess-bar-item">
+        <div
+          class="proccess-bar-item"
+          :style="{opacity: !isUp ? 1 : .3}"
+        >
           <img
             src="./system.png"
             alt=""
@@ -49,10 +61,18 @@
       </div>
 
       <div class="system-linkage-tab">
-        <div class="system-linkage-tab-item system-linkage-tab-active">
+        <div
+          class="system-linkage-tab-item "
+          :class="{'system-linkage-tab-active': isUp }"
+          @click="serveType = 'UP'"
+        >
           上报服务
         </div>
-        <div class="system-linkage-tab-item">
+        <div
+          class="system-linkage-tab-item"
+          :class="{'system-linkage-tab-active': !isUp }"
+          @click="serveType = 'DOWN'"
+        >
           下发服务
         </div>
       </div>
@@ -65,27 +85,131 @@
         <Form
           :model="params"
           :label-width="110"
+          :rules="rules"
           label-position="left"
+          ref="form"
         >
-          <FormItem
-            label="启动上报服务"
-            prop=""
-          >
-            <i-switch v-model="params.open" />
-          </FormItem>
-          <FormItem
-            label="上级系统IP地址"
-            prop=""
-          >
-            <Input placeholder="请填写上级系统IP地址"></Input>
-          </FormItem>
+          <template v-if="isUp">
+
+            <FormItem
+              label="启动上报服务"
+              prop="enablereport"
+              style="text-align:right"
+            >
+              <i-switch v-model="params.enablereport" />
+            </FormItem>
+            <FormItem
+              label="上级系统IP地址"
+              prop="reportserveraddr"
+            >
+              <Input
+                :disabled="!params.enablereport"
+                v-model="params.reportserveraddr"
+                placeholder="请填写上级系统IP地址"
+              ></Input>
+            </FormItem>
+          </template>
+          <!-- v-else -->
+          <template>
+            <FormItem
+              label="启动下发服务"
+              prop="enabledispatch"
+              style="text-align:right"
+            >
+              <i-switch v-model="params.enabledispatch" />
+            </FormItem>
+
+            <FormItem
+              label="子系统信息"
+              prop="enabledispatch"
+              class="enabledispatch"
+            >
+
+              <div>
+                <div class="enabledispatch-action">
+                  <Button
+                    type="primary"
+                    size="small"
+                    @click="handleOpenSingleAdd"
+                  >单个添加</Button>
+                  <Upload
+                    action="//jsonplaceholder.typicode.com/posts/"
+                    :before-upload="handleUpload"
+                  >
+
+                    <Button
+                      type="primary"
+                      ghost
+                      size="small"
+                      @click="handleBatchImport"
+                    >批量导入</Button>
+                  </Upload>
+                </div>
+                <div class="enabledispatch-show">
+                  <ul>
+                    <li
+                      :key="item.id"
+                      v-for="item in params.dispatchclients"
+                    >
+                      <Tag
+                        closable
+                        @on-close="handleDeleteSystemInfo(item)"
+                      >
+
+                        {{item.name}}, {{item.clientaddr}}
+                      </Tag>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </FormItem>
+
+          </template>
+
           <FormItem :label-width="0">
-            <Button type="primary" long>确定</Button>
+            <Button
+              :disabled="submitAbled"
+              type="primary"
+              long
+              @click="handleSubmit('form')"
+            >确定</Button>
           </FormItem>
 
         </Form>
       </div>
     </div>
+
+    <common-modal
+      :visible.sync="singleAddVisible"
+      :width="415"
+      title="添加子系统信息"
+      @confirm="handleSaveSystemInfo('systemInfo')"
+    >
+      <Form
+        :model="systemInfo"
+        :label-width="110"
+        :rules="systemRules"
+        label-position="left"
+        ref="systemInfo"
+      >
+
+        <FormItem
+          label="系统名称"
+          prop="name"
+          style="text-align:right"
+        >
+          <Input v-model="systemInfo.name" />
+        </FormItem>
+        <FormItem
+          label="IP地址"
+          prop="clientaddr"
+          style="text-align:right"
+        >
+          <Input v-model="systemInfo.clientaddr" />
+        </FormItem>
+      </Form>
+    </common-modal>
+
   </div>
 </template>
 
@@ -94,21 +218,98 @@ export default {
   components: {},
   props: {},
   data() {
+    this.rules = {};
+    this.systemRules = {};
     return {
+      serveType: "UP",
       params: {
-        open: true
+        enablereport: true,
+        reportserveraddr: "",
+        dispatchclients: [],
+
+      },
+      singleAddVisible: false,
+      systemInfo: {
+        name: "",
+        clientaddr: ""
       }
     };
   },
-  computed: {},
+  computed: {
+    isUp() {
+      return this.serveType === "UP";
+    },
+    submitAbled() {
+      return false;
+    }
+  },
   watch: {},
   created() { },
-  mounted() { },
-  methods: {}
+  mounted() {
+    this.getDataList();
+  },
+  methods: {
+    getDataList() {
+      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs";
+      this.$get({ url }).then(({ data }) => {
+
+        if (Array.isArray(data) && data.length) {
+          this.submitType = "$put";
+          this.params = data[0];
+        } else {
+          this.submitType = "$post";
+        }
+      });
+    },
+    handleOpenSingleAdd() {
+      this.singleAddVisible = true;
+    },
+    handleSaveSystemInfo(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          this.params.dispatchclients.push(this.systemInfo);
+          this.$refs[name].resetFields();
+          this.singleAddVisible = false;
+        }
+      });
+    },
+    handleDeleteSystemInfo(item) {
+      console.log(item)
+    },
+    handleUpload(file) {
+      console.log(file)
+      var reader = new FileReader();
+      reader.readAsText(file, "utf-8");
+      // reader.onprogress = function (e) {
+      //   pro.value = e.loaded;
+      // }
+      reader.onload = function () {
+        const str = reader.result;
+        var rows = str.split("\n");
+        console.log(str, rows)
+      }
+
+    },
+    handleBatchImport() { },
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          const url = this.params.links ? this.params.links.self : "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs";
+          const params = this.params;
+          this[this.submitType]({ url, params }).then(() => {
+            this.$Message.success("保存成功");
+            this.getDataList();
+          }).then(err => {
+            this.$Message.error(err.response.dat.message);
+          });
+        }
+      });
+    }
+  }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .system-linkage {
   padding-top: 60px;
   .system-linkage-content {
@@ -183,6 +384,32 @@ export default {
     .center-form {
       width: 332px;
       margin: 30px auto;
+    }
+  }
+
+  .enabledispatch {
+    .ivu-form-item-content {
+      margin-top: 35px;
+      margin-left: 0 !important;
+    }
+    .enabledispatch-action {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      & > * {
+        width: 48%;
+        display: block;
+        .ivu-upload-select,
+        .ivu-btn {
+          display: block;
+          width: 100%;
+        }
+      }
+    }
+    .enabledispatch-show {
+      height: 225px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
     }
   }
 }
