@@ -680,8 +680,8 @@ export default {
       }
 
       this.changeCurrentNode("subnodebitwidth", bitWidth);
-      this.setHasChange(true);
-      this.$Message.success("位宽设置成功");
+
+      this.handleSave("位宽设置成功");
 
       // 需要标识？后者自身就是标识
 
@@ -785,6 +785,8 @@ export default {
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
         this.setHasChange(true);
+        // this.handleSave();
+
       } else {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
@@ -1004,6 +1006,7 @@ export default {
 
           this.nodeEditVisible = false;
           this.setHasChange(true);
+
         }
       });
 
@@ -1114,13 +1117,12 @@ export default {
       });
       this.$Message.success("操作成功");
     },
-    handleSave() {
-      // 对编辑过的属性进行保存，TODO：切换的时候提示保存
+    handleSave(message = "保存成功") {
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize
       this.saveNodes(cloneDeep(this.semanticNodeList));
       const nodes = cloneDeep(this.nodes);
       this.updatePlan(nodes).then(() => {
-        this.$Message.success("保存成功");
+        this.$Message.success(message);
       });
     },
     updatePlan(semanticnodes) {
@@ -1144,6 +1146,7 @@ export default {
         this.setHasChange(false);
       }).catch(err => {
         this.$Message.error(err.response.data.message);
+        return Promise.reject(); // 这里可以阻止后面的then执行
       });
     },
     orderSequence(semanticnodes) {
