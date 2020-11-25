@@ -111,7 +111,7 @@
 <script>
 import {
   positiveIntegerValidate
-  
+
 } from "@/util/common";
 import { ttlValidator, ipListValidator } from "@/util/validator";
 
@@ -156,7 +156,7 @@ export default {
     getInitData() {
       this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
         if (res.blackholes) {
-          res.blackholes = res.blackholes.join("\n");
+          res.blackholes = Array.isArray(res.blackholes) ? res.blackholes.join("\n") : "";
         }
         this.params = res;
         this.links = res.links;
