@@ -784,8 +784,10 @@ export default {
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
-        this.setHasChange(true);
-        // this.handleSave();
+        // this.setHasChange(true);
+        this.handleSave().then(() => {
+          // autoOneKey // 一键规划的情况下，定义get 完成的后重新计算事件，且需要 setHasChange 
+        });
 
       } else {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
@@ -797,7 +799,11 @@ export default {
       if (this.semanticNodeList.length) {
         const { autocreate } = this.semanticNodeList[0];
         if (autocreate === planTypeEnum.ONEKEYPLAN) {
-          this.autoOneKey();
+
+          // 临时方案吧，事件是最佳策略，但代码量冗余
+          setTimeout(() => {
+            this.autoOneKey();
+          }, 600);
           return;
         }
       }
@@ -1121,7 +1127,7 @@ export default {
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize
       this.saveNodes(cloneDeep(this.semanticNodeList));
       const nodes = cloneDeep(this.nodes);
-      this.updatePlan(nodes).then(() => {
+      return this.updatePlan(nodes).then(() => {
         this.$Message.success(message);
       });
     },
