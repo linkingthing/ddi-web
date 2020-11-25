@@ -579,14 +579,11 @@ export default {
     }
   },
   watch: {
-    "$route"(to, from) {
-      console.log(to, from);
-    },
     currentNode: {
       deep: true,
       handler(val) {
-        console.log(val, "currentNode")
-        console.log("nodes", this.nodes)
+        // console.log(val, "currentNode")
+        // console.log("nodes", this.nodes)
         // console.log("currentNodeChildren", this.currentNodeChildren)
 
         if (!val) {
@@ -664,8 +661,6 @@ export default {
         return;
       }
 
-      console.log(this.currentNodePrefix)
-      this.bitWidth = bitWidth;
       const [prefix] = this.currentNodePrefix;
       if (!prefix) {
         this.$Message.info(`请先设置上层节点信息`);
@@ -678,12 +673,10 @@ export default {
         this.$Message.info(`当前层级位宽不能超过 ${maxBitwidth}`);
         return;
       }
-
+      this.bitWidth = bitWidth;
       this.changeCurrentNode("subnodebitwidth", bitWidth);
 
       this.handleSave("位宽设置成功");
-
-      // 需要标识？后者自身就是标识
 
     },
     changeCurrentNode(attr, val) {
@@ -1031,7 +1024,7 @@ export default {
 
 
       // const uesedValueLen = executeUesedValueList(semanticNodeList).length;
-
+      console.time("onekey")
 
       const nodeList = planSemanticNodesValue({
         prefixList,
@@ -1052,6 +1045,7 @@ export default {
       this.semanticNodeList = nodeList;
       this.$Message.success("操作成功");
 
+      console.timeEnd("onekey")
 
     },
 
@@ -1084,6 +1078,8 @@ export default {
           const subnodebitwidth = this.bitWidth;
           const allPlanNodes = this.allPlanNodes;
 
+          console.time("handlePlanTime")
+
           const nodeList = planSemanticNodesValue({
             prefixList,
             semanticNodeList,
@@ -1103,6 +1099,7 @@ export default {
           this.semanticNodeList = nodeList;
           this.$Message.success("操作成功");
           this.customPlanVisible = false;
+          console.timeEnd("handlePlanTime")
 
         }
       });
