@@ -85,8 +85,9 @@ function renderIp(h, row, field, status, scope) {
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-
-                    color: config.color
+                    marginRight: "5px",
+                    marginBottom: "2px",
+                    backgroundColor: config.color
                   }
                 }),
                 h(
