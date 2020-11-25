@@ -47,7 +47,6 @@ import { buildLayoutParams, executeTreeNodePrefix } from "./helper";
 import { v4 as uuidv4 } from "uuid";
 
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
-import eventBus from "@/util/bus";
 
 export default {
   components: {

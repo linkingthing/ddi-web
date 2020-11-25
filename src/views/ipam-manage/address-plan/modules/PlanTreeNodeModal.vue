@@ -79,7 +79,6 @@
 import _ from "lodash";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import { findNodeById } from "./helper";
-import eventBus from "@/util/bus";
 import SegmentAxis from "@/components/SegmentAxis";
 
 
@@ -170,7 +169,6 @@ export default {
   },
   created() { },
   mounted() {
-    eventBus.$on("onSelectNode", this.onSelectNode);
   },
   methods: {
     ...mapMutations([
