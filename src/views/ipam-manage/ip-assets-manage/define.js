@@ -54,7 +54,9 @@ function renderIp(h, row, field, status, scope) {
               "white-space": "nowrap"
             }
           },
-          Array.isArray(row[field]) && row[field].length ? row[field] : "__"
+          Array.isArray(row[field]) && row[field].length
+            ? row[field].join(",")
+            : "__"
         );
       },
       content: function () {
