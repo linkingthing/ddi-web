@@ -1020,7 +1020,7 @@ export default {
 
     handleOneKeyPlan() {
 
-      const surplus = +this.surplus; // 剩余地址块数
+      // const surplus = +this.surplus; // 剩余地址块数
 
       const prefixList = this.currentNodePrefix;
 
@@ -1030,7 +1030,7 @@ export default {
       const allPlanNodes = this.allPlanNodes;
 
 
-      const uesedValueLen = executeUesedValueList(semanticNodeList).length;
+      // const uesedValueLen = executeUesedValueList(semanticNodeList).length;
 
 
       const nodeList = planSemanticNodesValue({
