@@ -36,7 +36,7 @@
               <Tooltip
                 placement="bottom"
                 theme="light"
-                max-width="700"
+                max-width="1000"
                 style="white-space:none"
                 class="detail-tooltip"
               >
@@ -47,7 +47,7 @@
 
                 <div
                   slot="content"
-                  style="padding: 10px 12px;width: 660px"
+                  style="padding: 10px 12px;width: 960px"
                 >
                   <div style="font-size: 14px;color:#333;margin-bottom: 10px">占位详情</div>
                   <Table
@@ -279,7 +279,7 @@
             type="primary"
             size="large"
             style="width: 300px;"
-            @click="handleSave"
+            @click="handleSave('保存成功')"
           >保存</Button>
         </div>
       </section>
@@ -341,7 +341,8 @@ export default {
         },
         {
           title: "可规划地址",
-          key: "name"
+          key: "name",
+          width: 500
         }
       ],
       nodeCount: 0,
@@ -355,108 +356,6 @@ export default {
 
       nodeEditVisible: false,
       semanticNodeList: [],
-      columns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
-        {
-          type: "index",
-          width: 80,
-          align: "center"
-        },
-        {
-          title: "语义名称",
-          key: "name",
-          width: 200,
-          render: (h, { row }) => {
-            return h("line-edit",
-              {
-                on: {
-                  "on-edit-finish": val => {
-                    this.handleSaveSemanticName(row, val);
-                  }
-                },
-                props: {
-                  isPercent: false,
-                  value: row.name
-                }
-              }
-
-            );
-          }
-        },
-
-        {
-          title: "地址个数",
-          key: "addressCount",
-          width: 150
-
-        },
-        {
-          title: "IPv6地址",
-          key: "showprefixs",
-          tooltip: true,
-          maxWidth: 300,
-        },
-        {
-          title: "IPv4子网",
-          key: "ipv4s",
-          maxWidth: 300,
-          render: (h, { row }) => {
-            const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
-
-
-            return h("Tooltip", {
-              class: {
-                "ipToolTip": true
-              },
-              props: {
-                placement: "bottom",
-                content
-              }
-            }, [h("line-edit", {
-              on: {
-                "on-edit-finish": val => {
-                  this.handleSaveIpv4s(row, val);
-                }
-              },
-              props: {
-                isPercent: false,
-                value: row.ipv4s,
-                width: "100%"
-              }
-            })]
-            );
-          }
-        },
-        {
-          title: "操作",
-          key: "action",
-          width: 210,
-          render: (h, { row }) => {
-            return h("div", [
-              h("btn-line", {
-                props: {
-                  title: "分发"
-                }
-              }),
-              h("btn-edit", {
-                on: {
-                  click: () => this.handleOpenEditNode(row)
-                }
-              }),
-              h("btn-del", {
-                on: {
-                  click: () => this.handleDeleteSemantic(row)
-                }
-              })
-            ]);
-          }
-
-        }
-      ],
 
       search: "",
       filterKeyword: "",
@@ -576,6 +475,114 @@ export default {
           showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "__"
         };
       });
+    },
+
+    columns() {
+
+
+      let selection = !this.availableCustomPlan ? [{
+        type: "selection",
+        width: 60,
+        align: "center"
+      }] : [];
+      return [
+        ...selection,
+        {
+          type: "index",
+          width: 80,
+          align: "center"
+        },
+        {
+          title: "语义名称",
+          key: "name",
+          width: 200,
+          render: (h, { row }) => {
+            return h("line-edit",
+              {
+                on: {
+                  "on-edit-finish": val => {
+                    this.handleSaveSemanticName(row, val);
+                  }
+                },
+                props: {
+                  isPercent: false,
+                  value: row.name
+                }
+              }
+
+            );
+          }
+        },
+
+        {
+          title: "地址个数",
+          key: "addressCount",
+          width: 150
+
+        },
+        {
+          title: "IPv6地址",
+          key: "showprefixs",
+          tooltip: true,
+          maxWidth: 300,
+        },
+        {
+          title: "IPv4子网",
+          key: "ipv4s",
+          maxWidth: 300,
+          render: (h, { row }) => {
+            const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
+
+
+            return h("Tooltip", {
+              class: {
+                "ipToolTip": true
+              },
+              props: {
+                placement: "bottom",
+                content
+              }
+            }, [h("line-edit", {
+              on: {
+                "on-edit-finish": val => {
+                  this.handleSaveIpv4s(row, val);
+                }
+              },
+              props: {
+                isPercent: false,
+                value: row.ipv4s,
+                width: "100%"
+              }
+            })]
+            );
+          }
+        },
+        {
+          title: "操作",
+          key: "action",
+          width: 210,
+          render: (h, { row }) => {
+            return h("div", [
+              h("btn-line", {
+                props: {
+                  title: "分发"
+                }
+              }),
+              h("btn-edit", {
+                on: {
+                  click: () => this.handleOpenEditNode(row)
+                }
+              }),
+              h("btn-del", {
+                on: {
+                  click: () => this.handleDeleteSemantic(row)
+                }
+              })
+            ]);
+          }
+
+        }
+      ]
     }
   },
   watch: {
