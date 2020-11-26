@@ -419,6 +419,9 @@ export default {
 
       return !autocreate;
     },
+    isCustomPlan() {
+      return this.currentTargetNodeAutoCreate === planTypeEnum.HANDLEPLAN;
+    },
     availableCustomPlan() {
       const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.HANDLEPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
       const hasMorePrefixs = this.currentNodePrefix.length > 1;
@@ -1113,6 +1116,41 @@ export default {
     },
 
     handleClearPlan() {
+      // 手动规划 todo:
+
+      if (this.isCustomPlan) {
+        if (this.selectSemanticList.length > 0) {
+
+          const semanticNodeList = this.semanticNodeList;
+
+          this.semanticNodeList = semanticNodeList.map(item => {
+            const isSelect = this.selectSemanticList.find(select => {
+              return select.id === item;
+            });
+            if (isSelect) {
+              return {
+                ...item,
+                plannodes: [],
+                prefixs: [],
+                addressCount: 0,
+                autocreate: planTypeEnum.UNDEFINED,
+                modified: modifiedEnum.STRUCTURED
+              };
+            } else {
+              return item;
+            }
+
+          });
+
+        } else {
+          this.$Message.info("请选择需要清空地址的子语义");
+        }
+
+        return;
+      }
+
+
+
       const semanticNodeList = this.semanticNodeList;
       this.semanticNodeList = semanticNodeList.map(item => {
         return {
