@@ -162,7 +162,7 @@ export default {
             modified: modifiedEnum.STRUCTURED,
             name: params.name,
             parentsemanticid: "0",
-            stepsize: 2,
+            stepsize: 0,
             sequence: 1,
             // autocreate: true,
             ipv4s: [],
