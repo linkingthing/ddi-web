@@ -29,7 +29,7 @@
               <Input
                 class="action-box-input"
                 v-model="tempBitWidth"
-                placeholder="请输入地址位宽"
+                :placeholder="`最大地址位宽${64-prefixLen}`"
                 :disabled="settableNextBitWidth"
               />
 
