@@ -595,6 +595,7 @@ export default {
         if (val.prefixs && Array.isArray(val.prefixs) && val.prefixs.length) {
           this.currentNodePrefix = val.prefixs;
           const [, len] = val.prefixs[0].split("/");
+          this.prefixLen = len;
           this.currentNodePrefixLen = len;
         } else {
           this.currentNodePrefix = [];
