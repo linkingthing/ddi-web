@@ -296,6 +296,8 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
+import { originAxios } from "@/util/axios";
+
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
 import {
   parserValueStr2Arr,
@@ -432,12 +434,16 @@ export default {
           }
         },
         {
+          fixed: "right",
           title: "操作",
           key: "action",
           width: 210,
           render: (h, { row }) => {
             return h("div", [
               h("btn-line", {
+                nativeOn: {
+                  click: () => this.handleDispath(row)
+                },
                 props: {
                   title: "分发"
                 }
@@ -864,6 +870,68 @@ export default {
         }
       });
 
+    },
+    handleDispath(row) {
+      // 获取后校验，下拉
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs" }).then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          console.log(5555)
+          const { clientaddr, name } = data[0].dispatchclients[0];
+          console.log(clientaddr, name)
+
+          const remoteServe = `https://${clientaddr}/apis/linkingthing.com`;
+          originAxios.get(`${remoteServe}/common/v1/getdispatchinfo`, {})
+            .then(({ data: { username, password } }) => {
+              const params = {
+                username,
+                password
+              };
+              console.log("用户参数", params)
+              return originAxios.post(`${remoteServe}/common/v1/getdispatchtoken`, params, {
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+                }
+              });
+
+            }).then((res) => {
+              console.log("token22", res, res.headers["authorization"])
+
+              const url = `${remoteServe}/ipam/v1/plans?action=dispatch`;
+
+              const dispatchtoken = res.headers["authorization"];
+
+              const params = {
+                semanticnode: [row],
+                remoteaddr: clientaddr
+              };
+
+              originAxios.post(url, params, {
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  "Authorization": dispatchtoken
+                }
+              }).then(res => {
+                console.log(res)
+              });
+
+            });
+        }
+      });
+
+
+      // this.$get({ url: "/apis/linkingthing.com/common/v1/getdispatchinfo" })
+      //   .then(({ username, password }) => {
+      //     const params = {
+      //       username,
+      //       password
+      //     };
+      //     return this.$post({ url: "/apis/linkingthing.com/common/v1/getdispatchtoken", params });
+      //   }).then(() => {
+      //     const { dispatchtoken } = this.$store.getters;
+      //     console.log(dispatchtoken)
+
+      //     // d
+      //   });
     },
     handleOpenEditNode(row) {
 

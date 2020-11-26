@@ -214,6 +214,18 @@ export default {
               }),
               h("btn-line", {
                 nativeOn: {
+                  click: () => {
+
+                    this.handleReportPlan(row);
+                  }
+                },
+
+                props: {
+                  title: "上报规划"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
                   click: () => this.handleDelete(row)
                 },
                 props: {
@@ -245,17 +257,7 @@ export default {
   },
 
   computed: {
-
-    ...mapGetters({
-      planList: "planList",
-      currentPlan: "currentPlan",
-      currentLayout: "currentLayout",
-      stepComponent: "currentPlanProcessId",
-      planProcessList: "planProcessList",
-      netType: "netType"
-    }),
     showPlanList() {
-      console.log(!!this.planList.length)
       return !!this.planList.length;
     }
   },
@@ -334,6 +336,21 @@ export default {
       this.mapVisible = true;
       this.mapTitle = name;
       this.getMapData(links.self);
+    },
+
+    handleReportPlan() {
+
+      this.$get({ url: "/apis/linkingthing.com/common/v1/getdispatchinfo" })
+        .then(({ username, password }) => {
+          const params = {
+            username,
+            password
+          };
+          this.$post({ url: "/apis/linkingthing.com/common/v1/getdispatchtoken", params });
+        }).then(() => {
+          const { dispatchtoken } = this.$store.getters;
+          console.log(dispatchtoken)
+        });
     },
 
     getMapData(url) {

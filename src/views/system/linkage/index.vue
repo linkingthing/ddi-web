@@ -266,7 +266,13 @@ export default {
     handleSaveSystemInfo(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.params.dispatchclients.push({ ...this.systemInfo });
+
+          if (Array.isArray(this.params.dispatchclients)) {
+            this.params.dispatchclients.push({ ...this.systemInfo });
+          } else {
+            this.params.dispatchclients = [{ ...this.systemInfo }];
+          }
+
           this.$nextTick().then(() => {
             this.$refs[name].resetFields();
             this.singleAddVisible = false;
