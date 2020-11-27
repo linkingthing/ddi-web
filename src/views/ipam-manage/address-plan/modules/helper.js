@@ -512,10 +512,10 @@ export const hasAddressBlockToPlan = (bitWidth, semanticList) => {};
 export const createSemanticNode = () => {
   return {
     id: uuidv4(),
-    modified: 1,
+    modified: modifiedEnum.STRUCTURED,
     name: "语义节点1",
     parentsemanticid: "0",
-    stepsize: 2,
+    stepsize: 0,
     sequence: 1,
     autocreate: false,
     ipv4s: [],

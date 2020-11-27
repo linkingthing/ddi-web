@@ -72,7 +72,7 @@ export default {
     ]),
 
     handleSelectNode(nodes, node) {
-      console.log("handleSelectNode", node, this.currentNodeId)
+      // console.log("handleSelectNode", node, this.currentNodeId)
       if (node.id !== this.currentNodeId) {
         if (this.hasChange) {
           this.$Message.info("请先保存再切换节点");

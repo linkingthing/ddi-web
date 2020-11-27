@@ -162,32 +162,31 @@ export default {
             modified: modifiedEnum.STRUCTURED,
             name: params.name,
             parentsemanticid: "0",
-            stepsize: 2,
+            stepsize: 0,
             sequence: 1,
             // autocreate: true,
             ipv4s: [],
             plannodes: rootPlanNodes
           }];
 
-          if (this.isEdit) {
-            this.$put({ url: this.links.update, params }).then(() => {
-              this.$$success("编辑成功");
-              this.$emit("success");
-              this.dialogVisible = false;
-            }).catch(err => {
-              this.$$error(err.response.data.message);
-            });
-          } else {
 
-            // this.$router.push({ name: "ipam-address-plan-create", query: params });
-            this.$post({ url: this.links.self, params }).then(() => {
-              this.$$success("新建成功");
-              this.$emit("success");
-              this.dialogVisible = false;
-            }).catch(err => {
-              this.$$error(err.response.data.message);
+
+          // this.$router.push({ name: "ipam-address-plan-create", query: params });
+          this.$post({ url: this.links.self, params }).then((res) => {
+            this.$$success("新建成功");
+            this.$emit("success");
+            this.dialogVisible = false;
+
+            const { links } = res;
+            let url = this.$getRouteByLink(links.self, "address");
+            this.$router.push({
+              path: url
             });
-          }
+
+          }).catch(err => {
+            this.$$error(err.response.data.message);
+          });
+
         }
       });
     }
