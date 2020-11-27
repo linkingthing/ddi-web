@@ -11,7 +11,9 @@ let assetsPublicPath = "./";
 // const url = "https://10.0.0.172:58081";
 // const url = "https://jlccwss.vicp.cc:58081"
 
-const url = "https://10.0.0.206:58081";
+// const url = "https://10.0.0.206:58081";
+
+const url = "https://10.0.0.198:58081";
 // const url = "https://10.0.0.190:58081";
 
 module.exports = {
@@ -49,7 +51,6 @@ module.exports = {
         target: url,
         secure: false // 如果是https接口，需要配置这个参数
       },
-      "": {},
 
       "/apis": {
         target: `${url}/apis`,

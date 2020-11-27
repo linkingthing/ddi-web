@@ -269,11 +269,6 @@ export default {
 
   },
 
-  mounted() {
-    this.getPlanList();
-  },
-
-
   methods: {
 
     getPlanList() {
@@ -338,25 +333,29 @@ export default {
       this.getMapData(links.self);
     },
 
-    handleReportPlan() {
+    handleReportPlan({ links }) {
 
-      this.$get({ url: "/apis/linkingthing.com/common/v1/getdispatchinfo" })
-        .then(({ username, password }) => {
-          const params = {
-            username,
-            password
-          };
-          this.$post({ url: "/apis/linkingthing.com/common/v1/getdispatchtoken", params });
-        }).then(() => {
-          const { dispatchtoken } = this.$store.getters;
-          console.log(dispatchtoken)
+      this.getMapData(links.self).then(({ responsordispatch, semanticnodes }) => {
+        const { remoteaddr, semanticnode } = responsordispatch;
+        const params = {
+          remoteaddr,
+          semanticnodes: [{ id: semanticnode }]
+        };
+        return this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=reportforward`, params });
+      })
+        .then(() => {
+          this.getPlanList();
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
         });
     },
 
     getMapData(url) {
-      this.$get({ url }).then(({ semanticnodes }) => {
+      return this.$get({ url }).then((res) => {
+        const { responsordispatch, semanticnodes } = res;
         const treeData = list2Tree(semanticnodes, "0");
         this.treeData = treeData;
+        return res;
       });
     },
     handleDelete({ links }) {

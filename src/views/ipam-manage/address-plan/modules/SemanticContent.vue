@@ -223,6 +223,35 @@
           </Form>
         </common-modal>
 
+        <common-modal
+          :visible.sync="dispatchVisible"
+          title="IPv6前缀下发"
+          :width="413"
+          @confirm="handleSaveDispatch('dispatchRef')"
+        >
+          <Form
+            :model="dispatchParams"
+            :label-width="100"
+            :rules="dispatchRule"
+            ref="dispatchRef"
+          >
+            <FormItem
+              prop="remoteaddr"
+              label="子系统选择"
+              :rules="{required: true, message: '请选择子系统'}"
+            >
+              <Select v-model="dispatchParams.remoteaddr">
+                <Option
+                  v-for="item in dispatchclients"
+                  :key="item.id"
+                  :value="item.clientaddr"
+                >{{ item.name }}</Option>
+              </Select>
+            </FormItem>
+          </Form>
+
+        </common-modal>
+
       </div>
 
       <section v-if="semanticNodeList.length">
@@ -296,11 +325,8 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-import { originAxios } from "@/util/axios";
-
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
 import {
-  parserValueStr2Arr,
   executeNextIpv6Segment,
   planSemanticNodesValue,
   hasGrandson,
@@ -441,11 +467,25 @@ export default {
           render: (h, { row }) => {
             return h("div", [
               h("btn-line", {
+                style: {
+                  display: !row.sponsordispatch ? "" : "none"
+                },
                 nativeOn: {
                   click: () => this.handleDispath(row)
                 },
                 props: {
-                  title: "分发"
+                  title: "下发"
+                }
+              }),
+              h("btn-line", {
+                style: {
+                  display: row.sponsordispatch ? "" : "none"
+                },
+                nativeOn: {
+                  click: () => this.handleRepeal(row)
+                },
+                props: {
+                  title: "撤回"
                 }
               }),
               h("btn-edit", {
@@ -474,6 +514,14 @@ export default {
 
       },
       prefixMap: [], // 看似无用，但别乱删
+
+
+      dispatchVisible: false,
+      dispatchParams: {
+        remoteaddr: "",
+        semanticnodes: []
+      },
+      dispatchclients: []
 
     };
   },
@@ -873,65 +921,47 @@ export default {
     },
     handleDispath(row) {
       // 获取后校验，下拉
+
       this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
-          console.log(5555)
-          const { clientaddr, name } = data[0].dispatchclients[0];
-          console.log(clientaddr, name)
 
-          const remoteServe = `https://${clientaddr}/apis/linkingthing.com`;
-          originAxios.get(`${remoteServe}/common/v1/getdispatchinfo`, {})
-            .then(({ data: { username, password } }) => {
-              const params = {
-                username,
-                password
-              };
-              console.log("用户参数", params)
-              return originAxios.post(`${remoteServe}/common/v1/getdispatchtoken`, params, {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded"
-                }
-              });
-
-            }).then((res) => {
-              console.log("token22", res, res.headers["authorization"])
-
-              const url = `${remoteServe}/ipam/v1/plans?action=dispatch`;
-
-              const dispatchtoken = res.headers["authorization"];
-
-              const params = {
-                semanticnode: [row],
-                remoteaddr: clientaddr
-              };
-
-              originAxios.post(url, params, {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  "Authorization": dispatchtoken
-                }
-              }).then(res => {
-                console.log(res)
-              });
-
-            });
+          this.$refs.dispatchRef.resetFields();
+          this.dispatchVisible = true;
+          this.dispatchParams.semanticnodes = [row];
+          this.dispatchclients = data[0].dispatchclients;
+        } else {
+          this.$Message.info("请先配置系统联动");
         }
       });
+    },
 
+    handleSaveDispatch(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const params = this.dispatchParams;
+          this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=dispatchforward`, params }).then(res => {
+            this.getPlanInfo();
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
+      });
+    },
 
-      // this.$get({ url: "/apis/linkingthing.com/common/v1/getdispatchinfo" })
-      //   .then(({ username, password }) => {
-      //     const params = {
-      //       username,
-      //       password
-      //     };
-      //     return this.$post({ url: "/apis/linkingthing.com/common/v1/getdispatchtoken", params });
-      //   }).then(() => {
-      //     const { dispatchtoken } = this.$store.getters;
-      //     console.log(dispatchtoken)
+    handleRepeal(row) {
 
-      //     // d
-      //   });
+      const { remoteaddr, semanticnode } = row.sponsordispatch;
+      const params = {
+        remoteaddr,
+        semanticnodes: [{ id: semanticnode }]
+      };
+
+      this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=repealforward`, params }).then(res => {
+        this.getPlanInfo();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+
     },
     handleOpenEditNode(row) {
 
@@ -1216,6 +1246,10 @@ export default {
     },
     orderSequence(semanticnodes) {
       semanticnodes.forEach((item, index) => item.sequence = index + 1);
+    },
+    getPlanInfo() {
+      const { url } = this.$getApiByRoute();
+      this.getCurrentPlanInfo({ url });
     }
   }
 };
