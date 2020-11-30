@@ -349,7 +349,7 @@ export default {
   data() {
 
     this.dispatchRule = {
-      
+
     };
     return {
 
@@ -687,8 +687,7 @@ export default {
   },
   created() { },
   mounted() {
-    eventBus.$on("savePlan", this.updatePlan)
-
+    eventBus.$on("savePlan", this.handleSave);
   },
   methods: {
     ...mapMutations([

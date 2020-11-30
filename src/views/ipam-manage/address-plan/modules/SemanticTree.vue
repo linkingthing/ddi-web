@@ -19,11 +19,12 @@ import { cloneDeep } from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
+import eventBus from "@/util/bus";
+
 
 export default {
   components: {
-    SemanticTreeHeader,
-    ChoosePlanWayModal
+    SemanticTreeHeader
   },
   props: {
     prefix: {
@@ -68,17 +69,37 @@ export default {
   methods: {
     ...mapMutations([
       "initTree",
-      "setCurrentNodeId"
+      "setCurrentNodeId",
+      "setHasChange"
     ]),
 
     handleSelectNode(nodes, node) {
       // console.log("handleSelectNode", node, this.currentNodeId)
       if (node.id !== this.currentNodeId) {
         if (this.hasChange) {
-          this.$Message.info("请先保存再切换节点");
-          return;
+
+          this.$Modal.confirm({
+            title: "您想保存最新规划结果吗？",
+            content: "<p>选择确定即使保存，选择取消即是取消改动</p>",
+            loading: true,
+            onOk: () => {
+              eventBus.$emit("savePlan");
+              this.$nextTick()
+                .then(() => {
+                  this.setHasChange(false);
+                  this.$Modal.remove();
+                  this.setCurrentNodeId(node.id);
+                });
+            },
+            onCancel: () => {
+              this.setHasChange(false);
+              this.setCurrentNodeId(node.id);
+
+            }
+          });
+        } else {
+          this.setCurrentNodeId(node.id);
         }
-        this.setCurrentNodeId(node.id);
       }
     },
     renderContent(h, { root, node, data }) {
