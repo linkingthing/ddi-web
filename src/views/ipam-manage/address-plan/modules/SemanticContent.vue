@@ -296,8 +296,8 @@
 
           <Table
             ref="selection"
-            style="border: 1px solid #E6E6E6;border-bottom: none"
-            :columns="columns"
+            style="width: calc(100vw - 660px);border: 1px solid #E6E6E6;border-bottom: none"
+            :columns="semanticColumns"
             :data="filterCurrentNodeChildren"
             @on-selection-change="handleSelectSemanticList"
           />
@@ -521,7 +521,7 @@ export default {
       });
     },
 
-    columns() {
+    semanticColumns() {
 
 
       let selection = !this.availableCustomPlan ? [{
@@ -568,16 +568,14 @@ export default {
           title: "IPv6地址",
           key: "showprefixs",
           tooltip: true,
-          maxWidth: 300,
+          width: 350
         },
         {
           title: "IPv4子网",
           key: "ipv4s",
-          maxWidth: 300,
+          width: 340,
           render: (h, { row }) => {
             const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
-
-
             return h("Tooltip", {
               class: {
                 "ipToolTip": true
@@ -602,6 +600,7 @@ export default {
           }
         },
         {
+          fixed: "right",
           title: "操作",
           key: "action",
           width: 210,
@@ -1455,7 +1454,8 @@ export default {
     flex: 1;
     margin-bottom: 40px;
     .ivu-table-body {
-      overflow-x: hidden;
+      width: 100%;
+      overflow-x: auto;
       overflow-y: auto;
       flex: 1;
       height: calc(~"100vh - 600px");
