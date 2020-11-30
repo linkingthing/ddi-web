@@ -6,7 +6,7 @@
       :style="{width}"
     />
     <span v-else>
-      {{innerValue}}
+      {{showText}}
       {{isPercent ? '%' : ''}}
     </span>
 
@@ -29,11 +29,19 @@ export default {
     value: {
       // eslint-disable-next-line vue/require-prop-type-constructor
       type: Number | String,
-      default: 0
+      default: ""
+    },
+    defaultText: {
+      type: String,
+      default: ""
     },
     width: {
       type: String,
       default: "60px"
+    },
+    checkfunc: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -43,7 +51,11 @@ export default {
       contenteditable: false
     };
   },
-  computed: {},
+  computed: {
+    showText() {
+      return this.innerValue || this.defaultText;
+    }
+  },
   watch: {
     value(val) {
       this.innerValue = val;
@@ -51,12 +63,18 @@ export default {
   },
   created() {
     this.innerValue = this.value;
-
   },
   mounted() { },
 
   methods: {
     handleToggleEdit() {
+      if (this.checkfunc && this.contenteditable) {
+        const { isValid, message } = this.checkfunc(this.innerValue);
+        if (!isValid) {
+          this.$Message.error(message);
+          return;
+        }
+      }
       if (this.contenteditable) {
         let innerValue = this.innerValue;
         if (typeof this.value === "number") {

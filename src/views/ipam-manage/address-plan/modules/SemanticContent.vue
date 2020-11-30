@@ -575,8 +575,24 @@ export default {
           key: "ipv4s",
           width: 340,
           render: (h, { row }) => {
-            const content = (row.ipv4s && row.ipv4s.length) ? `[\n  ${row.ipv4s.join(",\n  ")}\n]` : "__";
-            return h("Tooltip", {
+            const content = (row.ipv4s && row.ipv4s.length) ? ` ${row.ipv4s.join(",")}` : "__";
+            let ref = "lineEditRef";
+            let lineEditRef = this.$createElement("line-edit", {
+              ref,
+              on: {
+                "on-edit-finish": val => {
+                  this.handleSaveIpv4s(row, val, ref);
+                }
+              },
+              props: {
+                isPercent: false,
+                value: Array.isArray(row.ipv4s) ? row.ipv4s.join(",") : "",
+                width: "100%",
+                defaultText: "__",
+                checkfunc: this.checkfunc
+              }
+            })
+            return this.$createElement("Tooltip", {
               class: {
                 "ipToolTip": true
               },
@@ -584,18 +600,7 @@ export default {
                 placement: "bottom",
                 content
               }
-            }, [h("line-edit", {
-              on: {
-                "on-edit-finish": val => {
-                  this.handleSaveIpv4s(row, val);
-                }
-              },
-              props: {
-                isPercent: false,
-                value: row.ipv4s,
-                width: "100%"
-              }
-            })]
+            }, [lineEditRef]
             );
           }
         },
@@ -874,21 +879,31 @@ export default {
         return false;
       });
       this.setHasChange(true);
-
     },
-    handleSaveIpv4s(row, ipv4str) {
+    checkfunc(ipv4str) {
       const ipv4s = ipv4str.split(",");
-      const valid = ipv4s.every(item => {
+      const isValid = !!ipv4s.every(item => {
         const [ip, len] = item.split("/");
         return ipv4IsValid(ip.trim()) && !!len;
       });
-      if (!valid) {
-        this.$Message.error("ipv4s输入有误，请更正");
-        return;
-      }
+      return { isValid, message: "ipv4s输入有误，请更正" };
+
+    },
+    handleSaveIpv4s(row, ipv4str, ref) {
+
+      const ipv4s = ipv4str.split(",");
+      // const valid = ipv4s.every(item => {
+      //   const [ip, len] = item.split("/");
+      //   return ipv4IsValid(ip.trim()) && !!len;
+      // });
+      // if (!valid) {
+      //   this.$Message.error("ipv4s输入有误，请更正");
+      //   return;
+      // }
       this.semanticNodeList.some(item => {
         if (item.id === row.id) {
           item.ipv4s = ipv4s;
+          item.modified = modifiedEnum.INFO;
           return true;
         }
         return false;
