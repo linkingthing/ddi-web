@@ -617,6 +617,9 @@ export default {
                 }
               }),
               h("btn-edit", {
+                props: {
+                  disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0)
+                },
                 on: {
                   click: () => this.handleOpenEditNode(row)
                 }

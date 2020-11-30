@@ -2,6 +2,8 @@
   <a
     href="javascript:;"
     class="btn-line"
+    :class="{'btn-disabeled': disabled}"
+    @click="!disabled && $emit('click')"
   >{{title}}</a>
 </template>
 
@@ -11,6 +13,10 @@ export default {
     title: {
       type: String,
       default: ""
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -27,5 +33,8 @@ export default {
   border: 1px solid #4686fe;
   border-radius: 4px;
   cursor: pointer;
+}
+.btn-disabeled {
+  cursor: not-allowed;
 }
 </style>
