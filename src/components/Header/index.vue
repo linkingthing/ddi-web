@@ -98,6 +98,8 @@ import { resetRouter } from "@/router";
 
 import ChangePassword from "@/components/ChangePassword";
 
+import { cloneDeep } from "lodash";
+
 const mainMenuList = [
   {
     title: "系统状态",
@@ -257,7 +259,6 @@ export default {
   },
 
   created() {
-    console.log(this.$router, 55)
 
   },
 

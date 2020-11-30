@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import {allConfig as configs} from "@/router/configs";
-
+import { allConfig as configs } from "@/router/configs";
+import { cloneDeep } from "lodash";
 export default {
   name: "Bread",
 
@@ -44,7 +44,7 @@ export default {
       showBread: true,
       breadcrumbList: [],
       currentName: "",
-      configs: [...configs]
+      configs: cloneDeep(configs)
     };
   },
 
@@ -83,10 +83,10 @@ export default {
 
     getChildren(res, result) {
       const len = res.length;
-      
+
       for (let i = 0; i < len; i++) {
         result.push(res[i]);
-          
+
         if (res[i].children) {
           this.getChildren(res[i].children, result);
         }
@@ -152,7 +152,7 @@ export default {
 
     getPath(path) {
       let params = this.$route.params;
-      
+
       return path.replace(/:\w+/g, word => params[word.slice(1)]);
     }
   }

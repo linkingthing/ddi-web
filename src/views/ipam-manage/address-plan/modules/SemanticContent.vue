@@ -337,6 +337,9 @@ import {
   executeUesedValueList
 } from "./helper";
 
+import eventBus from "@/util/bus";
+
+
 let nodeIndex = 1;
 export default {
   components: {
@@ -345,7 +348,9 @@ export default {
   props: {},
   data() {
 
-
+    this.dispatchRule = {
+      
+    };
     return {
 
       currentNodePrefix: [],
@@ -681,7 +686,10 @@ export default {
     }
   },
   created() { },
-  mounted() { },
+  mounted() {
+    eventBus.$on("savePlan", this.updatePlan)
+
+  },
   methods: {
     ...mapMutations([
       "saveNode",

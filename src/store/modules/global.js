@@ -53,8 +53,7 @@ const mutations = {
   },
 
   setRoutes(state, routes) {
-    console.log("setRouter", routes);
-    state.routes = routes;
+    state.routes = cloneDeep(routes);
   }
 };
 

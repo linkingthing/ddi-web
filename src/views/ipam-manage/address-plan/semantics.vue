@@ -8,6 +8,8 @@
 import PlanStepSemantic from "./modules/PlanStepSemantic";
 import { mapGetters } from "vuex";
 
+import eventBus from "@/util/bus";
+
 export default {
   components: {
     PlanStepSemantic
@@ -27,8 +29,25 @@ export default {
 
 
     if (this.hasChange) {
-      this.$Message.info("请先保存再切换节点");
-      next(false);
+      // this.$Message.info("请先保存再切换节点");
+
+      this.$Modal.confirm({
+        title: "您想保存最新规划结果吗？",
+        content: "<p>选择确定即使保存，选择取消即是取消改动</p>",
+        loading: true,
+        onOk: () => {
+
+          eventBus.$emit("savePlan").then(() => {
+            next(false);
+          });
+
+          this.$Modal.remove();
+
+        },
+        onCancel: () => {
+          next();
+        }
+      });
     } else {
       next();
     }

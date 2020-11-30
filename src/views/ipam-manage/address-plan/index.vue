@@ -175,7 +175,7 @@ export default {
         {
           title: "操作",
           key: "name",
-          width: 330,
+          width: 410,
           render: (h, { row }) => {
             return h("div", {
               class: "table-btn-box"
