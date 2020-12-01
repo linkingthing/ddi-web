@@ -793,6 +793,11 @@ export default {
         return;
       }
 
+      if (2 ** bitWidth - 2 < willCreateSemanticNodeListLength) {
+        this.$Message.info(`语义节点数不超过剩余地址块`);
+        return;
+      }
+
       if (oldNodeCount > willCreateSemanticNodeListLength) {
         this.$Message.info(`语义节点数低于原有语义节点数，请继续增加至${oldNodeCount}个及以上`);
         return;
