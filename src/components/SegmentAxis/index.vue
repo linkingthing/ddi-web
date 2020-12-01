@@ -142,7 +142,7 @@ export default {
   }
   &-item-active {
     position: absolute;
-    background: #4bc02f;
+    background: #4586FE;
   }
 }
 </style>

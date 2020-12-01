@@ -25,12 +25,10 @@
           <div class="action-input-item">
             <label class="label">地址位宽：</label>
             <div class="action-box">
-
-              <Input
-                class="action-box-input"
+              <Spinner
+                :disabled="settableNextBitWidth"
                 v-model="tempBitWidth"
                 :placeholder="`最大地址位宽${64-prefixLen}`"
-                :disabled="settableNextBitWidth"
               />
 
               <Tooltip
@@ -56,13 +54,6 @@
                   />
                 </div>
               </Tooltip>
-
-              <Button
-                type="primary"
-                style="margin-left: 20px"
-                :disabled="settableNextBitWidth"
-                @click="handleSetNextBitWidth"
-              >确定</Button>
             </div>
 
           </div>
@@ -74,6 +65,15 @@
               :prefix-len="Number(currentNodePrefixLen)"
               :bit-width="Number(currentNodeBitWidth)"
             />
+
+          </div>
+          <div style="margin-left: auto;">
+            <Button
+              type="primary"
+              style="margin-left: 20px"
+              :disabled="settableNextBitWidth"
+              @click="handleSetNextBitWidth"
+            >确定</Button>
           </div>
 
         </div>
@@ -99,14 +99,11 @@
         <div class="action-input-item">
           <label class="label">语义节点数：</label>
           <div class="action-box">
-            <Input
+            <Spinner
               class="action-box-input"
+              :disabled="settableSemanticNodeCount"
               v-model="nodeCount"
               placeholder="请输入语义节点数"
-              search
-              enter-button="+1"
-              @on-search="handleAddOne"
-              :disabled="settableSemanticNodeCount"
             />
           </div>
         </div>
@@ -114,20 +111,13 @@
         <div class="action-input-item">
           <label class="label">地址步长：</label>
           <div class="action-box">
-            <Input
+            <Spinner
               class="action-box-input"
+              :disabled="settableStepSize"
               v-model="stepsize"
               placeholder="请输入地址步长"
-              :disabled="settableStepSize"
             />
           </div>
-        </div>
-        <div class="action-input-item">
-          <Button
-            type="primary"
-            @click="handleClickCreateSemanticNode"
-            :disabled="settableCreateSemanticNode"
-          >确定</Button>
         </div>
 
         <div class="action-input-item">
@@ -136,8 +126,15 @@
             class="action-box-input"
             style="padding: 3px 0;"
           >
-            {{surplus}}
+            {{surplus || "_ _"}}
           </span>
+        </div>
+        <div style="margin-left: auto;">
+          <Button
+            type="primary"
+            @click="handleClickCreateSemanticNode"
+            :disabled="settableCreateSemanticNode"
+          >确定</Button>
         </div>
       </div>
 
@@ -287,10 +284,10 @@
                 type="primary"
                 @click="handleFilter"
               >搜索</Button>
-              <Button
+              <!-- <Button
                 class="reset"
                 @click="handleResetSearch"
-              >重置</Button>
+              >重置</Button> -->
 
             </div>
           </div>
@@ -321,6 +318,8 @@
 <script>
 // 经历过一个需求 迭代四版的人，使用一个文件写完所有功能必须被理解，不需要解释
 // 别提复用，ui各种变，操作交随时变，提交的数据格式也在变
+
+import Spinner from "@/components/Spinner";
 import SegmentAxis from "@/components/SegmentAxis";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { debounce, cloneDeep } from "lodash";
@@ -344,7 +343,8 @@ import eventBus from "@/util/bus";
 let nodeIndex = 1;
 export default {
   components: {
-    SegmentAxis
+    SegmentAxis,
+    Spinner
   },
   props: {},
   data() {
@@ -479,7 +479,7 @@ export default {
     },
     surplus() {
       // 剩余地址数
-      let result = "_ _";
+      let result = 0;
       if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
         const { subnodebitwidth, plannodes } = this.currentNode;
         if (!subnodebitwidth) {
@@ -700,6 +700,10 @@ export default {
       handler(val) {
         this.semanticNodeList = cloneDeep(val);  // 为了避免 nodeCount 先改大再改小
       }
+    },
+
+    tempBitWidth(val) {
+      console.log(val)
     }
   },
   created() { },
@@ -797,6 +801,7 @@ export default {
       // 地址步长校验
 
       const stepsize = Number(this.stepsize); // 拿到最新值
+
       if (Number.isNaN(stepsize)) {
         this.$Message.info("地址步长输入有误，请更正");
         return;
@@ -947,7 +952,6 @@ export default {
     },
     handleDispath(row) {
       // 获取后校验，下拉
-
       this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
 
@@ -1145,30 +1149,29 @@ export default {
       const subnodebitwidth = this.bitWidth;
       const allPlanNodes = this.allPlanNodes;
 
+      try {
+        const nodeList = planSemanticNodesValue({
+          prefixList,
+          semanticNodeList,
+          bitWidth: subnodebitwidth,
+          stepSize,
+          allPlanNodes
+        }).map(item => {
+          Reflect.deleteProperty(item, "temporaryCreated");
+          return {
+            ...item,
+            addressCount: item.plannodes.length,
+            prefixs: item.plannodes.map(item => item.prefix),
+            autocreate: planTypeEnum.ONEKEYPLAN,
+            modified: modifiedEnum.STRUCTURED
+          };
+        });
+        this.semanticNodeList = nodeList;
+        this.$Message.success("操作成功");
+      } catch (e) {
+        this.$Message.error("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
+      }
 
-      // const uesedValueLen = executeUesedValueList(semanticNodeList).length;
-      console.time("onekey")
-
-      const nodeList = planSemanticNodesValue({
-        prefixList,
-        semanticNodeList,
-        bitWidth: subnodebitwidth,
-        stepSize,
-        allPlanNodes
-      }).map(item => {
-        Reflect.deleteProperty(item, "temporaryCreated");
-        return {
-          ...item,
-          addressCount: item.plannodes.length,
-          prefixs: item.plannodes.map(item => item.prefix),
-          autocreate: planTypeEnum.ONEKEYPLAN,
-          modified: modifiedEnum.STRUCTURED
-        };
-      });
-      this.semanticNodeList = nodeList;
-      this.$Message.success("操作成功");
-
-      console.timeEnd("onekey")
 
     },
 
