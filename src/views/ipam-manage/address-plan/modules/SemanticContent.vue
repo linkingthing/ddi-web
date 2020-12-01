@@ -905,24 +905,19 @@ export default {
     },
     checkfunc(ipv4str) {
       const ipv4s = ipv4str.split(",");
+
+      if (ipv4s.length !== [...new Set(ipv4s)].length) {
+        return { isValid: false, message: "ipv4s重复，请更正" };
+      }
       const isValid = !!ipv4s.every(item => {
         const [ip, len] = item.split("/");
-        return ipv4IsValid(ip.trim()) && !!len;
+        return isIpv4Segment(item);
       });
       return { isValid, message: "ipv4s输入有误，请更正" };
 
     },
     handleSaveIpv4s(row, ipv4str, ref) {
-
       const ipv4s = ipv4str.split(",");
-      // const valid = ipv4s.every(item => {
-      //   const [ip, len] = item.split("/");
-      //   return ipv4IsValid(ip.trim()) && !!len;
-      // });
-      // if (!valid) {
-      //   this.$Message.error("ipv4s输入有误，请更正");
-      //   return;
-      // }
       this.semanticNodeList.some(item => {
         if (item.id === row.id) {
           item.ipv4s = ipv4s;
