@@ -138,12 +138,12 @@ export const columns = scope => [
           text: "在线"
         },
         offline: {
-          color: "#EF2E2E",
-          text: "异常"
-        },
-        abnormal: {
           color: "#999999",
           text: "离线"
+        },
+        abnormal: {
+          color: "#EF2E2E",
+          text: "异常"
         }
       };
       return h(
