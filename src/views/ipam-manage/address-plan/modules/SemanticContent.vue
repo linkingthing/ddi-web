@@ -269,6 +269,7 @@
                 ghost
                 @click="handleOpenCustomPlan"
                 :disabled="availableCustomPlan"
+                v-if="showCustomPlan"
               >自定义规划</Button>
 
               <Button
@@ -467,6 +468,9 @@ export default {
       const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.HANDLEPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
       const hasMorePrefixs = this.currentNodePrefix.length > 1;
       return !(autocreate && hasMorePrefixs);
+    },
+    showCustomPlan() {
+      return this.currentNodePrefix.length > 1;
     },
     availableClearPlan() {
       const currentNodeId = this.currentNode && this.currentNode.id;
