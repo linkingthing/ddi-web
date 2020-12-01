@@ -11,7 +11,7 @@ export default {
   component: Layout,
   icon: "icon-forward",
   meta: {
-    title: "递归服务",
+    title: "转发服务",
     range: "dns",
     permission: "recursionServe"
   },
@@ -84,18 +84,18 @@ export default {
         title: "域名组"
       }
     },
-    {
-      name: "concurrency-control",
-      path: "/dns/forward/concurrency-control",
-      component: () =>
-        import(
-          /* webpackChunkName: "concurrency-control" */ "@/views/dns/forward/concurrency-control"
-        ),
-      meta: {
-        title: "递归安全",
-        permission: "recursionSecurity"
+    // {
+    //   name: "concurrency-control",
+    //   path: "/dns/forward/concurrency-control",
+    //   component: () =>
+    //     import(
+    //       /* webpackChunkName: "concurrency-control" */ "@/views/dns/forward/concurrency-control"
+    //     ),
+    //   meta: {
+    //     title: "递归安全",
+    //     permission: "recursionSecurity"
 
-      }
-    }
+    //   }
+    // }
   ]
 };

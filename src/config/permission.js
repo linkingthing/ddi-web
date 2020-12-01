@@ -72,7 +72,7 @@ export default [
     resouces: ["urlredirect"]
   },
   {
-    name: "递归服务",
+    name: "转发服务",
     id: "recursionServe",
     module: "dns",
     resouces: ["forwardzone"]
