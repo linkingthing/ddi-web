@@ -1,9 +1,9 @@
-import { isIp, mobilePhoneReg } from "@/util/common";
+import { isIp, mobilePhoneReg, macReg } from "@/util/common";
 import { deviceTypes, manufacturers } from "../define";
 
 const required = true;
 
-export const formItemList = isNew => [    
+export const formItemList = isNew => [
   {
     label: "设备名称",
     model: "name",
@@ -25,6 +25,12 @@ export const formItemList = isNew => [
     type: "select",
     children: deviceTypes,
     placeholder: "请选择设备类型"
+  },
+  {
+    label: "MAC",
+    model: "administrationMac",
+    type: "input",
+    placeholder: "请输入MAC"
   },
   {
     label: "序列号",
@@ -105,7 +111,6 @@ export const formItemList = isNew => [
 ];
 
 const validateIP = (rule, value, callback) => {
-  console.log(value)
   if (!value) {
     return callback(new Error("请输入管理IP"));
   }
@@ -134,6 +139,16 @@ export const rules = {
     {
       required,
       message: "请选择设备类型"
+    }
+  ],
+  administrationMac: [
+    {
+      required,
+      message: "请输入MAC"
+    },
+    {
+      pattern: macReg,
+      message: "请输入正确的MAC地址"
     }
   ],
   manufacturer: [

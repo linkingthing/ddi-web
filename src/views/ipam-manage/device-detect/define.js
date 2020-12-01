@@ -22,6 +22,11 @@ export const columns = scope => [
     width: 140
   },
   {
+    title: "MAC",
+    key: "administrationMac",
+    width: 200
+  },
+  {
     title: "序列号",
     key: "serialNumber",
     align: "center",
