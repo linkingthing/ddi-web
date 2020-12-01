@@ -95,7 +95,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 150,
+    width: 240,
     className: "operate-column",
     fixed: "right",
     align: "center",
@@ -110,12 +110,15 @@ export const columns = scope => [
             }
           }),
           h(
-            "btn-detect",
+            "btn-line",
             {
               on: {
                 click: () => {
                   scope.handleDetect(row);
                 }
+              },
+              props: {
+                title: "网络探测"
               }
             },
             "网络探测"

@@ -126,7 +126,9 @@ export default {
                 },
                 props: {
                   disabled: row.state !== "untreated",
-                  size: "small"
+                  size: "small",
+                  type: "primary",
+                  ghost: true
                 }
 
               }, "忽略"),
@@ -139,7 +141,9 @@ export default {
                 },
                 props: {
                   disabled: row.state !== "untreated",
-                  size: "small"
+                  size: "small",
+                  type: "primary",
+                  ghost: true
                 }
 
               }, "已处理")
