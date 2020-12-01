@@ -437,6 +437,7 @@ export default {
     position: absolute;
     right: 26px;
     top: 14px;
+    z-index: 100;
   }
 
   .topology-inner {

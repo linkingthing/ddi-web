@@ -433,7 +433,7 @@ export default {
     },
 
     handleOpenImport() {
-      this.always = !this.always;
+      // this.always = !this.always;
     },
     handleClickImportTable() {
       this.importVisible = true;
