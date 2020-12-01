@@ -83,7 +83,7 @@ export default {
           label: "option 82",
           model: "relayAgentAddresses",
           type: "input",
-          placeholder: "请填写默认网关"
+          placeholder: "请填写option82"
         }
       ];
 
