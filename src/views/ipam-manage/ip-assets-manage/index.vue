@@ -61,7 +61,7 @@
           />
         </div>
 
-        <div class="condition-item">
+        <!-- <div class="condition-item">
           <label class="condition-item-label">终端状态</label>
           <Select
             v-model="condition.deviceState"
@@ -74,7 +74,7 @@
               :key="item.value"
             >{{ item.label }}</Option>
           </Select>
-        </div>
+        </div> -->
 
         <div class="condition-item">
           <label class="condition-item-label">IP地址</label>
@@ -96,7 +96,7 @@
           />
         </div>
 
-        <div class="condition-item">
+        <!-- <div class="condition-item">
           <label class="condition-item-label">上联设备</label>
           <Input
             v-model="condition.switchName"
@@ -104,7 +104,7 @@
             class="top-input"
             @on-enter="handleQuery"
           />
-        </div>
+        </div> -->
 
         <btn-search
           type="primary"
