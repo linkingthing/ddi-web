@@ -37,7 +37,7 @@
       />
     </form-item>
 
-    <form-item
+    <!-- <form-item
       v-if="isrrs && ['A','AAAA'].includes(params.datatype)"
       label="备份记录值"
       prop="rdataBackup"
@@ -52,7 +52,7 @@
         v-model="params.rdataBackup"
         placeholder="请填写资源记录"
       />
-    </form-item>
+    </form-item> -->
   </div>
 </template>
 
