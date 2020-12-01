@@ -2,6 +2,7 @@ import { post } from "@/util/axios";
 import store from "@/util/store";
 import { cloneDeep } from "lodash";
 const Cache = store("localStorage");
+import resources, { operateMap } from "@/dictionary/resources";
 
 const state = {
   token: "" || Cache.get("token"),
@@ -27,6 +28,19 @@ const getters = {
     const startPage = (current - 1) * size;
     const endPage = current * size;
     return state.agentEventList.slice(startPage, endPage);
+  },
+  agentEventAll: state => {
+   
+
+    return state.agentEventList.map(item => {
+      const message = `${operateMap[item.method]} ${resources[item.resource]} ${
+        item.succeed ? "成功" : "失败"
+      } `;
+      return {
+        ...item,
+        message
+      };
+    });
   },
   routes: state => state.routes,
   rangeList: state => {
@@ -66,8 +80,7 @@ const actions = {
     };
     return new Promise((resolve, reject) => {
       post({
-        url:
-          "/apis/linkingthing.com/auth/v1/users/user?action=currentUser",
+        url: "/apis/linkingthing.com/auth/v1/users/user?action=currentUser",
         params
       })
         .then(userInfo => {

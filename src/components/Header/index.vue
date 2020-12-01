@@ -65,6 +65,12 @@
 
             </DropdownMenu>
           </Dropdown>
+
+          <Icon
+            :type="showAgentEvent? 'ios-arrow-dropup' : 'ios-arrow-dropdown'"
+            style="font-size: 20px; cursor: pointer"
+            @click="showAgentEvent = !showAgentEvent"
+          />
         </div>
       </div>
     </div>
@@ -73,6 +79,42 @@
       :visible.sync="visible"
       action="changePassword"
     />
+
+    <div
+      class="message-list"
+      v-if="showAgentEvent"
+    >
+      <div
+        class="message-item"
+        v-for="item in agentEventAll"
+      >
+        <div style="margin-right: 10px">
+          <Icon
+            style="font-size: 24px;color: #59BB73"
+            type="ios-checkmark-circle-outline"
+            v-if="item.succeed"
+          />
+          <Icon
+            style="font-size: 24px;color: #FF6464"
+            type="ios-warning-outline"
+            v-else
+          />
+        </div>
+        <div>
+          <h3 class="message-item-title">{{item.node}}
+            <Icon
+              style="font-size: 16px;color: #999; cursor: pointer"
+              custom="icon-detail"
+              @click="handleOpenMessage(item)"
+            />
+          </h3>
+          <p class="message-item-content">{{item.message}}</p>
+        </div>
+        <div class="message-item-info">
+          <time>{{item.operationTime.split(" ").join("\n")}}</time>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -151,13 +193,15 @@ export default {
       rePassword: "",
       username: "",
       userType: "",
-      resourceList: []
+      resourceList: [],
+      showAgentEvent: false
 
     };
   },
   computed: {
     ...mapGetters([
-      "alarmCount"
+      "alarmCount",
+      "agentEventAll"
     ]),
     mainMenuList() {
       const userType = this.userType;
@@ -254,7 +298,21 @@ export default {
     handleClickMessage() {
       this.currentMainMenu = "/system";
       this.$router.push({ name: "alarm-notice", query: { state: "untreated" } });
-    }
+    },
+    handleOpenMessage(row) {
+      let cmdMessage = JSON.stringify(JSON.parse(row.cmdMessage), null, 2);
+      let errMessage = row.errorMessage ? `错误信息：${row.errorMessage}` : "操作成功";
+
+      cmdMessage = cmdMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      errMessage = errMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      this.$Modal.info({
+        scrollable: true,
+        width: 800,
+        title: "详细信息",
+        content: `<pre>${cmdMessage}</pre><br /> <pre>${errMessage}</pre>`
+      });
+    },
 
   }
 };
@@ -365,6 +423,44 @@ export default {
       background: url(./../../assets/images/avatar.png);
       background-size: cover;
       display: inline-block;
+    }
+  }
+}
+
+.message-list {
+  position: fixed;
+  right: 0;
+  top: 60px;
+  width: 300px;
+  height: 80%;
+  background: #fff;
+  z-index: 100;
+  border: 1px solid #ddd;
+  padding: 20px;
+  overflow: auto;
+
+  .message-item {
+    display: flex;
+    margin-bottom: 12px;
+    .message-item-title {
+      font-size: 16px;
+      color: #333;
+    }
+    .message-item-content {
+      font-size: 14px;
+      color: #666;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 200px;
+    }
+    time {
+      font-size: 12px;
+      color: #999;
+      white-space: pre;
+    }
+    .message-item-info {
+      text-align: right;
     }
   }
 }
