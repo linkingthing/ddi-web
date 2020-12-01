@@ -162,9 +162,16 @@ export default {
         this.links = res.links;
       });
     },
+
+
     handleToggle(logEnable) {
       this.logLoading = true;
       const params = { ...this.params, logEnable };
+      if (!Array.isArray(params.blackholes)) {
+        if (typeof params.blackholes === "string") {
+          params.blackholes = params.blackholes.split("\n").filter(item => !!item);
+        }
+      }
       this.$put({ url: this.links.update, params }).then(() => {
         this.getInitData();
         this.$Message.success("切换成功");
@@ -177,6 +184,11 @@ export default {
     },
     handleSECToggle(dnssecEnable) {
       const params = { ...this.params, dnssecEnable };
+      if (!Array.isArray(params.blackholes)) {
+        if (typeof params.blackholes === "string") {
+          params.blackholes = params.blackholes.split("\n").filter(item => !!item);
+        }
+      }
       this.secLoading = true;
       this.$put({ url: this.links.update, params }).then(() => {
         this.getInitData();
@@ -190,6 +202,11 @@ export default {
     },
     handleRecursionEnableToggle(recursionEnable) {
       const params = { ...this.params, recursionEnable };
+      if (!Array.isArray(params.blackholes)) {
+        if (typeof params.blackholes === "string") {
+          params.blackholes = params.blackholes.split("\n").filter(item => !!item);
+        }
+      }
       this.secLoading = true;
       this.$put({ url: this.links.update, params }).then(() => {
         this.getInitData();
@@ -203,6 +220,11 @@ export default {
     },
     handleBlackholeEnableToggle(blackholeEnable) {
       const params = { ...this.params, blackholeEnable };
+      if (!Array.isArray(params.blackholes)) {
+        if (typeof params.blackholes === "string") {
+          params.blackholes = params.blackholes.split("\n").filter(item => !!item);
+        }
+      }
       this.secLoading = true;
       this.$put({ url: this.links.update, params }).then(() => {
         this.getInitData();
