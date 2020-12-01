@@ -674,7 +674,7 @@ export default {
 
         if ((typeof val.subnodebitwidth === "number")) {
           this.bitWidth = val.subnodebitwidth;
-          this.tempBitWidth = val.subnodebitwidth;
+          this.tempBitWidth = val.subnodebitwidth || "";
         } else {
           this.bitWidth = 0;
           this.tempBitWidth = 0;
