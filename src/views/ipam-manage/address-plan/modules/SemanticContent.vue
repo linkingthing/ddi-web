@@ -612,8 +612,14 @@ export default {
           render: (h, { row }) => {
             return h("div", [
               h("btn-line", {
+                style: {
+                  display: !row.sponsordispatch ? "" : "none"
+                },
+                nativeOn: {
+                  click: () => this.handleDispath(row)
+                },
                 props: {
-                  title: "分发"
+                  title: "下发"
                 }
               }),
               h("btn-edit", {
