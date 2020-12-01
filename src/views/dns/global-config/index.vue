@@ -222,8 +222,6 @@ export default {
           params.ttl = Number(params.ttl);
           params.recursiveClients = Number(params.recursiveClients);
 
-
-
           if (!Array.isArray(params.blackholes)) {
             if (typeof params.blackholes === "string") {
               params.blackholes = params.blackholes.split("\n").filter(item => !!item);

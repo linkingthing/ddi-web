@@ -12,6 +12,9 @@ export const ttlValidator = function (rule, value, callback) {
 };
 
 export const ipListValidator = function (rule, value, callback) {
+  if (value === null) {
+    callback();
+  }
   const ipList = value
     .split("\n")
     .filter(item => !!item)
