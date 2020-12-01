@@ -23,19 +23,19 @@
         <label for="">IP状态指示：</label>
         <div>
           <Badge
-            color="#0070FF"
+            color="#1EE9CA"
             text="活跃地址"
           />
           <Badge
-            color="#5935FF"
+            color="#FF6464"
             text="冲突地址"
           />
           <Badge
-            color="#5CCBFF"
+            color="#1272FF"
             text="不活跃地址"
           />
           <Badge
-            color="#00CFAF"
+            color="#FFB83C"
             text="僵尸地址"
           />
         </div>
