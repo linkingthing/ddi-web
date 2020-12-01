@@ -33,8 +33,10 @@ export default {
   border: 1px solid #4686fe;
   border-radius: 4px;
   cursor: pointer;
-}
-.btn-disabeled {
-  cursor: not-allowed;
+  &.btn-disabeled {
+    color: #ddd!important;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
 }
 </style>
