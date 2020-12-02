@@ -432,7 +432,7 @@ export default {
           ip,
           ipstate
         }
-      })
+      });
     },
 
     handleAdd() {

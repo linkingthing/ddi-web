@@ -33,91 +33,123 @@ export const deviceTypes = [
 ];
 
 function renderIp(h, row, field, status, scope) {
-  return h("Tooltip", {
-    style: {
-      width: "100%"
-    },
-    props: {
-      theme: "light",
-      disabled: !(Array.isArray(row[field]) && row[field].length)
-    },
-    scopedSlots: {
-      default: function (props) {
-        return h(
-          "div",
-          {
-            style: {
-              color: row[status] && "#4586FE",
-              cursor: row[status] && "pointer",
-              overflow: "hidden",
-              "text-overflow": "ellipsis",
-              "white-space": "nowrap"
-            }
-          },
-          Array.isArray(row[field]) && row[field].length
-            ? row[field].join(",")
-            : "__"
-        );
-      },
-      content: function () {
-        let ipList = [];
-        if (Array.isArray(row[field])) {
-          ipList = row[field]
-            .map(item => {
-              let config = {};
-              if (row[status]) {
-                const target = row[status].find(i => i.ip === item);
-                config = { ...target };
-                if (target) {
-                  const statusConfig = statusLegends.find(
-                    item => item.type === target.ipstate
-                  );
-                  if (statusConfig) {
-                    config = {
-                      hasState: item === target.ip,
-                      ...config,
-                      ...statusConfig
-                    };
-                  }
-                }
-              }
-              return [
-                h("span", [
-                  h("span", {
-                    style: {
-                      display: "inline-block",
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      marginRight: "5px",
-                      marginBottom: "2px",
-                      backgroundColor: config.color
-                    }
-                  }),
-                  h(
-                    "span",
-                    {
-                      style: {
-                        color: config.hasState ? "#4586FE" : "",
-                        cursor: config.hasState ? "pointer" : "",
-                        "white-space": "normal"
-                      },
-                      on: {
-                        click: () => config.hasState && scope.handleGoto(config)
-                      }
-                    },
-                    item
-                  )
-                ]),
-                h("br")
-              ];
-            })
-            .flat();
-        }
-        return h("div", ipList);
+  if (row[field] && row[field].length === 1) {
+    let config = {};
+    let color = "#4586FE";
+    const state = row[status];
+    if (state && state.length) {
+      const statusConfig = statusLegends.find(
+        item => item.type === state[0].ipstate
+      );
+
+      if (statusConfig) {
+        config = { ...statusConfig, ...state[0] };
+        color = statusConfig.color;
       }
     }
-  });
+    return h(
+      "div",
+      {
+        style: {
+          color: state && color,
+          cursor: state && "pointer",
+          overflow: "hidden",
+          "text-overflow": "ellipsis",
+          "white-space": "nowrap"
+        },
+        on: {
+          click: () => state && scope.handleGoto(config)
+        }
+      },
+      row[field][0]
+    );
+  } else
+    return h("Tooltip", {
+      style: {
+        width: "100%"
+      },
+      props: {
+        theme: "light",
+        disabled: !(Array.isArray(row[field]) && row[field].length)
+      },
+      scopedSlots: {
+        default: function (props) {
+          return h(
+            "div",
+            {
+              style: {
+                color: row[status] && "#4586FE",
+                cursor: row[status] && "pointer",
+                overflow: "hidden",
+                "text-overflow": "ellipsis",
+                "white-space": "nowrap"
+              }
+            },
+            Array.isArray(row[field]) && row[field].length
+              ? row[field].join(",")
+              : "__"
+          );
+        },
+        content: function () {
+          let ipList = [];
+          if (Array.isArray(row[field])) {
+            ipList = row[field]
+              .map(item => {
+                let config = {};
+                if (row[status]) {
+                  const target = row[status].find(i => i.ip === item);
+                  config = { ...target };
+                  if (target) {
+                    const statusConfig = statusLegends.find(
+                      item => item.type === target.ipstate
+                    );
+                    if (statusConfig) {
+                      config = {
+                        hasState: item === target.ip,
+                        ...config,
+                        ...statusConfig
+                      };
+                    }
+                  }
+                }
+                return [
+                  h("span", [
+                    h("span", {
+                      style: {
+                        display: "inline-block",
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        marginRight: "5px",
+                        marginBottom: "2px",
+                        backgroundColor: config.color
+                      }
+                    }),
+                    h(
+                      "span",
+                      {
+                        style: {
+                          color: config.hasState ? "#4586FE" : "",
+                          cursor: config.hasState ? "pointer" : "",
+                          "white-space": "normal"
+                        },
+                        on: {
+                          click: () =>
+                            config.hasState && scope.handleGoto(config)
+                        }
+                      },
+                      item
+                    )
+                  ]),
+                  h("br")
+                ];
+              })
+              .flat();
+          }
+          return h("div", ipList);
+        }
+      }
+    });
 }
 
 export const columns = scope => [
@@ -162,8 +194,6 @@ export const columns = scope => [
   },
   {
     title: "IPv4地址",
-    key: "showipv4s",
-    align: "center",
     width: 180,
     tooltip,
     render: (h, { row }) => {
@@ -172,8 +202,6 @@ export const columns = scope => [
   },
   {
     title: "IPv6地址",
-    key: "showipv6s",
-    align: "center",
     width: 180,
     render: (h, { row }) => {
       return renderIp(h, row, "ipv6s", "ipv6sStatus", scope);
