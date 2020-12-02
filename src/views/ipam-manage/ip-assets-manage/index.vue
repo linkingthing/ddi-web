@@ -61,10 +61,10 @@
           />
         </div>
 
-        <!-- <div class="condition-item">
+        <div class="condition-item">
           <label class="condition-item-label">终端状态</label>
           <Select
-            v-model="condition.deviceState"
+            v-model="condition.device_state"
             style="width:100px"
             class="top-input"
           >
@@ -74,7 +74,7 @@
               :key="item.value"
             >{{ item.label }}</Option>
           </Select>
-        </div> -->
+        </div>
 
         <div class="condition-item">
           <label class="condition-item-label">IP地址</label>
@@ -271,6 +271,7 @@ export default {
       loading: true,
       deviceTypes: [{ text: "全部", label: "全部" }, ...deviceTypes],
       condition: {
+        device_state: "",
         mac: "",
         deviceType: "全部"
       },
