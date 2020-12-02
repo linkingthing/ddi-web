@@ -205,19 +205,23 @@
       </div>
 
       <div class="base-upload">
-
-        <!-- <div class="base-upload-filename">{{file.name}}</div> -->
-        <!-- <div> -->
-        <Input
+        <!-- <Input
           style="width: 100%"
           placeholder="请输入文件路径"
           v-model="uploadParams.path"
-        />
+        /> -->
 
-        <!-- <Upload
+        <div class="base-upload-filename">{{file.name}}</div>
+        <div>
+
+          <Upload
             ref="upload"
-            :action="`${links.self}?action=importcsv`"
+            action="/uploadfile"
+            :headers="headers"
             :before-upload="beforeUpload"
+            :on-success="uploadSuccess"
+            :show-upload-list="false"
+            name="path"
           >
             <Button size="small">
               <img
@@ -225,8 +229,8 @@
                 alt=""
                 style="vertical-align: bottom;margin-right: 6px;"
               >浏览文件</Button>
-          </Upload> -->
-        <!-- </div> -->
+          </Upload>
+        </div>
       </div>
     </common-modal>
 
@@ -252,6 +256,9 @@ export default {
   },
 
   data() {
+    this.headers = {
+      Authorization: this.$store.getters.token
+    };
     this.deviceStateList = [
       {
         label: "在线",
@@ -290,7 +297,7 @@ export default {
         self: ""
       },
       uploadParams: {
-        path: ""
+        name: ""
       }
     };
   },
@@ -437,11 +444,19 @@ export default {
       // this.always = !this.always;
     },
     handleClickImportTable() {
+      this.file = "";
+      this.uploadParams = { name: "" };
       this.importVisible = true;
     },
     beforeUpload(file) {
+      // 上传前校验
+      // this.file = file;
+      // console.log(file)
+      // return false; // 阻止上传
+    },
+    uploadSuccess(response, file) {
+      this.uploadParams = { name: response.filename };
       this.file = file;
-      return false;
     },
     handleUpload() {
       // console.log(this.$refs.upload);
@@ -452,6 +467,7 @@ export default {
         this.$Message.success("指定成功"); // 指定csv所在路径
         this.importVisible = false;
         this.always = false;
+        this.handleQuery();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
@@ -510,7 +526,6 @@ export default {
     .ivu-badge {
       margin: 0 15px 0 10px;
     }
-
 
     display: flex;
     font-size: 12px;

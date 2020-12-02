@@ -59,6 +59,10 @@ module.exports = {
           "^/apis": "" //例如 /api/getuser或被重写为 /abc/xxx/getuser
         }
       },
+      "/uploadfile": {
+        target: url,
+        secure: false
+      },
       "/apis/ws.linkingthing.com": {
         target: `wss://${url}`,
         ws: true,
