@@ -60,57 +60,60 @@ function renderIp(h, row, field, status, scope) {
         );
       },
       content: function () {
-        const ipList = row[field]
-          .map(item => {
-            let config = {};
-            if (row[status]) {
-              const target = row[status].find(i => i.ip === item);
-              config = { ...target };
-              if (target) {
-                const statusConfig = statusLegends.find(
-                  item => item.type === target.ipstate
-                );
-                if (statusConfig) {
-                  config = {
-                    hasState: item === target.ip,
-                    ...config,
-                    ...statusConfig
-                  };
+        let ipList = [];
+        if (Array.isArray(row[field])) {
+          ipList = row[field]
+            .map(item => {
+              let config = {};
+              if (row[status]) {
+                const target = row[status].find(i => i.ip === item);
+                config = { ...target };
+                if (target) {
+                  const statusConfig = statusLegends.find(
+                    item => item.type === target.ipstate
+                  );
+                  if (statusConfig) {
+                    config = {
+                      hasState: item === target.ip,
+                      ...config,
+                      ...statusConfig
+                    };
+                  }
                 }
               }
-            }
-            return [
-              h("span", [
-                h("span", {
-                  style: {
-                    display: "inline-block",
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    marginRight: "5px",
-                    marginBottom: "2px",
-                    backgroundColor: config.color
-                  }
-                }),
-                h(
-                  "span",
-                  {
+              return [
+                h("span", [
+                  h("span", {
                     style: {
-                      color: config.hasState ? "#4586FE" : "",
-                      cursor: config.hasState ? "pointer" : "",
-                      "white-space": "normal"
-                    },
-                    on: {
-                      click: () => config.hasState && scope.handleGoto(config)
+                      display: "inline-block",
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      marginRight: "5px",
+                      marginBottom: "2px",
+                      backgroundColor: config.color
                     }
-                  },
-                  item
-                )
-              ]),
-              h("br")
-            ];
-          })
-          .flat();
+                  }),
+                  h(
+                    "span",
+                    {
+                      style: {
+                        color: config.hasState ? "#4586FE" : "",
+                        cursor: config.hasState ? "pointer" : "",
+                        "white-space": "normal"
+                      },
+                      on: {
+                        click: () => config.hasState && scope.handleGoto(config)
+                      }
+                    },
+                    item
+                  )
+                ]),
+                h("br")
+              ];
+            })
+            .flat();
+        }
         return h("div", ipList);
       }
     }

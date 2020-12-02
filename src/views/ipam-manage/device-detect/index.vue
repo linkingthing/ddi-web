@@ -80,6 +80,49 @@
         >
           新建
         </Button>
+        <Tooltip
+          placement="bottom-end"
+          :always="always"
+          class="import-export-tooltip"
+        >
+          <Button
+            type="primary"
+            class="top-button"
+          >
+            导入/导出
+          </Button>
+          <div slot="content">
+            <div class="import-export-menu">
+              <div
+                class="import-export-menu-item"
+                @click="handleClickImportTable"
+              >
+                <img
+                  src="./import.png"
+                  alt=""
+                > 导入终端表格
+              </div>
+              <div
+                class="import-export-menu-item"
+                @click="handleClickExportTable"
+              >
+                <img
+                  src="./export.png"
+                  alt=""
+                > 导出终端表格
+              </div>
+              <div
+                class="import-export-menu-item"
+                @click="handleClickDownloadTemplate"
+              >
+                <img
+                  src="./template.png"
+                  alt=""
+                > 终端表格模板
+              </div>
+            </div>
+          </div>
+        </Tooltip>
       </template>
     </table-page>
 
@@ -99,6 +142,45 @@
       :visible.sync="showAdvance"
       @comfirmed="handleAdvancedQuery"
     />
+
+    <common-modal
+      :visible.sync="importVisible"
+      :width="415"
+      title="导入终端表格"
+      @confirm="handleUpload"
+    >
+      <div class="tips-info">
+        <img
+          class="tips-info-icon"
+          src="./icon-info.png"
+          alt=""
+        >
+        <span>请使用为您准备的“终端表格模板”填写终端信息</span>
+      </div>
+
+      <div class="base-upload">
+        <div class="base-upload-filename">{{file.name}}</div>
+        <div>
+
+          <Upload
+            ref="upload"
+            action="/uploadfile"
+            :headers="headers"
+            :before-upload="beforeUpload"
+            :on-success="uploadSuccess"
+            :show-upload-list="false"
+            name="path"
+          >
+            <Button size="small">
+              <img
+                src="./icon-file.png"
+                alt=""
+                style="vertical-align: bottom;margin-right: 6px;"
+              >浏览文件</Button>
+          </Upload>
+        </div>
+      </div>
+    </common-modal>
   </div>
 </template>
 
@@ -108,6 +190,8 @@ import Detect from "./detect";
 import AdvancedSearch from "./advanced-query";
 
 import { columns, deviceTypes } from "./define";
+import { downloadFile } from "@/util/common";
+
 
 export default {
   components: {
@@ -117,6 +201,9 @@ export default {
   },
 
   data() {
+    this.headers = {
+      Authorization: this.$store.getters.token
+    };
     return {
       url: this.$getApiByRoute().url,
       loading: true,
@@ -134,7 +221,17 @@ export default {
       showDetect: false,
       currentData: null,
       current: 0,
-      total: 0
+      total: 0,
+      always: false,
+      importVisible: false,
+      links: {
+        self: ""
+      },
+      uploadParams: {
+        name: ""
+      },
+      file: ""
+
     };
   },
 
@@ -187,6 +284,8 @@ export default {
         });
 
         this.total = res.pagination.total;
+        this.links = res.links;
+
         if (!Object.is(this.current, res.pagination.pageNum)) {
           this.current = res.pagination.pageNum;
         }
@@ -201,6 +300,47 @@ export default {
     handleAdd() {
       this.showEdit = true;
       this.currentData = null;
+    },
+    handleClickImportTable() {
+      this.file = "";
+      this.uploadParams = { name: "" };
+      this.importVisible = true;
+    },
+    beforeUpload(file) {
+      // 上传前校验
+      // this.file = file;
+      // console.log(file)
+      // return false; // 阻止上传
+    },
+    uploadSuccess(response, file) {
+      this.uploadParams = { name: response.filename };
+      this.file = file;
+    },
+    handleUpload() {
+      // console.log(this.$refs.upload);
+      // this.$refs.upload.post(this.file);
+      const url = `${this.links.self}?action=importcsv`;
+      const params = this.uploadParams;
+      this.$post({ url, params }).then(() => {
+        this.$Message.success("指定成功"); // 指定csv所在路径
+        this.importVisible = false;
+        this.always = false;
+        this.handleQuery();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+    },
+    handleClickExportTable() {
+      const url = `${this.links.self}?action=exportcsv`;
+      this.$post({ url }).then(({ path }) => {
+        downloadFile(path);
+      });
+    },
+    handleClickDownloadTemplate() {
+      const url = `${this.links.self}?action=exportcsvtemplate`;
+      this.$post({ url }).then(({ path }) => {
+        downloadFile(path);
+      });
     },
 
     handleEdit(res) {
@@ -244,4 +384,25 @@ export default {
 
 <style lang="less">
 @import "./index.less";
+.import-export-tooltip {
+  .ivu-tooltip-inner {
+    padding: 0;
+  }
+  .import-export-menu {
+    white-space: nowrap;
+    .import-export-menu-item {
+      width: 160px;
+      padding: 16px 20px;
+      line-height: 20px;
+      display: flex;
+      cursor: pointer;
+      img {
+        margin-right: 16px;
+      }
+      + .import-export-menu-item {
+        border-top: #aaa solid 1px;
+      }
+    }
+  }
+}
 </style>
