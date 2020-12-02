@@ -309,7 +309,7 @@ export default {
       switchPort,
       computerRack,
       computerRoom,
-      subnetId,
+      subnet,
       vlanId
     } = this.$route.query;
 
@@ -320,7 +320,7 @@ export default {
       computerRack,
       computerRoom,
       ip,
-      subnetId,
+      subnet,
       vlanId
     };
 

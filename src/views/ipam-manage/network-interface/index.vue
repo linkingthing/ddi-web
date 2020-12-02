@@ -485,7 +485,7 @@ export default {
         const scannedsubnetsId = this.$route.params.scannedsubnetsId;
 
         const ip = row.ip;
-        const subnetId = scannedsubnetsId;
+        const subnet = scannedsubnetsId;
         const vlanId = row.vlanId;
 
         // 能查询到，进行注册操作
@@ -496,7 +496,7 @@ export default {
             computerRack,
             computerRoom,
             ip,
-            subnetId,
+            subnet,
             switchName,
             switchPort,
             vlanId
@@ -521,7 +521,7 @@ export default {
             switchPort,
             computerRack,
             computerRoom,
-            subnetId: scannedsubnetsId
+            subnet: scannedsubnetsId
           }
         });
       } catch (err) {
