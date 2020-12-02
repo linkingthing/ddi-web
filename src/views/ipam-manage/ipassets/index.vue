@@ -6,7 +6,10 @@
         style="width: 300px"
         placeholder="请输入IP检索"
       />
-      <Button type="primary" @click="handleSearch">搜索</Button>
+      <Button
+        type="primary"
+        @click="handleSearch"
+      >搜索</Button>
     </div>
     <table-page
       :data="dataList"
@@ -99,7 +102,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
-      if(this.search !== "") {
+      if (this.search !== "") {
         params.ip = this.search.trim();
       }
       const { url } = this.$getApiByRoute();

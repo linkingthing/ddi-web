@@ -401,8 +401,8 @@ export default {
           const type = deviceTypes.find(({ label }) => label === item.deviceType);
 
           item.deviceTypeText = type ? type.text : "";
-          item.showipv4s = item.ipv4s.length ? `[\n${item.ipv4s.join("," + "\n")}\n]` : "";
-          item.showipv6s = item.ipv6s.length ? `[\n${item.ipv6s.join("," + "\n")}\n]` : "";
+          // item.showipv4s = item.ipv4s.length ? `[\n${item.ipv4s.join("," + "\n")}\n]` : "";
+          // item.showipv6s = item.ipv6s.length ? `[\n${item.ipv6s.join("," + "\n")}\n]` : "";
 
           return item;
         });
