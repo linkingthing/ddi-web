@@ -1,5 +1,13 @@
 <template>
   <div class="ipassets">
+    <div class="search-box">
+      <Input
+        v-model="search"
+        style="width: 300px"
+        placeholder="请输入IP检索"
+      />
+      <Button type="primary" @click="handleSearch">搜索</Button>
+    </div>
     <table-page
       :data="dataList"
       :columns="columns"
@@ -52,6 +60,7 @@ export default {
       }],
       total: 0,
       current: 0,
+      search: "",
       visible: false,
       currentRow: {},
       detailLColumns: [
@@ -90,12 +99,18 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      if(this.search !== "") {
+        params.ip = this.search.trim();
+      }
       const { url } = this.$getApiByRoute();
       this.$get({ url, params }).then(({ data, pagination }) => {
         this.dataList = data;
         this.current = pagination.pageNum;
         this.total = pagination.total;
       });
+    },
+    handleSearch() {
+      this.getDataList();
     },
     handleOpenDetail(row) {
       this.visible = true;
@@ -106,4 +121,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.ipassets {
+  position: relative;
+}
+.search-box {
+  position: absolute;
+  z-index: 101;
+  right: 10px;
+  top: 14px;
+}
 </style>
