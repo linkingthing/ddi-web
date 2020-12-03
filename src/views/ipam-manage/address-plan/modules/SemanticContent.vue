@@ -26,9 +26,12 @@
             <label class="label">地址位宽：</label>
             <div class="action-box">
               <Spinner
+                style="width: 200px"
                 :disabled="settableNextBitWidth"
                 v-model="tempBitWidth"
                 :placeholder="`最大地址位宽${64-prefixLen}`"
+                :min="0"
+                :max="64-prefixLen"
               />
 
               <Tooltip
@@ -104,6 +107,8 @@
               :disabled="settableSemanticNodeCount"
               v-model="nodeCount"
               placeholder="请输入语义节点数"
+              :min="semanticNodeList.length"
+              :max="allAddressBlockCount"
             />
           </div>
         </div>
@@ -116,6 +121,8 @@
               :disabled="settableStepSize"
               v-model="stepsize"
               placeholder="请输入地址步长"
+              :min="0"
+              :max="allAddressBlockCount"
             />
           </div>
         </div>
@@ -477,6 +484,14 @@ export default {
 
       return hasGrandson(this.nodes, currentNodeId);
     },
+    allAddressBlockCount() {
+      let result = 0;
+      if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
+        const { subnodebitwidth } = this.currentNode;
+        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 2)
+      }
+      return result;
+    },
     surplus() {
       // 剩余地址数
       let result = 0;
@@ -554,7 +569,8 @@ export default {
                 },
                 props: {
                   isPercent: false,
-                  value: row.name
+                  value: row.name,
+                  width: "124px"
                 }
               }
 
@@ -681,7 +697,7 @@ export default {
           this.tempBitWidth = val.subnodebitwidth || "";
         } else {
           this.bitWidth = 0;
-          this.tempBitWidth = 0;
+          this.tempBitWidth = "";
         }
 
         // stepsize
@@ -702,8 +718,8 @@ export default {
       }
     },
 
-    tempBitWidth(val) {
-      console.log(val)
+    tempBitWidth(val, old) {
+
     }
   },
   created() { },
@@ -793,7 +809,7 @@ export default {
         return;
       }
 
-      if (2 ** bitWidth - 2 < willCreateSemanticNodeListLength) {
+      if (this.allAddressBlockCount < willCreateSemanticNodeListLength) {
         this.$Message.info(`语义节点数不超过剩余地址块`);
         return;
       }
@@ -833,13 +849,13 @@ export default {
       }
 
       if (willUseAddressBlockCount === 0) {
+        this.handleSave();
         return;
       }
 
       const uesedValueLen = executeUesedValueList(this.semanticNodeList).length;
-      const allValueLen = 2 ** bitWidth - 2;
 
-      if (willUseAddressBlockCount + uesedValueLen <= allValueLen) {
+      if (willUseAddressBlockCount + uesedValueLen <= this.allAddressBlockCount) {
         const parentsemanticid = this.currentNode.id;
         const semanticNodeList = this.semanticNodeList.filter(item => item.temporaryCreated !== "createing");
         const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
@@ -848,7 +864,7 @@ export default {
             modified: modifiedEnum.STRUCTURED,
             name: `新增节点${nodeIndex++}`,
             parentsemanticid,
-            stepsize,
+            stepsize: "",
             sequence: 1,
             autocreate: planTypeEnum.UNDEFINED,
             ipv4s: [],
@@ -905,15 +921,18 @@ export default {
     },
     checkfunc(ipv4str) {
       const ipv4s = ipv4str.split(",");
+      if (ipv4str.trim() === "") {
+        return { isValid: true };
+      }
 
       if (ipv4s.length !== [...new Set(ipv4s)].length) {
         return { isValid: false, message: "ipv4s重复，请更正" };
       }
       const isValid = !!ipv4s.every(item => {
         const [ip, len] = item.split("/");
-        return isIpv4Segment(item);
+        return !!len && isIpv4Segment(item);
       });
-      return { isValid, message: "ipv4s输入有误，请更正" };
+      return { isValid, message: "ipv4网段输入有误，请更正" };
 
     },
     handleSaveIpv4s(row, ipv4str, ref) {
@@ -1168,6 +1187,8 @@ export default {
         });
         this.semanticNodeList = nodeList;
         this.$Message.success("操作成功");
+        this.setHasChange(true);
+
       } catch (e) {
         this.$Message.error("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
       }
@@ -1204,8 +1225,6 @@ export default {
           const subnodebitwidth = this.bitWidth;
           const allPlanNodes = this.allPlanNodes;
 
-          console.time("handlePlanTime")
-
           const nodeList = planSemanticNodesValue({
             prefixList,
             semanticNodeList,
@@ -1225,7 +1244,7 @@ export default {
           this.semanticNodeList = nodeList;
           this.$Message.success("操作成功");
           this.customPlanVisible = false;
-          console.timeEnd("handlePlanTime")
+          this.setHasChange(true);
 
         }
       });
@@ -1233,17 +1252,19 @@ export default {
     },
 
     handleClearPlan() {
-      // 手动规划 todo:
 
       if (this.isCustomPlan) {
         if (this.selectSemanticList.length > 0) {
 
           const semanticNodeList = this.semanticNodeList;
 
+          console.log(this.selectSemanticList, semanticNodeList)
+
           this.semanticNodeList = semanticNodeList.map(item => {
             const isSelect = this.selectSemanticList.find(select => {
-              return select.id === item;
+              return select.id === item.id;
             });
+
             if (isSelect) {
               return {
                 ...item,
@@ -1258,6 +1279,8 @@ export default {
             }
 
           });
+          this.setHasChange(true);
+          this.selectSemanticList = [];
 
         } else {
           this.$Message.info("请选择需要清空地址的子语义");
@@ -1280,6 +1303,8 @@ export default {
         };
       });
       this.$Message.success("操作成功");
+      this.setHasChange(true);
+
     },
     handleSave(message = "保存成功") {
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize

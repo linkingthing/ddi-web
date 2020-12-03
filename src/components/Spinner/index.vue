@@ -23,9 +23,27 @@
 export default {
   components: {},
   props: {
-    value: "",
-    placeholder: "",
-    disabled: false
+    value: {
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: String | Number,
+      default: ""
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    min: {
+      type: Number,
+      default: null
+    },
+    max: {
+      type: Number,
+      default: null
+    }
   },
   data() {
     return {
@@ -35,24 +53,43 @@ export default {
   computed: {},
   watch: {
     value(val) {
-      this.innerValue = val;
+      this.innerValue = val || "";
     },
-    innerValue(val, old) {
-      this.$emit("input", Number(val))
+    innerValue(val) {
+      this.$emit("input", Number(val));
     }
   },
   created() { },
   mounted() { },
   methods: {
     handleSubtractionCount() {
-      if (!this.disabled) {
-        this.innerValue -= 1;
+
+      if (typeof this.min === "number") {
+        if (this.innerValue > this.min) {
+          if (!this.disabled) {
+            this.innerValue -= 1;
+          }
+        }
+      } else {
+        if (!this.disabled) {
+          this.innerValue -= 1;
+        }
       }
+
     },
     handlePlusCount() {
-      if (!this.disabled) {
-        this.innerValue += 1;
+      if (typeof this.max === "number") {
+        if (this.innerValue < this.max) {
+          if (!this.disabled) {
+            this.innerValue += 1;
+          }
+        }
+      } else {
+        if (!this.disabled) {
+          this.innerValue += 1;
+        }
       }
+
     }
   }
 };
@@ -61,5 +98,9 @@ export default {
 <style lang="less" scoped>
 .btn-count {
   cursor: pointer;
+  display: block;
+  width: 16px;
+  text-align: center;
+  user-select: none;
 }
 </style>
