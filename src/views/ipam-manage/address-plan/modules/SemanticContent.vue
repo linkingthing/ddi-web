@@ -454,12 +454,31 @@ export default {
       return !this.bitWidthValid;
     },
 
+    /**
+       * - 一键规划 （有一个一键规划，则算一键规划）
+       * - 手动规划 （有一个手动规划，则算手动规划）
+       * - 未规划 (没有语义节点或者，全部是未规划)
+       * - 手动规划 + 未规划（情况）
+       *   - 手动规划勾选部分
+       *   - 清空部分规划情况
+       */
     currentTargetNodeAutoCreate() {
       // 目标节点，也就是当前语义节点节点的子节点，也就是将去设置的节点以及兄弟节点 autoCreate
+
       const currentNodeChildren = this.semanticNodeList;
       if (currentNodeChildren.length) {
         const { autocreate } = currentNodeChildren[0];
-        return autocreate;
+        if (autocreate === planTypeEnum.ONEKEYPLAN) {
+          return planTypeEnum.ONEKEYPLAN;
+        }
+
+        const isHandlePlan = currentNodeChildren.some(item => item.autocreate === planTypeEnum.HANDLEPLAN);
+
+        if (isHandlePlan) {
+          return planTypeEnum.HANDLEPLAN;
+        }
+
+        return planTypeEnum.UNDEFINED;
       }
       return void 0;
     },
@@ -1242,6 +1261,7 @@ export default {
             };
           });
           this.semanticNodeList = nodeList;
+          this.selectSemanticList = [];
           this.$Message.success("操作成功");
           this.customPlanVisible = false;
           this.setHasChange(true);
@@ -1304,6 +1324,7 @@ export default {
       });
       this.$Message.success("操作成功");
       this.setHasChange(true);
+      this.selectSemanticList = [];
 
     },
     handleSave(message = "保存成功") {
