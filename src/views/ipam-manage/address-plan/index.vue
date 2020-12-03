@@ -364,6 +364,7 @@ export default {
         content: "确定删除？",
         onOk: () => {
           this.$delete({ url: links.remove }).then(() => {
+            this.$Message.success("删除成功");
             this.getPlanList();
           }).catch(err => {
             this.$Message.error(err.response.data.message);
