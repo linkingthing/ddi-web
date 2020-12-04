@@ -1,44 +1,80 @@
 <template>
   <div class="plan">
-    <div
-      class="top-right"
-      v-if="showPlanList"
-    >
-      <Button
-        type="primary"
-        style="margin-right: 20px"
-        @click="handleAddPlan"
-        v-if="$hasPermissionCreate('plan')"
-      >新建规划</Button>
-      <!-- <Button
-        type="primary"
-        @click="handleImport"
-      >导入规划</Button> -->
-    </div>
+
     <div class="plan-content">
 
       <NoDataList
-        style="margin-top: 100px"
-        v-if="!showPlanList"
+        :top="200"
+        v-if="!planList.length && $store.getters.hasPermissionToCreate"
         button-text="新建规划"
         @add="handleAddPlan"
       />
-      <!-- :buttons="[{
-          text:'导入规划',
-          event: handleImport
-        }]" -->
-      <template v-else>
-        <PlanTab
-          @onDeletePlan="handleDelete"
-          :plan-list="planList"
-        />
-        <PlanProcess @onchange="handleProcessChange" />
+      <table-page
+        v-else
+        :data="planList"
+        :columns="columns"
+        :total="total"
+        :current.sync="current"
+      >
+        <template slot="top-right">
 
-        <component :is="stepComponent" />
+          <Button
+            type="primary"
+            @click="handleAddPlan"
+          >新建规划</Button>
 
-      </template>
+          <Button
+            type="primary"
+            @click="handleUploadPlan"
+          >上传规划</Button>
+
+        </template>
+      </table-page>
 
     </div>
+
+    <PlanModal
+      :visible.sync="visible"
+      :links="paramsLinks"
+      @success="getPlanList"
+    />
+
+    <Modal
+      v-model="mapVisible"
+      fullscreen
+      :title="mapTitle"
+      class="mapModal"
+      footer-hide
+    >
+      <PlanTree :data="treeData" />
+    </Modal>
+    <common-modal
+      :visible.sync="importVisible"
+      :width="415"
+      title="导入地址规划"
+      @confirm="handleUpload"
+    >
+      <!-- <div class="tips-info">
+        <img
+          class="tips-info-icon"
+          src="./icon-info.png"
+          alt=""
+        >
+        <span>请使用为您准备的“地址规划”填写信息</span>
+      </div> -->
+
+      <div class="base-upload">
+
+        <!-- <div class="base-upload-filename">{{file.name}}</div> -->
+        <!-- <div> -->
+        <Input
+          style="width: 100%"
+          placeholder="请输入文件路径"
+          v-model="uploadParams.path"
+        />
+
+      </div>
+    </common-modal>
 
   </div>
 </template>
@@ -46,228 +82,323 @@
 <script>
 
 import { mapGetters, mapMutations } from "vuex";
-import { v4 as uuidv4 } from "uuid";
 import { debounce } from "lodash";
 
 import NoDataList from "@/components/NoDataList";
-import PlanTab from "./modules/PlanTab";
-import PlanProcess from "./modules/PlanProcess";
-import PlanStepCreatePrefix from "./modules/PlanStepCreatePrefix";
-import PlanStepSemantic from "./modules/PlanStepSemantic";
-import PlanStepTree from "./modules/PlanStepTree";
-import PlanStepAddressAssign from "./modules/PlanStepAddressAssign";
 import { list2Tree } from "./modules/helper";
 
-import eventBus from "@/util/bus";
+
+import PlanTree from "./modules/PlanTree";
+
+
+import SafeLock from "./modules/SafeLock";
+import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
+
+import PlanModal from "./modules/PlanModal";
+import { downloadFile } from "@/util/common";
+
 
 export default {
   components: {
     NoDataList,
-    PlanTab,
-    PlanProcess,
-
-    PlanStepCreatePrefix,
-    PlanStepSemantic,
-    PlanStepTree,
-    PlanStepAddressAssign
+    PlanModal,
+    PlanTree
   },
 
   data() {
+    this.LOCK_STATUS_ENUM = LOCK_STATUS_ENUM;
     return {
-      url: this.$getApiByRoute().url,
+      visible: false,
+      planList: [],
+      columns: [
+        {
+          title: "规划名称",
+          key: "name",
+          align: "left",
+          // render: (h, { row }) => {
+          //   return h("line-edit",
+          //     {
+          //       on: {
+          //         "on-edit-finish": val => {
+          //           this.handleSavePlanName(row.links.update, val, row);
+          //         }
+          //       },
+          //       props: {
+          //         isPercent: false,
+          //         value: row.name
+          //       }
+          //     }
+          //   );
+          // }
+        },
+        {
+          title: "IPv6前缀",
+          key: "prefixs",
+          align: "left",
+          render: (h, { row }) => {
+            // if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
+            return h("a", {
+              attrs: {
+                href: "javascript:;"
+              },
+              on: {
+                click: () => {
+                  const { links } = row;
+                  let url = this.$getRouteByLink(links.self, "address");
+                  this.$router.push({
+                    path: url
+                  });
+                }
+              }
+            }, row.prefixs);
+            // }
+            // else {
+            //   return h("div", row.prefixs);
+            // }
+
+          }
+        },
+        // {
+        //   title: "安全锁",
+        //   key: "name",
+        //   align: "left",
+        //   render: (h, { row }) => {
+        //     return h(SafeLock, {
+        //       props: {
+        //         type: row.lockType,
+        //         message: row.lockedby
+        //       },
+        //       nativeOn: {
+        //         click: () => this.handleToggleLock(row, row.isLock)
+        //       }
+        //     });
+        //   }
+        // },
+        {
+          title: "操作",
+          key: "name",
+          width: 410,
+          render: (h, { row }) => {
+            return h("div", {
+              class: "table-btn-box"
+            }, [
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+                    this.handleDownloadPlan(row);
+                  }
+                },
+                props: {
+                  title: "下载规划"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+                    this.$router.push({ name: "ipam-address-list", query: { self: row.links.self, action: "listviewv6" } });
+                  }
+                },
+                props: {
+                  title: "子网列表"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+
+                    this.handleOpenMap(row);
+                  }
+                },
+
+                props: {
+                  title: "地图"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+
+                    this.handleReportPlan(row);
+                  }
+                },
+
+                props: {
+                  title: "上报规划"
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => this.handleDelete(row)
+                },
+                props: {
+                  title: "删除"
+                }
+              })
+            ]);
+          }
+        }],
       loading: true,
       netnodesurl: "",
-      oneLayoutLinks: null
+      oneLayoutLinks: null,
 
+      links: {},
+      paramsLinks: {},
+
+      mapVisible: false,
+      mapTitle: "",
+      treeData: [],
+
+      importVisible: false,
+      uploadParams: {
+        path: ""
+      },
+
+      total: 0,
+      current: 0
     };
   },
 
   computed: {
-    ...mapGetters({
-      planList: "planList",
-      currentPlan: "currentPlan",
-      currentLayout: "currentLayout",
-      stepComponent: "currentPlanProcessId",
-      planProcessList: "planProcessList",
-      netType: "netType"
-    }),
     showPlanList() {
-      console.log(!!this.planList.length)
       return !!this.planList.length;
     }
   },
 
   watch: {
-    "currentPlan.links": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        if (val && val.layouts) {
-          this.getLayout(val);
-        }
-      }
-    },
-    "currentLayout": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        if (val && val.links && val.links.netnodes) {
-          this.getNetnodes(val.links);
-        }
-      }
-    },
-    currentPlanProcessId(val) {
-      console.log(22, val)
-    },
-    netType(netType) {
-      const params = {
-        nettype: netType
-      };
-      this.$get({ url: this.netnodesurl, params }).then(({ data }) => {
-        if (data[0]) {
-          const netNodes = data[0].netitems;
-          this.setNetnodes(netNodes);
-        } else {
-          this.setNetnodes([]);
-        }
-      }).catch((err) => {
-        this.$Message.error(err.response.data.message);
-      });
+    current() {
+      this.getPlanList();
     }
 
   },
 
-  mounted() {
-    this.handleQuery();
-    eventBus.$on("getLayout", this.getLayout);
-  },
-
-
   methods: {
-    ...mapMutations([
-      "setPlanProcessListInit",
-      "setPlanProcessListAccessible",
-      "setCurrentPlanId",
-      "setPlanList",
-      "addPlan",
-      "clearTempPlan",
-      "setLayout",
-      "setCurrentNodeId",
-      "setNetnodes"
-    ]),
 
-    handleQuery() {
-
-      this.$get({ url: this.url }).then(({ data }) => {
+    getPlanList() {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
+        this.current = pagination.pageNum;
+        this.total = pagination.total;
+        const { user } = this.$store.getters.userInfo;
         const tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
           item.title = item.description;
+          item.isLock = !!item.lockedby;
+
+          if (typeof item.lockedby === "string") {
+            if (item.lockedby === user) {
+              item.lockType = LOCK_STATUS_ENUM.OPEN;
+            } else {
+              item.lockType = LOCK_STATUS_ENUM.DISABLED;
+            }
+          } else {
+            item.lockType = LOCK_STATUS_ENUM.CLOSE;
+          }
+
+          item.prefixs = item.prefixs && item.prefixs.join(",");
           return item;
         });
+        this.planList = tableData;
+        this.links = links;
 
-        this.setPlanList(tableData);
-
-        if (tableData.length) {
-          this.setCurrentPlanId(tableData[0].id);
-          this.setPlanProcessListAccessible("PlanStepSemantic");
-
-        }
       }).catch((err) => {
         this.$handleError(err);
       });
-
+    },
+    handleSavePlanName(url, value, row) {
+      // 接口暂不支持单字段修改，但是列表中又没携带完整字段
+      const params = { ...row, value };
+      params.prefixs = params.prefixs.split(",");
+      this.$put({ url, params }).then(() => {
+        this.$Message.success("更新成功");
+        this.getPlanList();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+    },
+    handleToggleLock({ links }, lock) {
+      const action = lock ? "releaselock" : "requirelock";
+      const url = `${links.self}?action=${action}`;
+      this.$post({ url }).then(() => {
+        this.$Message.success("操作成功");
+        this.getPlanList();
+      }).catch(err => {
+        this.$Message.error(err.data.message);
+      });
     },
 
-    getLayout({ layouts } = this.currentPlan.links) {
-      this.$get({ url: layouts }).then(({ data, links }) => {
+    handleOpenMap({ name, links }) {
+      this.mapVisible = true;
+      this.mapTitle = name;
+      this.getMapData(links.self);
+    },
 
-        if (data.length) {
-          const oneLinks = data[0].links;
-          this.oneLayoutLinks = oneLinks;
-          this.getLayoutOne(oneLinks);
-        } else {
-          this.oneLayoutLinks = null;
-          this.setLayout({
-            id: uuidv4(),
-            planProcessAccessList: ["PlanStepSemantic"],
-            name: "layout",
-            nodes: null,
-            links: {
-              create: links.self
-            },
-            prefix: this.currentPlan.prefix
+    handleReportPlan({ links }) {
+
+      this.getMapData(links.self).then(({ responsordispatch, semanticnodes }) => {
+        const { remoteaddr, semanticnode } = responsordispatch;
+        const params = {
+          remoteaddr,
+          semanticnodes: [{ id: semanticnode }]
+        };
+        return this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=reportforward`, params });
+      })
+        .then(() => {
+          this.getPlanList();
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
+        });
+    },
+
+    getMapData(url) {
+      return this.$get({ url }).then((res) => {
+        const { responsordispatch, semanticnodes } = res;
+        const treeData = list2Tree(semanticnodes, "0");
+        this.treeData = treeData;
+        return res;
+      });
+    },
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定删除？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(() => {
+            this.$Message.success("删除成功");
+            this.getPlanList();
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
           });
         }
-
-      });
-
-    },
-
-    getLayoutOne({ self }) {
-      this.$get({ url: self }).then(data => {
-        this.setLayout(data);
-        this.setPlanProcessListAccessible("PlanStepSemantic");
-        this.setPlanProcessListAccessible("PlanStepTree");
-
-        if (Array.isArray(data.nodes) && data.nodes.length) {
-          const id = data.nodes[0].id;
-          this.setCurrentNodeId(id);
-        }
-
-        if (data.firstfinished) {
-          this.setPlanProcessListAccessible("PlanStepAddressAssign");
-        }
-      });
-    },
-
-    getNetnodes: debounce(function ({ netnodes }) {
-      const params = {
-        nettype: this.netType
-      };
-      this.netnodesurl = netnodes;
-      this.$get({ url: netnodes, params }).then(({ data }) => {
-        let netNodes = [];
-        if (data.length) {
-          netNodes = data[0].netitems;
-        }
-        this.setNetnodes(netNodes);
-      }).catch((err) => {
-        this.setNetnodes([]);
-      });
-    }, 300),
-
-    handleDelete(id) {
-      this.$delete({ url: this.url + "/" + id }).then(() => {
-        this.$$success("删除成功！");
-        this.handleQuery();
-      }).catch(() => {
-        this.clearTempPlan();
       });
 
     },
 
     handleAddPlan() {
-      if (!this.$hasPermissionCreate("plan")) {
-        this.$Message.info("当前用户无创建权限");
-        return;
-      }
-      const id = uuidv4();
-      this.addPlan({
-        id,
-        prefix: "",
-        description: "New Plan",
-        maxLen: 64,
-        planType: "temp"
-      });
-      this.setCurrentPlanId(id);
+      this.paramsLinks = this.links;
+      this.visible = true;
     },
-    handleProcessChange(process, isHandle) {
-      if (isHandle) {
-        const shouldRequestLayout = ["PlanStepSemantic", "PlanStepTree"].includes(process);
-        if (shouldRequestLayout && this.oneLayoutLinks) {
-          this.getLayoutOne(this.oneLayoutLinks);
-        }
-      }
+    handleUploadPlan() {
+      this.importVisible = true;
+    },
+    handleUpload() {
+      const url = `${this.links.self}?action=import`;
+      const params = this.uploadParams;
+      this.$post({ url, params }).then(() => {
+        this.$Message.success("指定成功"); // 指定csv所在路径
+        this.importVisible = false;
+        this.always = false;
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+    },
+    handleDownloadPlan({ links }) {
+      const params = { path: "123.csv" };
+      this.$post({ url: `${links.self}?action=export`, params }).then(({ path }) => {
+        downloadFile(path);
+      });
     }
   }
 };
@@ -275,15 +406,16 @@ export default {
 
 <style lang="less">
 .plan {
-  padding-top: 60px;
-  .top-right {
-    position: absolute;
-    right: 10px;
-    top: 16px;
-  }
 }
 .plan-content {
-  padding: 16px 24px;
-  border-top: 1px solid #efefef;
+}
+
+.mapModal {
+  .ivu-modal-header {
+    background: #f1f1f1;
+  }
+  .ivu-modal-body {
+    background-image: url('./box-bg.png');
+  }
 }
 </style>

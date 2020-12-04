@@ -1,12 +1,20 @@
 <template>
-  <i
-    class="icon-m-edit btn-edit"
-    @click="$emit('click')"
-  />
+  <btn-line
+    title="编辑"
+    :disabled="disabled"
+    @click.native="!disabled && $emit('click')"
+  ></btn-line>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  }
+};
 </script>
 
 <style lang="less">

@@ -25,7 +25,6 @@
 
 <script>
 import InputPassword from "@/components/BaseInputPassword";
-
 export default {
   props: {
     visible: {
@@ -65,9 +64,7 @@ export default {
             } else {
               callback("两次输入的密码不一致");
             }
-            setTimeout(() => {
-              self.$refs["formInline"].validateField("repassword");
-            });
+
           }
         }
       ]
@@ -125,6 +122,9 @@ export default {
       handler(val) {
         this.formModel.username = val;
       }
+    },
+    "formModel.repassword"() {
+      this.$refs["formInline"].validateField("repassword");
     }
   },
 

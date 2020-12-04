@@ -24,17 +24,20 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   res => {
-    let { headers, data } = res;
-    if (headers["set-token"]) {
+    let { headers, data, config } = res;
+    if (headers["set-token"] && !config.url.includes("getdispatchinfo")) {
       const setToken = headers["set-token"];
       store.commit("SET_TOKEN", setToken);
     }
     if (headers["authorization"]) {
-      store.commit("SET_TOKEN", headers["authorization"]);
+      if (config.url === "/login") {
+        store.commit("SET_TOKEN", headers["authorization"]);
+      }
     }
     return data;
   },
   err => {
+    console.error(err)
     let { headers, status } = err.response;
     if (headers["set-token"]) {
       const setToken = headers["set-token"];
@@ -69,4 +72,4 @@ function del({ url, otherOptions = {} }) {
   return instance.delete(url, otherOptions);
 }
 
-export { post, get, del, put, instance as axios };
+export { post, get, del, put, instance as axios, axios as originAxios };

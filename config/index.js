@@ -5,11 +5,6 @@ var fs = require("fs");
 
 let assetsPublicPath = "./";
 
-// const url = "https://10.0.0.185:58081"
-// const url = "https://10.0.0.203:58081"
-// const url = "https://10.0.0.19:58081"
-// const url = "https://10.0.0.172:58081";
-// const url = "https://jlccwss.vicp.cc:58081"
 
 const url = "https://10.0.0.110:58081";
 
@@ -48,6 +43,7 @@ module.exports = {
         target: url,
         secure: false // 如果是https接口，需要配置这个参数
       },
+
       "/apis": {
         target: `${url}/apis`,
 
@@ -87,14 +83,5 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
   }
-  // PACK_SYSTEM: process.argv.slice(2).length ? `"${process.argv.slice(2).join()}"` : "'dns,monitor,address,system'"
 };
 
-// console.log(
-// 	'正在生成',
-// 	process.argv.slice(2).length ? process.argv.slice(2) : [ 'dns', 'monitor', 'address', 'system' ],
-// 	'相关模块'
-// );
-// console.log('正在生成...');
-// console.log('正在生成......');
-// console.log('正在生成.........');

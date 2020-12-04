@@ -92,7 +92,7 @@ export default {
 
 <style lang="less" scoped>
 .segment-axis {
-  margin-top: 38px;
+  margin-top: 16px;
 
   &-detail {
     display: flex;
@@ -131,7 +131,7 @@ export default {
 .segment-section {
   position: relative;
   display: flex;
-  margin-top: 5px;
+  margin-top: 2px;
   border-radius: 3px;
   overflow: hidden;
 
@@ -142,7 +142,7 @@ export default {
   }
   &-item-active {
     position: absolute;
-    background: #4bc02f;
+    background: #4586FE;
   }
 }
 </style>

@@ -56,7 +56,6 @@
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 import { buildLayoutParams } from "./helper";
 
-import eventBus from "@/util/bus";
 
 export default {
   components: {},
@@ -111,7 +110,6 @@ export default {
         this.$post({ url: this.currentLayout.links.create, params }).then(data => {
           this.setLayout(data);
           this.nextPlanStep();
-          eventBus.$emit("getLayout");
         }).catch(err => {
           this.$Message.error(err.response.data.message);
         });
@@ -123,7 +121,6 @@ export default {
         this.$post({ url: this.currentLayout.links.create, params }).then(data => {
           this.setLayout(data);
           this.nextPlanStep();
-          eventBus.$emit("getLayout");
         }).catch(err => {
           this.$Message.error(err.response.data.message);
         });

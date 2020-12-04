@@ -2,11 +2,11 @@
   <div class="line-eidt">
     <Input
       v-if="contenteditable"
-      v-model.number="innerValue"
-      style="width: 60px"
+      v-model="innerValue"
+      :style="{width}"
     />
     <span v-else>
-      {{innerValue}}
+      {{showText}}
       {{isPercent ? '%' : ''}}
     </span>
 
@@ -27,8 +27,21 @@ export default {
       default: false
     },
     value: {
-      type: Number,
-      default: 0
+      // eslint-disable-next-line vue/require-prop-type-constructor
+      type: Number | String,
+      default: ""
+    },
+    defaultText: {
+      type: String,
+      default: ""
+    },
+    width: {
+      type: String,
+      default: "60px"
+    },
+    checkfunc: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -38,7 +51,11 @@ export default {
       contenteditable: false
     };
   },
-  computed: {},
+  computed: {
+    showText() {
+      return this.innerValue || this.defaultText;
+    }
+  },
   watch: {
     value(val) {
       this.innerValue = val;
@@ -46,14 +63,24 @@ export default {
   },
   created() {
     this.innerValue = this.value;
-
   },
   mounted() { },
 
   methods: {
     handleToggleEdit() {
+      if (this.checkfunc && this.contenteditable) {
+        const { isValid, message } = this.checkfunc(this.innerValue);
+        if (!isValid) {
+          this.$Message.error(message);
+          return;
+        }
+      }
       if (this.contenteditable) {
-        this.$emit("on-edit-finish", this.innerValue);
+        let innerValue = this.innerValue;
+        if (typeof this.value === "number") {
+          innerValue = Number(innerValue);
+        }
+        this.$emit("on-edit-finish", innerValue);
       }
       this.contenteditable = !this.contenteditable;
     },
@@ -71,13 +98,16 @@ export default {
 
 .line-eidt {
   cursor: pointer;
-
+  display: flex;
   .ivu-input {
     height: initial;
     padding: 0 5px;
   }
   span {
     padding: 0 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   img {
     width: 32px;

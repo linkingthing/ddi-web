@@ -1,38 +1,30 @@
 <template>
   <div class="SemanticTree">
-    <SemanticTreeHeader
-      :prefix="prefix"
-      @search="handleSearch"
-    />
+    <SemanticTreeHeader prefix="语义树" />
+    <div class="tree">
+      <Tree
+        :data="treeData"
+        children-key="nodes"
+        @on-select-change="handleSelectNode"
+        :render="renderContent"
+      />
+    </div>
 
-    <Tree
-      :data="treeData"
-      children-key="nodes"
-      @on-select-change="handleSelectNode"
-      :render="renderContent"
-    />
-
-    <Button
-      type="primary"
-      long
-      @click="handleFinish"
-    > 语义规划完成</Button>
-
-    <ChoosePlanWayModal :visible.sync="visible" />
   </div>
 </template>
 
 <script>
 import { mapMutations, mapGetters, mapState } from "vuex";
-import _, { cloneDeep } from "lodash";
+import { cloneDeep } from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
 import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
+import eventBus from "@/util/bus";
+
 
 export default {
   components: {
-    SemanticTreeHeader,
-    ChoosePlanWayModal
+    SemanticTreeHeader
   },
   props: {
     prefix: {
@@ -50,40 +42,68 @@ export default {
   computed: {
     ...mapGetters([
       "currentNodeId",
-      "currentLayout"
+      "tree",
+      "hasChange"
     ])
 
   },
   watch: {
-    currentLayout: {
+    tree: {
       deep: true,
       immediate: true,
       handler(val) {
-        this.treeData = _.cloneDeep(val.nodes);
-        if (!this.currentNodeId) {
-          this.setCurrentNodeId(val.nodes[0].id);
+        // console.log(val, "tree")
+        if (Array.isArray(val) && val.length) {
+          this.treeData = cloneDeep(val);
+          if (!this.currentNodeId) {
+            this.setCurrentNodeId(val[0].id);
+          }
         }
       }
     }
+
   },
   created() { },
   mounted() {
-
-
   },
   methods: {
     ...mapMutations([
+      "initTree",
       "setCurrentNodeId",
-      "nextPlanStep",
-      "setLayout"
+      "setHasChange"
     ]),
-    handleSearch(val) {
-      this.keywords = val;
-    },
+
     handleSelectNode(nodes, node) {
-      this.setCurrentNodeId(node.id);
+      // console.log("handleSelectNode", node, this.currentNodeId)
+      if (node.id !== this.currentNodeId) {
+        if (this.hasChange) {
+
+          this.$Modal.confirm({
+            title: "您想保存最新规划结果吗？",
+            content: "<p>选择确定即使保存，选择取消即是取消改动</p>",
+            loading: true,
+            onOk: () => {
+              eventBus.$emit("savePlan");
+              this.$nextTick()
+                .then(() => {
+                  this.setHasChange(false);
+                  this.$Modal.remove();
+                  this.setCurrentNodeId(node.id);
+                });
+            },
+            onCancel: () => {
+              this.setHasChange(false);
+              this.setCurrentNodeId(node.id);
+
+            }
+          });
+        } else {
+          this.setCurrentNodeId(node.id);
+        }
+      }
     },
     renderContent(h, { root, node, data }) {
+      // data.selected = true;
       let name = transfer(data.name);
       const isSearch = this.keywords.length > 0 && data.name.includes(this.keywords);
 
@@ -99,6 +119,9 @@ export default {
       }
 
       return h("span", {
+        class: {
+          "ivu-tree-title-selected": data.id === this.currentNodeId
+        },
         props: {
         },
         style: {
@@ -122,49 +145,24 @@ export default {
           })
         ])
       ]);
-    },
-    handleFinish() {
-
-      const isValid = hasAllBitWidth(this.currentLayout.nodes);
-      if (!isValid) {
-        this.$Message.error("请检查设置节点位宽");
-        return;
-      }
-
-      const { autofill } = this.currentLayout; // true, false, undefined
-      if (typeof (autofill) === "undefined") {
-        this.visible = true;
-      } else if (autofill) {
-        const params = buildLayoutParams(this.currentLayout);
-        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-          this.$get({ url: this.currentLayout.links.self }).then(res => {
-            this.nextPlanStep();
-            this.setLayout(res);
-          });
-        });
-      } else {
-        const layout = cloneDeep(this.currentLayout);
-        executeTreeNodePrefix(layout.nodes, autofill, "nodes");
-        const params = buildLayoutParams(layout, false);
-        this.$put({ url: this.currentLayout.links.update, params }).then(() => {
-          this.$get({ url: this.currentLayout.links.self }).then(res => {
-            this.nextPlanStep();
-            this.setLayout(res);
-          });
-        });
-
-
-      }
     }
+
   }
 };
 </script>
 
 <style lang="less" scoped>
 .SemanticTree {
-  width: 430px;
-  background: #f6f6f6;
+  width: 330px;
+  background: #f4f4f4;
   border-radius: 4px;
-  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  .tree {
+    padding: 20px;
+    overflow: auto;
+  }
 }
 </style>

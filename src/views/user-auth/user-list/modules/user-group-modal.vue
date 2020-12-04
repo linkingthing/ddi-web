@@ -100,7 +100,7 @@ export default {
       formModel: {
         username: "",
         userGroupIDs: [],
-        roleIDs: [],
+        roleIds: [],
         password: DEFAULT_PASSWORD,
         repassword: DEFAULT_PASSWORD,
         comment: ""
@@ -184,7 +184,7 @@ export default {
         },
         {
           label: "选择角色",
-          model: "roleIDs",
+          model: "roleIds",
           type: "component",
           component: MultipleSelect,
           props: {
@@ -214,8 +214,8 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ password, comment, username, userGroupIDs, roleIDs }) => {
-          this.formModel = { password, comment, username, userGroupIDs, roleIDs, repassword: password || "" };
+        this.$get({ url: this.links.self }).then(({ password, comment, username, userGroupIds, roleIds }) => {
+          this.formModel = { password, comment, username, userGroupIds, roleIds, repassword: password || "" };
 
         }).catch();
       }
@@ -262,8 +262,8 @@ export default {
 
       this.formModel = {
         username: "",
-        userGroupIDs: [],
-        roleIDs: [],
+        userGroupIds: [],
+        roleIds: [],
         password: DEFAULT_PASSWORD,
         repassword: DEFAULT_PASSWORD,
         comment: ""

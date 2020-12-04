@@ -40,6 +40,7 @@
             v-bind:collapsed="node.data._collapsed"
             v-bind:node="node"
             v-bind:nodeDataList="nodeDataList"
+            v-bind:index="index"
           >
             <!-- 默认展示value字段 -->
             <span>{{ node.data.value }}</span>
@@ -100,7 +101,7 @@ export default {
         return {
           nodeWidth: DEFAULT_NODE_WIDTH,
           nodeHeight: DEFAULT_NODE_HEIGHT,
-          levelHeight: DEFAULT_LEVEL_HEIGHT
+          levelHeight: DEFAULT_LEVEL_HEIGHT  // 节点和节点的横向距离
         };
       }
     },
@@ -205,6 +206,7 @@ export default {
       } else {
         targetTransform = originTransformStr + ` scale(${scaleNum})`;
       }
+      this.scaleNum = scaleNum;
       this.$refs.svg.style.transform = targetTransform;
       this.$refs.domContainer.style.transform = targetTransform;
     },
@@ -223,8 +225,8 @@ export default {
       return rootNode;
     },
     initTransform() {
-      const containerWidth = this.$refs.container.offsetWidth;
-      const containerHeight = this.$refs.container.offsetHeight;
+      const containerWidth = document.body.offsetWidth;
+      const containerHeight = document.body.offsetHeight;
       if (this.isVertial()) {
         this.initTransformX = Math.floor(containerWidth / 2);
         this.initTransformY = Math.floor(this.config.nodeHeight);
@@ -232,6 +234,9 @@ export default {
         this.initTransformX = Math.floor(this.config.nodeWidth);
         this.initTransformY = Math.floor(containerHeight / 2);
       }
+
+      this.offsetX = this.initTransformX;
+      this.offsetY = this.initTransformY;
     },
     /**
      * 根据link数据,生成svg path data
@@ -286,16 +291,18 @@ export default {
         const thirdPoint = this.isVertial()
           ? { x: targetPoint.x, y: sourcePoint.y + yOffset / 2 }
           : { x: sourcePoint.x + xOffset / 2, y: targetPoint.y };
-        linkPath.moveTo(sourcePoint.x, sourcePoint.y);
+        linkPath.moveTo(sourcePoint.x + 72, sourcePoint.y);  // change 连接点
         linkPath.lineTo(secondPoint.x, secondPoint.y);
         linkPath.lineTo(thirdPoint.x, thirdPoint.y);
-        linkPath.lineTo(targetPoint.x, targetPoint.y);
+        linkPath.lineTo(targetPoint.x - 72, targetPoint.y);
         return linkPath.toString();
       }
     },
     // 使用扇形数据开始绘图
     draw() {
       const [nodeDataList, linkDataList] = this.buildTree(this.dataset);
+
+      this.releaseRenderData(nodeDataList, linkDataList);
       this.linkDataList = linkDataList;
       this.svg = this.d3.select(this.$refs.svg);
 
@@ -370,10 +377,24 @@ export default {
             originOffsetY = offsetY;
           }
         }
+
         let transformStr = `translate(
             ${event.clientX - startX + originOffsetX}px,
             ${event.clientY - startY + originOffsetY}px
           )`;
+
+        this.offsetX = event.clientX - startX + originOffsetX;  // 抛出渲染数据
+        this.offsetY = event.clientY - startY + originOffsetY;
+
+        this.$emit("on-render", {
+          width: this.width,
+          height: this.height,
+          linksData: this.linksData,
+          offsetX: this.offsetX,
+          offsetY: this.offsetY,
+          scaleNum: this.scaleNum || 1
+        });
+
         if (originTransform) {
           transformStr = originTransform.replace(
             MATCH_TRANSLATE_REGEX,
@@ -392,6 +413,7 @@ export default {
       };
     },
     onClickNode(index) {
+      console.log(index)
       // const curNode = this.nodeDataList[index];
       // if (curNode.data.children) {
       //   curNode.data._children = curNode.data.children;
@@ -417,6 +439,47 @@ export default {
         return dimension;
       }
       return parseInt(dimension.replace("px", ""));
+    },
+    executeBoundary(nodeDataList) {
+      let minX = 0, minY = 0, maxX = 0, maxY = 0;
+      nodeDataList.forEach(item => {
+        if (item.x < minX) {
+          minX = item.x;
+        }
+        if (item.x > maxX) {
+          maxX = item.x;
+        }
+        if (item.y < minY) {
+          minY = item.y;
+        }
+        if (item.y > maxY) {
+          maxY = item.y;
+        }
+      });
+      return { minX, minY, maxX, maxY };
+    },
+    execurteWidthAndHeight({ minX, minY, maxX, maxY }) {
+      return [maxX - minX, maxY - minY];
+    },
+    releaseRenderData(nodeDataList, linkDataList) {
+      const [height, width] = this.execurteWidthAndHeight(this.executeBoundary(nodeDataList));
+      this.linksData = linkDataList.map(item => {
+        return this.generateLinkPath(item);
+      });
+
+      this.width = width;
+      this.height = height;
+
+      this.$emit("on-render", {
+        width: this.width,
+        height: this.height,
+        linksData: this.linksData,
+        offsetX: this.offsetX,
+        offsetY: this.offsetY,
+        scaleNum: this.scaleNum || 1
+      });
+
+
     }
   }
 };
@@ -431,7 +494,7 @@ export default {
   .link {
     stroke-width: 2px !important;
     fill: transparent !important;
-    stroke: #cecece !important;
+    stroke: #dfdfdf !important;
   }
 }
 </style>

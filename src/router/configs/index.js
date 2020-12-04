@@ -7,6 +7,7 @@ import node from "./node";
 import forword from "./forward";
 import systemAlarms from "./system-alarms";
 import systemLog from "./system-log";
+import systemLinkage from "./system-linkage";
 import authControl from "./auth-control";
 
 import DefaultLayout from "@/views/default-layout";
@@ -18,7 +19,8 @@ const superUserRouter = [
   systemLog,
   systemAlarms,
   dnsGlobalConfig,
-  authControl
+  authControl,
+  systemLinkage
 ];
 
 function addMeta(arr) {

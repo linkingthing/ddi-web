@@ -127,8 +127,6 @@ export default {
             return item;
           }
         });
-      console.log(routes)
-      console.log(result, "menu")
       return result;
 
     }

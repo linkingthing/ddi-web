@@ -3,8 +3,8 @@
     <table-page
       :columns="columns"
       :data="filterListWithList"
-      :total="filterList.length"
-      :current.sync="current"
+      :pagination-enable="false"
+      :size="filterListWithList.length"
     >
       <div
         class="AddressAssignList-header"
@@ -15,12 +15,12 @@
           @change="handleIpTypeChange"
         />
 
-        <Input
+        <!-- <Input
           placeholder="输入关键字查询"
           style="width: 260px;margin-right: 16px"
           v-model="query"
         />
-        <btn-search @click="handleSearch" />
+        <btn-search @click="handleSearch" /> -->
 
       </div>
     </table-page>
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
 import AddressTypeTab from "./AddressTypeTab";
 export default {
   components: {
@@ -125,48 +124,41 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "netNodes",
-      "netType"
-    ]),
-    filterListWithList() {
-      const pageSize = 10;
-      const current = this.current;
-      const startIndex = (current - 1) * pageSize;
-      const endIndex = current * pageSize;
 
-      return this.filterList.slice(startIndex, endIndex);
+    filterListWithList() {
+      return this.dataList;
     }
   },
   watch: {
-    netNodes: {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        this.current = 1;
-        this.dataList = val || [];
-        this.filterList = val || [];
-      }
-    },
-    netType: {
-      immediate: true,
-      handler(value) {
-        this.current = 1;
-        this.active = value;
-      }
-    }
   },
   created() {
+    const { self, action } = this.$route.query;
 
+    this.getDataList(self, action);
+    this.active = action;
   },
   mounted() { },
   methods: {
-    ...mapMutations([
-      "setNetType"
-    ]),
-    handleIpTypeChange(type) {
-      this.active = type;
-      this.setNetType(type);
+
+    getDataList(self, action) {
+      const params = {
+        page_size: 10,
+        page_num: this.current
+
+      };
+      const url = `${self}?action=${action}`;
+      this.$post({ url, params }).then(data => {
+        this.dataList = data;
+      });
+    },
+
+    handleIpTypeChange(action) {
+      const { name } = this.$route;
+      const { self } = this.$route.query;
+      this.$router.push({ name, query: { self, action } });
+      this.getDataList(self, action);
+      this.active = action;
+
     },
     handleSearch() {
       const query = this.query.trim();
@@ -277,7 +269,8 @@ export default {
 }
 .AddressAssignList-header {
   display: flex;
-  padding: 20px 0;
+  padding: 20px 26px;
+  margin-top: 60px;
 }
 
 .btn-line {

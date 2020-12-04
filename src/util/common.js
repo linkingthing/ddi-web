@@ -297,11 +297,15 @@ export const isIp = address => {
 };
 
 export const isIpv4Segment = segment => {
-  const ipv4 = new Address4(segment);
-  const { subnetMask } = ipv4;
-  const ipBinary = ipv4.binaryZeroPad();
-  const endString = ipBinary.slice(subnetMask, ipBinary.length);
-  return !endString.includes("1");
+  try {
+    const ipv4 = new Address4(segment);
+    const { subnetMask } = ipv4;
+    const ipBinary = ipv4.binaryZeroPad();
+    const endString = ipBinary.slice(subnetMask, ipBinary.length);
+    return !endString.includes("1");
+  } catch (e) {
+    return false;
+  }
 };
 
 export const isIpv6Segment = segment => {

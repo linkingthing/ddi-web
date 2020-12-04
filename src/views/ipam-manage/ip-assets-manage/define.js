@@ -291,7 +291,7 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    width: 110,
+    width: 160,
     fixed: "right",
     align: "center",
     render: (h, { row }) => {

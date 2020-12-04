@@ -1,9 +1,8 @@
 <template>
-  <span
-    class="btn-del icon-m-del"
-    @click="$emit('click')"
-  />
-
+  <btn-line
+    title="删除"
+    @click.native="$emit('click')"
+  ></btn-line>
 </template>
 
 <script>
