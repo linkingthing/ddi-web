@@ -31,7 +31,7 @@
             src="./system.png"
             alt=""
           >
-          <p>本系统</p>
+          <p>本地系统</p>
         </div>
         <div
           class="proccess-bar-item proccess-bar-line"
@@ -56,7 +56,7 @@
             src="./system.png"
             alt=""
           >
-          <p>上级系统</p>
+          <p>下级系统</p>
         </div>
       </div>
 
@@ -130,6 +130,7 @@
                     type="primary"
                     size="small"
                     @click="handleOpenSingleAdd"
+                    :disabled="!params.enabledispatch"
                   >单个添加</Button>
                   <Upload
                     action="//jsonplaceholder.typicode.com/posts/"
@@ -141,6 +142,7 @@
                       ghost
                       size="small"
                       @click="handleBatchImport"
+                      :disabled="!params.enabledispatch"
                     >批量导入</Button>
                   </Upload>
                 </div>
@@ -167,6 +169,7 @@
 
           <FormItem :label-width="0">
             <Button
+              style="margin-top:40px"
               :disabled="submitAbled"
               type="primary"
               long

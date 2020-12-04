@@ -43,6 +43,8 @@
       v-model="mapVisible"
       fullscreen
       :title="mapTitle"
+      class="mapModal"
+      footer-hide
     >
       <PlanTree :data="treeData" />
     </Modal>
@@ -406,5 +408,14 @@ export default {
 .plan {
 }
 .plan-content {
+}
+
+.mapModal {
+  .ivu-modal-header {
+    background: #f1f1f1;
+  }
+  .ivu-modal-body {
+    background-image: url('./box-bg.png');
+  }
 }
 </style>
