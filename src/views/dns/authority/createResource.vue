@@ -4,6 +4,7 @@
     :width="413"
     title="新建资源记录"
     @confirm="handleSubmit"
+    :loading="loading"
   >
     <i-form
       :model="upgradeConfig"
@@ -66,6 +67,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       recordSuffix: "",
       // 是否显示mode
       configModal: false,
@@ -127,6 +129,7 @@ export default {
       });
     },
     update() {
+      this.loading = true;
       const rdataList = this.upgradeConfig.rdata.split(",");
       rdataList.forEach(rdata => {
         const params = { ...this.upgradeConfig, rdata: rdata.trim() };
@@ -138,8 +141,10 @@ export default {
             this.configModal = false;
             this.$refs.formValidate.resetFields();
             this.$emit("onCreateSuccess");
+            this.loading = false;
           })
           .catch((err) => {
+            this.loading = false;
             this.$Message.error(err.message);
           });
       })

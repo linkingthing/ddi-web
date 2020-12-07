@@ -33,15 +33,20 @@
       <slot name="footer-left" />
 
       <Button
-        v-for="button in buttons"
-        :key="button.label"
-        :class="button.class"
-        :type="typeList.includes(button.type) ? button.type : 'primary'"
-        @click="handleButtonClick(button)"
-        :loading="loading(button)"
-        :disabled="button.disabled"
+        class="button-cancel"
+        type="default"
+        @click="dialogVisible = false"
       >
-        {{ button.label }}
+        取消
+      </Button>
+      <Button
+        class="button-confirm"
+        type="primary"
+        :loading="loading"
+        :disabled="disabled"
+        @click="handleClick"
+      >
+        {{okText}}
       </Button>
 
       <slot name="footer-right" />
@@ -54,32 +59,14 @@
 </style>
 
 <script>
-import { toKebabCase } from "@/util/common";
 
 export default {
   name: "DialogCustom",
 
   props: {
-    // loading: {
-    //   type: Boolean,
-    //   default: false
-    // },
-    buttons: {
-      type: Array,
-      default: () => [
-        {
-          label: "取消",
-          type: "default",
-          class: "button-cancel",
-          event: "cancel"
-        },
-        {
-          label: "确认",
-          type: "primary",
-          class: "button-confirm",
-          event: "confirm"
-        }
-      ]
+    loading: {
+      type: Boolean,
+      default: false
     },
 
     visible: {
@@ -116,19 +103,17 @@ export default {
       type: [String, Number],
       default: 520
     },
-
-    /**
-     * 是否在触发confirm事件后，异步关闭
-     * 若设置该值为true, 则在触发confirm事件后，需要返回promise
-     */
-    closeAsyncWhenConfirm: {
+    okText: {
+      type: String,
+      default: "确认"
+    },
+    disabled: {
       type: Boolean,
       default: false
     }
   },
 
   data() {
-    this.typeList = ["default", "primary", "dashed", "text", "info", "success", "warning", "error"];
     return {
       isEdit: false,
       isLoading: false
@@ -147,36 +132,8 @@ export default {
   },
 
   methods: {
-    loading(button) {
-      const shouldLoading = button.event === "confirm";
-      return shouldLoading && this.isLoading;
-    },
-    async handleButtonClick(button) {
-      let event = button.event;
-
-      let listener = this.$listeners[event] || this.$listeners[toKebabCase(event)];
-
-      if (event === "cancel") {
-        this.dialogVisible = false;
-      }
-
-      if (this.closeAsyncWhenConfirm) {
-        if (event === "confirm" && listener) {
-          await listener();
-        }
-      }
-      else {
-        listener && listener();
-
-        // 防重复点击
-        if (event === "confirm" && listener) {
-          this.isLoading = true;
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 800);
-        }
-
-      }
+    handleClick() {
+      this.$emit("confirm");
     }
   }
 };

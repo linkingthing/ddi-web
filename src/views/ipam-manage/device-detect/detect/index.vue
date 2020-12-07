@@ -4,8 +4,8 @@
     :width="415"
     title="网络探测"
     @confirm="handleConfirm"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
 
     <div class="device-net-work">
       <div class="info-row-inline">

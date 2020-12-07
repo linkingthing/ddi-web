@@ -269,7 +269,6 @@ export default {
     handleSaveSystemInfo(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-
           if (Array.isArray(this.params.dispatchclients)) {
             this.params.dispatchclients.push({ ...this.systemInfo });
           } else {

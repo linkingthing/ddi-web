@@ -1,6 +1,5 @@
 <template>
   <div class="device-detect">
-    <IviewLoading v-if="loading" />
 
     <table-page
       :data="tableData"
@@ -148,6 +147,7 @@
       :width="415"
       title="导入设备表格"
       @confirm="handleUpload"
+      :loading="loading"
     >
       <div class="tips-info">
         <img
@@ -206,7 +206,7 @@ export default {
     };
     return {
       url: this.$getApiByRoute().url,
-      loading: true,
+      loading: false,
       deviceTypes,
       condition: {
         // name: "",
@@ -254,7 +254,6 @@ export default {
     },
 
     async queryData(params = { ...this.condition }) {
-      this.loading = true;
 
       if (params.administrationAddress) {
         params.administration_address = params.administrationAddress;
@@ -321,12 +320,15 @@ export default {
       // this.$refs.upload.post(this.file);
       const url = `${this.links.self}?action=importcsv`;
       const params = this.uploadParams;
+      this.loading = true;
       this.$post({ url, params }).then(() => {
         this.$Message.success("指定成功"); // 指定csv所在路径
         this.importVisible = false;
         this.always = false;
         this.handleQuery();
+        this.loading = false;
       }).catch(err => {
+        this.loading = false;
         this.$Message.error(err.response.data.message);
       });
     },

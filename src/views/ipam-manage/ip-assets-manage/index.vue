@@ -41,7 +41,6 @@
         </div>
       </div>
     </div>
-    <IviewLoading v-if="loading" />
 
     <table-page
       :data="tableData"
@@ -194,6 +193,7 @@
       :width="415"
       title="导入终端表格"
       @confirm="handleUpload"
+      :loading="loading"
     >
       <div class="tips-info">
         <img
@@ -275,7 +275,7 @@ export default {
     ];
     return {
       url: this.$getApiByRoute().url,
-      loading: true,
+      loading: false,
       deviceTypes: [{ text: "全部", label: "全部" }, ...deviceTypes],
       condition: {
         device_state: "",
@@ -463,12 +463,15 @@ export default {
       // this.$refs.upload.post(this.file);
       const url = `${this.links.self}?action=importcsv`;
       const params = this.uploadParams;
+      this.loading = true;
       this.$post({ url, params }).then(() => {
         this.$Message.success("指定成功"); // 指定csv所在路径
         this.importVisible = false;
         this.always = false;
         this.handleQuery();
+        this.loading = false;
       }).catch(err => {
+        this.loading = false;
         this.$Message.error(err.response.data.message);
       });
     },

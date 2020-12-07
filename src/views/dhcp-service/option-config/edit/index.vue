@@ -4,6 +4,7 @@
     :title="getTitle"
     @cancel="handleCancel"
     @confirm="handleConfirm('formInline')"
+    :loading="loading"
   >
     <Form
       ref="formInline"
@@ -39,6 +40,7 @@ export default {
   },
 
   data() {
+
     this.formItemList = [
       {
         label: "名称",
@@ -85,6 +87,7 @@ export default {
       ]
     };
     return {
+      loading: false,
       formModel: {
         name: "",
         regexp: ""
@@ -136,21 +139,25 @@ export default {
       this.$refs[name].validate(valid => {
 
         if (valid) {
+
+          this.loading = true;
           if (this.links.update) {
             this.$put({ url: this.links.update, params: this.formModel }).then(res => {
               this.$$success("更新成功");
               this.dialogVisible = false;
               this.$emit("confirmed");
+              this.loading = false;
             }).catch((err) => {
-
+              this.loading = false;
             });
           } else {
             this.$createEntity(this.formModel).then(res => {
               this.$$success("创建成功");
               this.$emit("confirmed");
               this.dialogVisible = false;
+              this.loading = false;
             }).catch(err => {
-              console.dir(err)
+              this.loading = false;
               this.$$error(err.response.data.message);
             });
           }

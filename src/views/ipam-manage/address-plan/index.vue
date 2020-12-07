@@ -53,6 +53,7 @@
       :width="415"
       title="导入地址规划"
       @confirm="handleUpload"
+      :loading="loading"
     >
 
       <div class="base-upload">
@@ -397,12 +398,15 @@ export default {
     handleUpload() {
       const url = `${this.links.self}?action=import`;
       const params = this.uploadParams;
+      this.loading = true;
       this.$post({ url, params }).then(() => {
         this.$Message.success("导入成功");
         this.importVisible = false;
         this.always = false;
         this.getPlanList();
+        this.loading = false;
       }).catch(err => {
+        this.loading = false;
         this.$Message.error(err.response.data.message);
       });
     },

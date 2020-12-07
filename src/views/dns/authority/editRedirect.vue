@@ -4,6 +4,7 @@
     :visible.sync="linkModal"
     title="修改重定向列表"
     @confirm="handleSubmit"
+    :loading="loading"
   >
     <i-form
       :model="params"
@@ -62,6 +63,7 @@ export default {
   components: { TypeValue },
   data() {
     return {
+      loading: false,
       // 是否显示mode
       linkModal: false,
       // 表单数据
@@ -114,6 +116,7 @@ export default {
       this.linkModal = true;
     },
     update() {
+      this.loading = true;
       this.params.ttl = +this.params.ttl;
       services
         .updateRedirect(this.viewId, this.redirectId, this.params)
@@ -121,8 +124,10 @@ export default {
           this.$Message.success("修改成功!");
           this.linkModal = false;
           this.$emit("onSuccess");
+          this.loading = false;
         })
         .catch(err => {
+          this.loading = false;
           console.log(err);
         });
     },

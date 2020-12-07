@@ -4,6 +4,7 @@
     :visible.sync="analysisModal"
     title="修改资源记录"
     @confirm="handleSubmit"
+    :loading="loading"
   >
     <i-form
       :model="params"
@@ -61,6 +62,7 @@ export default {
   components: { TypeValue },
   data() {
     return {
+      loading: false,
       recordSuffix: "",
       // 是否显示mode
       analysisModal: false,
@@ -116,6 +118,7 @@ export default {
       });
     },
     Modify() {
+      this.loading = true;
       this.params.ttl = +this.params.ttl;
       services
         .updateResource(this.viewId, this.zoneId, this.id, this.params)
@@ -123,8 +126,10 @@ export default {
           this.analysisModal = false;
           this.$Message.success("修改成功!");
           this.$emit("onEditSuccess");
+          this.loading = false;
         })
         .catch(err => {
+          this.loading = false;
           this.$Message.error("修改失败！");
         });
     },

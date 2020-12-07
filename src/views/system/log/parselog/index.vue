@@ -1,6 +1,5 @@
 <template>
   <div class="parse-log">
-    <IviewLoading v-if="loading" />
 
     <table-page
       :data="tableData"
@@ -47,6 +46,10 @@
           :width="413"
           :buttons="buttonConfig"
           @confirm="handleConfirm('formInline')"
+          ok-text="导出解析日志"
+          :disabled="status.includes('ing')"
+          :loading="loading"
+
         >
           <Form
             ref="formInline"
@@ -122,7 +125,7 @@ export default {
     return {
       dialogVisible: false,
       url: this.$getApiByRoute().url,
-      loading: true,
+      loading: false,
       tableData: [],
       links: {},
       columns: [
@@ -322,11 +325,14 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = this.formModel;
+          this.loading = true;
           let { url } = this.$getApiByRoute("/system/log/uploadlogs");
           url += "/1?action=uploadLog";
           this.$post({ params, url }).then(({ status }) => {
             this.status = status;
+            this.loading = false;
           }).catch(err => {
+            this.loading = false;
             this.$Message.error(err.response.data.message);
           });
         }

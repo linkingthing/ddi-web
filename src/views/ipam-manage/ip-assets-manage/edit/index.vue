@@ -5,8 +5,8 @@
     :title="getTitle"
     custom-class="ip-assets-edit"
     @confirm="handleConfirm"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
 
     <Form
       ref="form"

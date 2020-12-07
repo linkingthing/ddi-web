@@ -5,8 +5,8 @@
     :title="getTitle"
     custom-class="device-detect-edit"
     @confirm="handleConfirm"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
     <Form
       ref="form"
       label-position="left"
@@ -116,7 +116,6 @@ export default {
 
     async handleConfirm() {
       try {
-        console.log(this.formModel)
         await this.validate();
 
         this.loading = true;

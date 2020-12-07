@@ -4,8 +4,8 @@
     :title="getTitle"
     @confirm="handleConfirm"
     width="413"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
     <Form
       :label-width="100"
       label-position="left"
@@ -99,6 +99,12 @@ export default {
           model: "domainServers",
           type: "input",
           placeholder: "请填写DNS，逗号隔开"
+        },
+        {
+          label: "option 18",
+          model: "domainServers",
+          type: "input",
+          placeholder: "请填写option 18"
         }
       ];
 

@@ -4,6 +4,7 @@
     :width="415"
     title="高级搜索"
     @confirm="handleConfirm"
+    :loading="loading"
   >
     <Form
       ref="form"
@@ -39,6 +40,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       dialogVisible: false,    
       formModel: this.initForm(),      
       formItemList

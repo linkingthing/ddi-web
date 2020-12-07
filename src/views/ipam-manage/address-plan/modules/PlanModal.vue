@@ -5,8 +5,8 @@
     :title="getTitle"
     :width="413"
     @confirm="handleConfirm('formInline')"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
     <Form
       ref="formInline"
       label-position="left"
@@ -138,6 +138,8 @@ export default {
     handleConfirm(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
+
+          this.loading = true;
           const params = { ...this.formModel };
           params.prefixs = params.prefixs.split(",").map(item => item.trim());
           params.maxmaskwidths = Array.from(params.prefixs).fill(64);
@@ -176,6 +178,7 @@ export default {
             this.$$success("新建成功");
             this.$emit("success");
             this.dialogVisible = false;
+            this.loading = false;
 
             const { links } = res;
             let url = this.$getRouteByLink(links.self, "address");
@@ -184,6 +187,7 @@ export default {
             });
 
           }).catch(err => {
+            this.loading = false;
             this.$$error(err.response.data.message);
           });
 

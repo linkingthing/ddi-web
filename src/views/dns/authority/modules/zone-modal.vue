@@ -5,8 +5,8 @@
     :title="getTitle"
     :width="413"
     @confirm="handleConfirm('formInline')"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
     <Form
       ref="formInline"
       label-position="left"
@@ -183,6 +183,8 @@ export default {
 
       this.$refs[name].validate(valid => {
         if (valid) {
+
+          this.loading = true;
           const params = { ...this.formModel };
           params.ttl = +params.ttl;
           params.isarpa = params.isarpa === "true";
@@ -192,7 +194,9 @@ export default {
               this.$$success("编辑成功");
               this.$emit("success");
               this.dialogVisible = false;
+              this.loading = false;
             }).catch(err => {
+              this.loading = false;
               this.$$error(err.response.data.message);
             });
           } else {
@@ -200,8 +204,9 @@ export default {
               this.$$success("新建成功");
               this.$emit("success");
               this.dialogVisible = false;
+              this.loading = false;
             }).catch(err => {
-              console.log(err)
+              this.loading = false;
               this.$$error(err.response.data.message);
             });
           }

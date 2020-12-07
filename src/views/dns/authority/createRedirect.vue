@@ -4,6 +4,7 @@
     :visible.sync="ipModal"
     title="新建重定向列表"
     @confirm="handleSubmit"
+    :loading="loading"
   >
     <i-form
       :model="upgradeConfig"
@@ -66,6 +67,7 @@ export default {
   components: { TypeValue },
   data() {
     return {
+      loading: false,
       // 是否显示mode
       ipModal: false,
       // 表单数据
@@ -119,6 +121,8 @@ export default {
     update() {
       const params = this.upgradeConfig;
       params.ttl = +params.ttl;
+
+      this.loading = true;
       services
         .createRedirect(this.viewId, params)
         .then(() => {
@@ -126,9 +130,10 @@ export default {
           this.$Message.success("新建成功!");
           this.ipModal = false;
           this.$refs.formValidate.resetFields();
+          this.loading = false;
         })
         .catch((err) => {
-          console.log(err)
+          this.loading = false;
           this.$Message.error(err.message);
         });
     },

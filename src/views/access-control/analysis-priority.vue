@@ -4,7 +4,7 @@
       title="解析优先级"
       :data="list"
       :columns="columns"
-      :paginationEnable="false"
+      :pagination-enable="false"
     >
       <template slot="top-right">
         <i-button
@@ -19,6 +19,7 @@
       :visible.sync="visible"
       title="编辑优先级"
       @confirm="handleSubmit"
+      :loading="loading"
     >
       <Form>
         <FormItem
@@ -80,6 +81,7 @@ export default {
   data() {
     return {
       visible: false,
+      loading: false,
       list: [],
       dragList: [],
       columns: [
@@ -145,6 +147,7 @@ export default {
   },
   methods: {
     getDataList() {
+      this.loading = false;
       services.getPriority().then(res => {
         this.list = res.data.acls || [];
       });
@@ -173,6 +176,7 @@ export default {
         this.$Message.info("请选择访问列表");
         return;
       }
+      this.loading = true;
       if (this.list && Array.isArray(this.list) && this.list.length > 0) {
         services.updatePriority(params).then(() => {
           this.getDataList();

@@ -4,9 +4,9 @@
     :visible.sync="dialogVisible"
     title="修改密码"
     :width="413"
+    :loading="loading"
     @confirm="handleConfirm('formInline')"
   >
-    <IviewLoading v-if="loading" />
     <Form
       ref="formInline"
       label-position="left"
@@ -146,12 +146,14 @@ export default {
             username,
             password
           };
+          this.loading = true;
           this.$post({ url: `/apis/linkingthing.com/auth/v1/users/${username}?action=${this.action}`, params })
             .then(() => {
               this.$Message.success("修改成功");
               this.dialogVisible = false;
+            }).finlly(() => {
+              this.loading = false;
             });
-
         }
       });
     }

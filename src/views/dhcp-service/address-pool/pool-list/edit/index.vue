@@ -4,8 +4,8 @@
     :title="getTitle"
     :width="413"
     @confirm="handleConfirm"
+    :loading="loading"
   >
-    <IviewLoading v-if="loading" />
     <Form
       ref="formInline"
       label-position="left"
@@ -121,12 +121,15 @@ export default {
   methods: {
 
     handleConfirm() {
+      this.loading = true;
       if (this.isEdit) {
         this.$put({ url: this.links.update, params: this.formModel }).then(res => {
           this.$$success("编辑成功");
           this.$emit("success");
           this.dialogVisible = false;
+          this.loading = false;
         }).catch(err => {
+          this.loading = false;
           this.$$error(err.response.data.message);
         });
       } else {
@@ -134,7 +137,9 @@ export default {
           this.$$success("新建成功");
           this.$emit("success");
           this.dialogVisible = false;
+          this.loading = false;
         }).catch(err => {
+          this.loading = false;
           this.$$error(err.response.data.message);
         });
       }
