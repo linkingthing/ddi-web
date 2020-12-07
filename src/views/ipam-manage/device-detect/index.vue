@@ -100,7 +100,7 @@
                 <img
                   src="./import.png"
                   alt=""
-                > 导入终端表格
+                > 导入设备表格
               </div>
               <div
                 class="import-export-menu-item"
@@ -146,7 +146,7 @@
     <common-modal
       :visible.sync="importVisible"
       :width="415"
-      title="导入终端表格"
+      title="导入设备表格"
       @confirm="handleUpload"
     >
       <div class="tips-info">
@@ -155,7 +155,7 @@
           src="./icon-info.png"
           alt=""
         >
-        <span>请使用为您准备的“终端表格模板”填写终端信息</span>
+        <span>请使用为您准备的“设备表格模板”填写终端信息</span>
       </div>
 
       <div class="base-upload">

@@ -54,25 +54,27 @@
       title="导入地址规划"
       @confirm="handleUpload"
     >
-      <!-- <div class="tips-info">
-        <img
-          class="tips-info-icon"
-          src="./icon-info.png"
-          alt=""
-        >
-        <span>请使用为您准备的“地址规划”填写信息</span>
-      </div> -->
 
       <div class="base-upload">
+        <div class="base-upload-filename">{{file.name}}</div>
+        <div>
 
-        <!-- <div class="base-upload-filename">{{file.name}}</div> -->
-        <!-- <div> -->
-        <Input
-          style="width: 100%"
-          placeholder="请输入文件路径"
-          v-model="uploadParams.path"
-        />
-
+          <Upload
+            ref="upload"
+            action="/uploadfile"
+            :headers="headers"
+            :on-success="uploadSuccess"
+            :show-upload-list="false"
+            name="path"
+          >
+            <Button size="small">
+              <img
+                src="./icon-file.png"
+                alt=""
+                style="vertical-align: bottom;margin-right: 6px;"
+              >浏览文件</Button>
+          </Upload>
+        </div>
       </div>
     </common-modal>
 
@@ -107,6 +109,9 @@ export default {
 
   data() {
     this.LOCK_STATUS_ENUM = LOCK_STATUS_ENUM;
+    this.headers = {
+      Authorization: this.$store.getters.token
+    };
     return {
       visible: false,
       planList: [],
@@ -252,6 +257,7 @@ export default {
       uploadParams: {
         path: ""
       },
+      file: { path: "" },
 
       total: 0,
       current: 0
@@ -306,6 +312,11 @@ export default {
       }).catch((err) => {
         this.$handleError(err);
       });
+    },
+
+    uploadSuccess(response, file) {
+      this.uploadParams = { name: response.filename };
+      this.file = file;
     },
     handleSavePlanName(url, value, row) {
       // 接口暂不支持单字段修改，但是列表中又没携带完整字段
@@ -387,9 +398,10 @@ export default {
       const url = `${this.links.self}?action=import`;
       const params = this.uploadParams;
       this.$post({ url, params }).then(() => {
-        this.$Message.success("指定成功"); // 指定csv所在路径
+        this.$Message.success("导入成功");
         this.importVisible = false;
         this.always = false;
+        this.getPlanList();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });
@@ -415,7 +427,7 @@ export default {
     background: #f1f1f1;
   }
   .ivu-modal-body {
-    background-image: url('./box-bg.png');
+    background-image: url("./box-bg.png");
   }
 }
 </style>
