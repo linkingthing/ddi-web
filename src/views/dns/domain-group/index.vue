@@ -3,7 +3,8 @@
     <table-page
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -40,7 +41,6 @@ export default {
       }, {
         title: "操作",
         key: "",
-        align: "right",
         render: (h, { row }) => {
           return h("div", [
             [h("btn-edit", {
@@ -60,20 +60,32 @@ export default {
         }
       }],
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      total: 0,
+      current: 0
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    current() {
+      this.getDataList();
+
+    }
+  },
   created() {
-    this.getDataList();
   },
   mounted() { },
   methods: {
     getDataList() {
-      this.$getDataAndLinks().then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
         this.links = links;
         this.list = data;
+        this.total = pagination.total;
+        this.current = pagination.current;
       });
     },
     handleOpenCreate() {

@@ -196,7 +196,6 @@ export default {
               return points.includes(index);
             },
 
-            align: "center",
             showMinLabel: true,
             showMaxLabel: true,
             margin: 16,

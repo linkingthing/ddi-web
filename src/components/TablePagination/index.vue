@@ -23,12 +23,15 @@
         :columns="columns"
         :max-height="tableInnerHeight"
         v-on="$listeners"
+        border
       />
       <Table
         v-else
         :data="data"
         :columns="columns"
         v-on="$listeners"
+        border
+        stripe 
       />
     </template>
 

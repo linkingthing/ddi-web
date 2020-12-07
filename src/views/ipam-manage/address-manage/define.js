@@ -36,7 +36,6 @@ export const columns = scope => [
   {
     title: "操作",
     key: "action",
-    // align: "right",
     width: "180",
     render: (h, { row }) => {
       return h(

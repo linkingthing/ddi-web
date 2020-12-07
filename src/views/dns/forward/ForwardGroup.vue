@@ -66,12 +66,10 @@ export default {
         {
           title: "备注",
           key: "comment",
-          align: "center"
         },
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 160,
           render: (h, { row }) => {
 

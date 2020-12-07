@@ -19,7 +19,6 @@ export const columns = scope => [
   {
     title: "地址总量",
     key: "capacity",
-    align: "center",
     render: (h, { row }) => {
       return row.version === 4 && h("div", row.capacity);
     }
@@ -27,7 +26,6 @@ export const columns = scope => [
   {
     title: "DHCP使用率",
     key: "usedRatio",
-    align: "center",
     width: "180",
     render: (h, { row }) => {
       return row.version === 4 && h("common-process",{
@@ -40,7 +38,6 @@ export const columns = scope => [
   },
   {
     title: "操作",
-    align: "right",      
     render: (h, { row }) => {
       return h("div", [
         h("btn-edit", {

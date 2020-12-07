@@ -51,11 +51,9 @@ export default {
         {
           title: "匹配条件",
           key: "regexp",
-          align: "center"
         },
         {
           title: "操作",
-          align: "right",
           render: (h, { row }) => {
             if (this.$hasPermissionCreate("clientclass")) {
               return h("div", [h("btn-edit", {

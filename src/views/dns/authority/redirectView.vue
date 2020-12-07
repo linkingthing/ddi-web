@@ -40,17 +40,14 @@ export default {
         {
           title: "重定向配置数量",
           key: "localzonesize",
-          align: "center"
         },
         {
           title: "NXDOMAIN重定向配置数量",
           key: "nxdomainsize",
-          align: "center"
         },
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "right",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
           }

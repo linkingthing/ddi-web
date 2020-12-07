@@ -46,23 +46,19 @@ export default {
         },
         {
           title: "类型",
-          key: "datatype",
-          align: "center"
+          key: "datatype"
         },
         {
           title: "记录值",
-          key: "activeRdata",
-          align: "center"
+          key: "activeRdata"
         },
         {
           title: "TTL",
-          key: "ttl",
-          align: "center"
+          key: "ttl"
         },
         {
           title: "操作",
           key: "action",
-          align: "right",
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {

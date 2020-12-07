@@ -57,11 +57,9 @@ export default {
         {
           title: "MAC地址",
           key: "hwAddress",
-          align: "center"
         },
         {
           title: "操作",
-          align: "right",
           render: (h, { row }) => {
             return h("div", [
               // h("btn-edit", {

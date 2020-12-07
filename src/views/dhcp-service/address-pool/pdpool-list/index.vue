@@ -59,12 +59,10 @@ export default {
         },
         {
           title: "委派长度",
-          key: "delegatedLen",
-          align: "center"
+          key: "delegatedLen"
         },
         {
           title: "操作",
-          align: "right",
           render: (h, { row }) => {
             return h("div", [
               // h("btn-edit", {

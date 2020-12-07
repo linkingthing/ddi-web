@@ -62,7 +62,6 @@ export default {
       }, {
         title: "操作",
         key: "action",
-        align: "center",
         width: 130,
         render: (h, { row }) => {
           if (this.netType === "netv4") {

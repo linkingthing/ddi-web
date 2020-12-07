@@ -54,7 +54,6 @@ export default {
         {
           title: "网络地址",
           key: "",
-          align: "center",
           render: (h, { row }) => {
             if (!!row.isp) {
               return h("div", ispList.find(item => item.value === row.isp).label)
@@ -72,7 +71,6 @@ export default {
         {
           title: "状态",
           key: "status",
-          align: "center",
           render: (h, { row }) => {
             return h("span",
               {
@@ -86,7 +84,6 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp))
           }
@@ -94,12 +91,10 @@ export default {
         {
           title: "备注",
           key: "comment",
-          align: "center"
         },
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 160,
           render: (h, { row }) => {
             if (this.$hasPermission("acl", "POST")) {

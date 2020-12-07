@@ -125,7 +125,6 @@ export default {
         {
           title: "统计次数",
           key: "count",
-          align: "right"
         }
       ],
       topIPColumns: [
@@ -141,7 +140,6 @@ export default {
         {
           title: "统计次数",
           key: "count",
-          align: "right"
         }
       ],
       timer: null,

@@ -50,12 +50,10 @@ export default {
         {
           title: "备注",
           key: "comment",
-          align: "center"
         },
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center",
 
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
@@ -64,7 +62,6 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 220,
           render: (h, { row }) => {
             return h("div", [

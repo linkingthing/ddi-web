@@ -32,7 +32,6 @@ export default {
         {
           title: "节点IP",
           key: "node",
-          align: "center",
           width: 200
         },
         {
@@ -63,7 +62,6 @@ export default {
         {
           title: "状态",
           key: "node",
-          align: "right",
           width: 120,
           render: (h, { row }) => {
             return h("div", row.succeed ? "操作成功" : "操作失败")
@@ -177,8 +175,8 @@ export default {
   .top-right {
     display: flex;
     align-items: center;
-    height: 72px;
-    line-height: 72px;
+    // height: 72px;
+    // line-height: 72px;
     justify-content: flex-start;
 
     .ivu-input {

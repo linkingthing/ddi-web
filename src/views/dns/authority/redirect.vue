@@ -47,22 +47,18 @@ export default {
         {
           title: "记录类型",
           key: "datatype",
-          align: "center"
         },
         {
           title: "记录值",
           key: "rdata",
-          align: "center"
         },
         {
           title: "TTL",
           key: "ttl",
-          align: "center"
         },
         {
           title: "重定向方式",
           key: "redirecttype",
-          align: "center",
           render: (h, { row }) => {
             return h("div", row.redirecttype === "localzone" ? "强制重定向" : row.redirecttype)
           }
@@ -70,7 +66,6 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 160,
           render: (h, { row }) => {
             return h("div", [

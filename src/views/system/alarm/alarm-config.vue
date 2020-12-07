@@ -31,14 +31,12 @@ export default {
         {
           title: "告警级别",
           key: `level`,
-          align: "center",
           render: (h, { row }) => {
             return h("div", alarmLevel[row.level]);
           }
         },
         {
           title: "告警阈值",
-          align: "right",
           render: (h, { row }) => {
 
             return row.thresholdType !== "trigger" && h("line-edit",
@@ -60,7 +58,6 @@ export default {
         {
           title: "告警通知",
           key: "action",
-          align: "right",
           width: 160,
           render: (h, { row }) => {
             return h("i-switch", {

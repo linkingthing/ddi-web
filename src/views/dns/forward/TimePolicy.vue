@@ -66,7 +66,6 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 160,
           render: (h, { row }) => {
 
@@ -101,7 +100,7 @@ export default {
   methods: {
     getDataList() {
       this.$getDataAndLinks().then(({ data, links }) => {
-        this.list = data.map(item => {
+        this.list = Array.isArray(data) ? data.map(item => {
           let startTime, endTime;
 
           let { weekdaygroup, timetype } = item;
@@ -140,7 +139,7 @@ export default {
             startTime,
             endTime
           };
-        });
+        }) : [];
         this.links = links;
       });
     },

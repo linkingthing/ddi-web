@@ -8,7 +8,6 @@ export const columns = (self) => [
   {
     title: "IP地址",
     key: "sourceIp",
-    align: "center",
     width: 200,
   },
   {
@@ -38,7 +37,6 @@ export const columns = (self) => [
   {
     title: "结果",
     key: "opperText",
-    align: "right",
     width: 200,
   },
 ];

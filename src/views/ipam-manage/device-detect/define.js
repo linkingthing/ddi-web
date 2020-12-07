@@ -12,13 +12,11 @@ export const columns = scope => [
   {
     title: "管理地址",
     key: "administrationAddress",
-    align: "center",
     width: 220
   },
   {
     title: "设备类型",
     key: "equipmentTypeText",
-    align: "center",
     width: 140
   },
   {
@@ -29,25 +27,21 @@ export const columns = scope => [
   {
     title: "序列号",
     key: "serialNumber",
-    align: "center",
     width: 160
   },
   {
     title: "厂商",
     key: "manufacturer",
-    align: "center",
     width: 120
   },
   {
     title: "固件版本",
     key: "firmwareVersion",
-    align: "center",
     width: 140
   },
   {
     title: "上联地址",
     // key: "uplinkAddresses",
-    align: "center",
     width: 180,
     render: (h, { row }) => {
       return h("div", getMapAddress(row.uplinkAddresses));
@@ -56,7 +50,6 @@ export const columns = scope => [
   {
     title: "下联地址",
     // key: "downlinkAddress",
-    align: "center",
     width: 180,
     render: (h, { row }) => {
       return h("div", getMapAddress(row.downlinkAddresses));
@@ -65,37 +58,31 @@ export const columns = scope => [
   {
     title: "机房",
     key: "computerRoom",
-    align: "center",
     width: 120
   },
   {
     title: "机柜",
     key: "computerRack",
-    align: "center",
     width: 120
   },
   {
     title: "所属部门",
     key: "department",
-    align: "center",
     width: 140
   },
   {
     title: "地理位置",
     key: "location",
-    align: "center",
     width: 180
   },
   {
     title: "负责人",
     key: "responsiblePerson",
-    align: "center",
     width: 120
   },
   {
     title: "联系电话",
     key: "telephone",
-    align: "center",
     minWidth: 150
   },
   {
@@ -103,7 +90,6 @@ export const columns = scope => [
     width: 240,
     className: "operate-column",
     fixed: "right",
-    align: "center",
     render: (h, { row }) => {
       if (scope.$hasPermissionCreate("networkequipment")) {
         return h("div", [

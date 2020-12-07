@@ -56,12 +56,10 @@ export default {
         },
         {
           title: "结束地址",
-          key: "endAddress",
-          align: "center"
+          key: "endAddress"
         },
         {
           title: "操作",
-          align: "right",
           render: (h, { row }) => {
             return h("div", [
               // h("btn-edit", {

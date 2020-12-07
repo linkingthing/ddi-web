@@ -28,7 +28,6 @@ export default {
         {
           title: "视图",
           key: "name",
-          align: "center",
           render: (h, { row }) => {
             return h(
               "router-link",
@@ -51,12 +50,10 @@ export default {
         {
           title: "规则数量",
           key: "dns64size",
-          align: "center"
         },
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp));
           }

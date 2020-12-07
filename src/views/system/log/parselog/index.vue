@@ -135,7 +135,6 @@ export default {
         {
           title: "节点IP",
           key: "nodeIP",
-          align: "center",
           width: 200
         },
         {
@@ -343,8 +342,8 @@ export default {
   .top-right {
     display: flex;
     align-items: center;
-    height: 72px;
-    line-height: 72px;
+    // height: 72px;
+    // line-height: 72px;
     justify-content: flex-start;
 
     .ivu-input {

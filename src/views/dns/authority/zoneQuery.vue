@@ -52,32 +52,27 @@ export default {
         {
           title: "区类型",
           key: "zonetype",
-          align: "center",
           render: (h, { row }) => {
             return h("div", row.isarpa ? "反向区" : "正向区");
           }
         },
         {
           title: "TTL",
-          key: "ttl",
-          align: "center"
+          key: "ttl"
         },
 
         {
           title: "记录数",
-          key: "rrsize",
-          align: "center"
+          key: "rrsize"
         },
         {
           title: "备注",
-          key: "comment",
-          align: "center"
+          key: "comment"
         },
         {
           title: "操作",
           key: "action",
           width: 220,
-          align: "right",
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {

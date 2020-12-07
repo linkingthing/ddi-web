@@ -45,13 +45,11 @@ export default {
         },
         {
           title: "优先级",
-          key: "priority",
-          align: "center"
+          key: "priority"
         },
         {
           title: "访问控制",
           key: "acls",
-          align: "center",
 
           render: (h, { row }) => {
             return h("Tags", {
@@ -63,18 +61,15 @@ export default {
         },
         {
           title: "DNS64",
-          key: "dns64",
-          align: "center"
+          key: "dns64"
         },
         {
           title: "备注",
-          key: "comment",
-          align: "center"
+          key: "comment"
         },
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 220,
           render: (h, { row }) => {
             if (this.$hasPermission("view", "POST")) {

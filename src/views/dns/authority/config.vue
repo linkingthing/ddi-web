@@ -40,22 +40,18 @@ export default {
         {
           title: "区数量",
           key: "masterzonesize",
-          align: "center"
         },
         {
           title: "记录数",
           key: "rrsize",
-          align: "center"
         },
         {
           title: "优先级",
           key: "priority",
-          align: "center"
         },
         {
           title: "访问控制",
           key: "action",
-          align: "center",
           render: (h, { row }) => {
             return h("Tags", {
               props: {
@@ -67,7 +63,6 @@ export default {
         {
           title: "DNS64",
           key: "dns64",
-          align: "center"
         }
       ],
       list: [],

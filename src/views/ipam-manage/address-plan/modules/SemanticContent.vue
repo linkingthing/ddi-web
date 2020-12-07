@@ -565,14 +565,12 @@ export default {
       let selection = !this.availableCustomPlan ? [{
         type: "selection",
         width: 60,
-        align: "center"
       }] : [];
       return [
         ...selection,
         {
           type: "index",
           width: 80,
-          align: "center"
         },
         {
           title: "语义名称",

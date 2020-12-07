@@ -40,12 +40,10 @@ export default {
         {
           title: "域名数量",
           key: "forwardzonesize",
-          align: "center"
         },
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "right",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp))
           }

@@ -211,42 +211,36 @@ export const columns = scope => [
   {
     title: "终端名称",
     key: "name",
-    align: "center",
     width: 180,
     tooltip
   },
   {
     title: "终端类型",
     key: "deviceTypeText",
-    align: "center",
     width: 140,
     tooltip
   },
   {
     title: "上联设备",
     key: "uplinkEquipment",
-    align: "center",
     width: 160,
     tooltip
   },
   {
     title: "端口",
     key: "uplinkPort",
-    align: "center",
     width: 120,
     tooltip
   },
   {
     title: "机房",
     key: "computerRoom",
-    align: "center",
     width: 140,
     tooltip
   },
   {
     title: "机柜",
     key: "computerRack",
-    align: "center",
     width: 140,
     tooltip
   },
@@ -254,7 +248,6 @@ export const columns = scope => [
   {
     title: "vlan",
     key: "vlanId",
-    align: "center",
     width: 120,
     tooltip,
     render: (h, { row }) => {
@@ -264,28 +257,24 @@ export const columns = scope => [
   {
     title: "业务名称",
     key: "deployedService",
-    align: "center",
     width: 150,
     tooltip
   },
   {
     title: "所属部门",
     key: "department",
-    align: "center",
     width: 150,
     tooltip
   },
   {
     title: "负责人",
     key: "responsiblePerson",
-    align: "center",
     width: 150,
     tooltip
   },
   {
     title: "联系电话",
     key: "telephone",
-    align: "center",
     minWidth: 150,
     tooltip
   },
@@ -293,7 +282,6 @@ export const columns = scope => [
     title: "操作",
     width: 160,
     fixed: "right",
-    align: "center",
     render: (h, { row }) => {
       return h("div", [
         h("btn-edit", {

@@ -90,13 +90,11 @@ export default {
         },
         {
           title: "控制列表",
-          key: "name",
-          align: "center"
+          key: "name"
         },
         {
           title: "客户",
           key: "IP",
-          align: "center",
           render: (h, { row }) => {
             return h("Tags", {
               props: {
@@ -108,7 +106,6 @@ export default {
         {
           title: "排序",
           key: "IP",
-          align: "center",
           render: (h, { row }) => {
             return h("Tags", {
               props: {
@@ -120,7 +117,6 @@ export default {
         {
           title: "创建时间",
           key: "creationTimestamp",
-          align: "center",
           render: (h, { row }) => {
             return h("div", this.$trimDate(row.creationTimestamp))
           }
@@ -128,7 +124,6 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center",
           width: 160,
           render: (h, { row }) => {
             return h("div", [

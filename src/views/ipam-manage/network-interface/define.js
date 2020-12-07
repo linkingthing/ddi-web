@@ -9,19 +9,16 @@ export const columns = scope => [
     title: "MAC地址",
     key: "mac",
     minWidth: 160,
-    align: "center"
   },
   {
     title: "地址类型",
     key: "ipTypeText",
     minWidth: 120,
-    align: "center"
   },
   {
     title: "地址状态",
     key: "ipStateText",
     minWidth: 120,
-    align: "center",
     render: (h, { row }) => {
       const target = statusLegends.find(item => item.type === row.ipState);
       return h(
@@ -39,17 +36,14 @@ export const columns = scope => [
     title: "租赁时间(s)",
     key: "validLifetime",
     minWidth: 120,
-    align: "center"
   },
   {
     title: "租赁过期时间",
     key: "expire",
     minWidth: 190,
-    align: "center"
   },
   {
     title: "操作",
-    align: "center",
     width: 300,
     render: (h, { row }) => {
       let buttons = [

@@ -16,17 +16,14 @@ export const columns = scope => [
   {
     title: "可规划前缀",
     key: "maskLen",
-    align: "center"
   },
   {
     title: "备注",
     key: "description",
-    align: "center"
   },
   {
     title: "创建时间",
     key: "creationTimestamp",
-    align: "center"
   },
   {
     title: "操作",
@@ -41,6 +38,5 @@ export const columns = scope => [
           }
         })
       ]),
-    align: "right"
   }
 ];

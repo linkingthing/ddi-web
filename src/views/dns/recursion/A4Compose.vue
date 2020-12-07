@@ -38,22 +38,22 @@ export default {
         {
           title: "前缀",
           key: "prefix",
-          align: "center"
+
         },
         {
           title: "客户IP地址",
           key: "clientaclname",
-          align: "center"
+
         },
         {
           title: "目标IPv4地址",
           key: "addressname",
-          align: "center"
+
         },
         {
           title: "操作",
           key: "action",
-          align: "center",
+,
           width: 160,
           render: (h, { row }) => {
             return h("div", [

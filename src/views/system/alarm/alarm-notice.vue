@@ -39,7 +39,6 @@ export default {
         {
           type: "selection",
           width: 60,
-          align: "center"
         },
         {
           title: "告警项",
@@ -111,7 +110,6 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "right",
           width: 200,
           render: (h, { row }) => {
             return h("div", {

@@ -51,7 +51,6 @@ export default {
         {
           title: "操作",
           key: "name",
-          align: "right",
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {
