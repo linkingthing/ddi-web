@@ -347,7 +347,6 @@ import {
 import eventBus from "@/util/bus";
 
 
-let nodeIndex = 1;
 export default {
   components: {
     SegmentAxis,
@@ -879,7 +878,7 @@ export default {
           return {
             id: uuidv4(),
             modified: modifiedEnum.STRUCTURED,
-            name: `新增节点${nodeIndex++}`,
+            name: `新增节点`,
             parentsemanticid,
             stepsize: "",
             sequence: 1,
