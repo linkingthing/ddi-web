@@ -55,6 +55,14 @@
       @confirm="handleUpload"
       :loading="loading"
     >
+      <div class="tips-info">
+        <img
+          class="tips-info-icon"
+          src="./icon-info.png"
+          alt=""
+        >
+        <span>请使用为您准备的“设备表格模板”填写终端信息</span>
+      </div>
 
       <div class="base-upload">
         <div class="base-upload-filename">{{file.name}}</div>
@@ -243,7 +251,7 @@ export default {
             ]);
           }
         }],
-      loading: true,
+      loading: false,
       netnodesurl: "",
       oneLayoutLinks: null,
 
