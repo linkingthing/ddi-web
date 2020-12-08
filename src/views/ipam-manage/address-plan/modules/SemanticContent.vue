@@ -30,7 +30,7 @@
                 :disabled="settableNextBitWidth"
                 v-model="tempBitWidth"
                 :placeholder="`最大地址位宽${64-prefixLen}`"
-                :min="0"
+                :min="minBitwidth"
                 :max="64-prefixLen"
               />
 
@@ -434,7 +434,17 @@ export default {
     settableNextBitWidth() {
       // 位宽是否可修改
       const currentNodeId = this.currentNode && this.currentNode.id;
-      return hasGrandson(this.nodes, currentNodeId);
+      const planNodeCount = this.semanticNodeList.map(item => {
+        return Array.isArray(item.plannodes) ? item.plannodes.length : 0;
+      }).reduce((total, number) => { return total + number; }, 0);
+
+
+
+      return hasGrandson(this.nodes, currentNodeId) || !!planNodeCount;
+    },
+
+    minBitwidth() {
+      return Math.log2(this.semanticNodeList.length + 2) || 0;
     },
 
     bitWidthValid() {
@@ -553,7 +563,7 @@ export default {
         // console.log(item)
         return {
           ...item,
-          showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "__"
+          showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "_ _"
         };
       });
     },
@@ -610,7 +620,7 @@ export default {
           title: "IPv4子网",
           key: "ipv4s",
           render: (h, { row }) => {
-            const content = (row.ipv4s && row.ipv4s.length) ? ` ${row.ipv4s.join(",")}` : "__";
+            const content = (row.ipv4s && row.ipv4s.length) ? ` ${row.ipv4s.join(",")}` : "_ _";
             let ref = "lineEditRef";
             let lineEditRef = this.$createElement("line-edit", {
               ref,
@@ -623,7 +633,7 @@ export default {
                 isPercent: false,
                 value: Array.isArray(row.ipv4s) ? row.ipv4s.join(",") : "",
                 width: "160px",
-                defaultText: "__",
+                defaultText: "_ _",
                 checkfunc: this.checkfunc
               }
             });
