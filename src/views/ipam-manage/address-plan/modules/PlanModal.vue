@@ -84,18 +84,19 @@ export default {
     },
     formItemList() {
       return [
+
+        {
+          label: "规划名称",
+          model: "name",
+          type: "input",
+          placeholder: "请填写规划名称",
+        },
         {
           label: "IPv6前缀",
           model: "prefixs",
           type: "textarea",
           placeholder: "请填写IPv6前缀"
 
-        },
-        {
-          label: "规划名称",
-          model: "name",
-          type: "input",
-          placeholder: "请填写规划名称",
         }
 
       ];
