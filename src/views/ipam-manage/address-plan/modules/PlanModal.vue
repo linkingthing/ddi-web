@@ -153,7 +153,7 @@ export default {
               parentplannodeid: "0", // 网络节点的上层网络节点
               sequence: index,
               value: index + 1,
-              name: `plannodes root`,
+              name: `根网络节点`,
               bitWidth: 0,
               maxmaskwidth: 64
             };
