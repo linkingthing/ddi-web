@@ -84,7 +84,6 @@ export default {
     },
     formItemList() {
       return [
-
         {
           label: "规划名称",
           model: "name",
@@ -96,9 +95,7 @@ export default {
           model: "prefixs",
           type: "textarea",
           placeholder: "请填写IPv6前缀"
-
         }
-
       ];
     }
   },

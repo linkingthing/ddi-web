@@ -604,12 +604,11 @@ export default {
           title: "IPv6地址",
           key: "showprefixs",
           tooltip: true,
-          width: 350
+          width: 280
         },
         {
           title: "IPv4子网",
           key: "ipv4s",
-          width: 340,
           render: (h, { row }) => {
             const content = (row.ipv4s && row.ipv4s.length) ? ` ${row.ipv4s.join(",")}` : "__";
             let ref = "lineEditRef";
@@ -623,11 +622,11 @@ export default {
               props: {
                 isPercent: false,
                 value: Array.isArray(row.ipv4s) ? row.ipv4s.join(",") : "",
-                width: "100%",
+                width: "160px",
                 defaultText: "__",
                 checkfunc: this.checkfunc
               }
-            })
+            });
             return this.$createElement("Tooltip", {
               class: {
                 "ipToolTip": true
@@ -641,10 +640,8 @@ export default {
           }
         },
         {
-          fixed: "right",
           title: "操作",
           key: "action",
-          width: 210,
           render: (h, { row }) => {
             return h("div", [
               h("btn-line", {
@@ -1529,10 +1526,10 @@ export default {
     margin-bottom: 40px;
     .ivu-table-body {
       width: 100%;
-      overflow-x: auto;
+      overflow-x: hidden;
       overflow-y: auto;
       flex: 1;
-      height: calc(~"100vh - 600px");
+      height: calc(~"100vh - 560px");
       margin-right: -4px;
     }
   }

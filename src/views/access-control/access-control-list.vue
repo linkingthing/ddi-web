@@ -96,6 +96,7 @@ export default {
           title: "操作",
           key: "action",
           width: 160,
+          className: "operate-column",
           render: (h, { row }) => {
             if (this.$hasPermission("acl", "POST")) {
 
