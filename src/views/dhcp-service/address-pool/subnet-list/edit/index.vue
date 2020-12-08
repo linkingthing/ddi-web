@@ -114,7 +114,7 @@ export default {
         },
         {
           label: "option 18",
-          model: "domainServers",
+          model: "relayAgentInterfaceId",
           type: "input",
           placeholder: "请填写option 18"
         }
