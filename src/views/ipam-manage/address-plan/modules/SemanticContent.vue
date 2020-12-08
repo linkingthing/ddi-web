@@ -444,7 +444,7 @@ export default {
     },
 
     minBitwidth() {
-      return Math.log2(this.semanticNodeList.length + 2) || 0;
+      return Math.log2(this.semanticNodeList.length / this.prefixs.length + 2) || 0;
     },
 
     bitWidthValid() {
@@ -642,7 +642,7 @@ export default {
                 "ipToolTip": true
               },
               props: {
-                placement: "bottom",
+                placement: "bottom-start",
                 content
               }
             }, [lineEditRef]
@@ -652,11 +652,13 @@ export default {
         {
           title: "操作",
           key: "action",
+          width: 190,
           render: (h, { row }) => {
             return h("div", [
               h("btn-line", {
                 style: {
-                  display: !row.sponsordispatch ? "" : "none"
+                  display: !row.sponsordispatch ? "" : "none",
+                  marginRight: "10px"
                 },
                 nativeOn: {
                   click: () => this.handleDispath(row)
@@ -666,8 +668,11 @@ export default {
                 }
               }),
               h("btn-edit", {
+                style: {
+                  marginRight: "10px"
+                },
                 props: {
-                  disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0)
+                  disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0),
                 },
                 on: {
                   click: () => this.handleOpenEditNode(row)
@@ -1539,7 +1544,7 @@ export default {
       overflow-x: hidden;
       overflow-y: auto;
       flex: 1;
-      height: calc(~"100vh - 560px");
+      height: calc(~"100vh - 580px");
       margin-right: -4px;
     }
   }

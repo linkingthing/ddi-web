@@ -84,9 +84,11 @@
       class="message-list"
       v-if="showAgentEvent"
     >
+      <div class="message-title">配置返显</div>
       <div
         class="message-item"
         v-for="item in agentEventAll"
+        :key="item.id"
       >
         <div style="margin-right: 10px">
           <Icon
@@ -508,13 +510,28 @@ export default {
   position: fixed;
   right: 0;
   top: 60px;
+  bottom: 0;
   width: 300px;
-  height: 80%;
   background: #fff;
   z-index: 100;
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 74px 20px 20px;
   overflow: auto;
+  box-shadow: 0px 0px 46px 0px rgba(120, 120, 120, 0.15);
+  .message-title {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    height: 54px;
+    line-height: 54px;
+    color: #333;
+    padding: 0 20px;
+    font-size: 16px;
+    width: 300px;
+    border-bottom: 1px solid #e6e6e6;
+    background: #fff;
+    z-index: 10;
+  }
 
   .message-item {
     display: flex;
