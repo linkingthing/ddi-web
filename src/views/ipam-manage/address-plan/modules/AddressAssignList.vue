@@ -99,7 +99,7 @@ export default {
                   }
                 }
               }
-            }, "地址委派"),
+            }, "新建子网"),
             h("span", {
               class: {
                 "btn-line": true
@@ -112,7 +112,7 @@ export default {
                   this.handleDHCP(row);
                 }
               }
-            }, "DHCP")
+            }, "新建子网")
           ]);
         }
       }],
