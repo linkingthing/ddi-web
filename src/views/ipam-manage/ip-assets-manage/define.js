@@ -51,7 +51,7 @@ function renderIp(h, row, field, status, scope) {
       "div",
       {
         style: {
-          color: state && color,
+          // color: state && color,
           cursor: state && "pointer",
           overflow: "hidden",
           "text-overflow": "ellipsis",
@@ -61,7 +61,19 @@ function renderIp(h, row, field, status, scope) {
           click: () => state && scope.handleGoto(config)
         }
       },
-      row[field][0]
+      [h("span", {
+        style: {
+          display: "inline-block",
+          width: "8px",
+          height: "8px",
+          borderRadius: "50%",
+          marginRight: "5px",
+          marginBottom: "2px",
+          backgroundColor: color
+        }
+      }),
+      row[field][0]]
+      
     );
   } else
     return h("Tooltip", {
@@ -78,7 +90,7 @@ function renderIp(h, row, field, status, scope) {
             "div",
             {
               style: {
-                color: row[status] && "#4586FE",
+                // color: row[status] && "#4586FE",
                 cursor: row[status] && "pointer",
                 overflow: "hidden",
                 "text-overflow": "ellipsis",

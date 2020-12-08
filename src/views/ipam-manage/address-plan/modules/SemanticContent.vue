@@ -1396,7 +1396,6 @@ export default {
     color: #333;
     font-weight: bold;
     margin-bottom: 20px;
-    line-height: 1;
     &::before {
       position: absolute;
       left: -23px;
@@ -1410,6 +1409,7 @@ export default {
     }
     h1 {
       font-size: 20px;
+      margin-top: -4px;
     }
     > * {
       display: flex;
