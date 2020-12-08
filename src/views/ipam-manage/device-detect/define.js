@@ -1,5 +1,5 @@
 function getMapAddress(obj = {}) {
-  return Object.values(obj).map(item => item.ip);
+  return obj && Object.values(obj).map(item => item.ip);
 }
 
 export const columns = scope => [

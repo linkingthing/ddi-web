@@ -19,36 +19,38 @@ export function parseData(data) {
       administrationAddress // ip
     } = element;
 
-    Object.keys(downlinkAddresses).forEach(port => {
-      const next = downlinkAddresses[port];
-      links.push({
-        source: administrationAddress,
-        source_port: port,
-        target: next.ip,
-        next_port: next.port
+    downlinkAddresses &&
+      Object.keys(downlinkAddresses).forEach(port => {
+        const next = downlinkAddresses[port];
+        links.push({
+          source: administrationAddress,
+          source_port: port,
+          target: next.ip,
+          next_port: next.port
+        });
       });
-    });
 
-    Object.keys(uplinkAddresses).forEach(port => {
-      const prev = uplinkAddresses[port];
-      links.push({
-        source: prev.ip,
-        source_port: prev.port,
-        target: administrationAddress,
-        target_port: port
+    uplinkAddresses &&
+      Object.keys(uplinkAddresses).forEach(port => {
+        const prev = uplinkAddresses[port];
+        links.push({
+          source: prev.ip,
+          source_port: prev.port,
+          target: administrationAddress,
+          target_port: port
+        });
       });
-    });
 
-    Object.keys(nextHopAddresses).forEach(port => {
-      const next = nextHopAddresses[port];
-      links.push({
-        source: administrationAddress,
-        source_port: port,
-        target: next.ip,
-        next_port: next.port
+    nextHopAddresses &&
+      Object.keys(nextHopAddresses).forEach(port => {
+        const next = nextHopAddresses[port];
+        links.push({
+          source: administrationAddress,
+          source_port: port,
+          target: next.ip,
+          next_port: next.port
+        });
       });
-    });
-
   });
 
   links = unique(links);

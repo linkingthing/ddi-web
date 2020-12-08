@@ -6,7 +6,7 @@ var fs = require("fs");
 let assetsPublicPath = "./";
 
 
-const url = "https://10.0.0.208:58081";
+const url = "https://10.0.0.111:58081";
 
 module.exports = {
   build: {
