@@ -43,19 +43,19 @@ export default {
 
       },
     },
-    {
-      name: "feedback-logs",
-      path: "/system/log/feedback",
-      component: () =>
-        import(
-          /* webpackChuckName: "operate-logs" */ "@/views/system/log/feedback"
-        ),
-      meta: {
-        range: "system",
-        title: "配置返显",
-        permission: "configFeedback"
+    // {
+    //   name: "feedback-logs",
+    //   path: "/system/log/feedback",
+    //   component: () =>
+    //     import(
+    //       /* webpackChuckName: "operate-logs" */ "@/views/system/log/feedback"
+    //     ),
+    //   meta: {
+    //     range: "system",
+    //     title: "配置返显",
+    //     permission: "configFeedback"
 
-      },
-    },
+    //   },
+    // },
   ],
 };
