@@ -228,7 +228,7 @@ export default {
         enablereport: true,
         reportserveraddr: "",
         dispatchclients: [],
-
+        enabledispatch: false
       },
       singleAddVisible: false,
       systemInfo: {
@@ -261,6 +261,8 @@ export default {
         } else {
           this.submitType = "$post";
         }
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
     },
     handleOpenSingleAdd() {
@@ -296,12 +298,10 @@ export default {
       reader.onload = () => {
         const str = reader.result;
         const rows = str.split("\n");
-        console.log(str, rows)
         const [[name, clientaddr], ...data] = rows.map(item => item.split(",").map(i => i.trim())).filter(item => {
           return item.length >= 2;
         });
 
-        console.log(name, clientaddr, data)
         const result = [];
         data.forEach(([aname, ip]) => {
           result.push({
@@ -309,7 +309,6 @@ export default {
             [clientaddr]: ip
           });
         });
-        console.log(result)
         this.params.dispatchclients.push(...result);
       };
 
@@ -323,8 +322,8 @@ export default {
           this[this.submitType]({ url, params }).then(() => {
             this.$Message.success("保存成功");
             this.getDataList();
-          }).then(err => {
-            this.$Message.error(err.response.dat.message);
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
           });
         }
       });
