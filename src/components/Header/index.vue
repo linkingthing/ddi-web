@@ -538,6 +538,7 @@ export default {
     }
     .message-item-info {
       text-align: right;
+      margin-left: auto;
     }
   }
 }

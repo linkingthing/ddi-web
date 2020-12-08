@@ -207,12 +207,5 @@ export default {
     }
   }
 }
-pre {
-  padding: 1rem;
-  max-height: 35rem;
-  line-height: 1.5;
-  background-color: #e9ecef;
-  overflow: auto;
-  margin-left: -40px;
-}
+
 </style>

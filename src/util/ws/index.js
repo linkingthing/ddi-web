@@ -2,7 +2,7 @@ import store from "@/store";
 
 const baseConfig = {
   baseUrl: "/apis/ws.linkingthing.com/v1",
-  hostname: "10.0.0.110",
+  hostname: "10.0.0.111",
   port: "58081"
 };
 
