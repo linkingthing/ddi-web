@@ -62,6 +62,12 @@ export default {
           placeholder: "请填写子网地址"
         },
         {
+          label: "子网名称",
+          model: "tags",
+          type: "input",
+          placeholder: "请输入子网名称"
+        },
+        {
           label: "DNS",
           model: "domainServers",
           type: "input",
@@ -93,6 +99,12 @@ export default {
           model: "ipnet",
           type: this.isCreate ? "input" : "text",
           placeholder: "请填写子网地址"
+        },
+        {
+          label: "子网名称",
+          model: "tags",
+          type: "input",
+          placeholder: "请输入子网名称"
         },
         {
           label: "DNS",

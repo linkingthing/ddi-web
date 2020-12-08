@@ -17,6 +17,10 @@ export const columns = scope => [
     }
   },
   {
+    title: "子网名称",
+    key: "tags"
+  },
+  {
     title: "地址总量",
     key: "capacity",
     render: (h, { row }) => {
