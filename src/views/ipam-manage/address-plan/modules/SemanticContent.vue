@@ -672,7 +672,7 @@ export default {
                   marginRight: "10px"
                 },
                 props: {
-                  disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0),
+                  disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0)
                 },
                 on: {
                   click: () => this.handleOpenEditNode(row)

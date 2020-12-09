@@ -70,7 +70,7 @@
             v-if="data.children || data._children"
             @click="handleToggleChildren(index, nodeDataList)"
             class="rich-node-icon "
-            :class="data.children ? 'rich-node-add': 'rich-node-reduce'"
+            :class="data.children ? 'rich-node-reduce' : 'rich-node-add'"
           ></span>
         </div>
 
@@ -308,10 +308,10 @@ export default {
     }
     .rich-node-add {
       background: url(./add.png);
+      right: -13px;
     }
     .rich-node-reduce {
       background: url(./reduce.png);
-      right: -13px;
     }
   }
 

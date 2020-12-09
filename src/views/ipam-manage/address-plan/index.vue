@@ -358,12 +358,18 @@ export default {
     handleReportPlan({ links }) {
 
       this.getMapData(links.self).then(({ responsordispatch, semanticnodes }) => {
-        const { remoteaddr, semanticnode } = responsordispatch;
-        const params = {
-          remoteaddr,
-          semanticnodes: [{ id: semanticnode }]
-        };
-        return this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=reportforward`, params });
+        if (responsordispatch) {
+          const { remoteaddr, semanticnode } = responsordispatch;
+          const params = {
+            remoteaddr,
+            semanticnodes: [{ id: semanticnode }]
+          };
+          return this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=reportforward`, params });
+        } else {
+
+          this.$Message.error("不能上报");
+        }
+
       })
         .then(() => {
           this.getPlanList();
