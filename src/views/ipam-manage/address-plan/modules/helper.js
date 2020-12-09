@@ -566,11 +566,13 @@ export const hasGrandson = (nodes, id, allNodes = nodes) => {
   });
   if (children.length) {
     const grandsonIds = children.map(item => item.id);
-    const grandson = allNodes.find(node => {
+    const grandson = allNodes.filter(node => {
       return grandsonIds.includes(node.parentsemanticid);
     });
 
-    return !!grandson;
+    return grandson.some(item => {
+      return item.plannodes && item.plannodes.length;
+    });
   } else {
     return false;
   }

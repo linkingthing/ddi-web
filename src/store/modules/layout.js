@@ -1,11 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { cloneDeep } from "lodash";
-import {
-  getCurrentNode,
-  findNodeById,
-  executeTreeNodePrefix,
-  list2Tree
-} from "@/views/ipam-manage/address-plan/modules/helper";
+import { list2Tree } from "@/views/ipam-manage/address-plan/modules/helper";
+import router from "@/router";
 
 import { get } from "@/util/axios";
 const uuid = uuidv4();
@@ -85,6 +81,9 @@ const mutations = {
     }
   },
   setCurrentNodeId(state, currentNodeId) {
+    router.replace({
+      query: { currentNodeId }
+    });
     state.currentNodeId = currentNodeId;
   },
   // 传入node，有则修改，无则追加，所以叫save

@@ -56,7 +56,12 @@ export default {
         if (Array.isArray(val) && val.length) {
           this.treeData = cloneDeep(val);
           if (!this.currentNodeId) {
-            this.setCurrentNodeId(val[0].id);
+            const { currentNodeId } = this.$route.query;
+            if (currentNodeId) {
+              this.setCurrentNodeId(currentNodeId);
+            } else {
+              this.setCurrentNodeId(val[0].id);
+            }
           }
         }
       }
@@ -124,7 +129,7 @@ export default {
       return h("span", {
         class: {
           "ivu-tree-title-selected": data.id === this.currentNodeId,
-          
+
         },
         props: {
         },

@@ -308,14 +308,14 @@
           />
 
         </div>
-        <div class="SemanticContent-opera">
+        <!-- <div class="SemanticContent-opera">
           <Button
             type="primary"
             size="large"
             style="width: 300px;"
             @click="handleSave('保存成功')"
           >保存</Button>
-        </div>
+        </div> -->
       </section>
 
     </div>
@@ -510,7 +510,11 @@ export default {
     availableClearPlan() {
       const currentNodeId = this.currentNode && this.currentNode.id;
 
-      return hasGrandson(this.selectSemanticList, currentNodeId, this.nodes);
+      if (this.isCustomPlan) {
+        return hasGrandson(this.selectSemanticList, currentNodeId, this.nodes);
+      }
+
+      return hasGrandson(this.nodes, currentNodeId);
     },
     allAddressBlockCount() {
       let result = 0;
@@ -1014,7 +1018,7 @@ export default {
         }
       });
     },
-    
+
     handleSaveDispatch(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -1178,7 +1182,7 @@ export default {
 
           this.nodeEditVisible = false;
           this.setHasChange(true);
-
+          this.handleSave();
         }
       });
 
@@ -1535,7 +1539,7 @@ export default {
       overflow-x: hidden;
       overflow-y: auto;
       flex: 1;
-      height: calc(~"100vh - 580px");
+      height: calc(~"100vh - 530px");
       margin-right: -4px;
     }
   }

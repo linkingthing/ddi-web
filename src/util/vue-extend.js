@@ -11,6 +11,11 @@ moment.locale("zh-cn");
 
 const { getApiByRoute, getRouteByLink } = requestMethods;
 
+Vue.prototype.$Message.config({
+  // top: 100,
+  duration: 2
+});
+
 function showMessage(type, msg, scope) {
   let options = {
     content: msg,
