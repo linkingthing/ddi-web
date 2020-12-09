@@ -229,7 +229,8 @@ export default {
                 }
               }),
               h("btn-line", {
-                nativeOn: {
+
+                on: {
                   click: () => {
 
                     this.handleReportPlan(row);
@@ -237,7 +238,8 @@ export default {
                 },
 
                 props: {
-                  title: "上报规划"
+                  title: "上报规划",
+                  disabled: !row.responsordispatch
                 }
               }),
               h("btn-line", {

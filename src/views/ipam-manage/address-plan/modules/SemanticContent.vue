@@ -301,7 +301,7 @@
 
           <Table
             ref="selection"
-            style="width: calc(100vw - 660px);border: 1px solid #E6E6E6;border-bottom: none"
+            style="max-width: calc(100vw - 660px);border: 1px solid #E6E6E6;border-bottom: none"
             :columns="semanticColumns"
             :data="filterCurrentNodeChildren"
             @on-selection-change="handleSelectSemanticList"
@@ -510,7 +510,7 @@ export default {
     availableClearPlan() {
       const currentNodeId = this.currentNode && this.currentNode.id;
 
-      return hasGrandson(this.nodes, currentNodeId);
+      return hasGrandson(this.selectSemanticList, currentNodeId, this.nodes);
     },
     allAddressBlockCount() {
       let result = 0;
@@ -665,6 +665,18 @@ export default {
                 },
                 props: {
                   title: "下发"
+                }
+              }),
+              h("btn-line", {
+                style: {
+                  display: row.sponsordispatch ? "" : "none",
+                  marginRight: "10px"
+                },
+                nativeOn: {
+                  click: () => this.handleRepeal(row)
+                },
+                props: {
+                  title: "撤回"
                 }
               }),
               h("btn-edit", {
@@ -860,13 +872,12 @@ export default {
         this.$Message.info("地址步长请输入数字");
         return;
       }
+      this.changeCurrentNode("stepsize", +this.stepsize);
+
 
       const surplus = this.surplus;
 
       const willUseAddressBlockCount = shouldCreateLength * stepsize;
-
-      console.log(willUseAddressBlockCount, surplus, surplus < willUseAddressBlockCount);
-
 
 
       // 空间计算，总共 >= 已使用 + 将分配，
@@ -902,28 +913,19 @@ export default {
           };
         });
         this.semanticNodeList = semanticNodeList.concat(semanticNodes);
-        // this.setHasChange(true);
-        this.handleSave().then(() => {
-          // autoOneKey // 一键规划的情况下，定义get 完成的后重新计算事件，且需要 setHasChange 
-        });
+
+        if (this.semanticNodeList.length) {
+          const { autocreate } = this.semanticNodeList[0];
+          if (autocreate === planTypeEnum.ONEKEYPLAN) {
+            this.autoOneKey();
+            return;
+          }
+        }
+        this.handleSave();
 
       } else {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
-      }
-
-
-      // autoOneKey
-      if (this.semanticNodeList.length) {
-        const { autocreate } = this.semanticNodeList[0];
-        if (autocreate === planTypeEnum.ONEKEYPLAN) {
-
-          // 临时方案吧，事件是最佳策略，但代码量冗余
-          setTimeout(() => {
-            this.autoOneKey();
-          }, 600);
-          return;
-        }
       }
 
     },
@@ -946,6 +948,7 @@ export default {
         return false;
       });
       this.setHasChange(true);
+      this.handleSave();
     },
     checkfunc(ipv4str) {
       const ipv4s = ipv4str.split(",");
@@ -1011,7 +1014,7 @@ export default {
         }
       });
     },
-
+    
     handleSaveDispatch(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -1088,8 +1091,6 @@ export default {
 
       this.prefixMap = prefixMapTemp;
 
-      console.log(prefixMapTemp)
-
     },
     handleCountChange(item) {
       const maxCount = item.availableValueList.length + item.initCount;
@@ -1126,8 +1127,6 @@ export default {
 
           const { prefixMap } = node;
           const semanticNode = node.row;
-
-          console.log(prefixMap, "prefixMap")
 
           const semanticNodeList = this.semanticNodeList;
 
@@ -1187,8 +1186,6 @@ export default {
 
     handleOneKeyPlan() {
 
-      // const surplus = +this.surplus; // 剩余地址块数
-
       const prefixList = this.currentNodePrefix;
 
       const semanticNodeList = this.semanticNodeList;
@@ -1214,9 +1211,8 @@ export default {
           };
         });
         this.semanticNodeList = nodeList;
-        this.$Message.success("操作成功");
         this.setHasChange(true);
-
+        this.handleSave();
       } catch (e) {
         this.$Message.error("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
       }
@@ -1271,10 +1267,9 @@ export default {
           });
           this.semanticNodeList = nodeList;
           this.selectSemanticList = [];
-          this.$Message.success("操作成功");
           this.customPlanVisible = false;
           this.setHasChange(true);
-
+          this.handleSave();
         }
       });
 
@@ -1286,9 +1281,6 @@ export default {
         if (this.selectSemanticList.length > 0) {
 
           const semanticNodeList = this.semanticNodeList;
-
-          console.log(this.selectSemanticList, semanticNodeList)
-
           this.semanticNodeList = semanticNodeList.map(item => {
             const isSelect = this.selectSemanticList.find(select => {
               return select.id === item.id;
@@ -1310,7 +1302,7 @@ export default {
           });
           this.setHasChange(true);
           this.selectSemanticList = [];
-
+          this.handleSave();
         } else {
           this.$Message.info("请选择需要清空地址的子语义");
         }
@@ -1331,10 +1323,9 @@ export default {
           modified: modifiedEnum.STRUCTURED
         };
       });
-      this.$Message.success("操作成功");
       this.setHasChange(true);
       this.selectSemanticList = [];
-
+      this.handleSave();
     },
     handleSave(message = "保存成功") {
       this.changeCurrentNode("stepsize", +this.stepsize); // change stepsize，设置stepsize

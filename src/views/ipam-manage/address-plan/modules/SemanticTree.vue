@@ -75,6 +75,9 @@ export default {
 
     handleSelectNode(nodes, node) {
       // console.log("handleSelectNode", node, this.currentNodeId)
+      if (node.sponsordispatch) {
+        return;
+      }
       if (node.id !== this.currentNodeId) {
         if (this.hasChange) {
 
@@ -120,16 +123,20 @@ export default {
 
       return h("span", {
         class: {
-          "ivu-tree-title-selected": data.id === this.currentNodeId
+          "ivu-tree-title-selected": data.id === this.currentNodeId,
+          
         },
         props: {
         },
         style: {
           display: "inline-block",
-          width: "100%"
+          width: "100%",
+          cursor: data.sponsordispatch ? "not-allowed" : "pointer"
         }
       }, [
-        h("span", [
+        h("span", {
+
+        }, [
           h("Icon", {
             props: {
               type: "ios-paper-outline"
@@ -139,10 +146,24 @@ export default {
             }
           }),
           h("span", {
+            style: {
+              color: data.sponsordispatch ? "#777" : "#333"
+            },
             domProps: {
               innerHTML: name
             }
-          })
+          }),
+          h("span", {
+            style: {
+              display: data.sponsordispatch ? "inline-block" : "none",
+              fontSize: "12px",
+              color: "#fff",
+              background: "#01326F",
+              padding: "0 4px",
+              borderRadius: "4px",
+              marginLeft: "5px"
+            }
+          }, "已下发")
         ])
       ]);
     }

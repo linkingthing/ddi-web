@@ -560,13 +560,13 @@ export const planTypeEnum = {
   HANDLEPLAN: "handlePlan"
 };
 
-export const hasGrandson = (nodes, id) => {
+export const hasGrandson = (nodes, id, allNodes = nodes) => {
   const children = nodes.filter(node => {
     return node.parentsemanticid === id;
   });
   if (children.length) {
     const grandsonIds = children.map(item => item.id);
-    const grandson = nodes.find(node => {
+    const grandson = allNodes.find(node => {
       return grandsonIds.includes(node.parentsemanticid);
     });
 
