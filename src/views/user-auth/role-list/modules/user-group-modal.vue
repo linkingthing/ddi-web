@@ -241,9 +241,20 @@ export default {
       const params = { semanticName };
       this.$post({ url, params }).then((res) => {
         const semanticList = this.semanticListParser(res);
-        this.planList = [...this.planList, ...semanticList];
+        const result = [];
+        const all = [...this.planList, ...semanticList];
+        const idRecord = [];
+        all.forEach(item => {
+          if (!idRecord.includes(item.id)) {
+            result.push(item);
+            idRecord.push(item.id);
+          }
+        });
+
+        this.planList = result;
       }).catch(() => {
-        this.planList = this.semanticList;
+
+        // this.planList = this.semanticList;
       });
 
     },

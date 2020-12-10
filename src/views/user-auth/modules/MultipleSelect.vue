@@ -24,7 +24,7 @@
               v-if="item.name.length > 20 || item.prefixs"
             >
               <Tooltip
-                :content="item.prefixs || item.name"
+                :content="item.name"
                 max-width="300"
               >
                 {{item.name.slice(0, 20)}}...
@@ -57,7 +57,7 @@
           >
             <Tooltip
               placement="bottom-start"
-              :content="item && item.prefixs"
+              :content="item && item.name"
               max-width="300"
               :disabled="item && !item.prefixs"
             >
@@ -135,6 +135,7 @@ export default {
         if (Array.isArray(value) && JSON.stringify(value) !== JSON.stringify(old)) {
           this.selectedList = value.map(item => this.dataList.find(data => data.id === item) || { id: item, name: item });
         }
+
       }
     },
 
