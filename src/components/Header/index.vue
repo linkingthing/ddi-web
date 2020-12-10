@@ -146,24 +146,22 @@ import { cloneDeep } from "lodash";
 
 const mainMenuList = [
   {
-    title: "系统状态",
+    title: "系统详情",
     url: "/monitor",
     module: "monitor",
     icon: "icon-statistics"
   },
   {
-    title: "DNS管理",
-    url: "/dns",
-    module: "dns",
-    icon: "icon-dns"
-
-  },
-  {
-    title: "地址管理",
+    title: "资产治理",
     url: "/address",
     module: "address",
     icon: "icon-computer"
-
+  },
+  {
+    title: "域名服务",
+    url: "/dns",
+    module: "dns",
+    icon: "icon-dns"
   },
   {
     title: "系统管理",

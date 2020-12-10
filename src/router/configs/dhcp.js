@@ -12,7 +12,7 @@ export default {
   icon: "icon-dhcp",
   name: "dhcp-dhcp",
   meta: {
-    title: "DHCP服务",
+    title: "IP地址分配",
     range: "address",
     permission: "dhcpServe"
   },
@@ -25,7 +25,7 @@ export default {
           /* webpackChuckName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"
         ),
       meta: {
-        title: "地址池管理",
+        title: "子网管理",
         permission: "addressPoolManage"
       }
     },
