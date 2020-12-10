@@ -1,5 +1,5 @@
 <template>
-  <common-modal  
+  <common-modal
     :visible.sync="dialogVisible"
     :width="415"
     title="网络探测"
@@ -7,35 +7,122 @@
     :loading="loading"
   >
 
-    <div class="device-net-work">
-      <div class="info-row-inline">
-        <div class="info-row-label">探测地址</div>
-        <Input
-          disabled
-          maxlength="50"
-          v-model="administrationAddress"
-          placeholder="请输入探测地址"
-          class="info-row-input" />
-      </div>
+    <Form
+      :label-width="100"
+      ref="form"
+      :model="params"
+      :rules="rules"
+    >
+      <FormItem
+        label="是否开启"
+        prop="snmpEnabled"
+      >
+        <i-switch v-model="params.snmpEnabled">
+          <span slot="open">开</span>
+          <span slot="close">关</span>
+        </i-switch>
+      </FormItem>
 
-      <div class="info-row-inline">
-        <div class="info-row-label">SNMP探测端口</div>
-        <Input
-          maxlength="5"
-          v-model="snmpPort"
-          placeholder="请输入SNMP探测端口"
-          class="info-row-input" />
-      </div>
+      <FormItem
+        label="SNMP 版本"
+        prop="snmpVersion"
+      >
+        <RadioGroup v-model="params.snmpVersion">
+          <Radio label="v2c">SNMPV2</Radio>
+          <Radio label="v3">SNMPV3</Radio>
+        </RadioGroup>
+      </FormItem>
 
-      <div class="info-row-inline">
-        <div class="info-row-label">SNMP团体名</div>
+      <FormItem
+        label="SNMP团体名"
+        prop="snmpCommunity"
+      >
         <Input
-          maxlength="255"
-          v-model="snmpCommunity"
+          v-model="params.snmpCommunity"
           placeholder="请输入SNMP团体名"
-          class="info-row-input" />
-      </div>
-    </div>
+        />
+      </FormItem>
+
+      <template v-if="params.snmpVersion === 'v3'">
+        <FormItem
+          label="用户名称"
+          prop="snmpV3UserName"
+        >
+          <Input
+            v-model="params.snmpV3UserName"
+            placeholder="请输入用户名称"
+          />
+
+        </FormItem>
+
+        <FormItem
+          label="安全级别"
+          prop="snmpV3MsgFlag"
+        >
+          <Select v-model="params.snmpV3MsgFlag">
+            <Option
+              v-for="item in securityLevel"
+              :value="item.value"
+              :key="item.value"
+            >{{item.label}}</Option>
+          </Select>
+        </FormItem>
+
+        <template v-if="params.snmpV3MsgFlag !== 'no_auth_no_priv'">
+          <FormItem
+            label="认证协议"
+            prop="snmpV3AuthenticationProtocol"
+          >
+            <Select v-model="params.snmpV3AuthenticationProtocol">
+              <Option
+                v-for="item in authenticationProtocolList"
+                :value="item.value"
+                :key="item.value"
+              >{{item.label}}</Option>
+            </Select>
+          </FormItem>
+
+          <FormItem
+            label="认证密码"
+            prop="snmpV3AuthenticationPassphrase"
+          >
+            <Input
+              v-model="params.snmpV3AuthenticationPassphrase"
+              placeholder="请输入认证密码"
+            />
+          </FormItem>
+
+          <template v-if="params.snmpV3MsgFlag === 'auth_priv'">
+            <FormItem
+              label="加密协议"
+              prop="snmpV3PrivacyProtocol"
+            >
+              <Select v-model="params.snmpV3PrivacyProtocol">
+                <Option
+                  v-for="item in snmpV3PrivacyProtocolList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{item.label}}</Option>
+              </Select>
+            </FormItem>
+
+            <FormItem
+              label="加密密码"
+              prop="snmpV3PrivacyPassphrase"
+            >
+              <Input
+                v-model="params.snmpV3PrivacyPassphrase"
+                placeholder="请输入加密密码"
+              />
+            </FormItem>
+
+          </template>
+
+        </template>
+
+      </template>
+    </Form>
+
   </common-modal>
 </template>
 
@@ -56,27 +143,132 @@ export default {
   },
 
   data() {
+    this.securityLevel = [
+      {
+        label: "不认证不加密",
+        value: "no_auth_no_priv"
+      }, {
+        label: "认证不加密",
+        value: "auth_no_priv"
+      }, {
+        label: "认证且加密",
+        value: "auth_priv"
+      }
+    ];
+
+    this.authenticationProtocolList = [
+      {
+        label: "MD5",
+        value: "MD5"
+      },
+      {
+        label: "SHA",
+        value: "SHA"
+      },
+      // {
+      //   label: "SHA224",
+      //   value: "SHA224"
+      // },
+      // {
+      //   label: "SHA256",
+      //   value: "SHA256"
+      // },
+      // {
+      //   label: "SHA384",
+      //   value: "SHA384"
+      // },
+      // {
+      //   label: "SHA512",
+      //   value: "SHA512"
+      // }
+    ];
+
+    this.snmpV3PrivacyProtocolList = [
+      {
+        label: "DES",
+        value: "DES"
+      },
+      {
+        label: "AES",
+        value: "AES"
+      },
+      // {
+      //   label: "AES192",
+      //   value: "AES192"
+      // },
+      // {
+      //   label: "AES256",
+      //   value: "AES256"
+      // },
+      // {
+      //   label: "AES192C",
+      //   value: "AES192C"
+      // },
+      // {
+      //   label: "AES256C",
+      //   value: "AES256C"
+      // }
+    ];
+
+
     return {
       loading: false,
       dialogVisible: false,
       isEdit: false,
       url: this.$getApiByRoute().url,
-      administrationAddress: "",
-      snmpPort: 161,
-      snmpCommunity: "public"
+
+
+      params: {
+        snmpPort: 161,
+        snmpCommunity: "",
+        snmpEnabled: false,
+        snmpV3AuthenticationPassphrase: "",
+        snmpV3AuthenticationProtocol: "",
+        snmpV3MsgFlag: "",
+        snmpV3PrivacyPassphrase: "",
+        snmpV3PrivacyProtocol: "",
+        snmpV3UserName: "",
+        snmpVersion: "v2c"
+      }
     };
+  },
+
+  computed: {
+    rules() {
+      const self = this;
+      return {
+        snmpV3UserName: [{
+          required: true, message: "用户名必填"
+        }],
+        snmpCommunity: [{
+          required: self.params.snmpEnabled, message: "SNMP团体名必填"
+        }],
+        snmpV3AuthenticationProtocol: [{
+          required: true, message: "认证协议必填"
+        }],
+        snmpV3AuthenticationPassphrase: [{
+          required: true, message: "认证密码必填"
+        }],
+        snmpV3PrivacyProtocol: [{
+          required: true, message: "加密协议必填"
+        }],
+        snmpV3PrivacyPassphrase: [{
+          required: true, message: "加密密码必填"
+        }]
+      };
+    }
   },
 
   watch: {
     visible(val) {
       if (!val) return;
-      
+
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
       if (!val) {
-        this.setValue();
+        this.$refs.form.resetFields();
       }
 
       this.$emit("update:visible", val);
@@ -87,67 +279,41 @@ export default {
       handler(val) {
         this.isEdit = val && Object.keys(val).length;
 
-        this.setValue(val);
+        if (this.isEdit) {
+          Object.keys(this.params).forEach(item => {
+            this.params[item] = val[item];
+          });
+        }
       }
     }
   },
 
   methods: {
-    setValue(val) {
-      if (!val) val = {};
 
-      this.administrationAddress = val.administrationAddress || "";
-      this.snmpCommunity = val.snmpCommunity || "public";
-      this.snmpPort = val.snmpPort || 161;
-    },
+    handleConfirm() {
 
-    async handleConfirm() {
-      try {
-        await this.validate();
+      this.$refs.form.validate(valid => {
 
-        this.loading = true;
-        
-        let url = this.url + "/" + this.data.id + "?action=snmp";
+        if (valid) {
+          this.loading = true;
+          let url = this.url + "/" + this.data.id + "?action=snmp";
+          const params = this.params;
 
-        await this.$post({ url, params: this.getParams() });
-        
-        this.$$success("保存成功！");
+          this.$post({ url, params }).then(() => {
+            this.$Message.success("保存成功");
+            this.$emit("saved");
+            this.dialogVisible = false;
+            this.loading = false;
+          }).catch(err => {
+            this.loading = false;
+            this.$Message.error(err.response.data.message);
+          });
+        }
+      });
 
-        this.$emit("saved");
 
-        this.dialogVisible = false;
-      } 
-      catch (err) {
-        this.$handleError(err);
-      }
-      finally {
-        this.loading = false;
-      }
-    },
-
-    validate() {
-      let { snmpCommunity, snmpPort } = this;
-
-      snmpCommunity = snmpCommunity.trim();
-      snmpPort = snmpPort.toString().trim();
-
-      if (!portIsValidate(snmpPort)) {
-        return Promise.reject({ message: "请输入正确的SNMP探测端口号！" });
-      }
-
-      if (!/^[a-zA-Z0-9]+$/g.test(snmpCommunity)) {
-        return Promise.reject({ message: "请输入正确的SNMP团体名！" });
-      }
-
-      return Promise.resolve();
-    },
-
-    getParams() {
-      return {
-        community: this.snmpCommunity.trim(),
-        port: parseInt(this.snmpPort.toString().trim())
-      };
     }
+
   }
 };
 </script>
