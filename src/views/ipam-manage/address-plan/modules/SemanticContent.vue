@@ -658,6 +658,9 @@ export default {
           key: "action",
           width: 240,
           render: (h, { row }) => {
+
+            const has = !!this.nodes.find(item => item.parentsemanticid === row.id);
+            console.log(has)
             return h("div", [
               h("btn-line", {
                 style: {
@@ -697,6 +700,9 @@ export default {
               h("btn-del", {
                 on: {
                   click: () => this.handleDeleteSemantic(row)
+                },
+                props: {
+                  disabled: !!row.sponsordispatch || has
                 }
               })
             ]);
@@ -704,7 +710,8 @@ export default {
 
         }
       ]
-    }
+    },
+
   },
   watch: {
     currentNode: {
@@ -781,7 +788,6 @@ export default {
     ...mapActions([
       "getCurrentPlanInfo"
     ]),
-
     handleSetNextBitWidth() {
       const bitWidth = Number(this.tempBitWidth);
       if (Number.isNaN(bitWidth)) {
