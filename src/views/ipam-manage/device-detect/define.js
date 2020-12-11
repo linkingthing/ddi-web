@@ -20,7 +20,7 @@ export const columns = scope => [
     width: 140
   },
   {
-    title: "MAC",
+    title: "设备MAC",
     key: "administrationMac",
     width: 200
   },

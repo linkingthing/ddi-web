@@ -982,7 +982,7 @@ export default {
         return false;
       });
       this.setHasChange(true);
-
+      this.handleSave();
     },
     handleDeleteSemantic(row) {
       this.$Modal.confirm({

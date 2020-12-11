@@ -13,11 +13,11 @@ export const formItemList = isNew => [
     placeholder: "请输入设备名称"
   },
   {
-    label: "管理IP",
+    label: "管理地址",
     model: "administrationAddress",
     type: "input",
     maxlength: 50,
-    placeholder: "请输入管理IP"
+    placeholder: "请输入管理地址"
   },
   {
     label: "设备类型",
@@ -27,10 +27,10 @@ export const formItemList = isNew => [
     placeholder: "请选择设备类型"
   },
   {
-    label: "MAC",
+    label: "设备MAC",
     model: "administrationMac",
     type: "input",
-    placeholder: "请输入MAC"
+    placeholder: "请输入设备MAC"
   },
   {
     label: "序列号",
@@ -112,11 +112,11 @@ export const formItemList = isNew => [
 
 const validateIP = (rule, value, callback) => {
   if (!value) {
-    return callback(new Error("请输入管理IP"));
+    return callback(new Error("请输入管理地址"));
   }
 
   if (!isIp(value)) {
-    callback(new Error("请输入正确的管理IP"));
+    callback(new Error("请输入正确的管理地址"));
   } else {
     callback();
   }
