@@ -165,10 +165,10 @@ export const rules = {
     }
   ],
   deviceType: [
-    {
-      required,
-      message: "请选择设备类型"
-    }
+    // {
+    //   required,
+    //   message: "请选择设备类型"
+    // }
   ],
   telephone: [
     {
