@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isIp } from "@/util/common";
+import { isIp, ipv6IsValid, ipv4IsValid } from "@/util/common";
 import { ttlValidator } from "@/util/validator";
 
 export default {
@@ -45,39 +45,6 @@ export default {
 
   data() {
 
-    this.rules = {
-      name: [
-        { required: true, message: "请填写区名称" },
-        {
-          validator: (rule, value, callback) => {
-            if (this.formModel.isarpa === "true") {
-              const [ip, len] = value.split("/");
-              const arr = [8, 16, 24];
-              if (isIp(ip)) {
-                if (arr.includes(Number(len))) {
-                  callback();
-                } else {
-                  callback("子网范围只能是8/16/24三种之一");
-                }
-              } else {
-                callback("请正确填写区名称");
-              }
-
-            }
-            callback();
-          }
-        }
-      ],
-      isarpa: [
-        { required: true, message: "请选择区类型" }
-      ],
-      ttl: [
-        { required: true, message: "请填写TTL" },
-        {
-          validator: ttlValidator
-        }
-      ]
-    };
     return {
       formModel: {
         zonetype: "master",
@@ -96,6 +63,55 @@ export default {
     },
     isEdit() {
       return !!this.links.update;
+    },
+    rules() {
+      const isEdit = this.isEdit;
+      return {
+        name: [
+          { required: true, message: "请填写区名称" },
+          {
+            validator: (rule, value, callback) => {
+              if (isEdit) {
+                callback();
+              }
+              console.log(isEdit, this.formModel)
+              if (this.formModel.isarpa === "true") {
+                const [ip, len] = value.split("/");
+
+                if (ipv6IsValid(value)) {
+                  if (Number(len) > 64) {
+                    callback("IPv6地址前缀不能超过64");
+                  }
+                  if (Number(len) <= 0) {
+                    callback("IPv6地址前缀不能小于等于0");
+                  }
+
+                } else if (ipv4IsValid(value)) {
+                  if (Number(len) > 32) {
+                    callback("IPv4地址前缀不能超过64");
+                  }
+                  if (Number(len) <= 0) {
+                    callback("IPv4地址前缀不能小于等于0");
+                  }
+                } else {
+                  callback("请正确填写区名称");
+                }
+
+              }
+              callback();
+            }
+          }
+        ],
+        isarpa: [
+          { required: true, message: "请选择区类型" }
+        ],
+        ttl: [
+          { required: true, message: "请填写TTL" },
+          {
+            validator: ttlValidator
+          }
+        ]
+      };
     },
     formItemList() {
       return [
