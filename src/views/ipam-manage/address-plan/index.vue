@@ -129,6 +129,24 @@ export default {
           title: "规划名称",
           key: "name",
           align: "left",
+          render: (h, { row }) => {
+            return h("a", {
+              attrs: {
+                href: "javascript:;"
+              },
+              on: {
+                click: () => {
+                  const { links } = row;
+                  let url = this.$getRouteByLink(links.self, "address");
+                  this.$router.push({
+                    path: url
+                  });
+                }
+              }
+            }, row.name);
+
+
+          }
           // render: (h, { row }) => {
           //   return h("line-edit",
           //     {
@@ -149,28 +167,28 @@ export default {
           title: "IPv6前缀",
           key: "prefixs",
           align: "left",
-          render: (h, { row }) => {
-            // if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
-            return h("a", {
-              attrs: {
-                href: "javascript:;"
-              },
-              on: {
-                click: () => {
-                  const { links } = row;
-                  let url = this.$getRouteByLink(links.self, "address");
-                  this.$router.push({
-                    path: url
-                  });
-                }
-              }
-            }, row.prefixs);
-            // }
-            // else {
-            //   return h("div", row.prefixs);
-            // }
+          // render: (h, { row }) => {
+          //   // if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
+          //   return h("a", {
+          //     attrs: {
+          //       href: "javascript:;"
+          //     },
+          //     on: {
+          //       click: () => {
+          //         const { links } = row;
+          //         let url = this.$getRouteByLink(links.self, "address");
+          //         this.$router.push({
+          //           path: url
+          //         });
+          //       }
+          //     }
+          //   }, row.prefixs);
+          //   // }
+          //   // else {
+          //   //   return h("div", row.prefixs);
+          //   // }
 
-          }
+          // }
         },
         // {
         //   title: "安全锁",
