@@ -21,7 +21,7 @@
           alt=""
         >
       </span>
-      <span
+      <!-- <span
         class="map-tool-icon"
         style="border-radius:  4px;background: #47CFE7;margin-top: 12px"
         @click="handleSavePicture"
@@ -30,7 +30,7 @@
           src="./map-export.png"
           alt=""
         >
-      </span>
+      </span> -->
     </div>
     <VueTree
       :style="`min-height: calc(100vh - ${seat}px)`"
@@ -221,8 +221,7 @@ export default {
     handleSavePicture() {
       const mapRef = this.$refs.mapTreeRef.$refs.container;
 
-      const { width, height, linksData, offsetX, offsetY, scaleNum, nodeDataList, linkDataList, } = this.renderData;
-      console.dir(mapRef)
+      let { width, height, linksData, offsetX, offsetY, scaleNum, nodeDataList, linkDataList, } = this.renderData;
 
       const { offsetHeight, offsetWidth } = mapRef;
 
@@ -230,14 +229,20 @@ export default {
       window.pageYoffset = 0;
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      // scaleNum = 1;
+      console.log(offsetX, offsetY, offsetHeight, offsetWidth)
       html2canvas(mapRef, {
         width: (width + 200) * scaleNum,
         height: (height + 200) * scaleNum,
+
+
         scale: 1 / scaleNum,
-        x: -offsetX * (scaleNum / 2),
-        y: -offsetY * (scaleNum / 2)
+        // x: (offsetX) + 74,
+        x: offsetX + 200,
+
+        y: offsetY + 200 - 74
       }).then(function (canvas) {
-        // document.body.appendChild(canvas);
+        document.body.appendChild(canvas);
         console.dir(canvas)
         const a = document.createElement("a");
         a.download = "map.png";

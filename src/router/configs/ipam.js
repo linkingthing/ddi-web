@@ -115,14 +115,14 @@ export default {
 
       }
     },
-    {
-      name: 'topology',
-      path: '/address/ipam/topology',
-      component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/topology"),
-      meta: {
-        title: "网络拓扑",
-        permission: "netTopology"
-      }
-    }
+    // {
+    //   name: 'topology',
+    //   path: '/address/ipam/topology',
+    //   component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/topology"),
+    //   meta: {
+    //     title: "网络拓扑",
+    //     permission: "netTopology"
+    //   }
+    // }
   ]
 }

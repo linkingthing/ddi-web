@@ -132,7 +132,8 @@ export default {
       initTransformX: 0,
       initTransformY: 0,
       DIRECTION,
-      zoom: 1
+      zoom: 1,
+      scaleNum: 0
     };
   },
   computed: {
@@ -144,7 +145,18 @@ export default {
   },
   watch: {
     dataset() {
+      this.needResetScale = true;
       this.draw();
+    },
+    scaleNum() {
+      this.$emit("on-render", {
+        width: this.width,
+        height: this.height,
+        linksData: this.linksData,
+        offsetX: this.offsetX,
+        offsetY: this.offsetY,
+        scaleNum: this.scaleNum || 1
+      });
     }
   },
   created() {
@@ -211,6 +223,7 @@ export default {
         targetTransform = originTransformStr + ` scale(${scaleNum})`;
       }
       this.scaleNum = scaleNum;
+
       this.$refs.svg.style.transform = targetTransform;
       this.$refs.domContainer.style.transform = targetTransform;
     },
@@ -228,6 +241,25 @@ export default {
       }
       return rootNode;
     },
+    autoScale() {
+      const width = this.width || 0;
+      const height = this.height || 0;
+
+      const containerWidth = this.$refs.container.offsetWidth;
+      const containerHeight = this.$refs.container.offsetHeight;
+      if (width / containerWidth > 1 || height / containerHeight > 1) {
+        if (width / containerWidth > height / containerHeight) {
+          // TODO
+        } else {
+          let scale = (containerHeight - this.seat) / (height);
+          this.zoom = scale;
+          this.scaleNum = scale;
+          this.$nextTick().then(() => {
+            this.setScale(scale);
+          });
+        }
+      }
+    },
     initTransform() {
       const width = this.width || 0;
       const height = this.height || 0;
@@ -241,31 +273,24 @@ export default {
         this.initTransformX = Math.floor(this.config.nodeWidth);
         this.initTransformY = Math.floor(containerHeight / 2);
 
-        let scale = 1;
-        if (width / containerWidth > 1 || height / containerHeight > 1) {
-          if (width / containerWidth > height / containerHeight) {
-            this.setScale(containerWidth / (width + this.config.nodeWidth));
+
+        if (this.needResetScale) {
+          this.autoScale();
+          this.needResetScale = false;
+          let scale = this.scaleNum;
+
+          if (width < containerWidth) {
+            this.initTransformX = (containerWidth - (width)) / 2;
           } else {
-            scale = (containerHeight - this.seat) / (height + 2 * this.config.nodeHeight);
-            this.zoom = scale;
-            this.$nextTick().then(() => {
-              this.setScale(scale);
-            });
+            this.initTransformX = (containerWidth - (width) * scale) / 2;
+          }
+          if (height < containerHeight) {
+            this.initTransformY = (containerHeight) / 2;
+          } else {
+            this.initTransformY = (containerHeight - (height - 2 * this.config.nodeHeight) * scale) / 2;
+            this.initTransformX = (containerWidth - (width) * scale) / 2;
           }
         }
-
-        if (width < containerWidth) {
-          this.initTransformX = (containerWidth - (width)) / 2;
-        } else {
-          this.initTransformX = (containerWidth - (width) * scale) / 2;
-        }
-        if (height < containerHeight) {
-          this.initTransformY = (containerHeight) / 2;
-        } else {
-          this.initTransformY = (containerHeight - height * scale) / 2;
-          this.initTransformX = (containerWidth - (width) * scale) / 2;
-        }
-
 
       }
 

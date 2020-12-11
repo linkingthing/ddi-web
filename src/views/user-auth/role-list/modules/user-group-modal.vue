@@ -102,8 +102,8 @@ export default {
       formModel: {
         name: "",
         semantics: [],
-        views: []
-
+        views: [],
+        comment: ""
       },
       loading: false,
       dialogVisible: false,
@@ -204,8 +204,19 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    }
+    },
+    "formModel.semantics"() {
+      if (this.dialogVisible) {
+        this.$refs["formInline"].validate();
 
+      }
+
+    },
+    "formModel.views"() {
+      if (this.dialogVisible) {
+        this.$refs["formInline"].validate();
+      }
+    }
   },
 
   created() {
