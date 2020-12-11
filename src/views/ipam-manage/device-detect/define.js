@@ -156,11 +156,11 @@ export const deviceTypes = [
   },
   {
     text: "无线AP",
-    label: "wirelessAp"
+    label: "wireless_ap"
   },
   {
     text: "无线AC控制器",
-    label: "wirelessAc"
+    label: "wireless_ac"
   },
   {
     text: "其他",

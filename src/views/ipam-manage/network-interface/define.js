@@ -135,7 +135,7 @@ function showFix(row) {
   return false;
 }
 
-export const typeColors = ["#f9904a", "#4586FE", "#63D58B", "#76DCEB"];
+export const typeColors = ["#06DFE9", "#0E90FF", "#97DB24", "#6E6EF5"];
 export const statusColors = ["#1EE9CA", "#1272FF", "#FF6464", "#FFB83C"];
 
 const noDataColors = ["#ebebeb"];

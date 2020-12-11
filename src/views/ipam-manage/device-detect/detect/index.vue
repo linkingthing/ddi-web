@@ -219,12 +219,11 @@ export default {
 
 
       params: {
-        snmpPort: 161,
         snmpCommunity: "",
         snmpEnabled: false,
         snmpV3AuthenticationPassphrase: "",
         snmpV3AuthenticationProtocol: "",
-        snmpV3MsgFlag: "",
+        snmpV3MsgFlag: "no_auth_no_priv",
         snmpV3PrivacyPassphrase: "",
         snmpV3PrivacyProtocol: "",
         snmpV3UserName: "",
@@ -281,7 +280,7 @@ export default {
 
         if (this.isEdit) {
           Object.keys(this.params).forEach(item => {
-            this.params[item] = val[item];
+            this.params[item] = val[item] || this.params[item];
           });
         }
       }
