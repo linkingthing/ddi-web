@@ -247,7 +247,9 @@ export default {
                   click: () => this.handleDelete(row)
                 },
                 props: {
-                  title: "删除"
+                  title: "删除",
+                  disabled: !!row.responsordispatch
+
                 }
               })
             ]);
