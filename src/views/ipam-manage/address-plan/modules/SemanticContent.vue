@@ -520,7 +520,7 @@ export default {
       let result = 0;
       if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
         const { subnodebitwidth } = this.currentNode;
-        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 2)
+        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 1)
       }
       return result;
     },
@@ -542,14 +542,14 @@ export default {
               return result + prev;
             }, 0);
 
-        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 2) - childrenLen;
+        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 1) - childrenLen;
       }
       return result;
     },
     dataDetail() {
       const prefix = this.currentNodePrefix;
       const subnodebitwidth = this.currentNode ? this.currentNode.subnodebitwidth : 0;
-      const count = subnodebitwidth ? 2 ** Number(subnodebitwidth) - 2 : 0;
+      const count = subnodebitwidth ? 2 ** Number(subnodebitwidth) - 1 : 0;
 
       return prefix.map(item => {
         const minAblePlan = executeNextIpv6Segment(item, 1, subnodebitwidth);
