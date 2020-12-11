@@ -21,6 +21,8 @@ import ChoosePlanWayModal from "./ChoosePlanWayModal";
 import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
 import eventBus from "@/util/bus";
 
+import ableReport from "./able-report.png";
+import alreadyDispatch from "./already-dispatch.png";
 
 export default {
   components: {
@@ -126,6 +128,13 @@ export default {
         name = name.split(this.keywords).join(`<span style="color: #f02828">${transfer(this.keywords)}</span>`);
       }
 
+      let src = ableReport;
+      if (data.sponsordispatch) {
+        if (data.sponsordispatch) {
+          src = alreadyDispatch;
+        }
+      }
+
       return h("span", {
         class: {
           "ivu-tree-title-selected": data.id === this.currentNodeId,
@@ -158,17 +167,22 @@ export default {
               innerHTML: name
             }
           }),
-          h("span", {
+          h("img", {
+            attrs: {
+              src,
+            },
             style: {
               display: data.sponsordispatch ? "inline-block" : "none",
-              fontSize: "12px",
-              color: "#fff",
-              background: "#01326F",
-              padding: "0 4px",
-              borderRadius: "4px",
-              marginLeft: "5px"
+              // fontSize: "12px",
+              // color: "#fff",
+              // background: "#01326F",
+              // padding: "0 4px",
+              // borderRadius: "4px",
+              marginLeft: "5px",
+              width: "37px",
+              height: "13px"
             }
-          }, "已下发")
+          })
         ])
       ]);
     }
