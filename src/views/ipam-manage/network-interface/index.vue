@@ -134,6 +134,7 @@
               placeholder="请输入IP地址"
               class="top-input"
               @on-enter="getList"
+              clearable
             />
           </div>
           <div class="condition-item">
@@ -143,6 +144,7 @@
               placeholder="请输入MAC"
               class="top-input"
               @on-enter="getList"
+              clearable
             />
           </div>
 
