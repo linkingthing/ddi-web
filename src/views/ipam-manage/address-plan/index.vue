@@ -374,6 +374,7 @@ export default {
 
       })
         .then(() => {
+          this.$Message.success("上报成功");
           this.getPlanList();
         }).catch(err => {
           this.$Message.error(err.response.data.message);

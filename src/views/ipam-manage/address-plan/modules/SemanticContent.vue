@@ -1025,6 +1025,8 @@ export default {
           const params = this.dispatchParams;
           this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=dispatchforward`, params }).then(res => {
             this.getPlanInfo();
+            this.dispatchVisible = false;
+            this.$Message.success("下发成功");
           }).catch(err => {
             this.$Message.error(err.response.data.message);
           });
