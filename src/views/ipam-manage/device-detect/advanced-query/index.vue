@@ -79,6 +79,7 @@ export default {
       this.$emit("comfirmed", this.formModel);
 
       this.dialogVisible = false;
+      this.initForm();
     }
   }
 };

@@ -668,7 +668,6 @@ export default {
                 },
                 props: {
                   title: "下发",
-                  disabled: !!row.sponsordispatch
                 }
               }),
               h("btn-line", {
