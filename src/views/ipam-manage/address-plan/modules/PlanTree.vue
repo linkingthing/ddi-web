@@ -45,12 +45,18 @@
       <template v-slot:node="{ data, node, collapsed ,nodeDataList, index}">
         <div
           @click="handleSelectTreeNode(data, node, collapsed ,nodeDataList )"
-          :class="{activeNode:data.id ===active.id, activeDepth: active.siblingsId.includes(data.id)}"
+          :class="{activeNode:data.id === active.id, activeDepth: active.siblingsId.includes(data.id)}"
           class="rich-node"
           :style="{ border: collapsed ? '2px solid grey' : '' }"
         >
 
-          <h3 class="name">{{ data.name }}</h3>
+          <h3 class="name">{{ data.name }}
+            <img
+              v-if="data.sponsordispatch"
+              :src=" data.sponsordispatch.issponsor ? ableReport : alreadyDispatch"
+              alt=""
+            >
+          </h3>
           <div v-if="Array.isArray(data.planchildren)">
             <p
               class="s-ipv6"
@@ -91,6 +97,8 @@ import { v4 as uuidv4 } from "uuid";
 import { ipv4IsValid, isIpv4Segment } from "@/util/common";
 import html2canvas from "html2canvas";
 
+import ableReport from "./able-report.png";
+import alreadyDispatch from "./already-dispatch.png";
 
 export default {
   components: {
@@ -107,6 +115,8 @@ export default {
     }
   },
   data() {
+    this.ableReport = ableReport;
+    this.alreadyDispatch = alreadyDispatch;
     return {
       treeData: {
         name: "g",
