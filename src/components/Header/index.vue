@@ -67,6 +67,7 @@
           </Dropdown>
 
           <Icon
+            v-if="isSuper"
             :type="showAgentEvent? 'ios-arrow-dropup' : 'ios-arrow-dropdown'"
             style="font-size: 20px; cursor: pointer"
             @click="showAgentEvent = !showAgentEvent"
@@ -251,6 +252,9 @@ export default {
       "alarmCount",
       "agentEventAll"
     ]),
+    isSuper() {
+      return this.userType === USERTYPE_SUPER;
+    },
     mainMenuList() {
       const userType = this.userType;
       const { rangeList } = this.$store.getters;
