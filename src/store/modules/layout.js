@@ -138,6 +138,7 @@ const actions = {
         node.prefixs = prefixArr;
 
         node.addressCount = node.plannodes.length;
+
       });
 
       commit("setNodes", semanticnodes);
