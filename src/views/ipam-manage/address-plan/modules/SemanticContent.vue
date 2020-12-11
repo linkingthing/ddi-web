@@ -567,7 +567,7 @@ export default {
         // console.log(item)
         return {
           ...item,
-          showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `[\n  ${item.prefixs.join(",\n  ")}\n]` : "_ _"
+          showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `${item.prefixs.join(",\n")}` : "_ _"
         };
       });
     },
@@ -624,7 +624,7 @@ export default {
           title: "IPv4子网",
           key: "ipv4s",
           render: (h, { row }) => {
-            const content = (row.ipv4s && row.ipv4s.length) ? ` ${row.ipv4s.join(",")}` : "_ _";
+            const content = (row.ipv4s && row.ipv4s.length) ? `${row.ipv4s.join(", \n")}` : "_ _";
             let ref = "lineEditRef";
             let lineEditRef = this.$createElement("line-edit", {
               ref,
