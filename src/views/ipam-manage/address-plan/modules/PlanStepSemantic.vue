@@ -52,6 +52,6 @@ export default {
   display: flex;
   padding: 76px 20px 0px;
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
 }
 </style>

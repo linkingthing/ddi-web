@@ -583,7 +583,7 @@ export default {
         ...selection,
         {
           type: "index",
-          width: 80,
+          width: 80
         },
         {
           title: "语义名称",
@@ -656,31 +656,32 @@ export default {
         {
           title: "操作",
           key: "action",
-          width: 190,
+          width: 240,
           render: (h, { row }) => {
             return h("div", [
               h("btn-line", {
                 style: {
-                  display: !row.sponsordispatch ? "" : "none",
                   marginRight: "10px"
                 },
                 nativeOn: {
                   click: () => this.handleDispath(row)
                 },
                 props: {
-                  title: "下发"
+                  title: "下发",
+                  disabled: !!row.sponsordispatch
                 }
               }),
               h("btn-line", {
                 style: {
-                  display: row.sponsordispatch ? "" : "none",
                   marginRight: "10px"
                 },
                 nativeOn: {
                   click: () => this.handleRepeal(row)
                 },
                 props: {
-                  title: "撤回"
+                  title: "撤回",
+                  disabled: !row.sponsordispatch
+
                 }
               }),
               h("btn-edit", {
