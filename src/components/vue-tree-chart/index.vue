@@ -95,6 +95,10 @@ function rotatePoint({ x, y }) {
 export default {
   name: "vue-tree",
   props: {
+    seat: {
+      type: Number,
+      default: 100
+    },
     config: {
       type: Object,
       default: () => {
@@ -147,7 +151,7 @@ export default {
     this.addUniqueKey(this.dataset);
   },
   mounted() {
-    this.init();
+
     const container = this.$refs.container;
     container.addEventListener("mousewheel", (e) => {
       this.zoom += event.wheelDelta / 1200;
@@ -161,7 +165,7 @@ export default {
       }
       this.setScale(this.zoom);
     }, false);
-
+    this.init();
   },
   methods: {
     init() {
@@ -225,14 +229,44 @@ export default {
       return rootNode;
     },
     initTransform() {
-      const containerWidth = document.body.offsetWidth;
-      const containerHeight = document.body.offsetHeight;
+      const width = this.width || 0;
+      const height = this.height || 0;
+
+      const containerWidth = this.$refs.container.offsetWidth;
+      const containerHeight = this.$refs.container.offsetHeight;
       if (this.isVertial()) {
         this.initTransformX = Math.floor(containerWidth / 2);
         this.initTransformY = Math.floor(this.config.nodeHeight);
       } else {
         this.initTransformX = Math.floor(this.config.nodeWidth);
         this.initTransformY = Math.floor(containerHeight / 2);
+
+        let scale = 1;
+        if (width / containerWidth > 1 || height / containerHeight > 1) {
+          if (width / containerWidth > height / containerHeight) {
+            this.setScale(containerWidth / (width + this.config.nodeWidth));
+          } else {
+            scale = (containerHeight - this.seat) / (height + 2 * this.config.nodeHeight);
+            this.zoom = scale;
+            this.$nextTick().then(() => {
+              this.setScale(scale);
+            });
+          }
+        }
+
+        if (width < containerWidth) {
+          this.initTransformX = (containerWidth - (width)) / 2;
+        } else {
+          this.initTransformX = (containerWidth - (width) * scale) / 2;
+        }
+        if (height < containerHeight) {
+          this.initTransformY = (containerHeight) / 2;
+        } else {
+          this.initTransformY = (containerHeight - height * scale) / 2;
+          this.initTransformX = (containerWidth - (width) * scale) / 2;
+        }
+
+
       }
 
       this.offsetX = this.initTransformX;
@@ -301,7 +335,6 @@ export default {
     // 使用扇形数据开始绘图
     draw() {
       const [nodeDataList, linkDataList] = this.buildTree(this.dataset);
-
       this.releaseRenderData(nodeDataList, linkDataList);
       this.linkDataList = linkDataList;
       this.svg = this.d3.select(this.$refs.svg);
@@ -339,6 +372,8 @@ export default {
         .remove();
 
       this.nodeDataList = nodeDataList;
+
+      this.initTransform();
 
     },
     buildTree(rootNode) {
@@ -471,6 +506,8 @@ export default {
       this.height = height;
 
       this.$emit("on-render", {
+        nodeDataList,
+        linkDataList,
         width: this.width,
         height: this.height,
         linksData: this.linksData,

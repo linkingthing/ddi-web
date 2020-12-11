@@ -166,13 +166,12 @@ function renderIp(h, row, field, status, scope) {
 
 export const columns = scope => [
   {
-    title: "MAC",
-    key: "mac",
-    align: "left",
+    title: "终端名称",
+    key: "name",
     width: 180,
-    tooltip,
-    fixed: "left"
+    tooltip
   },
+ 
   {
     title: "终端状态",
     key: "deviceState",
@@ -205,6 +204,13 @@ export const columns = scope => [
     }
   },
   {
+    title: "MAC",
+    key: "mac",
+    align: "left",
+    width: 180,
+    tooltip
+  },
+  {
     title: "IPv4地址",
     width: 180,
     tooltip,
@@ -220,12 +226,6 @@ export const columns = scope => [
     }
   },
 
-  {
-    title: "终端名称",
-    key: "name",
-    width: 180,
-    tooltip
-  },
   {
     title: "终端类型",
     key: "deviceTypeText",

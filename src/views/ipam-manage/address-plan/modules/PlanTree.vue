@@ -33,9 +33,10 @@
       </span>
     </div>
     <VueTree
-      style="min-height: calc(100vh - 100px);"
+      :style="`min-height: calc(100vh - ${seat}px)`"
       :dataset="treeData"
       :config="config"
+      :seat="seat"
       direction="horizontal"
       link-style="straight"
       ref="mapTreeRef"
@@ -96,6 +97,10 @@ export default {
     VueTree
   },
   props: {
+    seat: {
+      type: Number,
+      default: 100
+    },
     data: {
       type: Array,
       default: () => []
@@ -195,12 +200,32 @@ export default {
     handleRenderData(data) {
       console.log(data, 666)
       this.renderData = data;
+      // const canvas = document.createElement("canvas");
+      // var ctx = canvas.getContext("2d");
+
+      // canvas.width = 800;
+      // canvas.height = 800;
+      // canvas.style.background = "#ddd"
+      // document.body.appendChild(canvas);
+
+      // data.nodeDataList.forEach(node => {
+
+      // });
+
+      console.log(this.$refs.mapTreeRef, "tree")
+
+      // this.$refs.mapTreeRef.setScale(.1)
+
+
     },
     handleSavePicture() {
       const mapRef = this.$refs.mapTreeRef.$refs.container;
 
-      const { width, height, linksData, offsetX, offsetY, scaleNum } = this.renderData;
+      const { width, height, linksData, offsetX, offsetY, scaleNum, nodeDataList, linkDataList, } = this.renderData;
       console.dir(mapRef)
+
+      const { offsetHeight, offsetWidth } = mapRef;
+
 
       window.pageYoffset = 0;
       document.documentElement.scrollTop = 0;
@@ -212,34 +237,13 @@ export default {
         x: -offsetX * (scaleNum / 2),
         y: -offsetY * (scaleNum / 2)
       }).then(function (canvas) {
-        document.body.appendChild(canvas);
+        // document.body.appendChild(canvas);
         console.dir(canvas)
-        // console.log(canvas.transferControlToOffscreen())
         const a = document.createElement("a");
         a.download = "map.png";
         a.href = canvas.toDataURL("image/png");
         a.click();
       });
-      // const serializer = new XMLSerializer();
-      //       console.dir( serializer.serializeToString(mapRef))
-
-      // const source = '<?xml version="1.0" standalone="no"?>\r\n' + serializer.serializeToString(mapRef);
-      // const image = new Image;
-      // image.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
-      // const canvas = document.createElement("canvas");
-      // [canvas.width, canvas.height] = [1200, 2000];
-
-      // const context = canvas.getContext("2d");
-      // context.fillStyle = "#fff"; // #fff设置保存后的PNG 是白色的  
-      // context.fillRect(0, 0, 10000, 10000);
-      // image.onload = function () {
-      //   context.drawImage(image, 0, 0);
-      //   const a = document.createElement("a");
-      //   a.download = "map.png";
-      //   a.href = canvas.toDataURL("image/png");
-      //   a.click();
-      // };
-
 
     }
 
