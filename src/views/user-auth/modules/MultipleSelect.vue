@@ -21,7 +21,7 @@
           >
             <div
               class="ellipsis"
-              v-if="item.name.length > 20 || item.prefixs"
+              v-if="item.name.length > 20"
             >
               <Tooltip
                 :content="item.name"
