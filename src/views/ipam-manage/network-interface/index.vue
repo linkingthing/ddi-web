@@ -463,7 +463,11 @@ export default {
 
       this.currentType = type;
 
-      this.condition.ipstate = type;
+      this.condition = {
+        ipstate: type,
+        ipAddress: "",
+        mac: ""
+      };
 
       this.$router.replace({
         query: {
