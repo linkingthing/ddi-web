@@ -141,7 +141,7 @@ export default [
     name: "IPAM管理",
     id: "ipamManage",
     module: "address",
-    resouces: ["plan"]
+    resouces: ["asset"]
   },
   {
     name: "IP地址规划",

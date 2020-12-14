@@ -10,66 +10,21 @@ export default {
   path: "/address",
   component: Layout,
   meta: {
-    title: "IPAM管理",
+    title: "资产管理",
     range: "address",
     permission: "ipamManage"
 
   },
   name: "ipam-manage",
-  icon: "icon-ipam",
-  redirect: { name: "ipam-address-plan" },
+  icon: "icon-asset-management",
+  redirect: { name: "ipam-address-manage" },
   children: [
-    {
-      name: 'ipam-address-plan',
-      path: '/address/ipam/plans',
-      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan'),
-      meta: {
-        title: "IP地址规划",
-        permission: "ipAddressPlan"
-      }
-    },
-
-    {
-      name: 'ipam-address-plan-create',
-      path: '/address/ipam/plans/create',
-      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
-      meta: {
-        title: "语义规划",
-        notInMenu: true,
-        from: "ipam-address-plan",
-      }
-    },
-
-    {
-      name: 'ipam-address-plan-semantics',
-      path: '/address/ipam/plans/:planId',
-      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
-      meta: {
-        title: "语义规划",
-        notInMenu: true,
-        from: "ipam-address-plan",
-      }
-    },
-
-
-    {
-      name: 'ipam-address-list',
-      path: '/address/ipam/address/list',
-      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/address-list'),
-      meta: {
-        title: "IP地址列表",
-        notInMenu: true,
-        from: "ipam-address-plan",
-      }
-    },
-
-
     {
       name: 'ipam-address-manage',
       path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
-        title: "IP地址监测",
+        title: "IP资产管理",
         permission: "ipAddressMonitor"
       }
     },
@@ -110,9 +65,8 @@ export default {
       path: '/address/ipam/networkequipments',
       component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
-        title: "设备管理",
+        title: "设备资产管理",
         permission: "deviceManage"
-
       }
     },
     // {

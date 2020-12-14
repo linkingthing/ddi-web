@@ -54,11 +54,11 @@ export default {
       name: "PlanMap",
       path: "/monitor/PlanMap",
       component: () => import("@/views/node/PlanMap"),
-      icon: "icon-controller-monitor",
+      icon: "icon-planning-map",
       meta: {
         range: "monitor",
         title: "规划地图",
-        permission: "nodeMonitor"
+        permission: "plan"
       }
     },
     {

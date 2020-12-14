@@ -2,6 +2,7 @@ import accessControl from "./access-control";
 import dhcp from "./dhcp";
 import dns from "./dns";
 import dnsGlobalConfig from "./dns-global-config";
+import addressPlan from "./address-plan";
 import ipam from "./ipam";
 import node from "./node";
 import forword from "./forward";
@@ -12,7 +13,15 @@ import authControl from "./auth-control";
 
 import DefaultLayout from "@/views/default-layout";
 
-const constRouter = [node, ipam, dns, forword, accessControl, dhcp];
+const constRouter = [
+  node,
+  addressPlan,
+  ipam,
+  dns,
+  forword,
+  accessControl,
+  dhcp
+];
 
 const superUserRouter = [
   // node,
@@ -45,7 +54,6 @@ export const allConfig = [...addMeta(constRouter), ...asyncRouter].reduce(
   (result, current) => result.concat(current),
   []
 );
-
 
 export default [
   {

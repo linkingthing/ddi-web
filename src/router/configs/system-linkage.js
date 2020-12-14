@@ -12,7 +12,7 @@ export default {
   name: "system-linkage",
   children: [
     {
-      icon: 'icon-safe',
+      icon: 'icon-system-linkage',
       name: "system-linkage",
       path: "/system/ipdispatchconfigs",
       component: () => import(/* webpackChunkName: "black-white-list-manage" */ "@/views/system/linkage"),
