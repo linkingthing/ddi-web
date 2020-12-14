@@ -83,7 +83,9 @@ export default {
     handleSelectNode(nodes, node) {
       // console.log("handleSelectNode", node, this.currentNodeId)
       if (node.sponsordispatch) {
-        return;
+        if (node.sponsordispatch.issponsor) {
+          return;
+        }
       }
       if (node.id !== this.currentNodeId) {
         if (this.hasChange) {
@@ -129,9 +131,11 @@ export default {
       }
 
       let src = ableReport;
+      let ableOperate = false;
       if (data.sponsordispatch) {
         if (data.sponsordispatch.issponsor) {
           src = alreadyDispatch;
+          ableOperate = true;
         }
       }
 
@@ -145,7 +149,7 @@ export default {
         style: {
           display: "inline-block",
           width: "100%",
-          cursor: data.sponsordispatch ? "not-allowed" : "pointer"
+          cursor: ableOperate ? "not-allowed" : "pointer"
         }
       }, [
         h("span", {
@@ -161,7 +165,7 @@ export default {
           }),
           h("span", {
             style: {
-              color: data.sponsordispatch ? "#777" : "#333"
+              color: ableOperate ? "#777" : "#333"
             },
             domProps: {
               innerHTML: name
