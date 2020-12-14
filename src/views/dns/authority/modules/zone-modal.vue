@@ -78,8 +78,8 @@ export default {
                 const [ip, len] = value.split("/");
 
                 if (ipv6IsValid(value)) {
-                  if (Number(len) > 64) {
-                    callback("IPv6地址前缀不能超过64");
+                  if (Number(len) > 128) {
+                    callback("IPv6地址前缀不能超过128");
                   }
                   if (Number(len) <= 0) {
                     callback("IPv6地址前缀不能小于等于0");
@@ -87,7 +87,7 @@ export default {
 
                 } else if (ipv4IsValid(value)) {
                   if (Number(len) > 32) {
-                    callback("IPv4地址前缀不能超过64");
+                    callback("IPv4地址前缀不能超过32");
                   }
                   if (Number(len) <= 0) {
                     callback("IPv4地址前缀不能小于等于0");
