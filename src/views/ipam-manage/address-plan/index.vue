@@ -250,7 +250,6 @@ export default {
 
                 on: {
                   click: () => {
-
                     this.handleReportPlan(row);
                   }
                 },
@@ -261,7 +260,7 @@ export default {
                 }
               }),
               h("btn-line", {
-                nativeOn: {
+                on: {
                   click: () => this.handleDelete(row)
                 },
                 props: {
