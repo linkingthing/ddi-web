@@ -140,6 +140,9 @@ export default {
           case "changingrrs": return "A和AAAA记录切换";
           case "snmp": return "更新地址探测";
           case "refresh": return "终端登记";
+          case "repealforward": return "下发撤回";
+          case "reportforward": return "上报";
+          case "dispatchforward": return "下发";
         }
       };
 
