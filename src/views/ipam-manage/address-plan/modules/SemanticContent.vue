@@ -1049,6 +1049,7 @@ export default {
       };
 
       this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=repealforward`, params }).then(res => {
+        this.$Message.success("撤回成功");
         this.getPlanInfo();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
