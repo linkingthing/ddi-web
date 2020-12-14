@@ -542,7 +542,7 @@ export default {
   height: 100%;
   min-height: 100%;
   background: #f6f6f6;
-  z-index: 210;
+  z-index: 80;
   padding-right: 0;
   h1 {
     font-size: 20px;

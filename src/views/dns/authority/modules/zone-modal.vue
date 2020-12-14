@@ -68,7 +68,7 @@ export default {
       const isEdit = this.isEdit;
       return {
         name: [
-          { required: true, message: "请填写区名称" },
+          { required: !isEdit, message: "请填写区名称" },
           {
             validator: (rule, value, callback) => {
               if (isEdit) {
@@ -191,7 +191,7 @@ export default {
       this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
         this.formModel.ttl = res.ttl;
         this.tempttl = res.ttl;
-      })
+      });
     },
 
     handleConfirm(name) {
@@ -227,8 +227,6 @@ export default {
           }
         }
       });
-
-
     }
 
   }
