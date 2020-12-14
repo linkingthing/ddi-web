@@ -130,7 +130,7 @@ export default {
 
       let src = ableReport;
       if (data.sponsordispatch) {
-        if (data.sponsordispatch) {
+        if (data.sponsordispatch.issponsor) {
           src = alreadyDispatch;
         }
       }

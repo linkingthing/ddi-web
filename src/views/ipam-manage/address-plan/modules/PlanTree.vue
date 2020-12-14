@@ -53,7 +53,7 @@
           <h3 class="name">{{ data.name }}
             <img
               v-if="data.sponsordispatch"
-              :src=" data.sponsordispatch.issponsor ? ableReport : alreadyDispatch"
+              :src=" !data.sponsordispatch.issponsor ? ableReport : alreadyDispatch"
               alt=""
             >
           </h3>
