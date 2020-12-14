@@ -671,6 +671,7 @@ export default {
                 },
                 props: {
                   title: "下发",
+                  disabled: !row.plannodes.length
                 }
               }),
               h("btn-line", {
