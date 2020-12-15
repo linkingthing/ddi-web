@@ -65,10 +65,10 @@ export default {
       name: "ControllerDashboard",
       path: "/monitor/controller",
       component: () => import("@/views/node/ControllerDashboard"),
-      icon: "icon-controller-monitor",
+      icon: "icon-node-information",
       meta: {
         range: "monitor",
-        title: "节点监控",
+        title: "节点信息",
         permission: "nodeMonitor"
       }
     }
