@@ -189,6 +189,7 @@ export default {
   methods: {
     getGlobalConfig() {
       this.$getData({}, "/dns/dns/dnsglobalconfigs").then(({ data: [res] }) => {
+        this.$refs.formInline.resetFields();
         this.formModel.ttl = res.ttl;
         this.tempttl = res.ttl;
       });
