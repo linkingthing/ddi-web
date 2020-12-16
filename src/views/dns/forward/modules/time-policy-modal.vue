@@ -384,7 +384,6 @@ export default {
       // });
 
 
-
       this.$refs[name].validate().then((valid) => {
 
         if (valid) {

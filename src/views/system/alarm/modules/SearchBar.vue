@@ -152,10 +152,12 @@ export default {
 <style lang="less" scoped>
 .search-bar {
   display: flex;
+  margin-top: 14px;
   .search-form {
     flex: 1;
     .ivu-form-item {
       margin-right: 0 !important;
+      margin-bottom: 0 !important;
     }
   }
   .search-operate {

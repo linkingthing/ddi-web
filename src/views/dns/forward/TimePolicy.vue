@@ -10,7 +10,7 @@
         <i-button
           type="primary"
           @click="handleOpenCreate"
-          v-if="$store.getters.hasPermissionToCreate"
+          v-if="$hasPermissionCreate('forwardtimepolicy')"
         >新建</i-button>
       </template>
     </table-page>
@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     getDataList() {
-      this.$getDataAndLinks().then(({ data, links }) => {
+      this.$get(this.$getApiByRoute()).then(({ data, links }) => {
         this.list = Array.isArray(data) ? data.map(item => {
           let startTime, endTime;
 
