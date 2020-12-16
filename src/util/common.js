@@ -397,3 +397,10 @@ export const downloadFile = path => {
   a.href = downloadPath;
   a.click();
 };
+
+// arr1 是否包含 arr2
+export function includes(arr1, arr2) {
+  return arr2.every(item => {
+    return arr1.includes(item);
+  });
+}

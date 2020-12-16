@@ -332,7 +332,7 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import { debounce, cloneDeep } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-import { ipv4IsValid, isIpv4Segment } from "@/util/common";
+import { ipv4IsValid, isIpv4Segment, includes } from "@/util/common";
 import {
   executeNextIpv6Segment,
   planSemanticNodesValue,
@@ -970,6 +970,13 @@ export default {
       if (ipv4s.length !== [...new Set(ipv4s)].length) {
         return { isValid: false, message: "ipv4s重复，请更正" };
       }
+
+      // 防止全局ipv4重复
+      const IPv4List = this.semanticNodeList.map(item => item.ipv4s || []).flat();
+      if (includes(IPv4List, ipv4s)) {
+        return { isValid: false, message: "ipv4s重复，请更正" };
+      }
+
       const isValid = !!ipv4s.every(item => {
         const [ip, len] = item.split("/");
         return !!len && isIpv4Segment(item);
