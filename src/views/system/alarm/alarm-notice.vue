@@ -116,8 +116,8 @@ export default {
 
             }, [
               h("i-button", {
-                class: {
-                  "operate-label": true
+                style: {
+                  marginRight: "10px"
                 },
                 on: {
                   click: () => this.handleDeal(row, { state: "ignored" })
@@ -131,9 +131,7 @@ export default {
 
               }, "忽略"),
               h("Button", {
-                class: {
-                  "operate-label": true
-                },
+
                 on: {
                   click: () => this.handleDeal(row, { state: "solved" })
                 },
