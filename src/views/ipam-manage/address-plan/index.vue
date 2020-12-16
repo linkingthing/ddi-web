@@ -328,7 +328,6 @@ export default {
       this.file = file;
     },
     handleSavePlanName(url, value, row) {
-      // 接口暂不支持单字段修改，但是列表中又没携带完整字段
       const params = { name: value, id: row.id };
       const action = `${url}?action=updatePlanInfo`;
       this.$post({ url: action, params }).then(() => {
