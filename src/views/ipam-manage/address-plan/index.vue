@@ -129,6 +129,27 @@ export default {
           title: "规划名称",
           key: "name",
           align: "left",
+
+          render: (h, { row }) => {
+            return h("line-edit",
+              {
+                on: {
+                  "on-edit-finish": val => {
+                    this.handleSavePlanName(row.links.update, val, row);
+                  }
+                },
+                props: {
+                  isPercent: false,
+                  value: row.name
+                }
+              }
+            );
+          }
+        },
+        {
+          title: "IPv6前缀",
+          key: "prefixs",
+          align: "left",
           render: (h, { row }) => {
             return h("a", {
               attrs: {
@@ -143,52 +164,10 @@ export default {
                   });
                 }
               }
-            }, row.name);
+            }, row.prefixs);
 
 
           }
-          // render: (h, { row }) => {
-          //   return h("line-edit",
-          //     {
-          //       on: {
-          //         "on-edit-finish": val => {
-          //           this.handleSavePlanName(row.links.update, val, row);
-          //         }
-          //       },
-          //       props: {
-          //         isPercent: false,
-          //         value: row.name
-          //       }
-          //     }
-          //   );
-          // }
-        },
-        {
-          title: "IPv6前缀",
-          key: "prefixs",
-          align: "left",
-          // render: (h, { row }) => {
-          //   // if (row.lockType === LOCK_STATUS_ENUM.OPEN) {
-          //   return h("a", {
-          //     attrs: {
-          //       href: "javascript:;"
-          //     },
-          //     on: {
-          //       click: () => {
-          //         const { links } = row;
-          //         let url = this.$getRouteByLink(links.self, "address");
-          //         this.$router.push({
-          //           path: url
-          //         });
-          //       }
-          //     }
-          //   }, row.prefixs);
-          //   // }
-          //   // else {
-          //   //   return h("div", row.prefixs);
-          //   // }
-
-          // }
         },
         // {
         //   title: "安全锁",
@@ -350,9 +329,9 @@ export default {
     },
     handleSavePlanName(url, value, row) {
       // 接口暂不支持单字段修改，但是列表中又没携带完整字段
-      const params = { ...row, value };
-      params.prefixs = params.prefixs.split(",");
-      this.$put({ url, params }).then(() => {
+      const params = { name: value, id: row.id };
+      const action = `${url}?action=updatePlanInfo`;
+      this.$post({ url: action, params }).then(() => {
         this.$Message.success("更新成功");
         this.getPlanList();
       }).catch(err => {
