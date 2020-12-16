@@ -195,7 +195,10 @@ export default {
         if (data.length === 0) {
           this.query.current = pagination.pageNum;
         }
-      }).catch().finally(() => {
+      }).catch((err) => {
+        this.list = [];
+        this.$Message.error(err.response.data.message);
+      }).finally(() => {
         this.loading = false;
       });
     },
@@ -243,5 +246,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 </style>
