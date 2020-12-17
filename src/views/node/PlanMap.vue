@@ -15,6 +15,7 @@
       </Select>
     </div>
     <PlanTree
+      v-if="planList.length"
       :data="treeData"
       :seat="160"
     />

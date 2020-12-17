@@ -118,16 +118,7 @@ export default {
     this.ableReport = ableReport;
     this.alreadyDispatch = alreadyDispatch;
     return {
-      treeData: {
-        name: "g",
-        children: [{
-          name: "123"
-        }, {
-          name: "123"
-        }, {
-          name: "123"
-        }]
-      },
+      treeData: {},
       config: {
         nodeWidth: 148,
         nodeHeight: 68,
