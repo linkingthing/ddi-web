@@ -132,14 +132,13 @@ export default {
       initTransformX: 0,
       initTransformY: 0,
       DIRECTION,
-      zoom: 1,
-      scaleNum: 0
+      scaleNum: 1
     };
   },
   computed: {
     initialTransformStyle() {
       return {
-        transform: `translate(${this.initTransformX}px, ${this.initTransformY}px)`
+        transform: `translate(${this.initTransformX}px, ${this.initTransformY}px) scale(${this.scaleNum})`
       };
     }
   },
@@ -147,6 +146,9 @@ export default {
     dataset() {
       this.needResetScale = true;
       this.draw();
+      this.autoScale();
+      this.initTransform();
+
     },
     scaleNum() {
       this.$emit("on-render", {
@@ -166,16 +168,16 @@ export default {
 
     const container = this.$refs.container;
     container.addEventListener("mousewheel", (e) => {
-      this.zoom += event.wheelDelta / 1200;
+      let scaleNum = event.wheelDelta / 1200 + this.scaleNum;
 
-      if (this.zoom < 0.1) {
-        this.zoom = 0.1;
+      if (scaleNum < 0.1) {
+        scaleNum = 0.1;
       }
 
-      if (this.zoom > 1) {
-        this.zoom = 1;
+      if (scaleNum > 1) {
+        scaleNum = 1;
       }
-      this.setScale(this.zoom);
+      this.setScale(scaleNum);
     }, false);
     this.init();
   },
@@ -183,6 +185,7 @@ export default {
     init() {
       this.draw();
       this.enableDrag();
+      this.autoScale();
       this.initTransform();
     },
     zoomIn() {
@@ -211,21 +214,9 @@ export default {
       this.setScale(1);
     },
     setScale(scaleNum) {
-      if (typeof scaleNum !== "number") return;
-      const originTransformStr = this.$refs.domContainer.style.transform;
-      let targetTransform;
-      if (originTransformStr.match(MATCH_SCALE_REGEX)) {
-        targetTransform = originTransformStr.replace(
-          MATCH_SCALE_REGEX,
-          `scale(${scaleNum})`
-        );
-      } else {
-        targetTransform = originTransformStr + ` scale(${scaleNum})`;
-      }
-      this.scaleNum = scaleNum;
 
-      this.$refs.svg.style.transform = targetTransform;
-      this.$refs.domContainer.style.transform = targetTransform;
+
+      this.scaleNum = scaleNum;
     },
     isVertial() {
       return this.direction === DIRECTION.VERTICAL;
@@ -246,13 +237,12 @@ export default {
       const height = this.height || 0;
 
       const containerWidth = this.$refs.container.offsetWidth;
-      const containerHeight = this.$refs.container.offsetHeight;
+      const containerHeight = this.$refs.container.offsetHeight - this.seat;
       if (width / containerWidth > 1 || height / containerHeight > 1) {
         if (width / containerWidth > height / containerHeight) {
           // TODO
         } else {
-          let scale = (containerHeight - this.seat) / (height);
-          this.zoom = scale;
+          let scale = (containerHeight) / (height);
           this.scaleNum = scale;
           this.$nextTick().then(() => {
             this.setScale(scale);
@@ -263,34 +253,40 @@ export default {
     initTransform() {
       const width = this.width || 0;
       const height = this.height || 0;
+      let scale = this.scaleNum;
 
       const containerWidth = this.$refs.container.offsetWidth;
-      const containerHeight = this.$refs.container.offsetHeight;
-      if (this.isVertial()) {
-        this.initTransformX = Math.floor(containerWidth / 2);
-        this.initTransformY = Math.floor(this.config.nodeHeight);
+      const containerHeight = this.$refs.container.offsetHeight - this.seat;
+
+
+      const innerDomContainerHeight = this.$refs.domContainer.offsetHeight;
+
+
+      if (width < containerWidth) {
+        this.initTransformX = (containerWidth - (width) * scale) / 2;
       } else {
-        this.initTransformX = Math.floor(this.config.nodeWidth);
-        this.initTransformY = Math.floor(containerHeight / 2);
+        this.initTransformX = (containerWidth - (width) * scale) / 2;
+      }
 
+      if (height < containerHeight) {
+        this.initTransformY = (containerHeight) / 2;
+      } else {
+        let initTransformResult = 0;
 
-        if (this.needResetScale) {
-          this.autoScale();
-          this.needResetScale = false;
-          let scale = this.scaleNum;
+        const offset = (this.minX + this.maxX) * scale;
 
-          if (width < containerWidth) {
-            this.initTransformX = (containerWidth - (width)) / 2;
-          } else {
-            this.initTransformX = (containerWidth - (width) * scale) / 2;
-          }
-          if (height < containerHeight) {
-            this.initTransformY = (containerHeight) / 2;
-          } else {
-            this.initTransformY = (containerHeight - (height - 2 * this.config.nodeHeight) * scale) / 2;
-            this.initTransformX = (containerWidth - (width) * scale) / 2;
-          }
+        if (offset > 0) {
+
+          // console.log("top big", offset)
+          initTransformResult = (height * scale) / 2 - offset;
+        } else {
+          initTransformResult = (height * scale) / 2 + offset;
+
         }
+        this.initTransformY = initTransformResult;
+        // console.log("initTransformY", this.initTransformY)
+
+        // console.log(this.minX, this.maxX, innerDomContainerHeight, innerDomContainerHeight * scale)
 
       }
 
@@ -372,33 +368,21 @@ export default {
       links
         .enter()
         .append("path")
-        // .style("opacity", 0)
-        // .transition()
-        // .duration(ANIMATION_DURATION)
-        // .ease(d3.easeCubicInOut)
-        // .style("opacity", 1)
         .attr("class", "link")
         .attr("d", function (d, i) {
           return self.generateLinkPath(d);
         });
       links
         .transition()
-        // .duration(ANIMATION_DURATION)
-        // .ease(d3.easeCubicInOut)
         .attr("d", function (d) {
           return self.generateLinkPath(d);
         });
       links
         .exit()
-        // .transition()
-        // .duration(ANIMATION_DURATION / 2)
-        // .ease(d3.easeCubicInOut)
-        // .style("opacity", 0)
         .remove();
 
       this.nodeDataList = nodeDataList;
 
-      this.initTransform();
 
     },
     buildTree(rootNode) {
@@ -438,13 +422,8 @@ export default {
           }
         }
 
-        let transformStr = `translate(
-            ${event.clientX - startX + originOffsetX}px,
-            ${event.clientY - startY + originOffsetY}px
-          )`;
-
-        this.offsetX = event.clientX - startX + originOffsetX;  // 抛出渲染数据
-        this.offsetY = event.clientY - startY + originOffsetY;
+        this.initTransformX = this.offsetX = event.clientX - startX + originOffsetX;  // 抛出渲染数据
+        this.initTransformY = this.offsetY = event.clientY - startY + originOffsetY;
 
         this.$emit("on-render", {
           width: this.width,
@@ -455,15 +434,7 @@ export default {
           scaleNum: this.scaleNum || 1
         });
 
-        if (originTransform) {
-          transformStr = originTransform.replace(
-            MATCH_TRANSLATE_REGEX,
-            transformStr
-          );
-        }
-        // console.log("transformStr: "  + transformStr)
-        svgElement.style.transform = transformStr;
-        this.$refs.domContainer.style.transform = transformStr;
+
       };
 
       container.onmouseup = (event) => {
@@ -473,17 +444,6 @@ export default {
       };
     },
     onClickNode(index) {
-      console.log(index)
-      // const curNode = this.nodeDataList[index];
-      // if (curNode.data.children) {
-      //   curNode.data._children = curNode.data.children;
-      //   curNode.data.children = null;
-      //   curNode.data._collapsed = true;
-      // } else {
-      //   curNode.data.children = curNode.data._children;
-      //   curNode.data._children = null;
-      //   curNode.data._collapsed = false;
-      // }
       this.draw();
     },
     formatDimension(dimension) {
@@ -516,6 +476,12 @@ export default {
           maxY = item.y;
         }
       });
+
+      this.minX = minX;
+      this.minY = minY;
+      this.maxX = maxX;
+      this.maxY = maxY;
+
       return { minX, minY, maxX, maxY };
     },
     execurteWidthAndHeight({ minX, minY, maxX, maxY }) {

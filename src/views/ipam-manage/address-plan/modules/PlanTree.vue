@@ -208,7 +208,7 @@ export default {
     },
 
     handleRenderData(data) {
-      console.log(data, 666)
+      // console.log(data, 666)
       this.renderData = data;
       // const canvas = document.createElement("canvas");
       // var ctx = canvas.getContext("2d");
@@ -222,7 +222,7 @@ export default {
 
       // });
 
-      console.log(this.$refs.mapTreeRef, "tree")
+      // console.log(this.$refs.mapTreeRef, "tree")
 
       // this.$refs.mapTreeRef.setScale(.1)
 
