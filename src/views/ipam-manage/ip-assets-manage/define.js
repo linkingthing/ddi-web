@@ -35,7 +35,7 @@ export const deviceTypes = [
 function renderIp(h, row, field, status, scope) {
   if (row[field] && row[field].length === 1) {
     let config = {};
-    let color = "#4586FE";
+    let color = "";
     const state = row[status];
     if (state && state.length) {
       const statusConfig = statusLegends.find(

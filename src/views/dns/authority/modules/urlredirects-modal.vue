@@ -242,7 +242,7 @@ export default {
       justify-content: space-between;
     }
     .ivu-btn {
-      width: 110px;
+      width: 130px;
     }
   }
 }
