@@ -103,7 +103,7 @@ export default {
           /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirectsView"
         ),
       meta: {
-        title: "URL重定向",
+        title: "url代理",
         permission: "urlRedirectView"
       },
     },

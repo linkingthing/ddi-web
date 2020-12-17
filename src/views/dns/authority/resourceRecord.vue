@@ -50,7 +50,7 @@ export default {
         },
         {
           title: "记录值",
-          key: "activeRdata"
+          key: "rdata"
         },
         {
           title: "TTL",
