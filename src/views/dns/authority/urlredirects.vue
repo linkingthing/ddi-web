@@ -35,6 +35,10 @@ export default {
           title: "域名",
           key: "domain",
           align: "left",
+          render: (h, { row }) => {
+            const protocol = row.isHttps ? "https" : "http";
+            return h("div", `${protocol}://${row.domain}`);
+          }
         },
         {
           title: "重定向URL",

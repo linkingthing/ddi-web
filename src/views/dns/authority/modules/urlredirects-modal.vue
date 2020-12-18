@@ -20,7 +20,7 @@
         label="域名"
         prop="domain"
       >
-        <span v-if="isEdit">{{formModel.domain}}</span>
+        <span v-if="isEdit">{{formModel.isHttps ? "https" : "http"}}://{{formModel.domain}}</span>
         <Input
           v-model="formModel.domain"
           v-else
