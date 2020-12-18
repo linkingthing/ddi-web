@@ -16,10 +16,16 @@
             <span class="step-bar-index">1</span>
             <h3 class="step-bar-name">地址位宽设定</h3>
           </div>
-          <img
-            class="step-bar-tip"
-            src="./question.png"
+          <Tooltip
+            max-width="300"
+            content="地址位宽表示IPv6可用规划位的长度。IPv6最大可规划长度是64，减去已经使用位数，即是目前可用规划的长度。"
+            placement="right-start"
           >
+            <img
+              class="step-bar-tip"
+              src="./question.png"
+            >
+          </Tooltip>
         </div>
         <div class="SemanticContent-action">
           <div class="action-input-item">
@@ -89,10 +95,16 @@
             <span class="step-bar-index">2</span>
             <h3 class="step-bar-name">语义节点规划</h3>
           </div>
-          <img
-            class="step-bar-tip"
-            src="./question.png"
+          <Tooltip
+            max-width="300"
+            content="语义节点可以是业务，机构，或地理位置等，语义节点数即是需要规划IP地址的业务，机构，或地址位置的数量。并且位每个节点指定它需要的地址块数量，即使新增节点地址数。"
+            placement="right-start"
           >
+            <img
+              class="step-bar-tip"
+              src="./question.png"
+            >
+          </Tooltip>
         </div>
 
       </section>
@@ -114,13 +126,13 @@
         </div>
 
         <div class="action-input-item">
-          <label class="label">地址步长：</label>
+          <label class="label">新增节点地址数: </label>
           <div class="action-box">
             <Spinner
               class="action-box-input"
               :disabled="settableStepSize"
               v-model="stepsize"
-              placeholder="请输入地址步长"
+              placeholder="请输入新增节点地址数"
               :min="0"
               :max="allAddressBlockCount"
             />
@@ -1586,6 +1598,7 @@ export default {
     border-radius: 10px;
     color: #333;
     line-height: 20px;
+    height: 20px;
 
     .step-bar-index {
       display: block;

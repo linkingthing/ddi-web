@@ -248,6 +248,7 @@ import AdvancedSearch from "./advanced-query";
 import { columns, deviceTypes } from "./define";
 
 import { ipv4IsValid, downloadFile } from "@/util/common";
+import { popPath } from "@/util/request"
 
 export default {
   components: {
@@ -426,13 +427,22 @@ export default {
 
     handleGoto({ link, ip, ipstate }) {
       const path = this.$getRouteByLink(link, "address");
-      this.$router.push({
-        path,
-        query: {
-          ip,
-          ipstate
-        }
+      const pathSplit = path.split("/");
+      const newPath = pathSplit.slice(0, 5)
+
+
+      this.$get(this.$getApiByRoute(newPath.join("/"))).then(() => {
+        this.$router.push({
+          path,
+          query: {
+            ip,
+            ipstate
+          }
+        });
+      }).catch((err) => {
+        this.$Message.info("目标页面不存在");
       });
+
     },
 
     handleAdd() {
