@@ -47,6 +47,7 @@ export default {
 
     return {
       formModel: {
+        name: "",
         zonetype: "master",
         ttl: 3600,
         isarpa: "false"
