@@ -5,7 +5,8 @@
         ref="menu"
         :theme="theme"
         :active-name="tab"
-        :open-names="openNames"
+        :open-names="openList"
+        @on-open-change="handleToggleMenuOpen"
       >
         <template v-for="(item, idx) in routeList">
           <template v-if="item.meta.isFlat">
@@ -91,6 +92,7 @@ export default {
           detectResize: true
         }
       },
+      openList: [],
       openNames: [
         "ipam-manage",
         "dns-service",
@@ -151,10 +153,13 @@ export default {
           this.tab = val.meta.active;
         }
 
-        await this.$nextTick();
-
-        this.$refs.menu.updateOpened();
+        this.openList = [...this.openNames];
       }
+    },
+    openList() {
+      this.$nextTick(() => {
+        this.$refs.menu.updateOpened();
+      })
     }
   },
 
@@ -179,6 +184,11 @@ export default {
       });
 
       return result;
+
+    },
+
+    handleToggleMenuOpen(v) {
+
 
     }
 

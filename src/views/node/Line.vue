@@ -29,7 +29,27 @@ const ThemeConfig = {
   golden: {
     primaryColor: "#FECD5D",
     gradualColor: "rgba(254, 205, 93, 0.6)"
-  }
+  },
+
+  color1: {
+    primaryColor: "#7283ff",
+    gradualColor: "#95a6ff"
+  },
+
+  color2: {
+    primaryColor: "#6396ff",
+    gradualColor: "#94b5ff"
+  },
+  color3: {
+    primaryColor: "#63b7ff",
+    gradualColor: "#9fd3ff"
+  },
+  color4: {
+    primaryColor: "#6ec9e7",
+    gradualColor: "#9fe5ff"
+  },
+
+
 };
 export default {
   name: "ChartLine",

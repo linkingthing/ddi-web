@@ -49,7 +49,7 @@ export default {
     color: #999;
     background: #ededed;
     border-radius: 4px;
-    margin-right: 16px;
+    margin-right: 8px;
     cursor: pointer;
   }
   .active {

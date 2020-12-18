@@ -40,7 +40,7 @@ export default {
     return {
       columns: [
         {
-          title: "名称",
+          title: "记录名称",
           key: "name",
           align: "left"
         },

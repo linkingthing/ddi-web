@@ -12,6 +12,7 @@
       <Card title="CPU利用率">
         <line-bar
           is-percent
+          line-theme="color1"
           :labels="cpuLabels"
           :values="cpuValues"
           series-name="CPU利用率"
@@ -21,7 +22,7 @@
       <Card title="内存利用率">
         <line-bar
           is-percent
-          line-theme="purple"
+          line-theme="color2"
           :labels="memoLabels"
           :values="memoValues"
           series-name="内存利用率"
@@ -31,7 +32,7 @@
       <Card title="磁盘利用率">
         <line-bar
           is-percent
-          line-theme="brown"
+          line-theme="color3"
           :labels="diskLabels"
           :values="diskValues"
           series-name="磁盘利用率"
@@ -40,7 +41,7 @@
 
       <Card title="网络流量(Bps)">
         <line-bar
-          line-theme="brown"
+          line-theme="color4"
           :labels="networkLabels"
           :values="networkValues"
           series-name="网络流量"

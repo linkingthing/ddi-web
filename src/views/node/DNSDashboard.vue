@@ -14,6 +14,7 @@
         :download="qpsLinks"
       >
         <line-bar
+          line-theme="color1"
           :labels="qpsLabels"
           :values="qpsValues"
           series-name="qps"
@@ -27,6 +28,7 @@
       >
         <line-bar
           is-percent
+          line-theme="color2"
           :labels="memoHitRateLabels"
           :values="memoHitRateValues"
           series-name="缓存命中率"
@@ -40,6 +42,7 @@
       >
         <line-bar
           is-percent
+          line-theme="color3"
           :labels="successRateLabels"
           :values="successRateValues"
           series-name="解析成功率"

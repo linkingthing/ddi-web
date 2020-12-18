@@ -9,7 +9,7 @@
     <div class="card-list">
 
       <Card
-        title="DHCP使用率"
+        title="地址池使用率"
         v-model="usageTime"
         :download="useageLinks"
       >
@@ -28,7 +28,7 @@
 
         <line-bar
           is-percent
-          line-theme="brown"
+          line-theme="color1"
           :labels="dhcpUsageLabels"
           :values="dhcpUsageValues"
         />
@@ -40,6 +40,7 @@
         :download="lpsLinks"
       >
         <line-bar
+          line-theme="color2"
           :labels="dhcpLpsLabels"
           :values="dhcpLpsValues"
           series-name="LPS统计"
@@ -74,7 +75,7 @@
         :download="leaseLinks"
       >
         <line-bar
-          line-theme="golden"
+          line-theme="color4"
           :labels="dhcpLeaseLabels"
           :values="dhcpLeaseValues"
           series-name="Leases总量"
