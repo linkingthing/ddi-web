@@ -137,6 +137,7 @@ export default {
     },
 
     getTitle(title = "") {
+
       let arr = title.split(":");
       let route = this.$route;
 
@@ -152,7 +153,6 @@ export default {
 
     getPath(path) {
       let params = this.$route.params;
-
       return path.replace(/:\w+/g, word => params[word.slice(1)]);
     }
   }

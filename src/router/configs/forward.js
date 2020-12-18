@@ -63,7 +63,7 @@ export default {
           path: "/dns/dns/views_forwards/:viewsId/forwardzones",
           component: () => import("@/views/dns/forward/ForwardZone"),
           meta: {
-            title: "转发规则",
+            title: ":viewsId",
             notInMenu: true,
             from: "forward-view",
             permission: "forwardRule"

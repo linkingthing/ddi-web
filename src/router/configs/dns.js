@@ -41,7 +41,7 @@ export default {
           /* webpackChunkName: "option-config" */ "@/views/dns/authority/zoneQuery"
         ),
       meta: {
-        title: "区域查询",
+        title: ":id",
         notInMenu: true,
         from: "config-group",
         permission: "authorityZone"
@@ -57,7 +57,7 @@ export default {
           /* webpackChuckName: "option-config" */ "@/views/dns/authority/resourceRecord"
         ),
       meta: {
-        title: "资源记录",
+        title: ":name",
         notInMenu: true,
         from: "authority-zone-query",
         permission: "rrs"
@@ -87,7 +87,7 @@ export default {
           /* webpackChuckName: "option-config" */ "@/views/dns/authority/redirect"
         ),
       meta: {
-        title: "重定向",
+        title: ":id",
         notInMenu: true,
         from: "redirect-view",
         permission: "redirect"
@@ -103,7 +103,7 @@ export default {
           /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirectsView"
         ),
       meta: {
-        title: "url代理",
+        title: "IPv6代理",
         permission: "urlRedirectView"
       },
     },
@@ -116,7 +116,7 @@ export default {
           /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirects"
         ),
       meta: {
-        title: "URL重定向",
+        title: ":id",
         notInMenu: true,
         from: "urlredirects-view",
         permission: "urlRedirect"

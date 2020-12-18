@@ -128,7 +128,6 @@ export default {
           }
         });
 
-        console.log(routes,result )
       return result;
 
     }
