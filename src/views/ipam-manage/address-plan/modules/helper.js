@@ -378,6 +378,7 @@ export const planSemanticNodesValue = ({
     semanticNodeList,
     bitWidth
   );
+  console.log(availableValueList)
   let index = 0;
   semanticNodeList.forEach(semanticNode => {
     //  规划过的语义节点保持不变
@@ -445,7 +446,7 @@ export const executeValueRecyclePool = (
   bitWidth
 ) => {
   const result = [];
-  const maxValue = 2 ** bitWidth - 2;
+  const maxValue = 2 ** bitWidth - 1;
   const allValueList = prefixList
     .map(prefix => {
       return Array.from({ length: maxValue }, function (item, index) {
