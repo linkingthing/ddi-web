@@ -46,23 +46,34 @@
           action="/uploadfile"
           :headers="headers"
           :on-success="keyUploadSuccess"
-          :before-upload="$refs.keyUpload && $refs.keyUpload.clearFiles"
+          :before-upload="keyUploadBefore"
           :data="{directory: formModel.domain}"
           name="path"
+          :show-upload-list="false"
         >
-          <!-- :show-upload-list="false" -->
 
           <Button
             type="primary"
             size="small"
           >.key密钥</Button>
+          <div
+            class="upload-show"
+            v-if="keyFile"
+          >
+            <span class="upload-filename">{{keyFile.name}}</span>
+            <img
+              class="upload-close"
+              src="./icon-close.png"
+              @click.stop="handleDeleteFile('keyFile')"
+            >
+          </div>
         </Upload>
         <Upload
           ref="crtUpload"
           action="/uploadfile"
           :headers="headers"
           :on-success="crtUploadSuccess"
-          :before-upload="()=> { $refs.crtUpload && $refs.crtUpload.clearFiles()}"
+          :before-upload="crtUploadBefore"
           :data="{directory: formModel.domain}"
           name="path"
         >
@@ -71,6 +82,17 @@
             size="small"
             ghost
           >.crt证书</Button>
+          <div
+            class="upload-show"
+            v-if="keyFile"
+          >
+            <span class="upload-filename">{{crtFile.name}}</span>
+            <img
+              class="upload-close"
+              src="./icon-close.png"
+              @click.stop="handleDeleteFile('crtFile')"
+            >
+          </div>
         </Upload>
       </FormItem>
       <FormItem
@@ -140,7 +162,9 @@ export default {
         crtFile: ""
       },
       loading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      keyFile: "",
+      crtFile: "",
     };
   },
 
@@ -183,46 +207,78 @@ export default {
   },
 
   methods: {
+    keyUploadBefore(file) {
+      console.log(file)
+      this.keyFile = file;
+      return false;
+    },
     keyUploadSuccess(response) {
       this.formModel.keyFile = response.filename;
+      this.count++;
+      this.controllerSubmit();
+    },
+    handleDeleteFile(file) {
+      this[file] = "";
+    },
+    crtUploadBefore(file) {
+      this.crtFile = file;
+      return false;
     },
     crtUploadSuccess(response) {
       this.formModel.crtFile = response.filename;
+      this.count++;
+      this.controllerSubmit();
+    },
+
+    uploadFile() {
+      this.$refs.keyUpload.clearFiles();
+      this.$refs.crtUpload.clearFiles();
+      return Promise.all([this.$refs.keyUpload.post(this.keyFile), this.$refs.crtUpload.post(this.crtFile)]);
     },
     handleConfirm(name) {
-
-      this.$refs[name].validate(valid => {
-        if (valid) {
-
-          this.loading = true;
-          const params = { ...this.formModel };
-          params.isHttps = params.isHttps === "https";
-
-          if (this.isEdit) {
-            this.$put({ url: this.links.update, params }).then(res => {
-              this.$$success("编辑成功");
-              this.$emit("success");
-              this.dialogVisible = false;
-              this.loading = false;
-            }).catch(err => {
-              this.loading = false;
-              this.$$error(err.response.data.message);
-            });
-          } else {
-            this.$post({ url: this.links.self, params }).then(res => {
-              this.$$success("新建成功");
-              this.$emit("success");
-              this.dialogVisible = false;
-              this.loading = false;
-            }).catch(err => {
-              this.loading = false;
-              this.$$error(err.response.data.message);
-            });
+      this.count = 0;
+      this.uploadFile().then(() => {
+        this.$refs[name].validate(valid => {
+          if (valid) {
+            this.controllerSubmit();
           }
-        }
+        });
       });
+    },
+    controllerSubmit() {
+      if (this.count === 2) {
+        this.submit();
+      }
+    },
+    submit() {
+      this.loading = true;
+      const params = { ...this.formModel };
+      params.isHttps = params.isHttps === "https";
+      this.$nextTick().then(() => {
 
+        if (this.isEdit) {
+          this.$put({ url: this.links.update, params }).then(res => {
+            this.$$success("编辑成功");
+            this.$emit("success");
+            this.dialogVisible = false;
+            this.loading = false;
+          }).catch(err => {
+            this.loading = false;
+            this.$$error(err.response.data.message);
+          });
+        } else {
+          this.$post({ url: this.links.self, params }).then(res => {
+            this.$$success("新建成功");
+            this.$emit("success");
+            this.dialogVisible = false;
+            this.loading = false;
+          }).catch(err => {
+            this.loading = false;
+            this.$$error(err.response.data.message);
+          });
+        }
 
+      });
     }
 
   }
@@ -244,6 +300,33 @@ export default {
     .ivu-btn {
       width: 130px;
     }
+  }
+}
+
+.upload-show {
+  display: flex;
+  height: 20px;
+  padding: 2px 5px;
+  background: #f9f2e2;
+  color: #de9f32;
+  border-radius: 3px;
+
+  .upload-filename {
+    display: block;
+    width: 100px;
+    font-size: 12px;
+    line-height: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+  .upload-close {
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin-top: 2px;
+    margin-left: auto;
+    cursor: pointer;
   }
 }
 </style>
