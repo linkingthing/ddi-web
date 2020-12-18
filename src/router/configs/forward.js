@@ -19,60 +19,45 @@ export default {
   redirect: { name: "forward-layout" },
   children: [
     {
-      name: "forward-layout",
-      path: "/dns/dns/forward/layout",
-      redirect: { name: "forward-view" },
-      component: () => import("@/views/dns/forward/layout"),
+      name: "forward-view",
+      path: "/dns/dns/views_forwards",
+      component: () => import("@/views/dns/forward/ForwardView"),
       meta: {
         title: "转发配置",
+        active: "forward-layout",
         permission: "forwardConfigMenu"
-
-      },
-      children: [
-        {
-          name: "forward-view",
-          path: "/dns/dns/views_forwards",
-          component: () => import("@/views/dns/forward/ForwardView"),
-          meta: {
-            title: "转发配置",
-            active: "forward-layout",
-            permission: "forwardConfigMenu"
-
-          }
-        },
-        {
-          name: "forward-group",
-          path: "/dns/dns/forwarders",
-          component: () => import("@/views/dns/forward/ForwardGroup"),
-          meta: {
-            title: "转发组"
-          }
-        },
-        {
-          name: "time-policy",
-          path: "/dns/dns/forwardtimepolicies",
-          component: () => import("@/views/dns/forward/TimePolicy"),
-          meta: {
-            title: "时间策略",
-            permission: "forwardGroup"
-          }
-        },
-
-        {
-          name: "zone-query-forward",
-          path: "/dns/dns/views_forwards/:viewsId/forwardzones",
-          component: () => import("@/views/dns/forward/ForwardZone"),
-          meta: {
-            title: ":viewsId",
-            notInMenu: true,
-            from: "forward-view",
-            permission: "forwardRule"
-
-          }
-        }
-      ]
+      }
     },
-    
+    {
+      name: "forward-group",
+      path: "/dns/dns/forwarders",
+      component: () => import("@/views/dns/forward/ForwardGroup"),
+      meta: {
+        title: "转发组"
+      }
+    },
+    {
+      name: "time-policy",
+      path: "/dns/dns/forwardtimepolicies",
+      component: () => import("@/views/dns/forward/TimePolicy"),
+      meta: {
+        title: "时间策略",
+        permission: "forwardGroup"
+      }
+    },
+
+    {
+      name: "zone-query-forward",
+      path: "/dns/dns/views_forwards/:viewsId/forwardzones",
+      component: () => import("@/views/dns/forward/ForwardZone"),
+      meta: {
+        title: ":viewsId",
+        notInMenu: true,
+        from: "forward-view",
+        permission: "forwardRule"
+      }
+    },
+
     {
       name: "domain-group",
       path: "/dns/dns/domaingroups",
@@ -83,7 +68,7 @@ export default {
       meta: {
         title: "域名组"
       }
-    },
+    }
     // {
     //   name: "concurrency-control",
     //   path: "/dns/forward/concurrency-control",

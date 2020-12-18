@@ -586,18 +586,18 @@ export default {
     }
 
     &:first-child {
-      background-image: linear-gradient(45deg, #7283FF, #95A6FF);
+      background-image: linear-gradient(45deg, #5568f9, #8094f9);
       margin-left: 0;
     }
     &:nth-child(2) {
-      background-image: linear-gradient(45deg, #6396FF, #94B5FF);
+      background-image: linear-gradient(45deg, #3b7cff, #749efd);
     }
     &:nth-child(3) {
-      background-image: linear-gradient(45deg, #63B7FF, #9FD3FF);
+      background-image: linear-gradient(45deg, #32adf4, #74bcfa);
     }
     &:last-child {
       margin-right: 0;
-      background-image: linear-gradient(45deg, #6EC9E7, #9FE5FF);
+      background-image: linear-gradient(45deg, #27c0e6, #61d1ed);
     }
   }
 }
