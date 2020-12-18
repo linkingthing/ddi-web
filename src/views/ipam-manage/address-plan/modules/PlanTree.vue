@@ -57,7 +57,10 @@
               alt=""
             >
           </h3>
-          <div v-if="Array.isArray(data.planchildren)">
+          <div
+            v-if="Array.isArray(data.planchildren)"
+            class="rich-node-iplist"
+          >
             <p
               class="s-ipv6"
               :key="ipv6"
@@ -288,7 +291,7 @@ export default {
   .rich-node {
     position: relative;
     display: flex;
-    justify-content: center;
+    // justify-content: center;
     // align-items: center;
     flex-direction: column;
     padding: 4px 8px;
@@ -298,6 +301,11 @@ export default {
     // background: #DFDFDF;
     border: 1px solid #dfdfdf;
     border-radius: 8px;
+    max-height: 80px;
+
+    .rich-node-iplist {
+      overflow-y: auto;
+    }
 
     .name {
       font-size: 14px;
@@ -313,6 +321,8 @@ export default {
     .rich-node-icon {
       position: absolute;
       right: -31px;
+      top: 50%;
+      margin-top: -5px;
       width: 11px;
       height: 11px;
     }

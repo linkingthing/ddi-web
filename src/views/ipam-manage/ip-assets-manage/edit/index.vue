@@ -49,7 +49,7 @@ export default {
       formModel: {
         mac: "",
         name: "",
-        deviceType: "",
+        deviceType: "pc",
         switchName: "",
         computerRoom: "",
         computerRack: "",
@@ -148,6 +148,8 @@ export default {
           params.ipv4s = params.ipv4s.split(",").filter(item => !!item.trim());
           params.ipv6s = params.ipv6s.split(",").filter(item => !!item.trim());
           params.vlanId = +params.vlanId;
+
+          console.log(params)
 
           this[action]({ url, params }).then(() => {
             this.$$success("保存成功！");
