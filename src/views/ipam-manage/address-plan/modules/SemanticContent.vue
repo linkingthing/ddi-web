@@ -830,7 +830,15 @@ export default {
       this.bitWidth = bitWidth;
       this.changeCurrentNode("subnodebitwidth", bitWidth);
 
-      this.handleSave("位宽设置成功");
+      const params = { subnodebitwidth: bitWidth, id: this.currentNode.id };
+      const url = "/apis/linkingthing.com/ipam/v1/plans";
+      const action = `${url}?action=updatebitwidth`;
+      this.$post({ url: action, params }).then(() => {
+        this.$Modal.remove();
+        this.$Message.success("位宽设置成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
 
     },
     changeCurrentNode(attr, val) {
@@ -918,33 +926,45 @@ export default {
       const uesedValueLen = executeUesedValueList(this.semanticNodeList).length;
 
       if (willUseAddressBlockCount + uesedValueLen <= this.allAddressBlockCount) {
-        const parentsemanticid = this.currentNode.id;
-        const semanticNodeList = this.semanticNodeList.filter(item => item.temporaryCreated !== "createing");
-        const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
-          return {
-            id: uuidv4(),
-            modified: modifiedEnum.STRUCTURED,
-            name: `新增节点`,
-            parentsemanticid,
-            stepsize: "",
-            sequence: 1,
-            autocreate: planTypeEnum.UNDEFINED,
-            ipv4s: [],
-            plannodes: [],
-            addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
-            temporaryCreated: "createing",  // 零时创建但未保存的语义节点标识
-          };
-        });
-        this.semanticNodeList = semanticNodeList.concat(semanticNodes);
 
-        if (this.semanticNodeList.length) {
-          const { autocreate } = this.semanticNodeList[0];
-          if (autocreate === planTypeEnum.ONEKEYPLAN) {
-            this.autoOneKey();
-            return;
-          }
-        }
-        this.handleSave();
+        const params = { semanticId: this.currentNode.id, subNodeNumbers: willCreateSemanticNodeListLength, stepSize: stepsize };
+        const url = "/apis/linkingthing.com/ipam/v1/plans";
+        const action = `${url}?action=updatesemanticnumber`;
+        this.$post({ url: action, params }).then(() => {
+          this.$Message.success("更新成功");
+          this.getPlanInfo();
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
+        });
+
+
+        // const parentsemanticid = this.currentNode.id;
+        // const semanticNodeList = this.semanticNodeList.filter(item => item.temporaryCreated !== "createing");
+        // const semanticNodes = Array.from({ length: shouldCreateLength }, function () {
+        //   return {
+        //     id: uuidv4(),
+        //     modified: modifiedEnum.STRUCTURED,
+        //     name: `新增节点`,
+        //     parentsemanticid,
+        //     stepsize: "",
+        //     sequence: 1,
+        //     autocreate: planTypeEnum.UNDEFINED,
+        //     ipv4s: [],
+        //     plannodes: [],
+        //     addressCount: 0, // plannodes.length,多数情况 步长，但是，在编辑追加后就不一定
+        //     temporaryCreated: "createing",  // 零时创建但未保存的语义节点标识
+        //   };
+        // });
+        // this.semanticNodeList = semanticNodeList.concat(semanticNodes);
+
+        // if (this.semanticNodeList.length) {
+        //   const { autocreate } = this.semanticNodeList[0];
+        //   if (autocreate === planTypeEnum.ONEKEYPLAN) {
+        //     this.autoOneKey();
+        //     return;
+        //   }
+        // }
+        // this.handleSave();
 
       } else {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
@@ -962,16 +982,14 @@ export default {
     },
 
     handleSaveSemanticName(row, name) {
-      this.semanticNodeList.some(item => {
-        if (item.id === row.id) {
-          item.name = name;
-          item.modified = modifiedEnum.INFO;
-          return true;
-        }
-        return false;
+      const params = { name, id: row.id };
+      const url = "/apis/linkingthing.com/ipam/v1/plans";
+      const action = `${url}?action=updatesemanticinfo`;
+      this.$post({ url: action, params }).then(() => {
+        this.$Message.success("更新成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
-      this.setHasChange(true);
-      this.handleSave();
     },
     checkfunc(ipv4str) {
       const ipv4s = ipv4str.split(",");
@@ -996,18 +1014,17 @@ export default {
       return { isValid, message: "ipv4网段输入有误，请更正" };
 
     },
-    handleSaveIpv4s(row, ipv4str, ref) {
+    handleSaveIpv4s(row, ipv4str) {
       const ipv4s = ipv4str.split(",");
-      this.semanticNodeList.some(item => {
-        if (item.id === row.id) {
-          item.ipv4s = ipv4s;
-          item.modified = modifiedEnum.INFO;
-          return true;
-        }
-        return false;
+
+      const params = { ipv4s, id: row.id };
+      const url = "/apis/linkingthing.com/ipam/v1/plans";
+      const action = `${url}?action=updatesemanticipv4`;
+      this.$post({ url: action, params }).then(() => {
+        this.$Message.success("更新成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
-      this.setHasChange(true);
-      this.handleSave();
     },
     handleDeleteSemantic(row) {
       this.$Modal.confirm({
@@ -1015,17 +1032,16 @@ export default {
         content: "<p>请再次语义节点删除确认</p>",
         loading: true,
         onOk: () => {
-          const nodes = cloneDeep(this.nodes.filter(node => node.id !== row.id));
-          nodes.forEach(node => {
-            if (node.id === row.parentsemanticid) {
-              node.modified = modifiedEnum.STRUCTURED;
-            }
-          });
-          this.updatePlan(nodes).then(() => {
+          const params = { id: row.id };
+          const url = "/apis/linkingthing.com/ipam/v1/plans";
+          const action = `${url}?action=deletesemantic`;
+          this.$post({ url: action, params }).then(() => {
             this.$Modal.remove();
-            this.$Message.info("语义节点删除成功");
+            this.$Message.success("语义节点删除成功");
+            this.semanticNodeList = this.semanticNodeList.filter(item => item.id !== row.id);
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
           });
-
         }
       });
 
