@@ -58,7 +58,7 @@ export default {
       meta: {
         range: "monitor",
         title: "规划地图",
-        permission: "ipAddressPlan"
+        permission: "planmap"
       }
     },
     {

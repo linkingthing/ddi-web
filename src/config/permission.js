@@ -18,6 +18,12 @@ export default [
     resouces: ["dhcp"]
   },
   {
+    name: "规划地图",
+    id: "planmap",
+    module: "monitor",
+    resouces: ["planmap"]
+  },
+  {
     name: "节点监控",
     id: "nodeMonitor",
     module: "monitor",
