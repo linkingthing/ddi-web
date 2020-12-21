@@ -69,7 +69,7 @@ export default {
           width: 160,
           render: (h, { row }) => {
 
-            if (this.$store.getters.hasPermissionToCreate) {
+            if (this.$hasPermissionCreate("forwardtimepolicy")) {
               return h("div", [
                 h("btn-edit", {
                   on: {
