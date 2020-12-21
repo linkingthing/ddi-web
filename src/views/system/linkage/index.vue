@@ -323,14 +323,13 @@ export default {
 
     },
     uploadSuccess(file) {
-      console.log(file)
-
-      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs?action=importcsv";
+      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs/ipDispatchConfigId?action=importcsv";
       const params = {
         name: file.filename
-      }
+      };
       this.$post({ url, params }).then(() => {
         this.$Message.success("导入成功");
+        this.getDataList();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });

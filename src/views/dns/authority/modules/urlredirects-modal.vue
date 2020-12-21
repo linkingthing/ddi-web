@@ -230,9 +230,15 @@ export default {
     },
 
     uploadFile() {
-      this.$refs.keyUpload.clearFiles();
-      this.$refs.crtUpload.clearFiles();
-      return Promise.all([this.$refs.keyUpload.post(this.keyFile), this.$refs.crtUpload.post(this.crtFile)]);
+      try {
+        this.$refs.keyUpload.clearFiles();
+        this.$refs.crtUpload.clearFiles();
+        return Promise.all([this.$refs.keyUpload.post(this.keyFile), this.$refs.crtUpload.post(this.crtFile)]);
+      } catch (e) {
+        // http
+        this.count = 2;
+        return Promise.resolve(1);
+      }
     },
     handleConfirm(name) {
       this.count = 0;
