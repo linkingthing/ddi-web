@@ -270,7 +270,7 @@ export default {
 
 <style lang="less" scoped>
 .global-config {
-  padding: 60px 20px;
+  padding: 80px 20px;
   .ivu-switch-inner span {
     font-size: 12px;
   }

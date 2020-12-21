@@ -678,7 +678,7 @@ export default {
                 style: {
                   marginRight: "10px"
                 },
-                nativeOn: {
+                on: {
                   click: () => this.handleDispath(row)
                 },
                 props: {
@@ -690,7 +690,7 @@ export default {
                 style: {
                   marginRight: "10px"
                 },
-                nativeOn: {
+                on: {
                   click: () => this.handleRepeal(row)
                 },
                 props: {

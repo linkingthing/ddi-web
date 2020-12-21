@@ -105,7 +105,7 @@ export default {
       path: "/address/dhcp/config",
       redirect: "/address/dhcp/dhcpconfigs",
       meta: {
-        title: "基础配置",
+        title: "DHCP基础配置",
         hideTitle: true,
         permission: "dhcpBaseConfig"
       },
@@ -121,7 +121,7 @@ export default {
           meta: {
             notInMenu: true,
             from: "dhcp-config",
-            title: "基础配置",
+            title: "DHCP基础配置",
             active: "dhcp-config",
             permission: "dhcpBaseConfig"
           }
