@@ -159,7 +159,7 @@ export default {
     openList() {
       this.$nextTick(() => {
         this.$refs.menu.updateOpened();
-      })
+      });
     }
   },
 

@@ -174,7 +174,7 @@ export default {
       }
 
       return {
-        color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"],
+        color: ["#47B3FF", "#A485FD", "#FAA888", "#FECD5D"], // ["#7283ff", "#6396ff","#63b7ff","#6ec9e7"], //
         legend: {
           data: this.legend
         },

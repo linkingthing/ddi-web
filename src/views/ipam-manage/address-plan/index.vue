@@ -389,7 +389,7 @@ export default {
     handleDelete({ links }) {
       this.$Modal.confirm({
         title: "提示",
-        content: "确定删除？",
+        content: "确定删除？\n<br /> <span style='font-size:12px'>没有子语义节点时才能删除成功</span>",
         onOk: () => {
           this.$delete({ url: links.remove }).then(() => {
             this.$Message.success("删除成功");
