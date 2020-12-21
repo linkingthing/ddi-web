@@ -1039,6 +1039,7 @@ export default {
             this.$Message.success("语义节点删除成功");
             this.semanticNodeList = this.semanticNodeList.filter(item => item.id !== row.id);
           }).catch(err => {
+            this.$Modal.remove();
             this.$Message.error(err.response.data.message);
           });
         }
