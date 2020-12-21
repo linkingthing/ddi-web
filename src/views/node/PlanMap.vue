@@ -46,7 +46,7 @@ export default {
   mounted() { },
   methods: {
     getPlanList() {
-      const url = "/apis/linkingthing.com/ipam/v1/plans";
+      const url = "/apis/linkingthing.com/ipam/v1/planmaps";
       this.$get({ url }).then(({ data }) => {
         this.planList = data;
 
