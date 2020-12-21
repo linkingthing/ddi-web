@@ -672,7 +672,6 @@ export default {
           render: (h, { row }) => {
 
             const has = !!this.nodes.find(item => item.parentsemanticid === row.id);
-            console.log(has)
             return h("div", [
               h("btn-line", {
                 style: {

@@ -93,6 +93,12 @@
       >
         <Input
           type="textarea"
+          placeholder="例如:
+10.0.0.1
+192.160.0.0/24
+2419::12
+2419::/64
+以换行符分割" 
           v-model="params.blackholes"
           :autosize="{minRows: 5,maxRows: 5}"
           style="width: 324px"
