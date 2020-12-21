@@ -133,8 +133,13 @@
                     :disabled="!params.enabledispatch"
                   >单个添加</Button>
                   <Upload
-                    action="//jsonplaceholder.typicode.com/posts/"
+                    ref="upload"
+                    action="/uploadfile"
                     :before-upload="handleUpload"
+                    :headers="headers"
+                    name="path"
+                    :on-success="uploadSuccess"
+                    :on-error="uploadError"
                   >
 
                     <Button
@@ -220,6 +225,9 @@ export default {
   components: {},
   props: {},
   data() {
+    this.headers = {
+      Authorization: this.$store.getters.token
+    };
     this.rules = {};
     this.systemRules = {};
     return {
@@ -288,30 +296,47 @@ export default {
       this.params.dispatchclients = this.params.dispatchclients.filter(item => item.id !== id);
     },
     handleUpload(file) {
-      // console.log(file)
-      // console.log(file.text())
-      // file.text().then(text => {
-      //   console.log(text)
-      // })
-      const reader = new FileReader();
-      reader.readAsText(file, "utf-8");
-      reader.onload = () => {
-        const str = reader.result;
-        const rows = str.split("\n");
-        const [[name, clientaddr], ...data] = rows.map(item => item.split(",").map(i => i.trim())).filter(item => {
-          return item.length >= 2;
-        });
+      this.$refs.upload.clearFiles();
 
-        const result = [];
-        data.forEach(([aname, ip]) => {
-          result.push({
-            [name]: aname,
-            [clientaddr]: ip
-          });
-        });
-        this.params.dispatchclients.push(...result);
-      };
+      // const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs?action=importcsv";
 
+      // this.$post({ url })
+
+      // const reader = new FileReader();
+      // reader.readAsText(file, "utf-8");
+      // reader.onload = () => {
+      //   const str = reader.result;
+      //   const rows = str.split("\n");
+      //   const [[name, clientaddr], ...data] = rows.map(item => item.split(",").map(i => i.trim())).filter(item => {
+      //     return item.length >= 2;
+      //   });
+
+      //   const result = [];
+      //   data.forEach(([aname, ip]) => {
+      //     result.push({
+      //       [name]: aname,
+      //       [clientaddr]: ip
+      //     });
+      //   });
+      //   this.params.dispatchclients.push(...result);
+      // };
+
+    },
+    uploadSuccess(file) {
+      console.log(file)
+
+      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs?action=importcsv";
+      const params = {
+        name: file.filename
+      }
+      this.$post({ url, params }).then(() => {
+        this.$Message.success("导入成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+    },
+    uploadError() {
+      this.$Message.error("上传失败");
     },
     handleBatchImport() { },
     handleSubmit(name) {
@@ -434,6 +459,7 @@ export default {
       border: 1px solid #ddd;
       border-radius: 6px;
       padding: 4px 8px;
+      overflow: auto;
     }
   }
 }

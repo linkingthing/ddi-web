@@ -830,7 +830,7 @@ export default {
       this.changeCurrentNode("subnodebitwidth", bitWidth);
 
       const params = { subnodebitwidth: bitWidth, id: this.currentNode.id };
-      const url = "/apis/linkingthing.com/ipam/v1/plans";
+      const { url } = this.$getApiByRoute();
       const action = `${url}?action=updatebitwidth`;
       this.$post({ url: action, params }).then(() => {
         this.$Modal.remove();
@@ -985,6 +985,7 @@ export default {
       const url = "/apis/linkingthing.com/ipam/v1/plans";
       const action = `${url}?action=updatesemanticinfo`;
       this.$post({ url: action, params }).then(() => {
+        this.getPlanInfo();
         this.$Message.success("更新成功");
       }).catch(err => {
         this.$Message.error(err.response.data.message);

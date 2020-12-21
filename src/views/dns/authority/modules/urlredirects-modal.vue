@@ -208,7 +208,6 @@ export default {
 
   methods: {
     keyUploadBefore(file) {
-      console.log(file)
       this.keyFile = file;
       return false;
     },
