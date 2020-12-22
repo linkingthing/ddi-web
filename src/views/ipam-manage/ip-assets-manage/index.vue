@@ -324,7 +324,7 @@ export default {
       uplinkPort,
       uplinkEquipment
     } = this.$route.query;
-    console.log(this.$route.query, "quey")
+
     this.currentData = {
       mac,
       switchName,

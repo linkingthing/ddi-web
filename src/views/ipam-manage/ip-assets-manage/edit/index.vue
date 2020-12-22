@@ -98,7 +98,6 @@ export default {
     data: {
       immediate: true,
       handler(val) {
-        console.log(val, 666)
         this.setValue(val);
       }
     }
@@ -115,15 +114,12 @@ export default {
 
       await this.$nextTick();
 
-console.log(value, "value")
-
       for (const attr in this.formModel) {
         this.formModel[attr] = value[attr];
       }
       this.formModel.ipv4s = Array.isArray(value.ipv4s) ? value.ipv4s.join(",") : "";
       this.formModel.ipv6s = Array.isArray(value.ipv6s) ? value.ipv6s.join(",") : "";
       this.formModel.deviceType = value.deviceType || "pc";
-      console.log(this.formModel, "data1")
     },
     handleConfirm() {
 

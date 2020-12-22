@@ -650,7 +650,7 @@ export default {
                 value: Array.isArray(row.ipv4s) ? row.ipv4s.join(",") : "",
                 width: "160px",
                 defaultText: "_ _",
-                checkfunc: this.checkfunc
+                checkfunc: (val) => this.checkfunc(val, row)
               }
             });
             return this.$createElement("Tooltip", {
@@ -991,7 +991,7 @@ export default {
         this.$Message.error(err.response.data.message);
       });
     },
-    checkfunc(ipv4str) {
+    checkfunc(ipv4str, row) {
       const ipv4s = ipv4str.split(",");
       if (ipv4str.trim() === "") {
         return { isValid: true };
@@ -1002,7 +1002,11 @@ export default {
       }
 
       // 防止全局ipv4重复
-      const IPv4List = this.semanticNodeList.map(item => item.ipv4s || []).flat();
+
+      console.log(this.currentNode.id, row)
+      const IPv4List = this.nodes.filter(item => item.id !== row.id).map(item => item.ipv4s || []).flat();
+
+      console.log(IPv4List)
       if (includes(IPv4List, ipv4s)) {
         return { isValid: false, message: "ipv4s重复，请更正" };
       }
@@ -1015,7 +1019,7 @@ export default {
 
     },
     handleSaveIpv4s(row, ipv4str) {
-      const ipv4s = ipv4str.split(",");
+      const ipv4s = ipv4str.split(",").filter(item => !!item);
 
       const params = { ipv4s, id: row.id };
       const url = "/apis/linkingthing.com/ipam/v1/plans";
@@ -1023,6 +1027,7 @@ export default {
       this.$post({ url: action, params }).then(() => {
         this.$Message.success("更新成功");
       }).catch(err => {
+        this.getPlanInfo();
         this.$Message.error(err.response.data.message);
       });
     },
