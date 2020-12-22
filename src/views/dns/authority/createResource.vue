@@ -27,7 +27,7 @@
                 v-model="upgradeConfig.name"
                 placeholder="请填写资源名称"
               >
-                <span slot="append">{{recordSuffix}}</span>
+                <span slot="append">.{{recordSuffix}}</span>
               </i-input>
             </form-item>
             <TypeValue
