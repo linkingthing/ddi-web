@@ -123,7 +123,7 @@ export default {
     };
     return {
       visible: false,
-      planList: [],
+      planList: [{}],
       columns: [
         {
           title: "规划名称",
@@ -403,7 +403,8 @@ export default {
     },
 
     handleAddPlan() {
-      this.paramsLinks = this.links;
+      const { url } = this.$getApiByRoute();
+      this.paramsLinks = { self: url };
       this.visible = true;
     },
     handleUploadPlan() {
