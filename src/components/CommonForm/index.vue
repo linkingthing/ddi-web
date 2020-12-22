@@ -106,6 +106,8 @@
       <label
         v-if="item.type === 'text'"
         :size="item.size"
+        style="overflow: hidden;
+              word-break: break-all;"
       >
         {{ Array.isArray(formModel[item.model]) ? formModel[item.model].join(",") : formModel[item.model] }}
         <slot
