@@ -181,6 +181,8 @@ export default {
     visible(val) {
       if (!val) {
         this.formModel.isHttps = "http";
+        this.keyFile = null;
+        this.crtFile = null;
         this.$refs.formInline.resetFields();
         return;
       }
