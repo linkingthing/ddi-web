@@ -1023,8 +1023,9 @@ export default {
       this.$post({ url: action, params }).then(() => {
         this.$Message.success("更新成功");
       }).catch(err => {
-        this.getPlanInfo();
         this.$Message.error(err.response.data.message);
+      }).finally(() => {
+        this.getPlanInfo();
       });
     },
     handleDeleteSemantic(row) {

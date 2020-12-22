@@ -61,19 +61,20 @@ function renderIp(h, row, field, status, scope) {
           click: () => state && scope.handleGoto(config)
         }
       },
-      [h("span", {
-        style: {
-          display: "inline-block",
-          width: "8px",
-          height: "8px",
-          borderRadius: "50%",
-          marginRight: "5px",
-          marginBottom: "2px",
-          backgroundColor: color
-        }
-      }),
-      row[field][0]]
-      
+      [
+        h("span", {
+          style: {
+            display: "inline-block",
+            width: "8px",
+            height: "8px",
+            borderRadius: "50%",
+            marginRight: "5px",
+            marginBottom: "2px",
+            backgroundColor: color
+          }
+        }),
+        row[field][0]
+      ]
     );
   } else
     return h("Tooltip", {
@@ -86,20 +87,41 @@ function renderIp(h, row, field, status, scope) {
       },
       scopedSlots: {
         default: function (props) {
+          let first = "__";
+          let statusConfig = {};
+          if (Array.isArray(row[field]) && row[field].length) {
+            first = row[field][0];
+            const target = row[status].find(i => i.ip === first);
+
+            statusConfig = statusLegends.find(
+              item => item.type === target.ipstate
+            );
+          }
           return h(
             "div",
             {
               style: {
                 // color: row[status] && "#4586FE",
-                cursor: row[status] && "pointer",
+                cursor: "default",
                 overflow: "hidden",
                 "text-overflow": "ellipsis",
                 "white-space": "nowrap"
               }
             },
-            Array.isArray(row[field]) && row[field].length
-              ? row[field].join(",")
-              : "__"
+            [
+              h("span", {
+                style: {
+                  display: "inline-block",
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  marginRight: "5px",
+                  marginBottom: "2px",
+                  backgroundColor: statusConfig.color
+                }
+              }),
+              first
+            ]
           );
         },
         content: function () {
@@ -171,7 +193,7 @@ export const columns = scope => [
     width: 180,
     tooltip
   },
- 
+
   {
     title: "终端状态",
     key: "deviceState",
