@@ -488,11 +488,15 @@ export default {
         const switchPort = row.switchPort || res.switchPort;
         const computerRack = row.computerRack || res.computerRack;
         const computerRoom = row.computerRoom || res.computerRoom;
-        const scannedsubnetsId = this.$route.params.scannedsubnetsId;
 
         const ip = row.ip;
-        const subnet = scannedsubnetsId;
+        const subnet = this.$route.query.subnet;
         const vlanId = row.vlanId;
+
+
+        const { uplinkPort, uplinkEquipment } = row;
+
+        console.log(row)
 
         // 能查询到，进行注册操作
 
@@ -505,7 +509,9 @@ export default {
             subnet,
             switchName,
             switchPort,
-            vlanId
+            vlanId,
+            uplinkPort, 
+            uplinkEquipment
           };
           this.$post({ url, params }).then(() => {
             this.$Message.success("终端登记成功");
@@ -527,7 +533,10 @@ export default {
             switchPort,
             computerRack,
             computerRoom,
-            subnet: scannedsubnetsId
+            subnet,
+            name,
+            uplinkPort,
+            uplinkEquipment
           }
         });
       } catch (err) {

@@ -319,9 +319,12 @@ export default {
       computerRack,
       computerRoom,
       subnet,
-      vlanId
+      vlanId,
+      name,
+      uplinkPort,
+      uplinkEquipment
     } = this.$route.query;
-
+    console.log(this.$route.query, "quey")
     this.currentData = {
       mac,
       switchName,
@@ -330,7 +333,10 @@ export default {
       computerRoom,
       ip,
       subnet,
-      vlanId
+      vlanId,
+      name,
+      uplinkPort,
+      uplinkEquipment
     };
 
     if (id) {
