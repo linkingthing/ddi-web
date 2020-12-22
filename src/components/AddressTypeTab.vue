@@ -5,31 +5,38 @@
         :class="{active: item.id === active}"
         v-for="item in tabList "
         :key="item.id"
-        @click="$emit('change', item.id)"
+        @click="$emit('change', item.id, item)"
       >
-        {{item.title}}
+        {{item.label}}
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+const tabList = [{
+  label: "IPv6",
+  id: "listviewv6"
+}, {
+  label: "IPv4",
+  id: "listviewv4"
+}];
 export default {
   components: {},
   props: {
     active: {
       type: String,
       default: ""
+    },
+    tabList: {
+      type: Array,
+      default: () => {
+        return tabList;
+      }
     }
   },
   data() {
-    this.tabList = [{
-      title: "IPv6",
-      id: "listviewv6"
-    }, {
-      title: "IPv4",
-      id: "listviewv4"
-    }];
+
     return {
     };
   }

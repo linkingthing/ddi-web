@@ -1,5 +1,5 @@
 <template>
-  <div class="common-tab">
+  <!-- <div class="common-tab">
     <span
       @click="handleClick(item)"
       class="common-tab-item"
@@ -9,14 +9,25 @@
     >
       {{item.label}}
     </span>
-  </div>
+  </div> -->
+
+  <AddressTypeTab
+    class="common-tab"
+    @change="handleClick"
+    :tab-list="tabList"
+    :active="active"
+  />
 </template>
 
 <script>
+import AddressTypeTab from "@/components/AddressTypeTab";
+
 export default {
-  components: {},
+  components: {
+    AddressTypeTab
+  },
   props: {
-    value: {
+    active: {
       type: String,
       default: ""
     },
@@ -33,8 +44,8 @@ export default {
   created() { },
   mounted() { },
   methods: {
-    handleClick(item) {
-      this.$emit("on-tab", item);
+    handleClick(id, item) {
+      this.$emit("change", id, item);
     }
   },
   watch: {},

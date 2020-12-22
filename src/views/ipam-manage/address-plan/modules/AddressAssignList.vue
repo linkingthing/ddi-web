@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import AddressTypeTab from "./AddressTypeTab";
+import AddressTypeTab from "@/components/AddressTypeTab";
 export default {
   components: {
     AddressTypeTab

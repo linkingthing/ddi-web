@@ -1,19 +1,13 @@
 <template>
   <div class="alarm-info">
     <div class="top-border">
-      <Tabs
-        v-model="tabValue"
+
+      <common-tab
         class="top-tab"
-      >
-        <TabPane
-          label="告警配置"
-          name="alarmConfig"
-        />
-        <TabPane
-          label="管理员列表"
-          name="adminList"
-        />
-      </Tabs>
+        @change="(value) => tabValue = value"
+        :active="tabValue"
+        :tab-list="tabList"
+      />
     </div>
 
     <div
@@ -106,6 +100,14 @@ export default {
   },
   props: {},
   data() {
+
+    this.tabList = [{
+      id: "alarmConfig",
+      label: "告警配置"
+    }, {
+      id: "adminList",
+      label: "管理员列表"
+    }];
     this.rules = {
 
     };
@@ -164,7 +166,7 @@ export default {
     border-top: 1px solid #f0f0f0;
     padding-top: 40px;
     padding-left: 25px;
-    padding-bottom: 30px;
+    padding-bottom: 45px;
     .top-tab {
       position: relative;
       z-index: 100;

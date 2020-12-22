@@ -2,8 +2,8 @@
   <div class="dhcp-config-layout">
     <common-tab
       class="tab-box"
-      @on-tab="handleTab"
-      :value="tab"
+      @change="handleTab"
+      :active="tab"
       :tab-list="tabList"
     />
     <router-view />
@@ -11,16 +11,17 @@
 </template>
 
 <script>
+
 export default {
   components: {},
   props: {},
   data() {
     this.tabList = [{
-      name: "dhcpconfigs",
+      id: "dhcpconfigs",
       label: "全局参数",
       route: "option-dhcpconfigs"
     }, {
-      name: "clientclasses",
+      id: "clientclasses",
       label: "option60",
       route: "option-clientclasses"
     }];
@@ -36,8 +37,8 @@ export default {
   },
   mounted() { },
   methods: {
-    handleTab(tab) {
-      this.tab = tab.name;
+    handleTab(_, tab) {
+      this.tab = tab.id;
       this.$router.push({ name: tab.route });
     }
   },
