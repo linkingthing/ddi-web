@@ -59,7 +59,7 @@ export default {
       path: '/address/ipam/address/list',
       component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/address-list'),
       meta: {
-        title: "IP地址列表",
+        title: "子网列表",
         notInMenu: true,
         from: "ipam-address-plan",
       }
