@@ -329,7 +329,7 @@ export default {
     },
     handleSavePlanName(url, value, row) {
       const params = { name: value, id: row.id };
-      const action = `${url}?action=updatePlanInfo`;
+      const action = `${url}?action=updateplaninfo`;
       this.$post({ url: action, params }).then(() => {
         this.$Message.success("更新成功");
         this.getPlanList();
