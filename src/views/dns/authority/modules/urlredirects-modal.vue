@@ -84,7 +84,7 @@
           >.crt证书</Button>
           <div
             class="upload-show"
-            v-if="keyFile"
+            v-if="crtFile"
           >
             <span class="upload-filename">{{crtFile.name}}</span>
             <img
@@ -164,7 +164,7 @@ export default {
       loading: false,
       dialogVisible: false,
       keyFile: "",
-      crtFile: "",
+      crtFile: ""
     };
   },
 
@@ -190,8 +190,12 @@ export default {
           this.formModel = {
             domain, url, isHttps
           };
-
           this.formModel.isHttps = isHttps ? "https" : "http";
+
+          this.$nextTick().then(() => {
+            this.$refs.formInline.validate();
+          });
+          console.log(this.formModel)
         }).catch();
       }
       this.dialogVisible = val;

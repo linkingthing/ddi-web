@@ -5,7 +5,7 @@
 
       <NoDataList
         :top="200"
-        v-if="!planList.length && $store.getters.hasPermissionToCreate"
+        v-if="!planList.length && $hasPermissionCreate('plan')"
         button-text="新建规划"
         @add="handleAddPlan"
       />
