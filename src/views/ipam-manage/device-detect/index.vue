@@ -297,8 +297,8 @@ export default {
     },
 
     handleAdd() {
-      this.showEdit = true;
       this.currentData = null;
+      this.showEdit = true;
     },
     handleClickImportTable() {
       this.file = "";

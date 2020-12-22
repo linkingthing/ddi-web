@@ -104,7 +104,26 @@ export default {
     async setValue(val) {
       let value = val;
 
-      if (!val) value = {};
+      if (!val) {
+        this.formModel = {
+          name: "",
+          administrationAddress: "",
+          equipmentType: "",
+          serialNumber: "",
+          manufacturer: "",
+          firmwareVersion: "",
+          uplinkAddress: "",
+          downlinkAddress: "",
+          computerRoom: "",
+          computerRack: "",
+          location: "",
+          department: "",
+          responsiblePerson: "",
+          telephone: ""
+        };
+
+        this.$refs.form && this.$refs.form.resetFields();
+      }
 
       await this.$nextTick();
 
