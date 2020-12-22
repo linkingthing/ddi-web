@@ -1002,11 +1002,7 @@ export default {
       }
 
       // 防止全局ipv4重复
-
-      console.log(this.currentNode.id, row)
       const IPv4List = this.nodes.filter(item => item.id !== row.id).map(item => item.ipv4s || []).flat();
-
-      console.log(IPv4List)
       if (includes(IPv4List, ipv4s)) {
         return { isValid: false, message: "ipv4s重复，请更正" };
       }

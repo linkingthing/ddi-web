@@ -57,23 +57,22 @@
               alt=""
             >
           </h3>
-          <div
-            v-if="Array.isArray(data.planchildren)"
-            class="rich-node-iplist"
-          >
-            <p
-              class="s-ipv6"
-              :key="ipv6"
-              v-for="ipv6 in data.planchildren.map(item => item.prefix)"
-            >{{ ipv6 }}</p>
-          </div>
+          <div class="rich-node-iplist">
+            <div v-if="Array.isArray(data.planchildren)">
+              <p
+                class="s-ipv6"
+                :key="ipv6"
+                v-for="ipv6 in data.planchildren.map(item => item.prefix)"
+              >{{ ipv6 }}</p>
+            </div>
 
-          <div v-if="Array.isArray(data.ipv4s)">
-            <p
-              class="s-ipv6"
-              :key="ipv4s"
-              v-for="ipv4s in data.ipv4s"
-            >{{ ipv4s }}</p>
+            <div v-if="Array.isArray(data.ipv4s)">
+              <p
+                class="s-ipv6"
+                :key="ipv4s"
+                v-for="ipv4s in data.ipv4s"
+              >{{ ipv4s }}</p>
+            </div>
           </div>
 
           <span
