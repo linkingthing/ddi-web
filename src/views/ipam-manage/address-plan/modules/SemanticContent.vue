@@ -575,13 +575,15 @@ export default {
     },
     filterCurrentNodeChildren() {
       const currentNodeChildren = cloneDeep(this.semanticNodeList);
-      return currentNodeChildren.filter(item => item.name.includes(this.filterKeyword.trim())).map(item => {
-        // console.log(item)
-        return {
-          ...item,
-          showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `${item.prefixs.join(",\n")}` : "_ _"
-        };
-      });
+      return currentNodeChildren
+        .filter(item => item.name.includes(this.filterKeyword.trim()))
+        .map(item => {
+          return {
+            ...item,
+            showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `${item.prefixs.join(",\n")}` : "_ _",
+            _disabled: hasGrandson(this.nodes, item.id) || (item.sponsordispatch && item.sponsordispatch.issponsor)
+          };
+        });
     },
 
     semanticColumns() {
@@ -1245,14 +1247,14 @@ export default {
       const stepSize = +this.stepsize;
       const subnodebitwidth = this.bitWidth;
       const allPlanNodes = this.allPlanNodes;
-
       try {
         const nodeList = planSemanticNodesValue({
           prefixList,
           semanticNodeList,
           bitWidth: subnodebitwidth,
           stepSize,
-          allPlanNodes
+          allPlanNodes,
+          keepExistPlanNode: false
         }).map(item => {
           Reflect.deleteProperty(item, "temporaryCreated");
           return {
@@ -1301,13 +1303,15 @@ export default {
           const subnodebitwidth = this.bitWidth;
           const allPlanNodes = this.allPlanNodes;
 
+
           const nodeList = planSemanticNodesValue({
             prefixList,
             semanticNodeList,
             selectSemanticNodeList,
             bitWidth: subnodebitwidth,
             stepSize,
-            allPlanNodes
+            allPlanNodes,
+            keepExistPlanNode: false
           }).map(item => {
             Reflect.deleteProperty(item, "temporaryCreated");
             return {
@@ -1361,8 +1365,6 @@ export default {
 
         return;
       }
-
-
 
       const semanticNodeList = this.semanticNodeList;
       this.semanticNodeList = semanticNodeList.map(item => {
