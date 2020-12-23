@@ -54,7 +54,7 @@ export default {
           }, row.prefix);
         }
       }, {
-        title: "描述",
+        title: "子网名称",
         key: "name"
       }, {
         title: "规划使用率",
