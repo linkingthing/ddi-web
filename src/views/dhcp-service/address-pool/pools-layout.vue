@@ -2,8 +2,8 @@
   <div class="pool-layout">
     <common-tab
       class="tab-box"
-      @on-tab="handleTab"
-      :value="tab"
+      @change="handleTab"
+      :active="tab"
       :tab-list="tabList"
     />
     <router-view />
@@ -28,23 +28,23 @@ export default {
     addressType(value) {
       if (value === 6) {
         this.tabList.push({
-          name: "pdpools",
+          id: "pdpools",
           label: "前缀委派",
           route: "address-pdpool-list"
         });
       }
       if (value === 4) {
         this.tabList.unshift({
-          name: "pools",
+          id: "pools",
           label: "动态地址池",
           route: "address-pool-list"
         }, {
-          name: "reservations",
+          id: "reservations",
           label: "固定地址",
           route: "address-reservations-list"
         });
         this.tabList.push({
-          name: "staticaddresses",
+          id: "staticaddresses",
           label: "静态地址",
           route: "static-address"
         });
@@ -54,16 +54,16 @@ export default {
       if (this.addressType === 6) {
         if (Number(value) === 64) {
           this.tabList.unshift({
-            name: "pools",
+            id: "pools",
             label: "动态地址池",
             route: "address-pool-list"
           }, {
-            name: "reservations",
+            id: "reservations",
             label: "固定地址",
             route: "address-reservations-list"
           });
           this.tabList.push({
-            name: "staticaddresses",
+            id: "staticaddresses",
             label: "静态地址",
             route: "static-address"
           });
@@ -89,9 +89,9 @@ export default {
     });
   },
   methods: {
-    handleTab(tab) {
+    handleTab(_, tab) {
       const { params } = this.$route;
-      this.tab = tab.name;
+      this.tab = tab.id;
       this.$router.push({ name: tab.route, params });
     }
   }

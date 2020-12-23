@@ -34,6 +34,7 @@ export default {
       component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
       meta: {
         notInMenu: true,
+        active: "ipam-address-manage",
         from: "ipam-address-manage",
         title: ":subnet",
         permission: "networkinterfaces"
@@ -46,6 +47,7 @@ export default {
       component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/ipassets"),
       meta: {
         notInMenu: true,
+        active: "ipam-address-manage",
         from: "ipam-address-manage",
         title: ":subnet"
       }

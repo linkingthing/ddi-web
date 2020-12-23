@@ -143,6 +143,8 @@ export default {
 
         await this.$nextTick();
 
+        console.log(val)
+
         if (val.params.tab) {
           this.tab = val.params.tab;
         } else {

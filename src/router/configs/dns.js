@@ -44,6 +44,7 @@ export default {
         title: ":id",
         notInMenu: true,
         from: "config-group",
+        active: "config-group",
         permission: "authorityZone"
 
       },
@@ -60,6 +61,7 @@ export default {
         title: ":name",
         notInMenu: true,
         from: "authority-zone-query",
+        active: "config-group",
         permission: "rrs"
 
       },
@@ -90,6 +92,7 @@ export default {
         title: ":id",
         notInMenu: true,
         from: "redirect-view",
+        active: "redirect-view",
         permission: "redirect"
 
       },
@@ -119,6 +122,7 @@ export default {
         title: ":id",
         notInMenu: true,
         from: "urlredirects-view",
+        active: "urlredirects-view",
         permission: "urlRedirect"
       },
     },

@@ -24,7 +24,7 @@ export default {
       component: () => import("@/views/dns/forward/ForwardView"),
       meta: {
         title: "转发配置",
-        active: "forward-layout",
+        active: "forward-view",
         permission: "forwardConfigMenu"
       }
     },
@@ -54,6 +54,7 @@ export default {
         title: ":viewsId",
         notInMenu: true,
         from: "forward-view",
+        active: "forward-view",
         permission: "forwardRule"
       }
     },
