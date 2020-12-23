@@ -267,6 +267,17 @@ export default {
 
     dialogVisible(val) {
       if (!val) {
+        this.params = {
+          snmpCommunity: "",
+          snmpEnabled: false,
+          snmpV3AuthenticationPassphrase: "",
+          snmpV3AuthenticationProtocol: "",
+          snmpV3MsgFlag: "no_auth_no_priv",
+          snmpV3PrivacyPassphrase: "",
+          snmpV3PrivacyProtocol: "",
+          snmpV3UserName: "",
+          snmpVersion: "v2c"
+        };
         this.$refs.form.resetFields();
       }
 
