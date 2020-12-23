@@ -25,6 +25,12 @@ const getters = {
   tree: state => {
     return list2Tree(cloneDeep(state.nodes), "0");
   },
+  filterTree: state => {
+    const smallTree = cloneDeep(state.nodes).filter(item => {
+      return item.state !== "dispatch" || item.sponsordispatch;
+    });
+    return list2Tree(smallTree, "0");
+  },
   nodes: state => state.nodes,
   allPlanNodes: state => {
     return state.nodes
@@ -138,7 +144,6 @@ const actions = {
         node.prefixs = prefixArr;
 
         node.addressCount = node.plannodes.length;
-
       });
 
       commit("setNodes", semanticnodes);

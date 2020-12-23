@@ -45,16 +45,16 @@ export default {
     ...mapGetters([
       "currentNodeId",
       "tree",
-      "hasChange"
+      "hasChange",
+      "filterTree"
     ])
 
   },
   watch: {
-    tree: {
+    filterTree: {
       deep: true,
       immediate: true,
       handler(val) {
-        // console.log(val, "tree")
         if (Array.isArray(val) && val.length) {
           this.treeData = cloneDeep(val);
           if (!this.currentNodeId) {

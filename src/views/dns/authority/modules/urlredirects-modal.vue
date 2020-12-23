@@ -37,6 +37,7 @@
       </FormItem>
 
       <FormItem
+        prop="file"
         class="upload-box"
         v-if="formModel.isHttps === 'https' && !!formModel.domain && !isEdit"
       >
@@ -150,6 +151,19 @@ export default {
       url: [
         { required: true, message: "请输入url" },
         { pattern: urlReg, message: "请输入正确的url" }
+      ],
+      file: [
+        {
+          validator: (rule, value, callback) => {
+            if (!this.keyFile) {
+              callback("请上传.key密钥");
+            }
+            if (!this.crtFile) {
+              callback("请上传.crtFile证书");
+            }
+            callback();
+          }
+        }
       ]
 
     };
@@ -174,6 +188,9 @@ export default {
     },
     isEdit() {
       return !!this.links.update;
+    },
+    isHttps() {
+      return this.formModel.isHttps === "https";
     }
   },
 
@@ -183,6 +200,8 @@ export default {
         this.formModel.isHttps = "http";
         this.keyFile = null;
         this.crtFile = null;
+        this.formModel.keyFile = null;
+        this.formModel.crtFile = null;
         this.$refs.formInline.resetFields();
         return;
       }
@@ -235,12 +254,11 @@ export default {
     },
 
     uploadFile() {
-      try {
+      if (this.isHttps) {
         this.$refs.keyUpload.clearFiles();
         this.$refs.crtUpload.clearFiles();
         return Promise.all([this.$refs.keyUpload.post(this.keyFile), this.$refs.crtUpload.post(this.crtFile)]);
-      } catch (e) {
-        // http
+      } else {
         this.count = 2;
         return Promise.resolve(1);
       }
@@ -253,6 +271,14 @@ export default {
             this.controllerSubmit();
           }
         });
+      }).catch(() => {
+        this.count = 0;
+        this.$refs.keyUpload.clearFiles();
+        this.$refs.crtUpload.clearFiles();
+        this.keyFile = null;
+        this.crtFile = null;
+        this.formModel.keyFile = null;
+        this.formModel.crtFile = null;
       });
     },
     controllerSubmit() {
