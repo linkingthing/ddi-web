@@ -1040,7 +1040,8 @@ export default {
           this.$post({ url: action, params }).then(() => {
             this.$Modal.remove();
             this.$Message.success("语义节点删除成功");
-            this.semanticNodeList = this.semanticNodeList.filter(item => item.id !== row.id);
+            // this.semanticNodeList = this.semanticNodeList.filter(item => item.id !== row.id  );
+            this.getPlanInfo();
           }).catch(err => {
             this.$Modal.remove();
             this.$Message.error(err.response.data.message);
