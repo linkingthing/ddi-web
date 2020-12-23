@@ -1,16 +1,4 @@
 <template>
-  <!-- <div class="common-tab">
-    <span
-      @click="handleClick(item)"
-      class="common-tab-item"
-      v-for="(item) in tabList"
-      :key="item.name"
-      :class="{active: item.name === value}"
-    >
-      {{item.label}}
-    </span>
-  </div> -->
-
   <AddressTypeTab
     class="common-tab"
     @change="handleClick"

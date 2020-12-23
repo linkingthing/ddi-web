@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isIp, ipv6IsValid, ipv4IsValid } from "@/util/common";
+import { isIp, ipv6IsValid, ipv4IsValid, domainReg } from "@/util/common";
 import { ttlValidator } from "@/util/validator";
 
 export default {
@@ -96,9 +96,18 @@ export default {
                 } else {
                   callback("请正确填写区名称");
                 }
+                callback();
+
+              } else {
+                // 区名称用域名规则校验
+
+                if (domainReg.test(value)) {
+                  callback();
+                } else {
+                  callback("请正确填写区名称");
+                }
 
               }
-              callback();
             }
           }
         ],
