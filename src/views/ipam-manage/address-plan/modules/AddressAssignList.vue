@@ -54,7 +54,7 @@ export default {
           }, row.prefix);
         }
       }, {
-        title: "子网名称",
+        title: "名称",
         key: "name"
       }, {
         title: "规划使用率",
@@ -64,33 +64,32 @@ export default {
         key: "action",
         width: 130,
         render: (h, { row }) => {
-          if (this.netType === "netv4") {
-            return h("div", [
-              h("span", {
-                class: {
-                  "btn-line": true
-                },
-                on: {
-                  click: () => {
-                    this.handleDHCP(row);
-                  }
-                }
-              }, "DHCP")
-            ]);
-          }
+          // if (this.netType === "netv4") {
+          //   return h("div", [
+          //     h("span", {
+          //       class: {
+          //         "btn-line": true
+          //       },
+          //       on: {
+          //         click: () => {
+          //           this.handleDHCP(row);
+          //         }
+          //       }
+          //     }, "DHCP")
+          //   ]);
+          // }
           const [, len] = row.prefix.split("/");
           return h("div", {
 
           }, [
-            h("span", {
-              class: {
-                "btn-line": true
-              },
+            h("btn-line", {
+
               style: {
-                display: +len === 64 ? "none" : "inline-block",
-                color: len === undefined ? "#999!important" : "#4686fe",
-                borderColor: len === undefined ? "#999" : "#4686fe",
-                cursor: len === undefined ? "default" : "pointer"
+
+              },
+              props: {
+                disabled: row.state === "dispatch",
+                title: "新建子网"
               },
               on: {
                 click: () => {
@@ -100,12 +99,14 @@ export default {
                 }
               }
             }, "新建子网"),
-            h("span", {
-              class: {
-                "btn-line": true
-              },
+            h("btn-line", {
+
               style: {
                 display: (+len !== 64) ? "none" : "inline-block"
+              },
+              props: {
+                disabled: row.state === "dispatch",
+                title: "新建子网"
               },
               on: {
                 click: () => {

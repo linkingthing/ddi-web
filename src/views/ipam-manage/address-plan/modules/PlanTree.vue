@@ -50,7 +50,7 @@
           :style="{ border: collapsed ? '2px solid grey' : '' }"
         >
 
-          <h3 class="name">{{ data.name }}
+          <h3 class="name" :title="data.name">{{ data.name }}
             <img
               v-if="data.sponsordispatch"
               :src=" !data.sponsordispatch.issponsor ? ableReport : alreadyDispatch"
@@ -307,9 +307,18 @@ export default {
     }
 
     .name {
+      position: relative;
       font-size: 14px;
       font-weight: normal;
       color: #333;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      img {
+        position: absolute;
+        right: 0px;
+        top: 4px;
+      }
     }
     .s-ipv6 {
       font-size: 12px;

@@ -1254,7 +1254,6 @@ export default {
           bitWidth: subnodebitwidth,
           stepSize,
           allPlanNodes,
-          keepExistPlanNode: false
         }).map(item => {
           Reflect.deleteProperty(item, "temporaryCreated");
           return {
