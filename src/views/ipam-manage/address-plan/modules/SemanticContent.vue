@@ -426,7 +426,10 @@ export default {
         remoteaddr: "",
         semanticnodes: []
       },
-      dispatchclients: []
+      dispatchclients: [],
+
+
+      editList: []
 
     };
   },
@@ -601,14 +604,18 @@ export default {
           key: "name",
           width: 200,
           render: (h, { row }) => {
+
             return h("line-edit",
               {
                 on: {
+                  "on-edit-begain": () => this.editList.push(row.id),
                   "on-edit-finish": val => {
+                    this.editList = this.editList.filter(item => item !== row.id);
                     this.handleSaveSemanticName(row, val);
                   }
                 },
                 props: {
+                  isEdit: this.editList.includes(row.id),
                   isPercent: false,
                   value: row.name,
                   width: "124px"

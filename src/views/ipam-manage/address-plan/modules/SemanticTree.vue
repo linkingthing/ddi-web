@@ -81,7 +81,7 @@ export default {
     ]),
 
     handleSelectNode(nodes, node) {
-      console.log("handleSelectNode", nodes, node, this.currentNodeId)
+      // console.log("handleSelectNode", nodes, node, this.currentNodeId)
 
 
       if (node.depth === 8) {

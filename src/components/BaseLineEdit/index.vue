@@ -42,6 +42,10 @@ export default {
     checkfunc: {
       type: Function,
       default: null
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -59,6 +63,14 @@ export default {
   watch: {
     value(val) {
       this.innerValue = val;
+    },
+    isEdit: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.contenteditable = val;
+        }
+      }
     }
   },
   created() {
@@ -81,6 +93,8 @@ export default {
           innerValue = Number(innerValue);
         }
         this.$emit("on-edit-finish", innerValue);
+      } else {
+        this.$emit("on-edit-begain");
       }
       this.contenteditable = !this.contenteditable;
     },
