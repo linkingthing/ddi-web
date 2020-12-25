@@ -38,32 +38,39 @@ export default {
       meta: {
         title: "语义规划",
         notInMenu: true,
+        active: "ipam-address-plan",
         from: "ipam-address-plan"
       }
     },
 
     {
-      name: 'ipam-address-plan-semantics',
-      path: '/address/ipam/plans/:planId',
-      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/semantics'),
+      name: "ipam-address-plan-semantics",
+      path: "/address/ipam/plans/:planId",
+      component: () =>
+        import(
+          /* webpackChuckName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"
+        ),
       meta: {
         title: "语义规划",
         notInMenu: true,
-        from: "ipam-address-plan",
+        active: "ipam-address-plan",
+        from: "ipam-address-plan"
       }
     },
 
-
     {
-      name: 'ipam-address-list',
-      path: '/address/ipam/address/list',
-      component: () => import(/* webpackChuckName: "ipam-address-plan" */ '@/views/ipam-manage/address-plan/address-list'),
+      name: "ipam-address-list",
+      path: "/address/ipam/address/list",
+      component: () =>
+        import(
+          /* webpackChuckName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/address-list"
+        ),
       meta: {
         title: "子网列表",
         notInMenu: true,
-        from: "ipam-address-plan",
+        active: "ipam-address-plan",
+        from: "ipam-address-plan"
       }
-    },
-
+    }
   ]
 };
