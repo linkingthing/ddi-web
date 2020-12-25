@@ -19,6 +19,8 @@
           placeholder="请输入想要查询的IP"
           style="width: 330px"
           v-model="ip"
+          search
+          @on-search="handleSearch"
         ></Input>
         <Button
           type="primary"
@@ -142,6 +144,8 @@
           placeholder="请输入想要查询的域名"
           style="width: 330px"
           v-model="domain"
+          search
+          @on-search="handleDomainSearch"
         ></Input>
         <Button
           type="primary"
@@ -161,6 +165,9 @@
 
 import CommonTab from "@/components/CommonTab";
 import { ipTypeMap, ipStateMap } from "@/views/ipam-manage/network-interface/define";
+import { deviceTypes } from "@/views/ipam-manage/ip-assets-manage/define";
+
+
 import eventBus from "@/util/bus";
 
 export default {
@@ -415,8 +422,14 @@ export default {
 
           result.ipTypeLabel = result.ipState && result.ipState.ipType && ipTypeMap[result.ipState.ipType].label;
           result.ipStateLabel = result.ipState && result.ipState.ipState && ipStateMap[result.ipState.ipState].label;
+
+          const type = deviceTypes.find(({ label }) => label === result.asset.deviceType);
+          result.asset.deviceType = type ? type.text : "";
+
           result.deviceTypeName = this.spuerJoin(result.asset.deviceType, result.asset.name);
           result.computerRoomRack = this.spuerJoin(result.asset.computerRoomRack, result.asset.computerRack);
+
+
 
           this.result = result;
 
@@ -437,6 +450,17 @@ export default {
           } else {
             this.assignHistoryData = [];
           }
+        } else {
+          this.result = {
+            plan: {},
+            subnet: {},
+            ipState: {},
+            asset: {},
+            ipTypeLabel: "",
+            ipStateLabel: ""
+          };
+          this.historyData = [];
+          this.assignHistoryData = [];
         }
       }).catch(err => {
         this.result = {
@@ -478,8 +502,6 @@ export default {
       this.$get({ url, params }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
           const domainData = data[0].ips;
-
-
           this.domainData = domainData.map(item => {
             let result = Object.values(item).reduce((item, prev) => {
               return {
@@ -488,6 +510,7 @@ export default {
               };
             }, {});
 
+            const type = deviceTypes.find(({ label }) => label === result.deviceType);
             return {
               ...result,
               subnet: result.subnet || result.prefix,
@@ -495,9 +518,12 @@ export default {
               smanticPlan: result.semanticNames.join(">"),
               ipType: ipTypeMap[result.ipType] && ipTypeMap[result.ipType].label,
               ipState: ipStateMap[result.ipState] && ipStateMap[result.ipState].label,
+              deviceType: type ? type.text : "",
               computerRoomRack: this.spuerJoin(result.computerRoom, result.computerRack)
             };
           });
+        } else {
+          this.domainData = [];
         }
       });
     },

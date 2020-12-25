@@ -557,9 +557,10 @@ export const modifiedEnum = {
 
 export const planTypeEnum = {
   UNDEFINED: "undefined",
-  ONEKEYPLAN: "oneKeyPlan",
-  HANDLEPLAN: "handlePlan"
+  ONEKEYPLAN: "autoFormulate",
+  HANDLEPLAN: "manualFormulate"
 };
+
 
 export const hasGrandson = (nodes, id, allNodes = nodes) => {
   const children = nodes.filter(node => {
