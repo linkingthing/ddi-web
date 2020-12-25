@@ -91,11 +91,12 @@ function renderIp(h, row, field, status, scope) {
           let statusConfig = {};
           if (Array.isArray(row[field]) && row[field].length) {
             first = row[field][0];
-            const target = row[status].find(i => i.ip === first);
-
-            statusConfig = statusLegends.find(
-              item => item.type === target.ipstate
-            );
+            if (row[status]) {
+              const target = row[status].find(i => i.ip === first);
+              statusConfig = statusLegends.find(
+                item => item.type === target.ipstate
+              );
+            }
           }
           return h(
             "div",
