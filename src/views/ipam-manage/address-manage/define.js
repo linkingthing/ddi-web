@@ -12,7 +12,7 @@ export const columns = scope => [
             }
           }
         },
-        row.ipnet
+        row.subnet
       );
     },
     width: "440"

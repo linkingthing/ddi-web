@@ -8,12 +8,12 @@ export const columns = scope => [
   {
     title: "MAC地址",
     key: "mac",
-    minWidth: 160,
+    minWidth: 160
   },
   {
     title: "地址类型",
     key: "ipTypeText",
-    minWidth: 120,
+    minWidth: 120
   },
   {
     title: "地址状态",
@@ -35,12 +35,12 @@ export const columns = scope => [
   {
     title: "租赁时间(s)",
     key: "validLifetime",
-    minWidth: 120,
+    minWidth: 120
   },
   {
     title: "租赁过期时间",
     key: "expire",
-    minWidth: 190,
+    minWidth: 190
   },
   {
     title: "操作",
@@ -140,6 +140,25 @@ export const statusColors = ["#1EE9CA", "#1272FF", "#FF6464", "#FFB83C"];
 
 const noDataColors = ["#ebebeb"];
 
+export const ipTypeMap = {
+  assigned: {
+    label: "已分配地址"
+  },
+  unassigned: {
+    label: "未分配地址"
+  },
+  reservation: {
+    label: "固定地址"
+  },
+  static: {
+    label: "静态地址"
+  },
+  unmanagered: {
+    label: "未使用地址"
+  }
+};
+
+
 export const typeLegends = [
   {
     percent: 0,
@@ -173,6 +192,31 @@ export const typeLegends = [
     type: "unmanagered"
   }
 ];
+
+export const ipStateMap = Object.freeze(
+  Object.create(null, {
+    active: {
+      value: {
+        label: "活跃地址"
+      }
+    },
+    inactive: {
+      value: {
+        label: "不活跃地址"
+      }
+    },
+    conflict: {
+      value: {
+        label: "冲突地址"
+      }
+    },
+    zombie: {
+      value: {
+        label: "僵尸地址"
+      }
+    }
+  })
+);
 
 export const statusLegends = [
   {

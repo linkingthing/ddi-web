@@ -36,18 +36,24 @@
           </Menu>
         </div>
         <div class="user">
+
+          <i
+            class="header-icon search-icon"
+            @click="searchVisible = true"
+          ></i>
+
           <Badge
             :count="alarmCount"
             v-if="$hasPermission('alarm', 'GET')"
           >
             <i
-              class="icon-notice"
+              class="notice header-icon"
               style="font-size: 20px;cursor: pointer;color: #CFCFCF;vertical-align: middle;"
               @click="handleClickMessage"
             />
           </Badge>
           <Dropdown
-            style="margin-left: 30px"
+            style="margin-left: 36px"
             @on-click="handleClickMenu"
           >
             <a href="javascript:void(0)">
@@ -130,7 +136,7 @@
         :data="scopeData"
       />
     </common-modal>
-
+    <QuickSearch :visible.sync="searchVisible" />
   </div>
 </template>
 
@@ -142,6 +148,7 @@ import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
 import { resetRouter } from "@/router";
 
 import ChangePassword from "@/components/ChangePassword";
+import QuickSearch from "./QuickSearch";
 
 import { cloneDeep } from "lodash";
 
@@ -203,7 +210,8 @@ export default {
   name: "Header",
 
   components: {
-    "change-password": ChangePassword
+    "change-password": ChangePassword,
+    QuickSearch
   },
 
   data() {
@@ -218,6 +226,7 @@ export default {
       resourceList: [],
       showAgentEvent: false,
       scopeAuthVisible: false,
+      searchVisible: false,
       scopeColumns: [{
         title: "数据类型",
         key: "dataType"
@@ -491,20 +500,35 @@ export default {
     margin-right: 40px;
 
     .avatar {
-      height: 36px;
+      height: 24px;
       padding-right: 20px;
       vertical-align: middle;
       color: #cfcfcf;
       background: #f0f0f0;
-      width: 36px;
+      width: 24px;
       font-size: 20px;
       padding: 5px;
       border-radius: 50%;
       margin-right: 8px;
-      background: url(./../../assets/images/avatar.png);
+      background: url(./avatar.png);
       background-size: cover;
       display: inline-block;
     }
+  }
+
+  .header-icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+  }
+  .notice {
+    background: url(./info.png);
+  }
+  .search-icon {
+    background: url(./search.png);
+    margin-right: 36px;
+    vertical-align: middle;
+    cursor: pointer;
   }
 }
 

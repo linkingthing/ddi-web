@@ -12,7 +12,7 @@ export const columns = scope => [
               scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools?address=${row.ipnet}` });
             }
           }
-        }, row.ipnet)
+        }, row.subnet)
       ]);
     }
   },
