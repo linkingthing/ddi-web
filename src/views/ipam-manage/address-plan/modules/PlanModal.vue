@@ -54,7 +54,11 @@ export default {
       {
         validator: function (rule, value, callback) {
           if (value.trim()) {
-            callback();
+            if (value.length > 36) {
+              callback("规划名长度不能超过36哥字符");
+            } else {
+              callback();
+            }
           } else {
             callback("请输入规划名");
           }
