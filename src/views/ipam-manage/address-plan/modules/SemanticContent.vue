@@ -1152,23 +1152,44 @@ export default {
       this.$refs["currentNodeofChooseChildRef"].validate(valid => {
         if (valid) {
 
-          const allPlanNodes = this.allPlanNodes;
-          const bitWidth = this.bitWidth;
-          const prefixList = this.currentNodePrefix;
-
           const { prefixMap } = node;
           const semanticNode = node.row;
 
-          const semanticNodeList = this.semanticNodeList;
+
+          const prefixs = [];
+          const prefixNumbers = [];
+          prefixMap.forEach(({ initCount, count, prefix }) => {
+            if (count > initCount) {
+              prefixs.push(prefix);
+              prefixNumbers.push(count - initCount);
+            }
+          });
 
 
+          const { url } = this.$getApiByRoute();
+          const action = `${url}?action=addsemanticplannode`;
 
+          const params = {
+            parentSemanticId: this.currentNode.id,
+            prefixs,
+            prefixNumbers,
+            semantic: semanticNode
+          };
 
-          // addformulatesemantic
+          this.$post({ url: action, params })
+            .then(res => {
+              this.$Message.success("增加成功");
 
+              this.nodeEditVisible = false;
 
+            })
+            .catch((err) => {
+              this.$Message.error(err.response.data.message);
+            })
+            .finally(() => {
+              this.getPlanInfo();
+            });
 
-          this.nodeEditVisible = false;
 
         }
       });
