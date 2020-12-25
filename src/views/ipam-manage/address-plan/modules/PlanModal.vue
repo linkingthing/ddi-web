@@ -47,19 +47,24 @@ export default {
 
 
     this.rules = {
-      name: [
-        {
-          validator: function (rule, value, callback) {
-            if (value.trim()) {
-              callback();
-            } else {
-              callback("请输入角色名");
-            }
+      name: [{
+        required: true,
+        message: "请输入规划名"
+      },
+      {
+        validator: function (rule, value, callback) {
+          if (value.trim()) {
+            callback();
+          } else {
+            callback("请输入规划名");
           }
         }
-      ],
+      }],
 
-
+      prefixs: [{
+        required: true,
+        message: "请输入地址前缀"
+      }]
 
     };
 
