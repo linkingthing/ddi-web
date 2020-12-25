@@ -144,6 +144,7 @@ export default {
   },
   watch: {
     dataset() {
+      this.scaleNum = 1;
       this.needResetScale = true;
       this.draw();
       this.autoScale();
@@ -214,8 +215,6 @@ export default {
       this.setScale(1);
     },
     setScale(scaleNum) {
-
-
       this.scaleNum = scaleNum;
     },
     isVertial() {
@@ -276,14 +275,13 @@ export default {
         const offset = (this.minX + this.maxX) * scale;
 
         if (offset > 0) {
-
           // console.log("top big", offset)
           initTransformResult = (height * scale) / 2 - offset;
         } else {
           initTransformResult = (height * scale) / 2 + offset;
-
         }
-        this.initTransformY = initTransformResult;
+
+        this.initTransformY = 0;
         // console.log("initTransformY", this.initTransformY)
 
         // console.log(this.minX, this.maxX, innerDomContainerHeight, innerDomContainerHeight * scale)
