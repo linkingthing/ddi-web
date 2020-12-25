@@ -265,21 +265,22 @@ export default {
     },
     handleConfirm(name) {
       this.count = 0;
-      this.uploadFile().then(() => {
-        this.$refs[name].validate(valid => {
-          if (valid) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          this.uploadFile().then(() => {
             this.controllerSubmit();
-          }
-        });
-      }).catch(() => {
-        this.count = 0;
-        this.$refs.keyUpload.clearFiles();
-        this.$refs.crtUpload.clearFiles();
-        this.keyFile = null;
-        this.crtFile = null;
-        this.formModel.keyFile = null;
-        this.formModel.crtFile = null;
+          }).catch(() => {
+            this.count = 0;
+            this.$refs.keyUpload.clearFiles();
+            this.$refs.crtUpload.clearFiles();
+            this.keyFile = null;
+            this.crtFile = null;
+            this.formModel.keyFile = null;
+            this.formModel.crtFile = null;
+          });
+        }
       });
+
     },
     controllerSubmit() {
       if (this.count === 2) {
