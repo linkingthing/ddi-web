@@ -144,13 +144,11 @@
 import { mapGetters, mapMutations } from "vuex";
 import store from "@/store";
 import logoSrc from "@/assets/images/logo.png";
-import { USERTYPE_SUPER, USERTYPE_NORMAL } from "@/config";
+import { USERTYPE_SUPER } from "@/config";
 import { resetRouter } from "@/router";
 
 import ChangePassword from "@/components/ChangePassword";
 import QuickSearch from "./QuickSearch";
-
-import { cloneDeep } from "lodash";
 
 const mainMenuList = [
   {

@@ -97,6 +97,10 @@ import { valuesParser } from "./tools";
 import NodeSelect from "./modules/node-select";
 import TopList from "./modules/top-list";
 
+
+import eventBus from "@/util/bus";
+
+
 export default {
   name: "DNSDashboard",
   components: {
@@ -127,7 +131,21 @@ export default {
         },
         {
           title: "统计次数",
-          key: "count",
+          key: "count"
+        },
+        {
+          title: "操作",
+          key: "action",
+          render: (h, { row }) => {
+            return h("btn-line", {
+              on: {
+                click: () => this.handleSearchDomain(row.domain)
+              },
+              props: {
+                title: "查询"
+              }
+            });
+          }
         }
       ],
       topIPColumns: [
@@ -142,7 +160,21 @@ export default {
         },
         {
           title: "统计次数",
-          key: "count",
+          key: "count"
+        },
+        {
+          title: "操作",
+          key: "action",
+          render: (h, { row }) => {
+            return h("btn-line", {
+              on: {
+                click: () => this.handleSearchIp(row.ip)
+              },
+              props: {
+                title: "查询"
+              }
+            });
+          }
         }
       ],
       timer: null,
@@ -365,6 +397,15 @@ export default {
           this.ips = toptenips;
         }).catch(err => err);
       });
+    },
+
+    handleSearchDomain(domain) {
+      console.log(domain)
+      eventBus.$emit("onSearchDomain", domain);
+    },
+    handleSearchIp(ip) {
+      eventBus.$emit("onSearchIp", ip);
+
     }
 
 

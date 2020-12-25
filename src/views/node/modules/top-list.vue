@@ -11,12 +11,17 @@
           :key="i"
           :style="`${getStyle(column)}; text-align: ${column.align}`"
         >
-          <!-- {{JSON.stringify(column)}}
-                {{JSON.stringify(item)}} -->
-
           <template v-if="column.type === 'index'">
 
             <span class="index">{{index + 1}}</span>
+          </template>
+          <template v-else-if="typeof column.render==='function'">
+            <exSlot
+              :render="column.render"
+              :row="item"
+              :index="index"
+              :column="column"
+            />
           </template>
           <template v-else> {{item[column.key]}}</template>
         </div>
@@ -31,8 +36,24 @@
 <script>
 import NoDataFigure from "../NoDataFigure";
 
+
+const exSlot = {
+  functional: true,
+  render: (h, context) => {
+
+    console.log(context)
+    const params = {
+      row: context.props.row,
+      index: context.props.index
+    };
+    if (context.props.column) params.column = context.props.column;
+    return context.props.render(h, params);
+  }
+};
+
+
 export default {
-  components: { NoDataFigure },
+  components: { NoDataFigure, exSlot },
   props: {
     columns: {
       type: Array,
@@ -55,11 +76,13 @@ export default {
 
   },
   watch: {},
-  created() { },
+  created() {
+    console.log(this)
+  },
   mounted() { },
   methods: {
     getStyle(column) {
-      return column.width ? `width: ${column.width}px` : "flex: 1"
+      return column.width ? `width: ${column.width}px` : "flex: 1";
     }
   }
 };

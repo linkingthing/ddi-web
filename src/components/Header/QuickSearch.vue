@@ -104,7 +104,7 @@
             <li>
               <div class="card-list-cell">
                 <div class="card-list-label">VLAN</div>
-                <div class="card-list-value">{{result.asset.vlanId}}</div>
+                <div class="card-list-value">{{result.asset.vlanId || ""}}</div>
               </div>
               <div class="card-list-cell">
                 <div class="card-list-label">联系电话</div>
@@ -160,8 +160,9 @@
 <script>
 
 import CommonTab from "@/components/CommonTab";
-
 import { ipTypeMap, ipStateMap } from "@/views/ipam-manage/network-interface/define";
+import eventBus from "@/util/bus";
+
 export default {
   components: {
     CommonTab
@@ -383,6 +384,20 @@ export default {
     }
   },
   created() {
+    eventBus.$on("onSearchDomain", (domain) => {
+      this.domain = domain;
+      this.innerVisible = true;
+      this.active = "domain";
+      this.getDomainData();
+    });
+
+    eventBus.$on("onSearchIp", (ip) => {
+      this.ip = ip;
+      this.innerVisible = true;
+      this.active = "ip";
+      this.getData();
+    });
+
 
   },
   mounted() { },
@@ -415,7 +430,7 @@ export default {
             this.assignHistoryData = result.allocatedHistories.map(item => {
               return {
                 ...item,
-                ipType: ipTypeMap[item.ipType].label,
+                ipType: ipTypeMap[item.ipType] && ipTypeMap[item.ipType].label,
                 time: this.$trimDate(item.time)
               };
             });
@@ -478,8 +493,8 @@ export default {
               subnet: result.subnet || result.prefix,
               vlanId: result.vlanId || "",
               smanticPlan: result.semanticNames.join(">"),
-              ipType: ipTypeMap[result.ipType].label,
-              ipState: ipStateMap[result.ipState].label,
+              ipType: ipTypeMap[result.ipType] && ipTypeMap[result.ipType].label,
+              ipState: ipStateMap[result.ipState] && ipStateMap[result.ipState].label,
               computerRoomRack: this.spuerJoin(result.computerRoom, result.computerRack)
             };
           });
