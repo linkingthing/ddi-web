@@ -157,7 +157,7 @@
         </div>
       </div>
 
-      <div class="modal">
+      <div class="lk-modal">
 
         <common-modal
           :visible.sync="customPlanVisible"
@@ -1116,7 +1116,7 @@ export default {
         if (prefixMap[plannode.parentplannodeid]) {
           prefixMap[plannode.parentplannodeid].count += 1;
         } else {
-          const { prefix } = allPlanNodes.find(item => item.id === plannode.parentplannodeid)
+          const { prefix } = allPlanNodes.find(item => item.id === plannode.parentplannodeid);
 
           prefixMap[plannode.parentplannodeid] = {
             prefix,

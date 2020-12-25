@@ -136,6 +136,7 @@ export default {
         {
           title: "操作",
           key: "action",
+          width: 60,
           render: (h, { row }) => {
             return h("btn-line", {
               on: {
@@ -165,6 +166,7 @@ export default {
         {
           title: "操作",
           key: "action",
+          width: 60,
           render: (h, { row }) => {
             return h("btn-line", {
               on: {
@@ -400,7 +402,6 @@ export default {
     },
 
     handleSearchDomain(domain) {
-      console.log(domain)
       eventBus.$emit("onSearchDomain", domain);
     },
     handleSearchIp(ip) {

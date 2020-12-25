@@ -40,8 +40,6 @@ import NoDataFigure from "../NoDataFigure";
 const exSlot = {
   functional: true,
   render: (h, context) => {
-
-    console.log(context)
     const params = {
       row: context.props.row,
       index: context.props.index
@@ -77,7 +75,6 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this)
   },
   mounted() { },
   methods: {
