@@ -244,14 +244,22 @@ export function executeTreeNodePrefix(
 /**
  *
  */
-export function list2Tree(data, parentsemanticid, children = "nodes") {
+export function list2Tree(
+  data,
+  parentsemanticid,
+  children = "nodes",
+  depth = 0
+) {
   let res = [];
   data.forEach(item => {
     if (item.parentsemanticid === parentsemanticid) {
-      let itemChildren = list2Tree(data, item.id, children);
+      let itemChildren = list2Tree(data, item.id, children, depth + 1);
       if (itemChildren.length) item[children] = itemChildren;
       item.expand = true;
-      res.push(item);
+      res.push({
+        ...item,
+        depth
+      });
     }
   });
   return res;
@@ -378,7 +386,7 @@ export const planSemanticNodesValue = ({
     semanticNodeList,
     bitWidth
   );
-  console.log(availableValueList)
+  console.log(availableValueList);
   let index = 0;
   semanticNodeList.forEach(semanticNode => {
     //  规划过的语义节点保持不变
@@ -560,7 +568,6 @@ export const planTypeEnum = {
   ONEKEYPLAN: "autoFormulate",
   HANDLEPLAN: "manualFormulate"
 };
-
 
 export const hasGrandson = (nodes, id, allNodes = nodes) => {
   const children = nodes.filter(node => {

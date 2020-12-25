@@ -81,7 +81,14 @@ export default {
     ]),
 
     handleSelectNode(nodes, node) {
-      // console.log("handleSelectNode", node, this.currentNodeId)
+      console.log("handleSelectNode", nodes, node, this.currentNodeId)
+
+
+      if (node.depth === 8) {
+        this.$Message.info("支持最高层级不超过8级");
+        return;
+      }
+
       if (node.sponsordispatch) {
         if (node.sponsordispatch.issponsor) {
           return;

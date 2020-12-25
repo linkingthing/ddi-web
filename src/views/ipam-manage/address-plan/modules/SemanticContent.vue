@@ -900,7 +900,6 @@ export default {
         this.$Message.info("地址步长请输入数字");
         return;
       }
-      this.changeCurrentNode("stepsize", +this.stepsize);
 
 
       const surplus = this.surplus;
@@ -925,17 +924,19 @@ export default {
       const url = "/apis/linkingthing.com/ipam/v1/plans";
       const action = `${url}?action=updatesemanticnumber`;
       this.$post({ url: action, params }).then((addNodes) => {
-        if (Array.isArray(addNodes) && addNodes.length) {
+        if (Array.isArray(addNodes) && addNodes.length && this.semanticNodeList.length) {
           const { autocreate } = this.semanticNodeList[0];
           if (autocreate === planTypeEnum.ONEKEYPLAN) {
             const prefixs = this.currentNode.prefixs;
             this.executeIpv6ByAction(addNodes, prefixs);
             return;
           }
+        } else {
+          this.$Message.success("更新成功");
+          this.getPlanInfo();
         }
-        this.$Message.success("更新成功");
-        this.getPlanInfo();
       }).catch(err => {
+        console.log(err)
         this.$Message.error(err.response.data.message);
       });
 
