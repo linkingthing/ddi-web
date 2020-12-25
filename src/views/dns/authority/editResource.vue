@@ -23,7 +23,9 @@
               label="记录名"
               prop="name"
             >
-              {{`${params.name}.${recordSuffix}`}}
+              <div style="overflow: hidden;word-break: break-all;">
+                {{`${params.name}.${recordSuffix}`}}
+              </div>
             </form-item>
             <TypeValue
               :params="params"

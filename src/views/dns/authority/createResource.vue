@@ -26,8 +26,9 @@
               <i-input
                 v-model="upgradeConfig.name"
                 placeholder="请填写资源名称"
+                :title="recordSuffix"
               >
-                <span slot="append">.{{recordSuffix}}</span>
+                <span slot="append">.{{recordSuffix.length > 20 ? `${recordSuffix.slice(-20)}...` : recordSuffix }}</span>
               </i-input>
             </form-item>
             <TypeValue
