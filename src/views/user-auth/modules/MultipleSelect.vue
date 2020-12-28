@@ -243,6 +243,23 @@ export default {
     .selected-labels {
       height: 100%;
       overflow: auto;
+
+      .ivu-tag {
+      }
+      .ivu-tag-text {
+        vertical-align: middle;
+      }
+      .ivu-tooltip-rel {
+        display: block;
+        max-width: 220px;
+        height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .ivu-icon {
+        width: 20px;
+      }
     }
     .ivu-tooltip-popper {
       position: relative;
