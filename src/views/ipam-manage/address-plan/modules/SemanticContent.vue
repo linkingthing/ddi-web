@@ -69,6 +69,7 @@
 
           <div>
             <SegmentAxis
+              v-if="currentNodePrefix.length"
               style="width: 700px;"
               :enable-prefix-len="+prefixLen"
               :prefix-len="Number(currentNodePrefixLen)"
