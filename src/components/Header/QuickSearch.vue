@@ -418,7 +418,7 @@ export default {
         if (Array.isArray(data) && data.length) {
           const result = data[0];
 
-          result.ownPlan = result.plan.semanticNames.join(">");
+          result.ownPlan = Array.isArray(result.plan.semanticNames) ? result.plan.semanticNames.join(">") : "";
 
           result.ipTypeLabel = result.ipState && result.ipState.ipType && ipTypeMap[result.ipState.ipType].label;
           result.ipStateLabel = result.ipState && result.ipState.ipState && ipStateMap[result.ipState.ipState].label;
@@ -515,7 +515,7 @@ export default {
               ...result,
               subnet: result.subnet || result.prefix,
               vlanId: result.vlanId || "",
-              smanticPlan: result.semanticNames.join(">"),
+              smanticPlan: Array.isArray(result.semanticNames) ? result.semanticNames.join(">") : "",
               ipType: ipTypeMap[result.ipType] && ipTypeMap[result.ipType].label,
               ipState: ipStateMap[result.ipState] && ipStateMap[result.ipState].label,
               deviceType: type ? type.text : "",

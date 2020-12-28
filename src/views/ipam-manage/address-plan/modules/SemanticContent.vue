@@ -1178,9 +1178,16 @@ export default {
 
           this.$post({ url: action, params })
             .then(res => {
-              this.$Message.success("增加成功");
 
-              this.nodeEditVisible = false;
+
+              if (res.state === "") {
+                this.$Message.success("增加成功");
+                this.nodeEditVisible = false;
+              }
+
+              if (res.state === "conflict") {
+                this.ignoreconflictByAction(params, "addplannodeignoreconflict")
+              }
 
             })
             .catch((err) => {
@@ -1209,11 +1216,48 @@ export default {
 
       this.$post({ url: action, params })
         .then(res => {
-          this.$Message.success("规划成功");
+          if (res.state === "") {
+            this.$Message.success("规划成功");
+            this.selectSemanticList = [];
+            this.customPlanVisible = false;
+          }
 
-          this.selectSemanticList = [];
-          this.customPlanVisible = false;
+          if (res.state === "conflict") {
+            this.$Modal.confirm({
+              width: 580,
+              title: "规划冲突提示",
+              content: `
+              <p>规划与本系统的子网地址冲突。</p>
+              <p style="color: #f00"> ${res.conflictSubnets}</p>
+              <p>点击忽略：系统使用以上冲突地址继续规划。</p>
+              <p>点击确认：系统将放弃本次规划，需要用户首先手动排查冲突。</p>`,
+              okText: "确认",
+              cancelText: "忽略",
+              onOk: () => {
+                this.$Message.info("已取消");
+              },
+              onCancel: () => {
+                this.ignoreconflictByAction(params, "formulateignoreconflict");
+              }
+            });
+          }
+
         })
+        .catch((err) => {
+          this.$Message.error(err.response.data.message);
+        })
+        .finally(() => {
+          this.getPlanInfo();
+        });
+    },
+
+    ignoreconflictByAction(params, action = "formulateignoreconflict", message = "规划成功") {
+      const { url } = this.$getApiByRoute();
+      const actionUrl = `${url}?action=${action}`;
+
+      this.$post({ url: actionUrl, params }).then(() => {
+        this.$Message.success(message);
+      })
         .catch((err) => {
           this.$Message.error(err.response.data.message);
         })
