@@ -586,3 +586,11 @@ export const hasGrandson = (nodes, id, allNodes = nodes) => {
     return false;
   }
 };
+
+export const hasSon = (nodes, id, allNodes = nodes) => {
+  const children = nodes.filter(node => {
+    return node.parentsemanticid === id;
+  });
+
+  return !!children.length;
+};

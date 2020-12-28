@@ -348,6 +348,7 @@ import { ipv4IsValid, isIpv4Segment, includes } from "@/util/common";
 import {
   executeNextIpv6Segment,
   planSemanticNodesValue,
+  hasSon,
   hasGrandson,
   createPlanNode,
   executeValueRecyclePool,
@@ -581,7 +582,7 @@ export default {
           return {
             ...item,
             showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `${item.prefixs.join(",\n")}` : "_ _",
-            _disabled: hasGrandson(this.nodes, item.id) || (item.sponsordispatch && item.sponsordispatch.issponsor)
+            _disabled: hasSon(this.nodes, item.id) || (item.sponsordispatch && item.sponsordispatch.issponsor)
           };
         });
     },
