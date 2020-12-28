@@ -132,7 +132,7 @@ export const rules = {
         const isValid = value
           .split(",")
           .filter(item => !!item)
-          .every(item => ipv4IsValid(item));
+          .every(item => ipv4IsValid(item) && !item.includes("/"));
 
         if (isValid) {
           callback();
@@ -148,7 +148,7 @@ export const rules = {
         const isValid = value
           .split(",")
           .filter(item => !!item)
-          .every(item => ipv6IsValid(item));
+          .every(item => ipv6IsValid(item) && !item.includes("/"));
 
         if (isValid) {
           callback();
