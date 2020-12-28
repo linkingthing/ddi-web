@@ -50,7 +50,7 @@ export default {
             notInMenu: true,
             active: "subnet-pool-subnet",
             from: "subnet-pool-subnet",
-            title: ":ipnet",
+            title: ":subnet",
             permission: "addressPoolManage"
           }
         },
@@ -80,7 +80,7 @@ export default {
             notInMenu: true,
             active: "subnet-pool-subnet",
             from: "subnet-pool-subnet",
-            title: ":ipnet",
+            title: ":subnet",
             permission: "addressPoolReservation"
           }
         },
@@ -95,7 +95,7 @@ export default {
             notInMenu: true,
             active: "subnet-pool-subnet",
             from: "subnet-pool-subnet",
-            title: ":ipnet",
+            title: ":subnet",
             permission: "addressPoolStatic"
           }
         }
