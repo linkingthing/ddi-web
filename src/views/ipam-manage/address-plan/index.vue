@@ -26,7 +26,7 @@
           <Button
             type="primary"
             @click="handleUploadPlan"
-          >上传规划</Button>
+          >导入规划表格</Button>
 
         </template>
       </table-page>
@@ -194,16 +194,7 @@ export default {
             return h("div", {
               class: "table-btn-box"
             }, [
-              h("btn-line", {
-                nativeOn: {
-                  click: () => {
-                    this.handleDownloadPlan(row);
-                  }
-                },
-                props: {
-                  title: "下载规划"
-                }
-              }),
+
               h("btn-line", {
                 nativeOn: {
                   click: () => {
@@ -237,6 +228,16 @@ export default {
                 props: {
                   title: "上报规划",
                   disabled: !row.responsordispatch
+                }
+              }),
+              h("btn-line", {
+                nativeOn: {
+                  click: () => {
+                    this.handleDownloadPlan(row);
+                  }
+                },
+                props: {
+                  title: "下载规划表格"
                 }
               }),
               h("btn-line", {

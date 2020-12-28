@@ -1057,32 +1057,56 @@ export default {
     handleSaveDispatch(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          const params = this.dispatchParams;
-          this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=dispatchforward`, params }).then(res => {
-            this.getPlanInfo();
-            this.dispatchVisible = false;
-            this.$Message.success("下发成功");
-          }).catch(err => {
-            this.$Message.error(err.response.data.message);
+
+          this.$Modal.confirm({
+            title: "下发确认提示",
+            content: `<p>确定要下发该前缀嘛？</p>`,
+            onOk: () => {
+              const params = this.dispatchParams;
+              this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=dispatchforward`, params }).then(res => {
+                this.getPlanInfo();
+                this.dispatchVisible = false;
+                this.$Message.success("下发成功");
+              }).catch(err => {
+                this.$Message.error(err.response.data.message);
+              });
+            },
+            onCancel: () => {
+              this.$Message.info("取消成功");
+            }
           });
+
         }
       });
     },
 
     handleRepeal(row) {
 
-      const { remoteaddr, semanticnode } = row.sponsordispatch;
-      const params = {
-        remoteaddr,
-        semanticnodes: [{ id: semanticnode }]
-      };
+      this.$Modal.confirm({
+        title: "撤销下发确认提示",
+        content: `<p>您需要撤销对子系统的下发操作吗？</p>`,
+        onOk: () => {
+          const { remoteaddr, semanticnode } = row.sponsordispatch;
+          const params = {
+            remoteaddr,
+            semanticnodes: [{ id: semanticnode }]
+          };
 
-      this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=repealforward`, params }).then(res => {
-        this.$Message.success("撤回成功");
-        this.getPlanInfo();
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
+          this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=repealforward`, params }).then(res => {
+            this.$Message.success("撤回成功");
+            this.getPlanInfo();
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+
+        },
+        onCancel: () => {
+          this.$Message.info("取消成功");
+        }
       });
+
+
+
 
     },
     handleOpenEditNode(row) {
@@ -1278,27 +1302,37 @@ export default {
     },
 
     cleanPlanByAction(semanticNodes, prefixs) {
-      const { url } = this.$getApiByRoute();
-      const action = `${url}?action=cleansemanticplannodes`;
 
-      const params = {
-        parentSemanticId: this.currentNode.id,
-        prefixs,
-        semanticNodes
-      };
+      this.$Modal.confirm({
+        title: "清空规划确认提示",
+        content: `<p>您是否需要清空所有子语义节点的IPv6规划地址？</p>`,
+        onOk: () => {
+          const { url } = this.$getApiByRoute();
+          const action = `${url}?action=cleansemanticplannodes`;
+          const params = {
+            parentSemanticId: this.currentNode.id,
+            prefixs,
+            semanticNodes
+          };
 
-      this.$post({ url: action, params })
-        .then(res => {
-          this.$Message.success("清空规划成功");
-          this.selectSemanticList = [];
-          this.customPlanVisible = false;
-        })
-        .catch((err) => {
-          this.$Message.error(err.response.data.message);
-        })
-        .finally(() => {
-          this.getPlanInfo();
-        });
+          this.$post({ url: action, params })
+            .then(res => {
+              this.$Message.success("清空规划成功");
+              this.selectSemanticList = [];
+              this.customPlanVisible = false;
+            })
+            .catch((err) => {
+              this.$Message.error(err.response.data.message);
+            })
+            .finally(() => {
+              this.getPlanInfo();
+            });
+        },
+        onCancel: () => {
+          this.$Message.info("取消成功");
+        }
+      });
+
     },
 
     handleOneKeyPlan() {

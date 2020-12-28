@@ -93,9 +93,11 @@ function renderIp(h, row, field, status, scope) {
             first = row[field][0];
             if (row[status]) {
               const target = row[status].find(i => i.ip === first);
-              statusConfig = statusLegends.find(
-                item => item.type === target.ipstate
-              );
+              if (target) {
+                statusConfig = statusLegends.find(
+                  item => item.type === target.ipstate
+                );
+              }
             }
           }
           return h(
