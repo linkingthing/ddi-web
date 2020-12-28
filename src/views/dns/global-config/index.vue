@@ -55,7 +55,7 @@
         />
         <Button
           type="primary"
-          @click="handleSave"
+          @click="handleSave('recursive')"
         >保存</Button>
       </FormItem>
 
@@ -71,7 +71,7 @@
           v-if="$hasPermissionCreate('dnsglobalconfig')"
           :loading="ttlLoading"
           type="primary"
-          @click="handleSave"
+          @click="handleSave('ttl')"
         >保存</Button>
       </FormItem>
 
@@ -98,7 +98,7 @@
 192.160.0.0/24
 2419::12
 2419::/64
-以换行符分割" 
+以换行符分割"
           v-model="params.blackholes"
           :autosize="{minRows: 5,maxRows: 5}"
           style="width: 324px"
@@ -106,7 +106,7 @@
         <Button
           style="vertical-align: top;"
           type="primary"
-          @click="handleSave"
+          @click="handleSave('blackhole')"
         >保存</Button>
       </FormItem>
 
@@ -120,6 +120,16 @@ import {
 
 } from "@/util/common";
 import { ttlValidator, ipListValidator } from "@/util/validator";
+
+
+const updateModalEnum = {
+  log: "log",
+  ttl: "ttl",
+  dnssec: "dnssec",
+  blackhole: "blackhole",
+  recursion: "recursion",
+  recursive: "recursive"
+}
 
 export default {
   components: {},
@@ -172,7 +182,7 @@ export default {
 
     handleToggle(logEnable) {
       this.logLoading = true;
-      const params = { ...this.params, logEnable };
+      const params = { ...this.params, logEnable, updateModel: updateModalEnum.log };
       if (!Array.isArray(params.blackholes)) {
         if (typeof params.blackholes === "string") {
           params.blackholes = params.blackholes.split("\n").filter(item => !!item);
@@ -189,7 +199,7 @@ export default {
       });
     },
     handleSECToggle(dnssecEnable) {
-      const params = { ...this.params, dnssecEnable };
+      const params = { ...this.params, dnssecEnable, updateModel: updateModalEnum.dnssec };
       if (!Array.isArray(params.blackholes)) {
         if (typeof params.blackholes === "string") {
           params.blackholes = params.blackholes.split("\n").filter(item => !!item);
@@ -207,7 +217,7 @@ export default {
       });
     },
     handleRecursionEnableToggle(recursionEnable) {
-      const params = { ...this.params, recursionEnable };
+      const params = { ...this.params, recursionEnable, updateModel: updateModalEnum.recursion };
       if (!Array.isArray(params.blackholes)) {
         if (typeof params.blackholes === "string") {
           params.blackholes = params.blackholes.split("\n").filter(item => !!item);
@@ -225,7 +235,7 @@ export default {
       });
     },
     handleBlackholeEnableToggle(blackholeEnable) {
-      const params = { ...this.params, blackholeEnable };
+      const params = { ...this.params, blackholeEnable, updateModel: updateModalEnum.blackhole };
       if (!Array.isArray(params.blackholes)) {
         if (typeof params.blackholes === "string") {
           params.blackholes = params.blackholes.split("\n").filter(item => !!item);
@@ -242,13 +252,14 @@ export default {
         this.secLoading = false;
       });
     },
-    handleSave() {
+    handleSave(option) {
       this.$refs.formInline.validate(valid => {
         if (valid) {
           // this.ttlLoading = true;
           const params = { ...this.params };
           params.ttl = Number(params.ttl);
           params.recursiveClients = Number(params.recursiveClients);
+          params.updateModel = updateModalEnum[option];
 
           if (!Array.isArray(params.blackholes)) {
             if (typeof params.blackholes === "string") {

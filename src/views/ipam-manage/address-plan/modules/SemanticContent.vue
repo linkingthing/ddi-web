@@ -997,13 +997,13 @@ export default {
       if (includes(IPv4List, ipv4s)) {
         return { isValid: false, message: "ipv4s重复，请更正" };
       }
+      console.log(IPv4List)
 
       const isValid = !!ipv4s.every(item => {
         const [ip, len] = item.split("/");
         return !!len && isIpv4Segment(item);
       });
 
-      console.log(isValid)
       return { isValid, message: "ipv4网段输入有误，请更正" };
 
     },
