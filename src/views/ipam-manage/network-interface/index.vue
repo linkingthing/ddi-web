@@ -304,10 +304,12 @@ export default {
           unmanagedRatio,
           zombieRatio,
           reservationRatio,
-          staticAddressRatio
+          staticAddressRatio,
+          subnet
         } = await this.$getParantData();
 
         this.unmanagedRatio = unmanagedRatio;
+        this.subnet = subnet;
 
         let typeLegends = [...this.typeLegends];
         let statusLegends = [...this.statusLegends];
@@ -490,7 +492,7 @@ export default {
         const computerRoom = row.computerRoom || res.computerRoom;
 
         const ip = row.ip;
-        const subnet = this.$route.query.subnet;
+        const subnet = this.subnet;
         const vlanId = row.vlanId;
 
 
