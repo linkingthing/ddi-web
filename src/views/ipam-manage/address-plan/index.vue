@@ -140,7 +140,8 @@ export default {
                 },
                 props: {
                   isPercent: false,
-                  value: row.name
+                  value: row.name,
+                  checkfunc: (val) => this.checkfunc(val, row)
                 }
               }
             );
@@ -326,6 +327,16 @@ export default {
     uploadSuccess(response, file) {
       this.uploadParams = { name: response.filename };
       this.file = file;
+    },
+    checkfunc(value) {
+      if (value.trim().length > 36) {
+        return { isValid: false, message: "规划名不能超过36字符" };
+      }
+      if (value.trim().length === 0) {
+        return { isValid: false, message: "规划名不能为空" };
+      }
+
+      return { isValid: true };
     },
     handleSavePlanName(url, value, row) {
       const params = { name: value, id: row.id };
