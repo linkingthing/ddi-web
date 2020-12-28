@@ -57,7 +57,7 @@ export default {
       const ipv4FormList = [
         {
           label: "子网地址",
-          model: "ipnet",
+          model: "subnet",
           type: this.isCreate ? "input" : "text",
           placeholder: "请填写子网地址"
         },
@@ -96,7 +96,7 @@ export default {
       const ipv6FormList = [
         {
           label: "子网地址",
-          model: "ipnet",
+          model: "subnet",
           type: this.isCreate ? "input" : "text",
           placeholder: "请填写子网地址"
         },
@@ -184,7 +184,7 @@ export default {
           }
           this.formModel = {
             version,
-            ipnet,
+            subnet: ipnet,
             tags
           };
         } else {
