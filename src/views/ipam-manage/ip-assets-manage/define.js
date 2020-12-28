@@ -192,7 +192,8 @@ export const columns = scope => [
     title: "终端名称",
     key: "name",
     width: 180,
-    tooltip
+    tooltip,
+    fixed: "left"
   },
 
   {

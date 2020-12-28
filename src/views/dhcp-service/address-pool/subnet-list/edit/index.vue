@@ -7,10 +7,12 @@
     :loading="loading"
   >
     <Form
+      ref="form"
       :label-width="100"
       label-position="left"
       :label-colon="true"
       :model="formModel"
+      :rules="rules"
     >
       <common-form
         :form-model="formModel"
@@ -40,6 +42,9 @@ export default {
   },
 
   data() {
+    this.rules = {
+      subnet: [{ required: true, message: "请填写子网地址" }]
+    };
     return {
       loading: false,
       dialogVisible: false,
@@ -204,33 +209,36 @@ export default {
     },
 
     handleConfirm() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          const params = { ...this.formModel };
 
-      this.loading = true;
-      const params = { ...this.formModel };
+          resStringToArray(params, ["domainServers", "routers", "relayAgentAddresses"]);
+          if (this.isCreate) {
+            this.$post({ url: this.links.create, params }).then(res => {
+              this.$$success("保存成功！");
+              this.$emit("success");
+              this.dialogVisible = false;
 
-      resStringToArray(params, ["domainServers", "routers", "relayAgentAddresses"]);
-      if (this.isCreate) {
-        this.$post({ url: this.links.create, params }).then(res => {
-          this.$$success("保存成功！");
-          this.$emit("success");
-          this.dialogVisible = false;
-
-        }).catch(err => {
-          this.$$error(err.response.data.message);
-        }).finally(() => {
-          this.loading = false;
-        });
-      } else {
-        this.$put({ url: this.links.update, params }).then(res => {
-          this.$$success("保存成功！");
-          this.$emit("success");
-          this.dialogVisible = false;
-        }).catch(err => {
-          this.$$error(err.response.data.message);
-        }).finally(() => {
-          this.loading = false;
-        });
-      }
+            }).catch(err => {
+              this.$$error(err.response.data.message);
+            }).finally(() => {
+              this.loading = false;
+            });
+          } else {
+            this.$put({ url: this.links.update, params }).then(res => {
+              this.$$success("保存成功！");
+              this.$emit("success");
+              this.dialogVisible = false;
+            }).catch(err => {
+              this.$$error(err.response.data.message);
+            }).finally(() => {
+              this.loading = false;
+            });
+          }
+        }
+      });
 
     }
   }

@@ -10,6 +10,14 @@ const required = true;
 
 export const formItemList = isNew => [
   {
+    label: "终端名称",
+    model: "name",
+    type: "input",
+    required,
+    maxlength: 50,
+    placeholder: "请输入终端名称"
+  },
+  {
     label: "MAC",
     model: "mac",
     type: "input",
@@ -33,14 +41,6 @@ export const formItemList = isNew => [
     autosize: { minRows: 3, maxRows: 3 },
     required,
     placeholder: "请输入IPv6，多条逗号隔开"
-  },
-  {
-    label: "终端名称",
-    model: "name",
-    type: "input",
-    required,
-    maxlength: 50,
-    placeholder: "请输入终端名称"
   },
   {
     label: "终端类型",

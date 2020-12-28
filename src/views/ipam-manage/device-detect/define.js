@@ -7,7 +7,8 @@ export const columns = scope => [
     title: "设备名称",
     key: "name",
     align: "left",
-    width: 200
+    width: 200,
+    fixed: "left"
   },
   {
     title: "管理地址",
