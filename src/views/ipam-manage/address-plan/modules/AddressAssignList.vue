@@ -172,7 +172,7 @@ export default {
     },
     async handleDelegate(row) {
       try {
-        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?ipnet=${row.prefix}`));
+        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?subnet=${row.prefix}`));
 
         if (data.length) {
           this.$router.push({
@@ -201,7 +201,7 @@ export default {
     },
     async handleDHCP(row) {
       try {
-        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?ipnet=${row.prefix}`));
+        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?subnet=${row.prefix}`));
 
         if (data.length) {
           this.$router.push({
