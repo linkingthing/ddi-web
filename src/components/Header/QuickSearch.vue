@@ -152,10 +152,30 @@
           @click="handleDomainSearch"
         >查询</Button>
       </div>
-      <Table
-        :data="domainData"
-        :columns="domainColums"
-      ></Table>
+
+      <div
+        class="card"
+        style="width: 100%;margin-bottom: 20px"
+      >
+        <h3 class="card-title">TOP10 IP</h3>
+        <Table
+          :data="domainData"
+          :columns="domainColums"
+          style=""
+        ></Table>
+
+        </Table>
+      </div>
+      <div
+        class="card"
+        style="width: 100%"
+      >
+        <h3 class="card-title">权威记录</h3>
+        <Table
+          :data="rrsData"
+          :columns="rssColumns"
+        ></Table>
+      </div>
     </section>
 
   </Modal>
@@ -189,7 +209,7 @@ export default {
       label: "IP资产查询"
     }, {
       id: "domain",
-      label: "域名访问查询"
+      label: "域名资产查询"
     }];
     return {
       innerVisible: false,
@@ -378,7 +398,33 @@ export default {
             ]);
           }
         }
-      ]
+      ],
+
+      rrsData: [],
+      rssColumns: [{
+        title: "视图名称",
+        key: "view"
+      },
+      {
+        title: "区名称",
+        key: "zone"
+      },
+      {
+        title: "记录名称",
+        key: "rrName"
+      },
+      {
+        title: "记录类型",
+        key: "rrType"
+      },
+      {
+        title: "TTL",
+        key: "ttl"
+      },
+      {
+        title: "记录值",
+        key: "rdata"
+      }]
     };
   },
   computed: {},
@@ -410,7 +456,7 @@ export default {
   mounted() { },
   methods: {
     getData() {
-      const url = "/apis/linkingthing.com/ipam/v1/ipportraits";
+      const url = "/apis/linkingthing.com/metric/v1/ipportraits";
       const params = {
         ip: this.ip
       };
@@ -494,14 +540,27 @@ export default {
       this.getData();
     },
     getDomainData() {
-      const url = "/apis/linkingthing.com/ipam/v1/domainportraits";
+      const url = "/apis/linkingthing.com/metric/v1/domainportraits";
 
       const params = {
         domain: this.domain
       };
       this.$get({ url, params }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
-          const domainData = data[0].ips;
+          let domainData = [];
+
+          if (Array.isArray(data[0].authrrs)) {
+            this.rrsData = data[0].authrrs;
+          } else {
+            this.rrsData = [];
+          }
+
+          if (Array.isArray(data[0].ips)) {
+            domainData = data[0].ips;
+          } else {
+            domainData = [];
+          }
+
           this.domainData = domainData.map(item => {
             let result = Object.values(item).reduce((item, prev) => {
               return {
@@ -524,6 +583,7 @@ export default {
           });
         } else {
           this.domainData = [];
+          this.rrsData = [];
         }
       });
     },

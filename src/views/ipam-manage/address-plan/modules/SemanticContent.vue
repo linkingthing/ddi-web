@@ -1001,6 +1001,8 @@ export default {
         const [ip, len] = item.split("/");
         return !!len && isIpv4Segment(item);
       });
+
+      console.log(isValid)
       return { isValid, message: "ipv4网段输入有误，请更正" };
 
     },
