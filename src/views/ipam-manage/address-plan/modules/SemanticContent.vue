@@ -991,7 +991,7 @@ export default {
       }
 
       // 防止全局ipv4重复
-      const IPv4List = this.nodes.filter(item => item.id !== row.id).map(item => item.ipv4s || []).flat();
+      const IPv4List = this.nodes.filter(item => item.id !== row.id && item.state !== "dispatch").map(item => item.ipv4s || []).flat();
       if (includes(IPv4List, ipv4s)) {
         return { isValid: false, message: "ipv4s重复，请更正" };
       }
