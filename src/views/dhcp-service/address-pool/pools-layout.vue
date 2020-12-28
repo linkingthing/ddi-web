@@ -85,7 +85,7 @@ export default {
 
     this.$get(this.$getApiByRoute(pathSplit.join("/"))).then((data) => {
       this.addressType = data.version;
-      this.subnetLenth = data.ipnet.split("/")[1];
+      this.subnetLenth = data.subnet.split("/")[1];
     });
   },
   methods: {
