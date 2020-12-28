@@ -618,7 +618,8 @@ export default {
                   isEdit: this.editList.includes(row.id),
                   isPercent: false,
                   value: row.name,
-                  width: "124px"
+                  width: "124px",
+                  checkfunc: (val) => this.checkNamefunc(val, row)
                 }
               }
 
@@ -957,6 +958,17 @@ export default {
       this.filterKeyword = "";
     },
 
+    checkNamefunc(value, row) {
+      if (value.trim().length > 36) {
+        return { isValid: false, message: "规划名不能超过36字符" };
+      }
+      if (value.trim().length === 0) {
+        return { isValid: false, message: "规划名不能为空" };
+      }
+
+      return { isValid: true };
+    },
+
     handleSaveSemanticName(row, name) {
       const params = { name, id: row.id };
       const url = "/apis/linkingthing.com/ipam/v1/plans";
@@ -1178,7 +1190,6 @@ export default {
 
           this.$post({ url: action, params })
             .then(res => {
-
 
               if (res.state === "") {
                 this.$Message.success("增加成功");
@@ -1417,13 +1428,14 @@ export default {
       margin-top: -4px;
     }
     > * {
-      display: flex;
+      display: block;
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: normal;
+      white-space: nowrap;
       margin-right: 24px;
       word-break: keep-all;
+
       > span {
         overflow: hidden;
         text-overflow: ellipsis;
