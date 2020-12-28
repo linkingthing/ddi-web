@@ -148,7 +148,9 @@ export default {
       };
       const url = `${self}?action=${action}`;
       this.$post({ url, params }).then(data => {
-        this.dataList = Array.isArray(data) ? data : [];
+        this.dataList = (Array.isArray(data) ? data : []).filter(item => {
+          return item.state !== "dispatch";
+        });
       });
     },
 
