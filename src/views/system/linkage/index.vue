@@ -221,6 +221,9 @@
 </template>
 
 <script>
+
+import { v4 as uuidv4 } from "uuid";
+
 export default {
   components: {},
   props: {},
@@ -240,6 +243,7 @@ export default {
       },
       singleAddVisible: false,
       systemInfo: {
+        id: "",
         name: "",
         clientaddr: ""
       }
@@ -280,9 +284,9 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           if (Array.isArray(this.params.dispatchclients)) {
-            this.params.dispatchclients.push({ ...this.systemInfo });
+            this.params.dispatchclients.push({ ...this.systemInfo, id: uuidv4() });
           } else {
-            this.params.dispatchclients = [{ ...this.systemInfo }];
+            this.params.dispatchclients = [{ ...this.systemInfo, id: uuidv4() }];
           }
 
           this.$nextTick().then(() => {
