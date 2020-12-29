@@ -1064,7 +1064,7 @@ export default {
 
           this.$Modal.confirm({
             title: "下发确认提示",
-            content: `<p>确定要下发该前缀嘛？</p>`,
+            content: `<p>您确定要下发到子系统吗?</p>`,
             onOk: () => {
               const params = this.dispatchParams;
               this.$post({ url: `/apis/linkingthing.com/ipam/v1/plans?action=dispatchforward`, params }).then(res => {

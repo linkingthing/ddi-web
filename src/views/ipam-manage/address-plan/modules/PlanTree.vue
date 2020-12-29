@@ -314,6 +314,7 @@ export default {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      flex-shrink: 0;
       img {
         position: absolute;
         right: 0px;
