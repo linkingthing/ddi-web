@@ -431,7 +431,8 @@ export default {
       dispatchclients: [],
 
 
-      editList: []
+      editList: [],
+      editIpv4List: []
 
     };
   },
@@ -650,12 +651,15 @@ export default {
             let lineEditRef = this.$createElement("line-edit", {
               ref,
               on: {
+                "on-edit-begain": () => this.editIpv4List.push(row.id),
                 "on-edit-finish": val => {
+                  this.editIpv4List = this.editIpv4List.filter(item => item !== row.id);
                   this.handleSaveIpv4s(row, val, ref);
                 }
               },
               props: {
                 isPercent: false,
+                isEdit: this.editIpv4List.includes(row.id),
                 value: Array.isArray(row.ipv4s) ? row.ipv4s.join(",") : "",
                 width: "160px",
                 defaultText: "_ _",
@@ -1011,14 +1015,16 @@ export default {
       const ipv4s = ipv4str.split(",").filter(item => !!item);
 
       const params = { ipv4s, id: row.id };
-      const url = "/apis/linkingthing.com/ipam/v1/plans";
+      const { url } = this.$getApiByRoute();
       const action = `${url}?action=updatesemanticipv4`;
       this.$post({ url: action, params }).then(() => {
         this.$Message.success("更新成功");
+        this.getPlanInfo();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
+        this.editIpv4List.push(row.id)
       }).finally(() => {
-        this.getPlanInfo();
+
       });
     },
     handleDeleteSemantic(row) {
@@ -1028,7 +1034,7 @@ export default {
         loading: true,
         onOk: () => {
           const params = { id: row.id };
-          const url = "/apis/linkingthing.com/ipam/v1/plans";
+          const { url } = this.$getApiByRoute();
           const action = `${url}?action=deletesemantic`;
           this.$post({ url: action, params }).then(() => {
             this.$Modal.remove();
