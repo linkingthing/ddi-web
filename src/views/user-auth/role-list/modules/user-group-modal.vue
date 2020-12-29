@@ -179,23 +179,23 @@ export default {
         this.$get({ url: this.links.self }).then(data => {
           this.formModel = data;
           return data;
-        }).then(({ semantics }) => {
-          const { url } = this.$getApiByRoute(`/auth/auth/users?action=getSemanticInfo`);
-          const params = { semanticIds: semantics };
-          this.$post({ url, params }).then((res) => {
-            const semanticList = res.map(item => {
+        }).then(({ semanticInfo }) => {
+          if (Array.isArray(semanticInfo)) {
+            const semanticList = semanticInfo.map(item => {
               return {
                 ...item,
                 id: item.semanticId,
-                name: item.semanticName,
-                prefixs: item.prefixs
+                name: `${item.record.join("/")}`,
+                prefixs: item.prefixs,
+                record: item.record
               };
             });
             this.semanticList = semanticList;
             this.planList = semanticList;
-          }).catch(() => {
+          } else {
             this.planList = [];
-          });
+          }
+
 
         }).catch();
       }
