@@ -50,52 +50,53 @@
       :current.sync="current"
     >
       <template slot="top-left">
-        <div class="condition-item">
-          <label class="condition-item-label">MAC</label>
-          <Input
-            v-model="condition.mac"
-            placeholder="请输入MAC地址"
-            class="top-input"
-            @on-enter="handleQuery"
-          />
-        </div>
+        <div class="condition-box">
+          <div class="condition-item">
+            <label class="condition-item-label">MAC</label>
+            <Input
+              v-model="condition.mac"
+              placeholder="请输入MAC地址"
+              class="top-input"
+              @on-enter="handleQuery"
+            />
+          </div>
 
-        <div class="condition-item">
-          <label class="condition-item-label">终端状态</label>
-          <Select
-            v-model="condition.device_state"
-            style="width:100px"
-            class="top-input"
-          >
-            <Option
-              v-for="item in deviceStateList"
-              :value="item.value"
-              :key="item.value"
-            >{{ item.label }}</Option>
-          </Select>
-        </div>
+          <div class="condition-item">
+            <label class="condition-item-label">终端状态</label>
+            <Select
+              v-model="condition.device_state"
+              style="width:100px"
+              class="top-input"
+            >
+              <Option
+                v-for="item in deviceStateList"
+                :value="item.value"
+                :key="item.value"
+              >{{ item.label }}</Option>
+            </Select>
+          </div>
 
-        <div class="condition-item">
-          <label class="condition-item-label">IP地址</label>
-          <Input
-            v-model="condition.ip"
-            placeholder="请输入IP地址"
-            class="top-input"
-            @on-enter="handleQuery"
-          />
-        </div>
+          <div class="condition-item">
+            <label class="condition-item-label">IP地址</label>
+            <Input
+              v-model="condition.ip"
+              placeholder="请输入IP地址"
+              class="top-input"
+              @on-enter="handleQuery"
+            />
+          </div>
 
-        <div class="condition-item">
-          <label class="condition-item-label">终端名称</label>
-          <Input
-            v-model="condition.name"
-            placeholder="请输入终端名称"
-            class="top-input"
-            @on-enter="handleQuery"
-          />
-        </div>
+          <div class="condition-item">
+            <label class="condition-item-label">终端名称</label>
+            <Input
+              v-model="condition.name"
+              placeholder="请输入终端名称"
+              class="top-input"
+              @on-enter="handleQuery"
+            />
+          </div>
 
-        <!-- <div class="condition-item">
+          <!-- <div class="condition-item">
           <label class="condition-item-label">上联设备</label>
           <Input
             v-model="condition.switchName"
@@ -105,12 +106,14 @@
           />
         </div> -->
 
-        <btn-search
-          type="primary"
-          @click="handleQuery"
-        >
-          搜索
-        </btn-search>
+          <btn-search
+            type="primary"
+            @click="handleQuery"
+          >
+            搜索
+          </btn-search>
+        </div>
+
       </template>
 
       <template slot="top-right">
@@ -554,5 +557,8 @@ export default {
       border-left: 1px solid #ddd;
     }
   }
+}
+.condition-box {
+  display: flex;
 }
 </style>

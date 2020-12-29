@@ -32,7 +32,7 @@
             <label class="label">地址位宽：</label>
             <div class="action-box">
               <Spinner
-                style="width: 200px"
+                class="bitwidth"
                 :disabled="settableNextBitWidth"
                 v-model="tempBitWidth"
                 :placeholder="`最大地址位宽${64-prefixLen}`"
@@ -314,7 +314,7 @@
 
           <Table
             ref="selection"
-            style="max-width: calc(100vw - 660px);border: 1px solid #E6E6E6;border-bottom: none"
+            class="dataTable"
             :columns="semanticColumns"
             :data="filterCurrentNodeChildren"
             @on-selection-change="handleSelectSemanticList"
@@ -605,7 +605,8 @@ export default {
         {
           title: "语义名称",
           key: "name",
-          width: 200,
+          maxWidth: 200,
+          minWidth: 150,
           render: (h, { row }) => {
 
             return h("line-edit",
@@ -633,18 +634,21 @@ export default {
         {
           title: "地址个数",
           key: "addressCount",
-          width: 150
-
+          maxWidth: 150,
+          minWidth: 100
         },
         {
           title: "IPv6地址",
           key: "showprefixs",
           tooltip: true,
-          width: 280
+          maxWidth: 280,
+          minWidth: 100
         },
         {
           title: "IPv4子网",
           key: "ipv4s",
+          maxWidth: 580,
+          minWidth: 120,
           render: (h, { row }) => {
             const content = (row.ipv4s && row.ipv4s.length) ? `${row.ipv4s.join(", \n")}` : "_ _";
             let ref = "lineEditRef";
@@ -1022,7 +1026,7 @@ export default {
         this.getPlanInfo();
       }).catch(err => {
         this.$Message.error(err.response.data.message);
-        this.editIpv4List.push(row.id)
+        this.editIpv4List.push(row.id);
       }).finally(() => {
 
       });
@@ -1441,11 +1445,21 @@ export default {
   position: relative;
   flex: 1;
   padding-left: 24px;
+  width: 100%;
+  box-sizing: border-box;
 
   .SemanticContent-inner {
     border-left: 1px solid #e6e6e6;
     padding-left: 20px;
     height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .dataTable {
+    max-width: calc(~"100vw - 660px");
+    border: 1px solid #e6e6e6;
+    border-bottom: none;
   }
 
   .SemanticContent-header {
@@ -1536,6 +1550,9 @@ export default {
         font-size: 14px;
         color: #333;
         line-height: 25px;
+      }
+      .bitwidth {
+        width: 200px;
       }
       .action-box {
         display: flex;

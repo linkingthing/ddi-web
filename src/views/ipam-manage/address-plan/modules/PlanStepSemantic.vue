@@ -53,5 +53,6 @@ export default {
   padding: 76px 20px 0px;
   flex: 1;
   overflow: hidden;
+  width: 100%;
 }
 </style>
