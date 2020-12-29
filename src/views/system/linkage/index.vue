@@ -223,6 +223,7 @@
 <script>
 
 import { v4 as uuidv4 } from "uuid";
+import { isIp } from "@/util/common";
 
 export default {
   components: {},
@@ -232,7 +233,39 @@ export default {
       Authorization: this.$store.getters.token
     };
     this.rules = {};
-    this.systemRules = {};
+    this.systemRules = {
+      name: [
+        {
+          required: true, message: "请输入系统名"
+        },
+        {
+          validator: (rule, value, callback) => {
+            if (value.trim().length > 36) {
+              callback("系统名不能超过36个字符");
+            }
+
+            if (value.trim().length < 1) {
+              callback("请输入系统名");
+            }
+
+            callback();
+          }
+        }
+      ],
+      clientaddr: [
+        {
+          required: true, message: "请输入IP地址"
+        },
+        {
+          validator: (rule, value, callback) => {
+            if (isIp(value)) {
+              callback();
+            }
+            callback("请正确输入IP");
+          }
+        }
+      ]
+    };
     return {
       serveType: "UP",
       params: {
@@ -465,6 +498,9 @@ export default {
       border-radius: 6px;
       padding: 4px 8px;
       overflow: auto;
+      .ivu-tag {
+        height: auto;
+      }
     }
   }
 }
