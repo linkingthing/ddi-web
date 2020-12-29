@@ -19,9 +19,16 @@
           />
         </div>
         <div class="condition-item">
-          <label class="condition-item-label">IP地址：</label>
+          <label class="condition-item-label">源IP地址：</label>
           <Input
-            v-model="conditions.sourceIp"
+            v-model="conditions.src_ip"
+            @on-enter="handleQuery"
+          />
+        </div>
+        <div class="condition-item">
+          <label class="condition-item-label">目地IP地址：</label>
+          <Input
+            v-model="conditions.dest_ip"
             @on-enter="handleQuery"
           />
         </div>
@@ -49,7 +56,6 @@
           ok-text="导出解析日志"
           :disabled="status.includes('ing')"
           :loading="loading"
-
         >
           <Form
             ref="formInline"
@@ -136,7 +142,7 @@ export default {
           width: 200
         },
         {
-          title: "节点IP",
+          title: "目地IP地址",
           key: "nodeIP",
           width: 200
         },
@@ -149,7 +155,8 @@ export default {
       ],
       conditions: {
         date: [],
-        sourceIp: ""
+        src_ip: "",
+        dest_ip: ""
       },
       total: 0,
       currentPage: 0,
@@ -249,18 +256,21 @@ export default {
     },
 
     getParams() {
-      const { date, sourceIp } = this.conditions;
+      const { date, src_ip, dest_ip } = this.conditions;
 
       let res = {};
 
-      if (sourceIp.trim()) {
-        res.node_ip = sourceIp.trim();
+      if (src_ip.trim()) {
+        res.src_ip = src_ip.trim();
+      }
+      if (dest_ip.trim()) {
+        res.dest_ip = dest_ip.trim();
       }
 
       if (date[0]) {
         const [start, end] = date;
-        res.from = this.$trimDate(start, "YYYY-MM-DD") // date[0].toLocaleDateString().replace(/\//g, "-");
-        res.to = this.$trimDate(end, "YYYY-MM-DD") // date[1].toLocaleDateString().replace(/\//g, "-");
+        res.from = this.$trimDate(start, "YYYY-MM-DD"); // date[0].toLocaleDateString().replace(/\//g, "-");
+        res.to = this.$trimDate(end, "YYYY-MM-DD"); // date[1].toLocaleDateString().replace(/\//g, "-");
       }
 
       res.page_size = 10;

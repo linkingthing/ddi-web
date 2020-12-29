@@ -436,7 +436,7 @@ export default {
       height: 60px;
       width: 56px;
       padding: 12px 0;
-      margin-right: 10px;
+      margin-right: 15px;
       border-right: 1px solid #e8e8e8;
       img {
         width: 30px;
@@ -463,7 +463,7 @@ export default {
     display: inline-block;
     vertical-align: middle;
     padding: 4px 0;
-    width: 136px;
+    width: 124px;
   }
 
   .main-menu {

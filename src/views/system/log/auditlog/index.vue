@@ -143,6 +143,18 @@ export default {
           case "repealforward": return "下发撤回";
           case "reportforward": return "上报";
           case "dispatchforward": return "下发";
+          case "cleansemanticplannodes": return "清空规划";
+          case "deletesemantic": return "删除语义节点";
+          case "updatesemanticnumber": return "增加语义节点个数";
+          case "autoformulatesemantic": return "自动规划";
+          case "updatebitwidth": return "设置位宽";
+          case "addsemanticplannode": return "新增语义网络节点";
+          case "updateplaninfo": return "修改规划名";
+          case "updatesemanticinfo": return "修改语义名";
+          case "updatesemanticipv4": return "修改语义IPv4";
+          case "listviewv4": return "获取规划IPv4列表";
+          case "listviewv6": return "获取规划IPv6列表";
+
         }
       };
 

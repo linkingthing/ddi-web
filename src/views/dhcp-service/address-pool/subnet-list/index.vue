@@ -10,13 +10,23 @@
       :current.sync="current"
     >
       <template slot="top-right">
-        <Button
-          type="primary"
-          @click="handleAdd"
-          class="top-button button-add"
-        >
-          新建
-        </Button>
+        <div style="display: flex">
+          <Input
+            search
+            enter-button
+            placeholder="请输入子网地址"
+            v-model="search.subnet"
+            @on-search="handleSearch"
+          />
+          <Button
+            type="primary"
+            @click="handleAdd"
+            class="top-button button-add"
+          >
+            新建
+          </Button>
+        </div>
+
       </template>
     </TablePagination>
     <Edit
@@ -47,6 +57,9 @@ export default {
     return {
       loading: true,
       keywords: "",
+      search: {
+        subnet: ""
+      },
       tableData: [],
       columns: columns(this),
       showEdit: false,
@@ -66,6 +79,10 @@ export default {
   },
 
   methods: {
+    handleSearch() {
+
+      this.getDataList(this.search.subnet.trim() || null);
+    },
     openToCreate() {
       const { ipnet } = this.$route.query;
 
@@ -83,10 +100,11 @@ export default {
       };
     },
 
-    getDataList() {
+    getDataList(subnet = null) {
       const params = {
         page_num: this.current,
-        page_size: 10
+        page_size: 10,
+        subnet
       };
       this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;

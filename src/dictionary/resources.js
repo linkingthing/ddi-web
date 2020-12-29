@@ -6,6 +6,7 @@ export default {
   threshold: "阈值配置",
   /** 日志 */
   auditLog: "日志",
+  ipdispatchconfig: "系统联动",
   /** DHCP */
   dhcpConfig: "DHCP全局配置",
   clientclass: "DHCP自定义属性",
@@ -21,6 +22,7 @@ export default {
   rr: "资源记录",
   forward: "转发组",
   forward_zone: "转发区",
+  forwardtimepolicy: "时间策略",
   redirection: "重定向",
   url_redirect: "URL重定向",
   ipblackhole: "IP黑名单",
@@ -55,9 +57,8 @@ export default {
   whitelist: "白名单"
 };
 
-
 export const operateMap = {
   Create: "创建",
   Update: "更新",
   Delete: "删除"
-}
+};

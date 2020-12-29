@@ -4,6 +4,7 @@ export const alarmConfig = {
   dnsOffline: "DNS服务离线",
   haTrigger: "Ha主备份切换",
   ipConflict: "IP冲突",
+  subnetConflict: "子网冲突",
   lps: "LPS",
   memoryUsedRatio: "内存使用率",
   nodeOffline: "节点离线",

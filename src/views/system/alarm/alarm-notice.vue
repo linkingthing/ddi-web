@@ -69,6 +69,10 @@ export default {
               return h("div", `${row.conflictIp} 冲突`);
             }
 
+            if (row.name === "subnetConflict") {
+              return h("div", `${row.conflictSubnet} 冲突`);
+            }
+
             // 百分比 布尔 整型
             if (row.haCmd) {
               if (row.haCmd === "master_up") {
