@@ -281,7 +281,7 @@ export default {
           initTransformResult = (height * scale) / 2 + offset;
         }
 
-        this.initTransformY = 0;
+        this.initTransformY = containerHeight / 2;
         // console.log("initTransformY", this.initTransformY)
 
         // console.log(this.minX, this.maxX, innerDomContainerHeight, innerDomContainerHeight * scale)

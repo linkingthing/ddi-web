@@ -22,6 +22,8 @@
       :width="750"
       :title="currentRow.ip"
       @confirm="visible = false"
+      :show-footer="false"
+      :closable="true"
     >
       <Table
         :data="currentRow.schedules"

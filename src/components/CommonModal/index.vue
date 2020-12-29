@@ -6,6 +6,7 @@
     :mask-closable="maskClosable"
     :class-name="`modal-custom ${customClass}`"
     :width="width"
+    :footer-hide="!showFooter"
   >
     <div
       class="modal-header"

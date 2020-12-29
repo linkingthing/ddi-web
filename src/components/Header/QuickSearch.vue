@@ -25,6 +25,7 @@
         <Button
           type="primary"
           @click="handleSearch"
+          :loading="loading"
         >查询</Button>
       </div>
       <div
@@ -150,6 +151,7 @@
         <Button
           type="primary"
           @click="handleDomainSearch"
+          :loading="loading"
         >查询</Button>
       </div>
 
@@ -212,6 +214,7 @@ export default {
       label: "域名资产查询"
     }];
     return {
+      loading: false,
       innerVisible: false,
       active: "ip",
 
@@ -460,6 +463,7 @@ export default {
       const params = {
         ip: this.ip
       };
+      this.loading = true;
       this.$get({ url, params }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
           const result = data[0];
@@ -508,7 +512,9 @@ export default {
           this.historyData = [];
           this.assignHistoryData = [];
         }
+        this.loading = false;
       }).catch(err => {
+        this.loading = false;
         this.result = {
           plan: {},
           subnet: {},
@@ -540,12 +546,15 @@ export default {
       this.getData();
     },
     getDomainData() {
+      this.loading = true;
+
       const url = "/apis/linkingthing.com/metric/v1/domainportraits";
 
       const params = {
         domain: this.domain
       };
       this.$get({ url, params }).then(({ data }) => {
+        this.loading = false;
         if (Array.isArray(data) && data.length) {
           let domainData = [];
 
@@ -585,6 +594,8 @@ export default {
           this.domainData = [];
           this.rrsData = [];
         }
+      }).catch(() => {
+        this.loading = false;
       });
     },
 
