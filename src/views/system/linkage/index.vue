@@ -258,9 +258,15 @@ export default {
         },
         {
           validator: (rule, value, callback) => {
+            const hasIPList = this.params.dispatchclients.map(item => item.clientaddr);
+            if (hasIPList.includes(value.trim())) {
+              callback("IP不能重复");
+            }
+
             if (isIp(value)) {
               callback();
             }
+
             callback("请正确输入IP");
           }
         }
