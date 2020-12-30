@@ -360,6 +360,7 @@ import {
 
 import eventBus from "@/util/bus";
 
+const tempSemanticNameMap = {};
 
 export default {
   components: {
@@ -613,6 +614,7 @@ export default {
               {
                 on: {
                   "on-edit-begain": () => this.editList.push(row.id),
+                  "on-edit-change": val => tempSemanticNameMap[row.id] = val,
                   "on-edit-finish": val => {
                     this.editList = this.editList.filter(item => item !== row.id);
                     this.handleSaveSemanticName(row, val);
@@ -621,7 +623,7 @@ export default {
                 props: {
                   isEdit: this.editList.includes(row.id),
                   isPercent: false,
-                  value: row.name,
+                  value: tempSemanticNameMap[row.id] || row.name,
                   width: "124px",
                   checkfunc: (val) => this.checkNamefunc(val, row)
                 }
@@ -981,11 +983,14 @@ export default {
 
     handleSaveSemanticName(row, name) {
       const params = { name, id: row.id };
+
       const url = "/apis/linkingthing.com/ipam/v1/plans";
       const action = `${url}?action=updatesemanticinfo`;
       this.$post({ url: action, params }).then(() => {
         this.getPlanInfo();
         this.$Message.success("更新成功");
+        Reflect.deleteProperty(tempSemanticNameMap, row.id);
+        console.log(tempSemanticNameMap)
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });

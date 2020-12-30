@@ -71,6 +71,9 @@ export default {
           this.contenteditable = val;
         }
       }
+    },
+    innerValue(val) {
+      this.$emit("on-edit-change", val);
     }
   },
   created() {
