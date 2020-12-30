@@ -23,7 +23,7 @@ export default {
       path: "/dns/dns/views_forwards",
       component: () => import("@/views/dns/forward/ForwardView"),
       meta: {
-        title: "转发配置",
+        title: "转发区",
         active: "forward-view",
         permission: "forwardConfigMenu"
       }

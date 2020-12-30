@@ -4,13 +4,19 @@
     icon="ios-search"
     @click="$emit('click')"
     class="btn-search"
+    :loading="loading"
   ></Button>
 </template>
 
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
     };
@@ -25,7 +31,7 @@ export default {
 
 <style lang="less">
 .btn-search {
-  width: 86px!important;
+  width: 86px !important;
   .ivu-icon {
     font-size: 18px;
   }

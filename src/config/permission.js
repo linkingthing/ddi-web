@@ -36,7 +36,7 @@ export default [
     resouces: ["view"]
   },
   {
-    name: "区配置",
+    name: "权威区",
     id: "zoneConfig",
     module: "dns",
     resouces: ["view"]
@@ -84,7 +84,7 @@ export default [
     resouces: ["forwardzone"]
   },
   {
-    name: "转发配置",
+    name: "转发区",
     id: "forwardConfigMenu",
     module: "dns",
     resouces: ["forwardzone"]

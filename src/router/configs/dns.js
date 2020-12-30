@@ -27,7 +27,7 @@ export default {
           /* webpackChunkName: "option-config" */ "@/views/dns/authority/config"
         ),
       meta: {
-        title: "区配置",
+        title: "权威区",
         permission: "zoneConfig"
 
       },

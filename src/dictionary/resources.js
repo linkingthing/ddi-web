@@ -19,6 +19,7 @@ export default {
   view: "视图",
   zone: "权威区",
   forwardzone: "转发区",
+  forwarder: "转发组",
   rr: "资源记录",
   forward: "转发组",
   forward_zone: "转发区",

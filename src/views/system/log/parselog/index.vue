@@ -18,17 +18,19 @@
             placeholder="请选择时间"
           />
         </div>
+
         <div class="condition-item">
-          <label class="condition-item-label">源IP地址：</label>
+          <label class="condition-item-label">节点IP地址：</label>
           <Input
-            v-model="conditions.src_ip"
+            v-model="conditions.dest_ip"
             @on-enter="handleQuery"
           />
         </div>
+
         <div class="condition-item">
-          <label class="condition-item-label">目地IP地址：</label>
+          <label class="condition-item-label">请求IP地址：</label>
           <Input
-            v-model="conditions.dest_ip"
+            v-model="conditions.src_ip"
             @on-enter="handleQuery"
           />
         </div>
@@ -36,6 +38,7 @@
         <btn-search
           type="primary"
           @click="handleQuery"
+          :loading="loading"
         >
           搜索
         </btn-search>
@@ -142,7 +145,7 @@ export default {
           width: 200
         },
         {
-          title: "目地IP地址",
+          title: "节点IP地址",
           key: "nodeIP",
           width: 200
         },

@@ -243,7 +243,7 @@
         <common-modal
           :visible.sync="dispatchVisible"
           title="IPv6前缀下发"
-          :width="413"
+          :width="483"
           @confirm="handleSaveDispatch('dispatchRef')"
         >
           <Form

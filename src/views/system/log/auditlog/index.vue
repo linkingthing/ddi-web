@@ -1,6 +1,6 @@
 <template>
   <div class="audit-log">
-    <IviewLoading v-if="loading" />
+    <!-- <IviewLoading v-if="loading" /> -->
 
     <table-page
       :data="tableData"
@@ -32,6 +32,7 @@
           type="primary"
           @click="handleQuery"
           class="top-button"
+          :loading="loading"
         >
           搜索
         </btn-search>
@@ -83,9 +84,7 @@ export default {
   },
   methods: {
     async handleQuery() {
-      // this.loading = true;
-
-
+      this.loading = true;
       try {
         let { data, pagination } = await this.$get({ url: this.url, params: this.getParams() });
 
