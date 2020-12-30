@@ -1265,11 +1265,6 @@ export default {
 
       this.$post({ url: action, params })
         .then(res => {
-          if (res.state === "") {
-            this.$Message.success("规划成功");
-            this.selectSemanticList = [];
-            this.customPlanVisible = false;
-          }
 
           if (res.state === "conflict") {
             this.$Modal.confirm({
@@ -1289,6 +1284,10 @@ export default {
                 this.ignoreconflictByAction(params, "formulateignoreconflict");
               }
             });
+          } else {
+            this.$Message.success("规划成功");
+            this.selectSemanticList = [];
+            this.customPlanVisible = false;
           }
 
         })
