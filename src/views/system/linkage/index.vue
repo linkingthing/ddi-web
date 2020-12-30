@@ -248,6 +248,11 @@ export default {
               callback("请输入系统名");
             }
 
+            const hasIPList = Array.isArray(this.params.dispatchclients) ? this.params.dispatchclients.map(item => item.name) : [];
+            if (hasIPList.includes(value.trim())) {
+              callback("系统名不能重复");
+            }
+
             callback();
           }
         }
