@@ -990,7 +990,6 @@ export default {
         this.getPlanInfo();
         this.$Message.success("更新成功");
         Reflect.deleteProperty(tempSemanticNameMap, row.id);
-        console.log(tempSemanticNameMap)
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });

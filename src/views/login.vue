@@ -77,6 +77,17 @@
 import services from "@/services";
 import { mapMutations } from "vuex";
 import { resetRouter } from "@/router";
+import JsEncrypt from "jsencrypt";
+
+console.log(JsEncrypt)
+const publicKey = `-----BEGIN RSA Public Key-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK+W1jWdJh9S0WvOmv19ET6TRG2IdR5G
+Vw5rKhcIZ4DQTRbsDXJ8/B5FNDrGIK5viPi7KZhi88lDAUwIDfrLzl8CAwEAAQ==
+-----END RSA Public Key-----`;
+// eslint-disable-next-line no-undef
+const jse = new JSEncrypt();
+jse.setPublicKey(publicKey);
+
 
 export default {
   name: "login",
@@ -129,8 +140,10 @@ export default {
     login() {
       this.$refs["formLogin"].validate(valid => {
         if (valid) {
+          const params = {...this.params};
+          params.password = jse.encrypt(params.password);
           services
-            .login(this.params)
+            .login(params)
             .then(res => {
               if (res.code === 200) {
                 this.SET_USERINFO(false);
