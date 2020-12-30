@@ -24,6 +24,7 @@ export default {
   forward: "转发组",
   forward_zone: "转发区",
   forwardtimepolicy: "时间策略",
+  domaingroup: "域名组",
   redirection: "重定向",
   url_redirect: "URL重定向",
   ipblackhole: "IP黑名单",

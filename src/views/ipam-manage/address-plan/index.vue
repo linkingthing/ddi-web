@@ -23,10 +23,10 @@
             @click="handleAddPlan"
           >新建规划</Button>
 
-          <Button
+          <!-- <Button
             type="primary"
             @click="handleUploadPlan"
-          >导入规划表格</Button>
+          >导入规划表格</Button> -->
 
         </template>
       </table-page>
@@ -189,7 +189,8 @@ export default {
         {
           title: "操作",
           key: "name",
-          width: 410,
+          // width: 410,
+          width: 300,
           render: (h, { row }) => {
             return h("div", {
               class: "table-btn-box"
@@ -230,16 +231,16 @@ export default {
                   disabled: !row.responsordispatch
                 }
               }),
-              h("btn-line", {
-                nativeOn: {
-                  click: () => {
-                    this.handleDownloadPlan(row);
-                  }
-                },
-                props: {
-                  title: "下载规划表格"
-                }
-              }),
+              // h("btn-line", {
+              //   nativeOn: {
+              //     click: () => {
+              //       this.handleDownloadPlan(row);
+              //     }
+              //   },
+              //   props: {
+              //     title: "下载规划表格"
+              //   }
+              // }),
               h("btn-line", {
                 on: {
                   click: () => this.handleDelete(row)

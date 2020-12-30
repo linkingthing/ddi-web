@@ -153,6 +153,8 @@ export default {
           case "updatesemanticipv4": return "修改语义IPv4";
           case "listviewv4": return "获取规划IPv4列表";
           case "listviewv6": return "获取规划IPv6列表";
+          case "export": return "导出";
+          case "importcsv": return "批量导入";
 
         }
       };
