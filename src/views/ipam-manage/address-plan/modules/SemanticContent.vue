@@ -127,7 +127,7 @@
         </div>
 
         <div class="action-input-item">
-          <label class="label">新增节点地址数: </label>
+          <label class="label">新增节点地址数：</label>
           <div class="action-box">
             <Spinner
               class="action-box-input"
@@ -926,14 +926,20 @@ export default {
 
       const willUseAddressBlockCount = shouldCreateLength * stepsize;
 
-
       // 空间计算，总共 >= 已使用 + 将分配，
 
-      if (surplus < willUseAddressBlockCount) {
+      // if (surplus < willUseAddressBlockCount) {
+      //   this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
+      //   return;
+      // }
+
+
+      // pjk :check
+      const maxAddressBlock = this.currentNodePrefix.length * (2 ** bitWidth - 1);
+      if (willCreateSemanticNodeListLength * stepsize > maxAddressBlock) {
         this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
         return;
       }
-
 
 
       const params = {

@@ -79,7 +79,6 @@ import { mapMutations } from "vuex";
 import { resetRouter } from "@/router";
 import JsEncrypt from "jsencrypt";
 
-console.log(JsEncrypt)
 const publicKey = `-----BEGIN RSA Public Key-----
 MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK+W1jWdJh9S0WvOmv19ET6TRG2IdR5G
 Vw5rKhcIZ4DQTRbsDXJ8/B5FNDrGIK5viPi7KZhi88lDAUwIDfrLzl8CAwEAAQ==

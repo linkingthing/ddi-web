@@ -10,15 +10,24 @@ export default {
   /** DHCP */
   dhcpConfig: "DHCP全局配置",
   clientclass: "DHCP自定义属性",
+  clientclass4: "DHCP自定义属性",
+  clientclass6: "DHCP自定义属性",
   subnet: "DHCP子网",
+  subnet4: "DHCPv4子网",
+  subnet6: "DHCPv6子网",
   pool: "地址池",
+  pool4: "v4地址池",
+  pool6: "v6地址池",
   pdpool: "前缀委派",
   reservation: "固定地址",
+  reservation4: "v4固定地址",
+  reservation6: "v6固定地址",
   /** DNS */
   acl: "访问控制列表",
   view: "视图",
   zone: "权威区",
   forwardzone: "转发区",
+  forwardzones: "转发区",
   forwarder: "转发组",
   rr: "资源记录",
   forward: "转发组",
@@ -29,7 +38,8 @@ export default {
   url_redirect: "URL重定向",
   ipblackhole: "IP黑名单",
   recursivecurrent: "递归安全",
-  log: "DNS日志",
+  log: "日志",
+  dnslog: "DNS日志",
   urlredirect: "url重定向",
   dns_global_config: "dns全局配置",
   /** IPAM */
@@ -50,7 +60,6 @@ export default {
   dhcpconfig: "基础配置",
   dnsglobalconfig: "DNS全局配置",
   globalConfig: "DNS日志开关",
-  dnslog: "DNS日志",
   /** 用户 */
   user: "用户信息",
   ddiuser: "当前用户信息",
@@ -62,5 +71,10 @@ export default {
 export const operateMap = {
   Create: "创建",
   Update: "更新",
-  Delete: "删除"
+  Delete: "删除",
+  create: "创建",
+  update: "更新",
+  delete: "删除",
+  flush: "批量更新",
+  upload: "上传"
 };

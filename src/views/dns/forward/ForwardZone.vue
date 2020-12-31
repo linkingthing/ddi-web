@@ -72,6 +72,11 @@ export default {
           }
         },
         {
+          title: "转发方式",
+          key: "forwardtype"
+        },
+
+        {
           title: "备注",
           key: "comment"
         },

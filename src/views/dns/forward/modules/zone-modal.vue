@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name', 'forwardtype'] : []"
+        :show-fields="isEdit ? ['name', 'forwardtype', 'domain', 'nametype'] : []"
       />
 
     </Form>
@@ -115,7 +115,7 @@ export default {
 
       return [
         {
-          label: "类型",
+          label: "转发类型",
           model: "nametype",
           type: "select",
           placeholder: "请选择转类型",
@@ -149,6 +149,7 @@ export default {
           model: "forwardtimepolicyname",
           type: "select",
           placeholder: "请选择时间策略",
+          clearable: true,
           children: this.forwardtimepolicyList.map(item => {
             return {
               label: item.name,
