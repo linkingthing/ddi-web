@@ -40,6 +40,7 @@
           <i
             class="header-icon search-icon"
             @click="searchVisible = true"
+            v-if="isSuper"
           ></i>
 
           <Badge
