@@ -28,7 +28,6 @@ export default {
       immediate: true,
       handler(val, old) {
 
-        console.log(val)
         // if (typeof val === "string") {
         //   this.innervalue = "";
         // }

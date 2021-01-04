@@ -331,7 +331,7 @@ export default {
         const master = map[item.master];
         const controller = map[item.controllerIP];
 
-        if (item.controllerIP === item.id && item.master === "") {
+        if (item.controllerIP === item.id ) {
           tree.push(item);
         } else {
           if (item.master) {

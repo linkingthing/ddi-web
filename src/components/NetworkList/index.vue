@@ -36,7 +36,6 @@ export default {
       deep: true,
       immediate: true,
       handler(val) {
-        console.log(val)
         this.ipList = val.join("\n");
       }
     },

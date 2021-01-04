@@ -120,7 +120,6 @@ export default {
     dialogVisible(val) {
       if (!val) {
         // 关闭弹窗
-        // console.log(val)
       }
 
       this.$emit("update:visible", val);

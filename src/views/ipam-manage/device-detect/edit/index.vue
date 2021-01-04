@@ -52,6 +52,7 @@ export default {
         name: "",
         administrationAddress: "",
         equipmentType: "",
+        administrationMac: "",
         serialNumber: "",
         manufacturer: "",
         firmwareVersion: "",

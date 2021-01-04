@@ -36,15 +36,7 @@ export default {
         title: "转发组"
       }
     },
-    {
-      name: "time-policy",
-      path: "/dns/dns/timeschedulers",
-      component: () => import("@/views/dns/forward/TimePolicy"),
-      meta: {
-        title: "时间策略",
-        permission: "forwardGroup"
-      }
-    },
+
 
     {
       name: "zone-query-forward",
@@ -69,7 +61,16 @@ export default {
       meta: {
         title: "域名组"
       }
-    }
+    },
+    {
+      name: "time-policy",
+      path: "/dns/dns/timeschedulers",
+      component: () => import("@/views/dns/forward/TimePolicy"),
+      meta: {
+        title: "时间策略",
+        permission: "forwardGroup"
+      }
+    },
     // {
     //   name: "concurrency-control",
     //   path: "/dns/forward/concurrency-control",
