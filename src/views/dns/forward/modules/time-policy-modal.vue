@@ -95,11 +95,11 @@ export default {
               [DateType.Day]: function () {
 
                 const [hours, seconds] = value.split(":").map(Number);
-                const [shours, sseconds] = startTime.split(":").map(Number);
+                const [startHours, startSeconds] = startTime.split(":").map(Number);
 
-                if (shours === hours) {
+                if (startHours === hours) {
                   return {
-                    isValid: Number(seconds) <= Number(sseconds),
+                    isValid: Number(seconds) <= Number(startSeconds),
                     message
                   };
                 }
@@ -119,18 +119,18 @@ export default {
 
                 if (Number(weekEnd) === Number(weekStart)) {
                   const [hours, seconds] = timeEnd.split(":").map(Number);
-                  const [shours, sseconds] = timeStart.split(":").map(Number);
+                  const [startHours, startSeconds] = timeStart.split(":").map(Number);
 
-                  if (shours > hours) {
+                  if (startHours > hours) {
                     return {
                       isValid: true,
                       message
                     };
                   }
-                  if (shours === hours) {
+                  if (startHours === hours) {
 
                     return {
-                      isValid: Number(seconds) <= Number(sseconds),
+                      isValid: Number(seconds) <= Number(startSeconds),
                       message
                     };
                   }
@@ -164,37 +164,30 @@ export default {
                 if (Number(strampEnd) === Number(strampStart)) {
 
                   const [hours, seconds] = timeEnd.split(":").map(Number);
-                  const [shours, sseconds] = timeStart.split(":").map(Number);
+                  const [startHours, startSeconds] = timeStart.split(":").map(Number);
 
-                  console.log(hours, seconds, shours, sseconds)
-                  console.log(shours > hours)
-
-                  if (shours < hours) {
+                  if (startHours < hours) {
                     return {
                       isValid: false,
                       message
                     };
                   }
 
-                  if (shours > hours) {
+                  if (startHours > hours) {
                     return {
                       isValid: true,
                       message
                     };
                   }
 
-                  if (shours === hours) {
+                  if (startHours === hours) {
                     return {
-                      isValid: Number(seconds) <= Number(sseconds),
+                      isValid: Number(seconds) <= Number(startSeconds),
                       message
                     };
                   }
 
-
-
                 }
-
-
 
               }
 
