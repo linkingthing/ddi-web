@@ -147,6 +147,12 @@ export default {
                     message: "请选择结束时间"
                   };
                 }
+                if (Number(strampEnd) > Number(strampStart)) {
+                  return {
+                    isValid: false,
+                    message
+                  };
+                }
 
                 if (Number(strampEnd) < Number(strampStart)) {
                   return {
@@ -160,9 +166,12 @@ export default {
                   const [hours, seconds] = timeEnd.split(":").map(Number);
                   const [shours, sseconds] = timeStart.split(":").map(Number);
 
-                  if (shours === hours) {
+                  console.log(hours, seconds, shours, sseconds)
+                  console.log(shours > hours)
+
+                  if (shours < hours) {
                     return {
-                      isValid: Number(seconds) <= Number(sseconds),
+                      isValid: false,
                       message
                     };
                   }
@@ -173,6 +182,15 @@ export default {
                       message
                     };
                   }
+
+                  if (shours === hours) {
+                    return {
+                      isValid: Number(seconds) <= Number(sseconds),
+                      message
+                    };
+                  }
+
+
 
                 }
 

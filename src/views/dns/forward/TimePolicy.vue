@@ -4,7 +4,8 @@
       title="转发视图"
       :data="list"
       :columns="columns"
-      :total="list.length"
+      :total="total"
+      :current.sync="current"
     >
       <template slot="top-right">
         <i-button
@@ -92,15 +93,30 @@ export default {
       list: [],
       links: {},
       paramsLinks: {},
-      visible: false
+      visible: false,
+      current: 0,
+      total: 0
     };
   },
-  mounted() {
-    this.getDataList();
+  watch: {
+    current: {
+      handler() {
+        this.getDataList();
+      }
+    }
+
   },
   methods: {
     getDataList() {
-      this.$get(this.$getApiByRoute()).then(({ data, links }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+      const { url } = this.$getApiByRoute();
+      this.$get({ url, params }).then(({ data, links, pagination }) => {
+        this.current = pagination.pageNum;
+        this.total = pagination.total;
+
         this.list = Array.isArray(data) ? data.map(item => {
           let { timePeriods } = item;
           let { beginTime, endTime } = timePeriods[0];
