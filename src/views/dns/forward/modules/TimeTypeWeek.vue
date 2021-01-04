@@ -57,9 +57,9 @@ export default {
       immediate: true,
       handler(value) {
         const [week, time] = String(value).split("-");
-        if (isNumber(+week) && isNumber(+time) && !isNaN(+week) && !isNaN(+time)) {
+        if (isNumber(+week) && !isNaN(+week)) {
           this.week = +week;
-          this.time = +time;
+          this.time = time;
         }
       }
     }

@@ -50,6 +50,7 @@ export default {
     value: {
       immediate: true,
       handler(val, old) {
+        console.log(val)
         if ((val || val === 0) && val !== old) {
           this.innervalue = val;
         }

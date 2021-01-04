@@ -64,9 +64,9 @@ export default {
         return;
       }
       const [date, time] = value.split("-");
-      if (isNumber(+date) && isNumber(+time) && !isNaN(+date) && !isNaN(+time)) {
+      if (isNumber(+date) && !isNaN(+date) && !isNaN(time)) {
         this.date = date && new Date(+date);
-        this.time = +time;
+        this.time = time;
       }
     }
   }

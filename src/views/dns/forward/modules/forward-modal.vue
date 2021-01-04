@@ -55,7 +55,7 @@ export default {
       },
       {
         label: "服务器",
-        model: "forwarderips",
+        model: "forwarderIps",
         type: "textarea",
         placeholder: "可以添加多个转发服务器，多个服务器必须用逗号分隔，每次最多填写10条",
         autosize: { minRows: 4, maxRows: 8 }
@@ -73,7 +73,7 @@ export default {
       name: [
         { required: true, message: "请填写组名称" }
       ],
-      forwarderips: [
+      forwarderIps: [
         { required: true, message: "请填写组名称" },
         {
           validator: (rule, value, callback) => {
@@ -103,7 +103,7 @@ export default {
     return {
       formModel: {
         zonetype: "master",
-        forwarderips: "",
+        forwarderIps: "",
         name: ""
       },
       loading: false,
@@ -128,10 +128,10 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, forwarderips, comment }) => {
+        this.$get({ url: this.links.self }).then(({ name, forwarderIps, comment }) => {
           this.formModel = {
             name,
-            forwarderips: forwarderips.join(","),
+            forwarderIps: forwarderIps.join(","),
             comment
           };
         }).catch();
@@ -156,14 +156,14 @@ export default {
           const params = { ...this.formModel };
 
           this.loading = true;
-          if (typeof params.forwarderips === "string") {
-            if (params.forwarderips.trim().length) {
-              params.forwarderips = params.forwarderips.split(",").map(item => item.trim());
+          if (typeof params.forwarderIps === "string") {
+            if (params.forwarderIps.trim().length) {
+              params.forwarderIps = params.forwarderIps.split(",").map(item => item.trim());
             } else {
-              params.forwarderips = [];
+              params.forwarderIps = [];
             }
           } else {
-            params.forwarderips = [];
+            params.forwarderIps = [];
           }
 
           if (this.isEdit) {

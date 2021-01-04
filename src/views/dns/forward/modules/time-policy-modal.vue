@@ -12,8 +12,8 @@
       label-position="left"
       :label-width="100"
       :label-colon="true"
-      :rules="rules"
       :model="formModel"
+      :rules="rules"
     >
 
       <common-form
@@ -34,9 +34,8 @@ import TimeSelect from "./TimeSelect";
 import TimeTypeWeek from "./TimeTypeWeek";
 import { DateType } from "./helper";
 
-import moment from "moment-timezone";
+import moment from "moment";
 import { sortBy, isUndefined } from "lodash";
-
 
 export default {
   props: {
@@ -57,7 +56,7 @@ export default {
       name: [
         { required: true, message: "请填写组名称" }
       ],
-      timetype: [{
+      timeType: [{
         required: true, message: "请选时间方式"
       }],
       startTime: [
@@ -67,9 +66,9 @@ export default {
         },
         {
           validator: (rule, value, callback) => {
-            const { timetype } = this.formModel;
+            const { timeType } = this.formModel;
 
-            if (timetype !== DateType.Day) {
+            if (timeType !== DateType.Day) {
               const reg = /\d+-\d+/;
               if (reg.test(value)) {
                 callback();
@@ -89,14 +88,22 @@ export default {
         },
         {
           validator: (rules, value, callback) => {
-            const { timetype, startTime } = this.formModel;
+            const { timeType, startTime } = this.formModel;
             const message = "结束时间应该大于开始时间";
+
             const policyMap = {
               [DateType.Day]: function () {
-                return {
-                  isValid: Number(value) <= Number(startTime),
-                  message
-                };
+
+                const [hours, seconds] = value.split(":").map(Number);
+                const [shours, sseconds] = startTime.split(":").map(Number);
+
+                if (shours === hours) {
+                  return {
+                    isValid: Number(seconds) <= Number(sseconds),
+                    message
+                  };
+                }
+
               },
               [DateType.Week]: function () {
                 const [weekStart, timeStart] = String(startTime).split("-");
@@ -109,17 +116,24 @@ export default {
                   };
                 }
 
-                if (Number(weekEnd) < Number(weekStart)) {
-                  return {
-                    isValid: true,
-                    message
-                  };
-                }
+
                 if (Number(weekEnd) === Number(weekStart)) {
-                  return {
-                    isValid: Number(timeStart) >= Number(timeEnd),
-                    message
-                  };
+                  const [hours, seconds] = timeEnd.split(":").map(Number);
+                  const [shours, sseconds] = timeStart.split(":").map(Number);
+
+                  if (shours > hours) {
+                    return {
+                      isValid: true,
+                      message
+                    };
+                  }
+                  if (shours === hours) {
+
+                    return {
+                      isValid: Number(seconds) <= Number(sseconds),
+                      message
+                    };
+                  }
                 }
                 callback();
               },
@@ -142,18 +156,27 @@ export default {
                 }
 
                 if (Number(strampEnd) === Number(strampStart)) {
-                  return {
-                    isValid: Number(timeEnd) <= Number(timeStart),
-                    message
-                  };
+
+                  const [hours, seconds] = timeEnd.split(":").map(Number);
+                  const [shours, sseconds] = timeStart.split(":").map(Number);
+
+                  if (shours === hours) {
+                    return {
+                      isValid: Number(seconds) <= Number(sseconds),
+                      message
+                    };
+                  }
+
+                  if (shours > hours) {
+                    return {
+                      isValid: true,
+                      message
+                    };
+                  }
+
                 }
 
-                if (Number(strampEnd) > Number(strampStart)) {
-                  return {
-                    isValid: false,
-                    message
-                  };
-                }
+
 
               }
 
@@ -161,7 +184,7 @@ export default {
 
             {
 
-              const { isValid, message } = policyMap[timetype]();
+              const { isValid, message } = policyMap[timeType]();
               if (isValid) {
                 callback(message);
               }
@@ -175,7 +198,7 @@ export default {
     };
     return {
       formModel: {
-        timetype: DateType.Date,
+        timeType: DateType.Date,
         name: "",
         startTime: "",
         endTime: "",
@@ -195,7 +218,7 @@ export default {
     },
     formItemList() {
 
-      let timeSegment = getTimeComponents(this.formModel.timetype);
+      let timeSegment = getTimeComponents(this.formModel.timeType);
 
       function getTimeComponents(type) {
         const timeTypeMap = {
@@ -248,7 +271,7 @@ export default {
         },
         {
           label: "时间",
-          model: "timetype",
+          model: "timeType",
           type: "select",
           children: [{
             label: DateType.Date,
@@ -278,7 +301,7 @@ export default {
     visible(val) {
       if (!val) {
         this.formModel = {
-          timetype: DateType.Date,
+          timeType: DateType.Date,
           name: "",
           startTime: "",
           endTime: "",
@@ -291,38 +314,48 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, timetype, comment, weekdaygroup, begindaytime, enddaytime }) => {
-
+        this.$get({ url: this.links.self }).then(({ name, timeType, comment, timePeriods }) => {
+          let timePeriod = {};
+          if (Array.isArray(timePeriods) && timePeriods.length) {
+            timePeriod = timePeriods[0];
+          }
           const strategy = {
             [DateType.Date]: function () {
-              const [startDate] = moment(begindaytime).format("YYYY-MM-DD HH:mm").split(" ");
-              const [endDate] = moment(enddaytime).format("YYYY-MM-DD HH:mm").split(" ");
-              let startTime = `${moment(startDate).valueOf()}-${moment(begindaytime).hour()}`;
-              let endTime = `${moment(endDate).valueOf()}-${moment(enddaytime).hour()}`;
-              return { startTime, endTime };
+
+              const { beginTime, endTime } = timePeriod;
+              const [year, month, date, time] = beginTime.split(" ");
+              const [year1, month1, date1, time1] = endTime.split(" ");
+
+              return {
+                startTime: moment(`${year}-${month}-${date}`).valueOf() + "-" + time,
+                endTime: moment(`${year1}-${month1}-${date1}`).valueOf() + "-" + time1
+              };
             },
             [DateType.Week]: function () {
-              weekdaygroup = sortBy(weekdaygroup, function (o) {
-                return o.weekday;
-              });
 
-              let startTime = `${weekdaygroup[0].weekday}-${weekdaygroup[0].beginminute / 60}`;
-              let endTime = `${weekdaygroup[weekdaygroup.length - 1].weekday}-${weekdaygroup[weekdaygroup.length - 1].endminute / 60}`;
+              const { beginTime, endTime } = timePeriod;
+              const [week, time] = beginTime.split(" ");
+              const [week1, time1] = endTime.split(" ");
 
-              return { startTime, endTime };
+              return {
+                startTime: `${week}-${time}`,
+                endTime: `${week1}-${time1}`
+              };
             },
             [DateType.Day]: function () {
-              if (weekdaygroup.length) {
-                const { beginminute, endminute } = weekdaygroup[0];
-                let startTime = beginminute / 60;
-                let endTime = endminute / 60;
-                return { startTime, endTime };
-              }
+              const { beginTime, endTime } = timePeriod;
+
+              return {
+                startTime: beginTime,
+                endTime: endTime
+              };
+
             }
           };
 
-          let { startTime, endTime } = strategy[timetype]();
-          this.formModel.timetype = timetype;
+          let { startTime, endTime } = strategy[timeType]();
+
+          this.formModel.timeType = timeType;
           this.$nextTick().then(() => {
             this.formModel.name = name;
             this.formModel.comment = comment;
@@ -339,7 +372,7 @@ export default {
       this.$emit("update:visible", val);
     },
 
-    "formModel.timetype"(val) {
+    "formModel.timeType"(val) {
       if (val === DateType.Date) {
         if (typeof this.formModel.startTime === "number") {
           this.formModel.startTime = "";
@@ -363,100 +396,55 @@ export default {
   methods: {
 
     handleConfirm(name) {
-
-      // const allFields = Object.keys(this.formModel).map((key, index) => {
-      //   return new Promise((resolve, reject) => {
-      //     this.$refs[name].validateField(key, function (valid) {
-      //       resolve(!!valid);
-      //     });
-      //   });
-      // });
-
-      // Promise.all(allFields).then((valids) => {
-      //   const isValid = valids.reduce((result, item) => {
-      //     return result + item;
-      //   }, 0); // 0 通过
-
-      //   if (!isValid) {
-      //     this.submit();
-      //   }
-
-      // });
-
-
       this.$refs[name].validate().then((valid) => {
-
         if (valid) {
           this.submit();
         }
-
       });
+    },
 
-
+    formatTime(timestamp, time) {
+      return `${moment(+timestamp).format("YYYY MM DD")} ${time}`;
     },
     submit() {
       this.loading = true;
       const params = { ...this.formModel };
       const strategy = {
-        [DateType.Date]: function (params) {
+        [DateType.Date]: (params) => {
           const { startTime, endTime } = params;
           const [timestamp1, time1] = startTime.split("-");
           const [timestamp2, time2] = endTime.split("-");
-          const oneMinute = 60 * 60 * 1000;
-          params.begindaytime = moment.tz(new Date(+timestamp1 + time1 * oneMinute), "Asia/Shanghai").format();
-          params.enddaytime = moment.tz(new Date(+timestamp2 + time2 * oneMinute), "Asia/Shanghai").format();
+
+          const timePeriod = {
+            beginTime: this.formatTime(timestamp1, time1),
+            endTime: this.formatTime(timestamp2, time2)
+          };
+
+          params.timePeriods = [timePeriod];
+
         },
         [DateType.Week]: function (params) {
           const { startTime, endTime } = params;
-          const [week1, time1] = startTime.split("-");
-          const [week2, time2] = endTime.split("-");
 
-          if (Number(week1) < Number(week2)) {
-            const startDay = {
-              beginminute: time1 * 60,
-              endminute: 24 * 60,
-              weekday: Number(week1)
-            };
-            const wholeDayGroup = Array.from({ length: Number(week2) - Number(week1) - 1 }, function wholeDay(item, index) {
-              return {
-                beginminute: 0,
-                endminute: 24 * 60,
-                weekday: Number(week1) + index + 1
-              };
-            });
-            const endDay = {
-              beginminute: 0,
-              endminute: time2 * 60,
-              weekday: Number(week2)
-            };
+          const timePeriod = {
+            beginTime: startTime.split("-").join(" "),
+            endTime: endTime.split("-").join(" ")
+          };
 
-            return [startDay, ...wholeDayGroup, endDay];
-          }
-          if (Number(week1) === Number(week2)) {
-            return [{
-              beginminute: time1 * 60,
-              endminute: time2 * 60,
-              weekday: Number(week1)
-            }];
-          }
-
-          //  "起始星期大于结束星期"; 在输入的时候预先做校验，这里的场景就永远不会出现
+          params.timePeriods = [timePeriod];
 
         },
         [DateType.Day]: function (params) {
           const { startTime, endTime } = params;
-          return Array.from({ length: 1 }, function (item, index) {
-            return {
-              beginminute: startTime * 60,
-              endminute: endTime * 60,
-              weekday: index
-            };
-          });
+          const timePeriod = {
+            beginTime: startTime,
+            endTime
+          };
+          params.timePeriods = [timePeriod];
         }
 
       };
-      const weekdaygroup = strategy[params.timetype](params);
-      params.weekdaygroup = weekdaygroup;
+      strategy[params.timeType](params);
 
       Reflect.deleteProperty(params, "startTime");
       Reflect.deleteProperty(params, "endTime");

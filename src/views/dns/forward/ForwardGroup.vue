@@ -57,7 +57,7 @@ export default {
           render: (h, { row }) => {
             return h("Tags", {
               props: {
-                list: row.forwarderips,
+                list: row.forwarderIps,
                 field: row
               }
             });

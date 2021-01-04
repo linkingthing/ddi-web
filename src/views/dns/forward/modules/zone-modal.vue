@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name', 'forwardtype', 'domain', 'nametype'] : []"
+        :show-fields="isEdit ? ['name', 'forwardStyle', 'domain', 'forwardItemType'] : []"
       />
 
     </Form>
@@ -51,24 +51,24 @@ export default {
       domaingroupids: [
         { required: true, message: "请选择域名组" }
       ],
-      forwarderids: [
+      forwarderGroupIds: [
         { required: true, message: "请选择转发分组" }
       ],
-      forwardtype: [
+      forwardStyle: [
         { required: true, message: "请选择转发方式" }
       ]
     };
     return {
       forwardList: [],
       formModel: {
-        nametype: "domain",
+        forwardItemType: "domain",
         comment: "",
         domain: "",
         domaingroupids: [],
-        forwarderids: [],
+        forwarderGroupIds: [],
         forwarders: [],
         forwardtimepolicyname: "",
-        forwardtype: "",
+        forwardStyle: "",
         name: ""
       },
       loading: false,
@@ -87,7 +87,7 @@ export default {
     },
     formItemList() {
 
-      const { nametype } = this.formModel;
+      const { forwardItemType } = this.formModel;
 
       const forwardItemMap = {
         "root": null,
@@ -116,7 +116,7 @@ export default {
       return [
         {
           label: "转发类型",
-          model: "nametype",
+          model: "forwardItemType",
           type: "select",
           placeholder: "请选择转类型",
           children: [{
@@ -130,10 +130,10 @@ export default {
             text: "域名组"
           }]
         },
-        forwardItemMap[nametype],
+        forwardItemMap[forwardItemType],
         {
           label: "转发分组",
-          model: "forwarderids",
+          model: "forwarderGroupIds",
           type: "select",
           placeholder: "请选择转发分组",
           multiple: true,
@@ -159,7 +159,7 @@ export default {
         },
         {
           label: "转发方式",
-          model: "forwardtype",
+          model: "forwardStyle",
           type: "select",
           placeholder: "请选择转发方式",
           children: [{
@@ -185,14 +185,14 @@ export default {
     visible(val) {
       if (!val) {
         this.formModel = {
-          nametype: "domain",
+          forwardItemType: "domain",
           comment: "",
           domain: "",
           domaingroupids: [],
-          forwarderids: [],
+          forwarderGroupIds: [],
           forwarders: [],
           forwardtimepolicyname: "",
-          forwardtype: "",
+          forwardStyle: "",
           name: ""
         };
         this.$refs["formInline"].resetFields();
@@ -215,7 +215,7 @@ export default {
   },
 
   created() {
-    this.$getData({}, "/dns/dns/forwarders").then(({ data }) => {
+    this.$getData({}, "/dns/dns/forwardergroups").then(({ data }) => {
       this.forwardList = data;
     }).catch();
 
@@ -223,7 +223,7 @@ export default {
       this.domainGroupList = data;
     });
 
-    this.$getData({}, "/dns/dns/forwardtimepolicies").then(({ data }) => {
+    this.$getData({}, "/dns/dns/timeschedulers").then(({ data }) => {
       this.forwardtimepolicyList = data;
     });
   },
@@ -238,11 +238,11 @@ export default {
           this.loading = true;
           const params = { ...this.formModel };
           params.name = uuidv4();
-          if (params.nametype === "root") {
-            params.domain = ".";
+          if (params.forwardItemType === "root") {
+            params.domain = "@";
           }
 
-          if (params.nametype === "domaingroup") {
+          if (params.forwardItemType === "domaingroup") {
             Reflect.deleteProperty(params, "domain");
           }
 

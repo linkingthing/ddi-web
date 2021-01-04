@@ -26,6 +26,7 @@
 import { sortBy } from "lodash";
 import TimePolicyModal from "./modules/time-policy-modal";
 import { DateType } from "./modules/helper";
+
 const weekMap = {
   0: "星期日",
   1: "星期一",
@@ -51,7 +52,7 @@ export default {
         },
         {
           title: "开始时间",
-          key: "startTime",
+          key: "beginTime",
           align: "left"
         },
         {
@@ -101,44 +102,37 @@ export default {
     getDataList() {
       this.$get(this.$getApiByRoute()).then(({ data, links }) => {
         this.list = Array.isArray(data) ? data.map(item => {
-          let startTime, endTime;
-
-          let { weekdaygroup, timetype } = item;
-          weekdaygroup = sortBy(weekdaygroup, function (o) {
-            return o.weekday;
-          });
-
-          if (timetype === DateType.Day) {
-            if (weekdaygroup.length) {
-              const { beginminute, endminute } = weekdaygroup[0];
-              startTime = `${beginminute / 60}:00`;
-              endTime = `${endminute / 60}:00`;
-            }
-          }
-          if (timetype === DateType.Week) {
-            if (weekdaygroup.length) {
-              {
-                const { beginminute, weekday } = weekdaygroup[0];
-                startTime = `${weekMap[weekday]} ${beginminute / 60}:00`;
-              }
-              {
-                const { endminute, weekday } = weekdaygroup[weekdaygroup.length - 1];
-                endTime = `${weekMap[weekday]} ${endminute / 60}:00`;
-              }
-            }
+          let { timePeriods } = item;
+          let { beginTime, endTime } = timePeriods[0];
+          if (DateType.Date === item.timeType) {
+            const [year, mouth, day, time] = beginTime.split(" ");
+            const [year1, mouth1, day1, time1] = endTime.split(" ");
+            return {
+              ...item,
+              beginTime: `${year}-${mouth}-${day} ${time}`,
+              endTime: `${year1}-${mouth1}-${day1} ${time1}`
+            };
           }
 
-          if (timetype === DateType.Date) {
-            const { begindaytime, enddaytime } = item;
-            startTime = this.$trimDate(begindaytime, "YYYY-MM-DD HH:mm");
-            endTime = this.$trimDate(enddaytime, "YYYY-MM-DD HH:mm");
+          if (DateType.Week === item.timeType) {
+            const [week, time] = beginTime.split(" ");
+            const [week1, time1] = endTime.split(" ");
+
+            return {
+              ...item,
+              beginTime: `${weekMap[week]} ${time}`,
+              endTime: `${weekMap[week1]} ${time1}`
+            };
           }
 
-          return {
-            ...item,
-            startTime,
-            endTime
-          };
+          if (DateType.Day === item.timeType) {
+            return {
+              ...item,
+              beginTime,
+              endTime
+            };
+          }
+
         }) : [];
         this.links = links;
       });

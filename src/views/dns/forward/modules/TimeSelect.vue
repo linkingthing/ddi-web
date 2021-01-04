@@ -1,11 +1,10 @@
 <template>
-  <Select v-model="innervalue">
-    <Option
-      v-for="item in weekdayList"
-      :key="item.value"
-      :value="item.value"
-    >{{ item.label}}</Option>
-  </Select>
+  <TimePicker
+    v-model="innervalue"
+    format="HH:mm"
+    placeholder="选择时间"
+  ></TimePicker>
+
 </template>
 
 <script>
@@ -19,13 +18,6 @@ export default {
     }
   },
   data() {
-    // 空槽位 数组map不识别
-    this.weekdayList = Array.from({ length: 25 }, (item, index) => {
-      return {
-        label: `${index}: 00`,
-        value: index
-      };
-    });
     return {
       innervalue: ""
     };
@@ -35,10 +27,12 @@ export default {
     value: {
       immediate: true,
       handler(val, old) {
-        if (typeof val === "string") {
-          this.innervalue = "";
-        }
-        if (typeof val === "number" && val !== old) {
+
+        console.log(val)
+        // if (typeof val === "string") {
+        //   this.innervalue = "";
+        // }
+        if (typeof val === "string" && val !== old) {
           this.innervalue = val;
         }
       }

@@ -41,7 +41,7 @@ export default {
               domain: "域名",
               domaingroup: "域名组"
             };
-            return h("div", typeMap[row.nametype]);
+            return h("div", typeMap[row.forwardItemType]);
           }
         },
 
@@ -55,7 +55,7 @@ export default {
           key: "forwardtype",
           width: 150,
           render: (h, { row }) => {
-            return h("div", row.forwarders.map(item => item.name).join(","));
+            return h("div", row.forwarderGroupIds.join(","));
           }
         },
 
@@ -73,7 +73,7 @@ export default {
         },
         {
           title: "转发方式",
-          key: "forwardtype"
+          key: "forwardStyle"
         },
 
         {
@@ -121,9 +121,9 @@ export default {
   },
   mounted() {
     this.getDataList();
-    this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
-      this.domainGroupList = data;
-    });
+    // this.$getData({}, "/dns/dns/domaingroups").then(({ data }) => {
+    //   this.domainGroupList = data;
+    // });
   },
   methods: {
     getDataList() {
@@ -135,10 +135,9 @@ export default {
         this.dsliteList = data.map(item => {
           const forwardItemMap = {
             root: "@",
-            domain: item.domain,
-            domaingroup: item.domaingroupids.map(item => this.domainGroupList.find(domain => domain.id === item).name || "").join(",")
+            domain: item.domain
           };
-          const forwardItem = forwardItemMap[item.nametype];
+          const forwardItem = forwardItemMap[item.forwardItemType];
           return {
             ...item,
             forwardItem

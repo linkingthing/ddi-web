@@ -30,7 +30,7 @@ export default {
     },
     {
       name: "forward-group",
-      path: "/dns/dns/forwarders",
+      path: "/dns/dns/forwardergroups",
       component: () => import("@/views/dns/forward/ForwardGroup"),
       meta: {
         title: "转发组"
@@ -38,7 +38,7 @@ export default {
     },
     {
       name: "time-policy",
-      path: "/dns/dns/forwardtimepolicies",
+      path: "/dns/dns/timeschedulers",
       component: () => import("@/views/dns/forward/TimePolicy"),
       meta: {
         title: "时间策略",
