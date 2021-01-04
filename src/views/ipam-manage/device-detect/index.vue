@@ -325,6 +325,7 @@ export default {
         this.$Message.success("指定成功"); // 指定csv所在路径
         this.importVisible = false;
         this.always = false;
+        this.current = 1;
         this.handleQuery();
         this.loading = false;
       }).catch(err => {

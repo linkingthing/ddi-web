@@ -31,7 +31,7 @@
         :columns="columns"
         v-on="$listeners"
         border
-        stripe 
+        stripe
       />
     </template>
 
@@ -58,6 +58,11 @@
 </style>
 
 <script>
+
+import { throttle } from "lodash";
+
+
+let pageDataChangeFlat = false;
 
 export default {
   name: "TablePagination",
@@ -158,6 +163,14 @@ export default {
 
         this.slotNames = names;
       }
+    },
+
+    data: {
+      immediate: true,
+      deep: true,
+      handler() {
+        pageDataChangeFlat = true;
+      }
     }
 
   },
@@ -180,14 +193,19 @@ export default {
     },
 
     handlePageChange(val) {
-      const { query } = this.$route;
-      this.$router.push({ query: { ...query, current: val } });
-      this.$emit("update:current", val);
+      if (pageDataChangeFlat) {
+        pageDataChangeFlat = false;
+        const { query } = this.$route;
+        this.$router.push({ query: { ...query, current: val } });
 
-      this.$emit("page-change", {
-        current: val,
-        size: this.size
-      });
+        this.$emit("update:current", val);
+
+        this.$emit("page-change", {
+          current: val,
+          size: this.size
+        });
+      }
+
     }
   }
 };
