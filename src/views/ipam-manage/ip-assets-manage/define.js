@@ -246,7 +246,7 @@ export const columns = scope => [
   },
   {
     title: "IPv6地址",
-    width: 180,
+    width: 380,
     render: (h, { row }) => {
       return renderIp(h, row, "ipv6s", "ipv6sStatus", scope);
     }
