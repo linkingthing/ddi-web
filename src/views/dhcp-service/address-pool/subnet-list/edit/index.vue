@@ -190,7 +190,7 @@ export default {
           this.formModel = {
             version,
             subnet: ipnet,
-            tags
+            tags: tags.split(",").join(">")
           };
         } else {
           this.getData(this.links);

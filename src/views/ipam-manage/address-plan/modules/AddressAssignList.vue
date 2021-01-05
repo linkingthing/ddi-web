@@ -64,20 +64,6 @@ export default {
         key: "action",
         width: 130,
         render: (h, { row }) => {
-          // if (this.netType === "netv4") {
-          //   return h("div", [
-          //     h("span", {
-          //       class: {
-          //         "btn-line": true
-          //       },
-          //       on: {
-          //         click: () => {
-          //           this.handleDHCP(row);
-          //         }
-          //       }
-          //     }, "DHCP")
-          //   ]);
-          // }
           const [, len] = row.prefix.split("/");
           return h("div", {
 
@@ -98,22 +84,8 @@ export default {
                   }
                 }
               }
-            }, "新建子网"),
-            h("btn-line", {
-
-              style: {
-                display: (+len !== 64) ? "none" : "inline-block"
-              },
-              props: {
-                disabled: row.state === "dispatch",
-                title: "新建子网"
-              },
-              on: {
-                click: () => {
-                  this.handleDHCP(row);
-                }
-              }
             }, "新建子网")
+   
           ]);
         }
       }],
@@ -200,36 +172,8 @@ export default {
       } catch (err) {
         this.$handleError(err);
       }
-    },
-    async handleDHCP(row) {
-      try {
-        let { data } = await this.$get(this.$getApiByRoute(`/address/dhcp/subnets?subnet=${row.prefix}`));
-
-        if (data.length) {
-          this.$router.push({
-            name: "address-pool-list",
-            params: {
-              id: data[0].id
-            },
-            query: {
-              ipnet: row.prefix,
-              tags: row.tags
-            }
-          });
-        }
-        else {
-          this.$router.push({
-            name: "subnet-pool-subnet",
-            query: {
-              ipnet: row.prefix,
-              tags: row.tags
-            }
-          });
-        }
-      } catch (err) {
-        this.$handleError(err);
-      }
     }
+
 
   }
 };

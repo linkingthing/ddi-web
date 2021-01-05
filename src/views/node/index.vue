@@ -118,7 +118,7 @@
               <div class="controller-item ">
                 <div class="controller-master node-item">
                   <map-node-item
-                    v-position="{ip: controllerItem.ip, type: 'controller', node: controllerItem, getPosition}"
+                    v-position="{ip: controllerItem.id, type: 'controller', node: controllerItem, getPosition}"
                     :value="controllerItem"
                     :key="controllerItem.ip"
                     @mouseenter="handleMouseenter"
@@ -284,6 +284,7 @@ export default {
           } else {
             const endPoint = item;
             const startPoint = startXPointMap[item.master];
+
             if (startPoint && endPoint) {
               lineGroup.push({ startPoint, endPoint, slave: item.type === "slave" });
 
