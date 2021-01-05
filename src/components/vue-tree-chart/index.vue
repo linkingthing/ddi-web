@@ -344,10 +344,11 @@ export default {
         const thirdPoint = this.isVertial()
           ? { x: targetPoint.x, y: sourcePoint.y + yOffset / 2 }
           : { x: sourcePoint.x + xOffset / 2, y: targetPoint.y };
-        linkPath.moveTo(sourcePoint.x + 72, sourcePoint.y);  // change 连接点
+        const middleSpace = 91;
+        linkPath.moveTo(sourcePoint.x + middleSpace, sourcePoint.y);  // change 连接点
         linkPath.lineTo(secondPoint.x, secondPoint.y);
         linkPath.lineTo(thirdPoint.x, thirdPoint.y);
-        linkPath.lineTo(targetPoint.x - 72, targetPoint.y);
+        linkPath.lineTo(targetPoint.x - middleSpace, targetPoint.y);
         return linkPath.toString();
       }
     },

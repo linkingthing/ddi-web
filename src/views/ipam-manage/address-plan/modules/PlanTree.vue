@@ -122,7 +122,7 @@ export default {
     return {
       treeData: {},
       config: {
-        nodeWidth: 148,
+        nodeWidth: 180,
         nodeHeight: 68,
         levelHeight: 200
       },
@@ -295,7 +295,7 @@ export default {
     flex-direction: column;
     padding: 4px 8px;
 
-    width: 148px;
+    width: 180px;
     text-align: left;
     // background: #DFDFDF;
     border: 1px solid #dfdfdf;
