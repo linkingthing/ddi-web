@@ -77,8 +77,8 @@ export default {
     return {
       formModel: {
         name: "",
-        roleIDs: [],
-        userIDs: []
+        roleIds: [],
+        userIds: []
       },
       loading: false,
       dialogVisible: false,
@@ -107,7 +107,7 @@ export default {
         {
           label: "选择用户",
           type: "component",
-          model: "userIDs",
+          model: "userIds",
           component: MultipleSelect,
           props: {
             dataList: this.userList,
@@ -118,7 +118,7 @@ export default {
         },
         {
           label: "选择角色",
-          model: "roleIDs",
+          model: "roleIds",
           type: "component",
           component: MultipleSelect,
           props: {
@@ -189,6 +189,11 @@ export default {
       });
     },
     reset() {
+      this.formModel = {
+        name: "",
+        roleIds: [],
+        userIds: []
+      };
       this.$refs["formInline"].resetFields();
     },
 

@@ -99,7 +99,7 @@ export default {
     return {
       formModel: {
         username: "",
-        userGroupIDs: [],
+        userGroupIds: [],
         roleIds: [],
         password: DEFAULT_PASSWORD,
         repassword: DEFAULT_PASSWORD,
@@ -174,7 +174,7 @@ export default {
         {
           label: "选择用户组",
           type: "component",
-          model: "userGroupIDs",
+          model: "userGroupIds",
           component: MultipleSelect,
           props: {
             dataList: this.userGroup,
