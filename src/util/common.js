@@ -14,7 +14,7 @@ export const positiveIntegerReg = /^[1-9]?[0-9]+$/;
 
 export const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/;
 
-export const domainReg = /^(?=^.{1,255}$)([a-zA-Z0-9][-a-zA-Z0-9]{0,62}|[*])(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*(\.?)$/;
+export const domainReg = /^(?=^.{1,255}$)([_a-zA-Z0-9][_\-a-zA-Z0-9]{0,62}|[*])(\.[_a-zA-Z0-9][_\-a-zA-Z0-9]{0,62})*(\.?)$/;
 
 export const macReg = /^(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2})$/;
 
@@ -248,8 +248,8 @@ export const domainIsValid = value => {
   return value === "*" || value === "@" || domainReg.test(value);
 };
 
-export const resourceDomainValidateFunc = (rule, value, callback) => {
-  if (value === "*" || value === "@" || domainReg.test(value)) {
+export const resourceDomainValidateFunc = (rule, { item, all }, callback) => {
+  if (item === "*" || item === "@" || domainReg.test(all)) {
     callback();
   }
 

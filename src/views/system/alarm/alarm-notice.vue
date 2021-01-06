@@ -76,10 +76,10 @@ export default {
             // 百分比 布尔 整型
             if (row.haCmd) {
               if (row.haCmd === "master_up") {
-                return h("div", `辅${row.slaveIp}切换到主${row.masterIp}`)
+                return h("div", `${row.haRole.toLocaleUpperCase()}辅${row.slaveIp}切换到主${row.masterIp}`)
               }
               if (row.haCmd === "master_down") {
-                return h("div", `主${row.masterIp}切换到辅${row.slaveIp}`);
+                return h("div", `${row.haRole.toLocaleUpperCase()}主${row.masterIp}切换到辅${row.slaveIp}`);
               }
             }
             let thresholdText = "";
