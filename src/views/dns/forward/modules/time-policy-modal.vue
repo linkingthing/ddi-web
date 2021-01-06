@@ -105,10 +105,11 @@ export default {
                 }
 
                 if (startHours === hours) {
-                  return {
-                    isValid: Number(seconds) <= Number(startSeconds),
-                    message
-                  };
+                  if (seconds === startSeconds) {
+                    callback(message);
+                  } else {
+                    callback();
+                  }
                 }
 
               },
@@ -128,20 +129,13 @@ export default {
                   const [hours, seconds] = timeEnd.split(":").map(Number);
                   const [startHours, startSeconds] = timeStart.split(":").map(Number);
 
-                  if (startHours > hours) {
-                    return {
-                      isValid: true,
-                      message
-                    };
-                  }
-                  if (startHours === hours) {
-
-                    return {
-                      isValid: Number(seconds) <= Number(startSeconds),
-                      message
-                    };
+                  if (Number(startHours) === Number(hours)) {
+                    if (Number(seconds) === Number(startSeconds)) {
+                      callback(message);
+                    }
                   }
                 }
+
                 callback();
               },
               [DateType.Date]: function () {
