@@ -48,7 +48,11 @@ export default {
     return {
       loading: false,
       dialogVisible: false,
-      formModel: {}
+      formModel: {
+        version: 4,
+        subnet: "",
+        tags: ""
+      }
 
     };
   },
@@ -173,7 +177,11 @@ export default {
 
     dialogVisible(val) {
       if (!val) {
-        this.formModel = {};
+        this.formModel = {
+          version: 4,
+          subnet: "",
+          tags: ""
+        };
         // 清楚path的query参数
         const { path } = this.$route;
         this.$router.push({ path });
