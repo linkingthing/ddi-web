@@ -182,6 +182,9 @@ export default {
     } else {
       this.$emit("update:current", 1);
     }
+    setInterval(() => {
+      pageDataChangeFlat = true;
+    }, 2000);
   },
 
   methods: {

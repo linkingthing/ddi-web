@@ -37,7 +37,7 @@ export const domainValidate = {
 };
 
 export const nameValidate = {
-  pattern: nameReg,
+  pattern: domainReg,
   message: "请正确填写的域名"
 };
 

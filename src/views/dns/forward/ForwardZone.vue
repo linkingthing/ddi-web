@@ -39,7 +39,7 @@ export default {
             const typeMap = {
               root: "根区",
               domain: "域名",
-              domaingroup: "域名组"
+              domain_group: "域名组"
             };
             return h("div", typeMap[row.forwardItemType]);
           }
@@ -61,7 +61,7 @@ export default {
 
         {
           title: "时间策略",
-          key: "forwardtimepolicyname"
+          key: "timeScheduler"
         },
         {
           title: "创建时间",
@@ -135,7 +135,8 @@ export default {
         this.dsliteList = data.map(item => {
           const forwardItemMap = {
             root: "@",
-            domain: item.domain
+            domain: item.domain,
+            domain_group: Array.isArray(item.domainGroupIds) ? item.domainGroupIds.join(",") : ""
           };
           const forwardItem = forwardItemMap[item.forwardItemType];
           return {

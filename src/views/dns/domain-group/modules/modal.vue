@@ -49,6 +49,7 @@ export default {
         { required: true, message: "请填写名称" }
       ],
       domains: [
+        { required: true, message: "请填写域名" },
         {
           validator: (rule, value, callback) => {
             if (value === "") {
@@ -90,7 +91,8 @@ export default {
         }
       ],
       formModel: {
-        name: ""
+        name: "",
+        domains: ""
       },
       loading: false,
       dialogVisible: false

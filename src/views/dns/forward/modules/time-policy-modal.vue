@@ -97,6 +97,13 @@ export default {
                 const [hours, seconds] = value.split(":").map(Number);
                 const [startHours, startSeconds] = startTime.split(":").map(Number);
 
+                if (startHours > hours) {
+                  callback();
+                }
+                if (startHours < hours) {
+                  callback();
+                }
+
                 if (startHours === hours) {
                   return {
                     isValid: Number(seconds) <= Number(startSeconds),

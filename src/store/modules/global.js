@@ -1,6 +1,6 @@
 import { post } from "@/util/axios";
 import store from "@/util/store";
-import { cloneDeep } from "lodash";
+import { cloneDeep, throttle } from "lodash";
 const Cache = store("localStorage");
 import resources, { operateMap } from "@/dictionary/resources";
 
@@ -29,9 +29,7 @@ const getters = {
     const endPage = current * size;
     return state.agentEventList.slice(startPage, endPage);
   },
-  agentEventAll: state => {
-   
-
+  agentEventAll: throttle(state => {
     return state.agentEventList.map(item => {
       const message = `${operateMap[item.method]} ${resources[item.resource]} ${
         item.succeed ? "成功" : "失败"
@@ -41,7 +39,7 @@ const getters = {
         message
       };
     });
-  },
+  }, 400),
   routes: state => state.routes,
   rangeList: state => {
     return getRouteRange(state.routes);

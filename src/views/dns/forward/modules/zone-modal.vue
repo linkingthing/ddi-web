@@ -48,7 +48,7 @@ export default {
       domain: [
         { required: true, message: "请填写域名" }
       ],
-      domaingroupids: [
+      domainGroupIds: [
         { required: true, message: "请选择域名组" }
       ],
       forwarderGroupIds: [
@@ -64,10 +64,10 @@ export default {
         forwardItemType: "domain",
         comment: "",
         domain: "",
-        domaingroupids: [],
+        domainGroupIds: [],
         forwarderGroupIds: [],
         forwarders: [],
-        forwardtimepolicyname: "",
+        timeScheduler: "",
         forwardStyle: "",
         name: ""
       },
@@ -97,9 +97,9 @@ export default {
           type: "input",
           placeholder: "请填写域名"
         },
-        "domaingroup": {
+        "domain_group": {
           label: "转发项",
-          model: "domaingroupids",
+          model: "domainGroupIds",
           type: "select",
           placeholder: "请选择域名组",
           multiple: true,
@@ -126,7 +126,7 @@ export default {
             label: "domain",
             text: "域名"
           }, {
-            label: "domaingroup",
+            label: "domain_group",
             text: "域名组"
           }]
         },
@@ -146,7 +146,7 @@ export default {
         },
         {
           label: "时间策略",
-          model: "forwardtimepolicyname",
+          model: "timeScheduler",
           type: "select",
           placeholder: "请选择时间策略",
           clearable: true,
@@ -188,10 +188,10 @@ export default {
           forwardItemType: "domain",
           comment: "",
           domain: "",
-          domaingroupids: [],
+          domainGroupIds: [],
           forwarderGroupIds: [],
           forwarders: [],
-          forwardtimepolicyname: "",
+          timeScheduler: "",
           forwardStyle: "",
           name: ""
         };
@@ -242,7 +242,7 @@ export default {
             params.domain = "@";
           }
 
-          if (params.forwardItemType === "domaingroup") {
+          if (params.forwardItemType === "domain_group") {
             Reflect.deleteProperty(params, "domain");
           }
 
