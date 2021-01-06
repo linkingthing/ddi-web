@@ -146,7 +146,7 @@ export default {
 
         if (val !== old && val > 0) {
           const { query } = this.$route;
-          this.$router.push({ query: { ...query, current: val } });
+          this.$router.replace({ query: { ...query, current: val } });
         }
       }
     },

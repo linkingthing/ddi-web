@@ -285,7 +285,8 @@ export default {
       this.$router.replace({
         query: {
           ...this.$route.query,
-          ...this.condition
+          ...this.condition,
+          ip: this.condition.ipAddress
         }
       });
 
@@ -474,7 +475,8 @@ export default {
       this.$router.replace({
         query: {
           ...this.$route.query,
-          ...this.condition
+          ...this.condition,
+          ip: this.condition.ipAddress
         }
       });
 
@@ -512,7 +514,7 @@ export default {
             switchName,
             switchPort,
             vlanId,
-            uplinkPort, 
+            uplinkPort,
             uplinkEquipment
           };
           this.$post({ url, params }).then(() => {
