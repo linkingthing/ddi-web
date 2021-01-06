@@ -101,6 +101,14 @@ export default {
               } else {
                 // 区名称用域名规则校验
 
+                if (value.includes("*")) {
+                  callback("请正确填写区名称");
+                }
+
+                if (value === "@") {
+                  callback();
+                }
+
                 if (domainReg.test(value)) {
                   callback();
                 } else {
