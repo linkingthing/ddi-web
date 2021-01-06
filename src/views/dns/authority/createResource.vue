@@ -88,10 +88,17 @@ export default {
         name: [
           { required: true, message: "请填写资源名称" },
           {
-            validator: (rule, value, callback) => resourceDomainValidateFunc(rule, {
-              item: value,
-              all: `${value}.${this.recordSuffix}`
-            }, callback)
+            validator: (rule, value, callback) => {
+
+              let recordSuffix = this.recordSuffix;
+              if (recordSuffix === "@") {
+                recordSuffix = "";
+              }
+              resourceDomainValidateFunc(rule, {
+                item: value,
+                all: `${value}.${recordSuffix}`
+              }, callback);
+            }
           }
         ],
         datatype: [{ required: true, message: "请选择资源类型" }],
