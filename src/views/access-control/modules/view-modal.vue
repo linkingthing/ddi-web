@@ -64,7 +64,10 @@ export default {
     return {
       formModel: {
         status: "allow",
-        name: ""
+        name: "",
+        acls: [],
+        dns64: "",
+        comment: ""
       },
       loading: false,
       dialogVisible: false,
