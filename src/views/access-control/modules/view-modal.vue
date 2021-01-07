@@ -74,7 +74,7 @@ export default {
           label: "视图名称",
           model: "name",
           type: "input",
-          placeholder: "请填写域名"
+          placeholder: "请填视图名称"
         },
         {
           label: "ACL规则",
