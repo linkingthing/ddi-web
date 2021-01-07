@@ -8,24 +8,26 @@
     @mouseleave="(e) => $emit('mouseleave', value, e)"
   >
     <ol class="top-info">
-      <li>
+      <!-- <li>
         {{!value.master ? "MASTER" : "SLAVE"}}
-      </li>
+      </li> -->
       <!-- <li
         class="show-hostname"
         v-if="!value.hostName.startsWith('node-')"
       >
         {{value.hostName }}
       </li> -->
+
+      <li>
+        {{value.ip }}
+      </li>
       <li
         class="show-hostname"
         v-if="value.vip"
       >
         VIP: {{value.vip }}
       </li>
-      <li>
-        {{value.ip }}
-      </li>
+
     </ol>
     <i :class="{'success' :value.nodeIsAlive, 'error': !value.nodeIsAlive}" />
     <ul class="">

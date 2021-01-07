@@ -12,11 +12,11 @@ let assetsPublicPath = "./";
 // const url = "https://10.0.0.90:58081";
 // const url = "https://10.0.0.197:58081";
 
-const url = "https://10.0.0.237:58081";
+// const url = "https://10.0.0.237:58081";
 
 // const url = "https://10.0.0.201:58081";
 
-// const url = "https://10.0.0.208:58081";
+const url = "https://10.0.0.206:58081";
 
 
 module.exports = {
