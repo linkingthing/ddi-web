@@ -11,11 +11,17 @@
       <li>
         {{!value.master ? "MASTER" : "SLAVE"}}
       </li>
-      <li
+      <!-- <li
         class="show-hostname"
         v-if="!value.hostName.startsWith('node-')"
       >
         {{value.hostName }}
+      </li> -->
+      <li
+        class="show-hostname"
+        v-if="value.vip"
+      >
+        VIP: {{value.vip }}
       </li>
       <li>
         {{value.ip }}
@@ -52,6 +58,7 @@ export default {
   watch: {
     value(v) {
       console.log(v)
+
     }
   },
 
@@ -68,6 +75,9 @@ export default {
         return succcess;
       }
       if (item === "dhcp" && dhcpIsAlive) {
+        return succcess;
+      }
+      if (item === "dataCenter" && nodeIsAlive) {
         return succcess;
       }
       return error;
@@ -88,7 +98,7 @@ export default {
   border-radius: 6px;
   background-size: cover;
   text-align: left;
-  
+
   .top-info {
     display: flex;
     justify-content: space-between;

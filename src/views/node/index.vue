@@ -79,7 +79,7 @@
                 fill="none"
                 style="stroke-width: 2px;"
               />
-              <text
+              <!-- <text
                 :x="item.x"
                 :y="item.y"
                 v-if="item.isSalve"
@@ -105,7 +105,7 @@
               >
                 <tspan dy="25">VIP</tspan>
 
-              </text>
+              </text> -->
 
             </g>
           </svg>
@@ -359,6 +359,7 @@ export default {
         }
       });
 
+console.log(list, tree)
       return tree;
 
     },
@@ -385,6 +386,7 @@ export default {
       let totalLps = 0;
 
       this.$get(this.$getApiByRoute("/monitor/metric/nodes")).then(({ data }) => {
+        console.log(data,1)
         this.nodeList = data;
 
         Array.isArray(data) && data.forEach(async ({ startTime, roles, links }) => {
