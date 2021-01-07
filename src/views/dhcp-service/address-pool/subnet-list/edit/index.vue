@@ -43,7 +43,7 @@ export default {
 
   data() {
     this.rules = {
-      subnet: [{ required: true, message: "请填写子网地址" }]
+      subnet: [{ required: this.isCreate, message: "请填写子网地址" }]
     };
     return {
       loading: false,
