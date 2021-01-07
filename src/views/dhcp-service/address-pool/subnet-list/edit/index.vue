@@ -79,6 +79,10 @@ export default {
                   callback("请输入正确IPv6地址");
                 }
               }
+
+              if (!value.includes("/")) {
+                callback("请输入正确IP地址网段");
+              }
               callback();
             }
           }
@@ -240,6 +244,9 @@ export default {
         }
       }
       this.$emit("update:visible", val);
+    },
+    "formModel.subnet"() {
+      this.$refs.form.validate();
     }
   },
 
