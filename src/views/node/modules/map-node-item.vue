@@ -22,7 +22,6 @@
         {{value.ip }}
       </li>
       <li
-        class="show-hostname"
         v-if="value.vip"
       >
         VIP: {{value.vip }}
