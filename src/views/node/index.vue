@@ -359,7 +359,6 @@ export default {
         }
       });
 
-console.log(list, tree)
       return tree;
 
     },
@@ -386,7 +385,6 @@ console.log(list, tree)
       let totalLps = 0;
 
       this.$get(this.$getApiByRoute("/monitor/metric/nodes")).then(({ data }) => {
-        console.log(data,1)
         this.nodeList = data;
 
         Array.isArray(data) && data.forEach(async ({ startTime, roles, links }) => {

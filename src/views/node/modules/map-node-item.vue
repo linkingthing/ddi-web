@@ -57,7 +57,6 @@ export default {
   computed: {},
   watch: {
     value(v) {
-      console.log(v)
 
     }
   },
