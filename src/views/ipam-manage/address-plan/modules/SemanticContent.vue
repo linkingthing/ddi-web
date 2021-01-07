@@ -1282,7 +1282,7 @@ export default {
               title: "规划冲突提示",
               content: `
               <p>规划与本系统的子网地址冲突。</p>
-              <p style="color: #f00"> ${res.conflictSubnets}</p>
+              <p style="color: #f00;white-space: pre;max-height: 105px;overflow: auto;">${Array.isArray(res.conflictSubnets) ? res.conflictSubnets.join("\n") : res.conflictSubnets}</p>
               <p>点击忽略：系统使用以上冲突地址继续规划。</p>
               <p>点击确认：系统将放弃本次规划，需要用户首先手动排查冲突。</p>`,
               okText: "确认",

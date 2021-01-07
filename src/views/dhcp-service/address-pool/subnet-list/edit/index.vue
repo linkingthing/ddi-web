@@ -42,16 +42,15 @@ export default {
   },
 
   data() {
-    this.rules = {
-      subnet: [{ required: this.isCreate, message: "请填写子网地址" }]
-    };
+
     return {
       loading: false,
       dialogVisible: false,
       formModel: {
         version: 4,
         subnet: "",
-        tags: ""
+        tags: "",
+        domainServers: ""
       }
 
     };
@@ -60,6 +59,31 @@ export default {
   computed: {
     getTitle() {
       return this.isCreate ? "新增子网地址" : "编辑子网地址";
+    },
+    rules() {
+
+      return {
+        subnet: [
+          { required: true, message: "请填写子网地址" },
+          {
+            validator: (rule, value, callback) => {
+
+              if (this.formModel.version === 4) {
+                if (!ipv4IsValid(value)) {
+                  callback("请输入正确IPv4地址");
+                }
+
+              }
+              if (this.formModel.version === 6) {
+                if (!ipv6IsValid(value)) {
+                  callback("请输入正确IPv6地址");
+                }
+              }
+              callback();
+            }
+          }
+        ]
+      };
     },
     formItemList() {
       let formListResult = [];
@@ -195,11 +219,22 @@ export default {
           if (ipnet && ipv4IsValid(ipnet)) {
             version = 4;
           }
-          this.formModel = {
-            version,
-            subnet: ipnet,
-            tags: tags.split(",").join(">")
-          };
+          this.formModel.version = version;
+
+
+          if (ipnet) {
+            this.formModel.subnet = ipnet;
+            this.$refs.form.validate();
+          } else {
+            this.$refs.form.resetFields();
+          }
+
+          if (tags) {
+            this.formModel.tags = Array.isArray(tags) ? tags.split(",").join(">") : "";
+            this.$refs.form.validate();
+          }
+
+
         } else {
           this.getData(this.links);
         }
@@ -212,7 +247,8 @@ export default {
     getData({ self }) {
       this.$get({ url: self }).then(res => {
         resArrayToString(res, ["domainServers", "routers", "relayAgentAddresses"]);
-        this.formModel = res;
+        Object.assign(this.formModel, res);
+        this.$refs.form.validate();
       });
     },
 
