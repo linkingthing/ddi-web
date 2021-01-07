@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name', 'forwardStyle', 'domain', 'forwardItemType'] : []"
+        :show-fields="isEdit ? ['name', 'forwardStyle', 'domain'] : []"
       />
 
     </Form>
@@ -119,6 +119,7 @@ export default {
           model: "forwardItemType",
           type: "select",
           placeholder: "请选择转类型",
+          disabled: this.isEdit,
           children: [{
             label: "root",
             text: "根区"
