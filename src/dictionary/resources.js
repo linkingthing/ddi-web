@@ -43,7 +43,7 @@ export default {
   urlredirect: "url重定向",
   dns_global_config: "dns全局配置",
   /** IPAM */
-  asset: "IP资产",
+  asset: "终端资产",
   plan: "IP地址规划",
   layout: "IP布局",
   segment: "IP地址规划",
