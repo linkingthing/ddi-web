@@ -693,6 +693,7 @@ export default {
           render: (h, { row }) => {
 
             const has = !!this.nodes.find(item => item.parentsemanticid === row.id);
+            const hasDispath = row.state === "dispatch";
             return h("div", [
               h("btn-line", {
                 style: {
@@ -703,7 +704,7 @@ export default {
                 },
                 props: {
                   title: "下发",
-                  disabled: !row.plannodes.length
+                  disabled: (!row.plannodes.length || has) && !hasDispath
                 }
               }),
               h("btn-line", {

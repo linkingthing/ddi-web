@@ -77,10 +77,13 @@ export default {
   },
 
   watch: {
-    visible(val) {
-      if (!val) return;
+    visible: {
+      immediate: true,
+      handler(val) {
+        if (!val) return;
+        this.dialogVisible = val;
+      }
 
-      this.dialogVisible = val;
     },
 
     dialogVisible(val) {
@@ -101,6 +104,13 @@ export default {
         this.setValue(val);
       }
     }
+  },
+
+  created() {
+    // const self = this;
+    // window.execute = function () {
+    //   console.log(self)
+    // };
   },
 
   methods: {
@@ -125,6 +135,7 @@ export default {
 
 
       this.$refs.form.validate(valid => {
+        console.log(this.formModel)
         if (valid) {
           this.loading = true;
 

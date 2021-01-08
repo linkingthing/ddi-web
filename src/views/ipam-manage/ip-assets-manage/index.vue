@@ -251,7 +251,6 @@ import AdvancedSearch from "./advanced-query";
 import { columns, deviceTypes } from "./define";
 
 import { ipv4IsValid, downloadFile } from "@/util/common";
-import { popPath } from "@/util/request"
 
 export default {
   components: {
@@ -305,6 +304,8 @@ export default {
       }
     };
   },
+
+
   watch: {
     current() {
       this.handleQuery();
@@ -312,7 +313,6 @@ export default {
   },
 
   async mounted() {
-
     const {
       id,
       ip,
@@ -370,6 +370,9 @@ export default {
     if (mac) {
       this.showEdit = true;
     }
+
+    this.handleAdd(); // todo
+
   },
 
   methods: {
