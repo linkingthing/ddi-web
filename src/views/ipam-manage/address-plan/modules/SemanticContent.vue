@@ -313,6 +313,7 @@
           </div>
 
           <Table
+            :loading="tableLoading"
             ref="selection"
             class="dataTable"
             :columns="semanticColumns"
@@ -433,7 +434,8 @@ export default {
 
 
       editList: [],
-      editIpv4List: []
+      editIpv4List: [],
+      tableLoading: false
 
     };
   },
@@ -988,6 +990,7 @@ export default {
     },
 
     handleSaveSemanticName(row, name) {
+      this.tableLoading = true;
       const params = { name, id: row.id };
 
       const url = "/apis/linkingthing.com/ipam/v1/plans";
@@ -998,6 +1001,8 @@ export default {
         Reflect.deleteProperty(tempSemanticNameMap, row.id);
       }).catch(err => {
         this.$Message.error(err.response.data.message);
+      }).finally(() => {
+        this.tableLoading = false;
       });
     },
     checkfunc(ipv4str, row) {
