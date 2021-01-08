@@ -138,7 +138,9 @@ export default {
           case "exportcsv": return "导出";
           case "changingrrs": return "A和AAAA记录切换";
           case "snmp": return "更新地址探测";
-          case "refresh": return "终端登记";
+          case "refresh": return "终端更新";
+          case "exportcsvtemplate": return "导出CSV模版";
+
           case "repealforward": return "下发撤回";
           case "reportforward": return "上报";
           case "dispatchforward": return "下发";
@@ -153,6 +155,9 @@ export default {
           case "updatesemanticipv4": return "修改语义IPv4";
           case "listviewv4": return "获取规划IPv4列表";
           case "listviewv6": return "获取规划IPv6列表";
+          case "addplannodeignoreconflict": return "编辑忽略地址池冲突请求";
+          case "formulateignoreconflict": return "自动规划有地址池冲突请求";
+
           case "export": return "导出";
           case "importcsv": return "批量导入";
 
