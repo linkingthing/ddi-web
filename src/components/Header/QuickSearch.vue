@@ -208,10 +208,10 @@ export default {
 
     this.tabList = [{
       id: "ip",
-      label: "IP资产查询"
+      label: "IP查询"
     }, {
       id: "domain",
-      label: "域名资产查询"
+      label: "域名查询"
     }];
     return {
       loading: false,
