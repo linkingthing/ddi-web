@@ -371,8 +371,6 @@ export default {
       this.showEdit = true;
     }
 
-    this.handleAdd(); // todo
-
   },
 
   methods: {
