@@ -10,6 +10,7 @@
     "build": "node build/build.js",
     "startDNS": "node build/dev-server.js dns node",
     "buildDNS": "node build/build.js dns node",
+    "upload": "node build/upload.js",
     "test": "mochapack --webpack-config build/webpack.dev.config.js --require test/setup.js test/**/*.spec.js"
   },
   "dependencies": {

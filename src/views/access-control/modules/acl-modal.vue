@@ -54,6 +54,7 @@ export default {
           message: "访问控制列表名称不能为纯数字"
         }
       ],
+      isp: [{ required: true, message: "请选择网络运营商" }],
       ips: [
         { required: true, message: "请填写网络地址,逗号分割" },
         {
