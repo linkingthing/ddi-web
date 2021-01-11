@@ -750,9 +750,8 @@ export default {
     currentNode: {
       deep: true,
       handler(val) {
-        console.log(val, "currentNode")
-        // console.log("nodes", this.nodes)
-        // console.log("currentNodeChildren", this.currentNodeChildren)
+        this.search = "";
+        this.handleFilter();
 
         if (!val) {
           return;

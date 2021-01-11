@@ -66,18 +66,18 @@ export default {
               callback();
             }
             callback("请正确填写网络地址");
-
           }
-
         }
-
       ]
 
     };
     return {
       formModel: {
         status: "allow",
-        lineType: "isp"
+        lineType: "isp",
+        name: "",
+        ips: "",
+        comment: ""
       },
       loading: false,
       dialogVisible: false
@@ -232,6 +232,8 @@ export default {
               this.$$error(err.response.data.message);
             });
           }
+        } else {
+          console.log(this.formModel)
         }
       });
     }
