@@ -55,10 +55,11 @@ export default {
         }
       ],
       ips: [
-        { required: true, message: "请填写网络地址" },
+        { required: true, message: "请填写网络地址,逗号分割" },
         {
           validator: function (rule, value, callback) {
-            if (isIp(value)) {
+            const idValid = value.split(",").every(item => isIp(item.trim()));
+            if (idValid) {
               callback();
             }
             if ("cmcc,cucc,ctcc".includes(value)) {
