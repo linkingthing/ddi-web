@@ -101,7 +101,12 @@ export default {
     getDataList() {
       this.loading = true;
 
-      this.$axios.get(this.$getApiByRoute().url).then(({ data, links, pagination }) => {
+      const params = {
+        page_num: this.current,
+        page_size: 10
+      };
+
+      this.$axios.get(this.$getApiByRoute().url, { params }).then(({ data, links, pagination }) => {
         this.tableData = data;
         this.links = links;
         this.total = pagination.total;
