@@ -54,5 +54,10 @@ Vue.component("common-form", CommonForm);
 import NoDataList from "@/components/NoDataList";
 Vue.component("no-data-list", NoDataList);
 
+
+import ImportExportCsv from "@/components/ImportExportCsv";
+Vue.component("import-export-csv", ImportExportCsv);
+
+
 import mixin from "./../mixin";
 Vue.mixin(mixin);

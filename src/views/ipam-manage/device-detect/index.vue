@@ -387,25 +387,4 @@ export default {
 
 <style lang="less">
 @import "./index.less";
-.import-export-tooltip {
-  .ivu-tooltip-inner {
-    padding: 0;
-  }
-  .import-export-menu {
-    white-space: nowrap;
-    .import-export-menu-item {
-      width: 160px;
-      padding: 16px 20px;
-      line-height: 20px;
-      display: flex;
-      cursor: pointer;
-      img {
-        margin-right: 16px;
-      }
-      + .import-export-menu-item {
-        border-top: #aaa solid 1px;
-      }
-    }
-  }
-}
 </style>

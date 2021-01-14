@@ -12,6 +12,13 @@
           @click="handleOpenCreate"
           v-if="$hasPermission('acl', 'POST')"
         >新建</i-button>
+        <import-export-csv
+          style="margin-left: 20px;"
+          :links="links"
+          @on-import-success="onImportSuccess"
+          resource="ACL"
+        />
+
       </template>
     </table-page>
 
@@ -56,7 +63,7 @@ export default {
           key: "",
           render: (h, { row }) => {
             if (!!row.isp) {
-              return h("div", ispList.find(item => item.value === row.isp).label)
+              return h("div", ispList.find(item => item.value === row.isp).label);
             } else {
               return h("Tags", {
                 props: {
@@ -138,6 +145,10 @@ export default {
   },
 
   methods: {
+    onImportSuccess() {
+      this.current = 1;
+      this.getManger();
+    },
     handleGo(path) {
       this.$router.push({
         path
