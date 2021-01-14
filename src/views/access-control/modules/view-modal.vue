@@ -28,7 +28,6 @@
 
 <script>
 import { commonNameValidate } from "@/util/common";
-import { resStringToArray, resArrayToString } from "@/util/parser";
 
 export default {
   props: {
@@ -67,12 +66,56 @@ export default {
         name: "",
         acls: [],
         dns64: "",
-        comment: ""
+        comment: "",
+        recursion: false
       },
       loading: false,
       dialogVisible: false,
-      acl: [],
-      formItemList: [
+      acl: []
+    };
+  },
+
+  computed: {
+    getTitle() {
+      return (this.isEdit ? "编辑" : "新建") + "视图";
+    },
+    isEdit() {
+      const isEdit = !!this.links.update;
+      return isEdit;
+    },
+    showFields() {
+      const showFields = [];
+      if (this.isEdit) {
+        showFields.push("name");
+        if (this.formModel.name === "default") {
+          showFields.push("acls");
+        }
+      }
+      return showFields;
+    },
+    formItemList() {
+      const aclOptions = this.acl.map(item => {
+        return {
+          label: item.id,
+          text: item.name
+        };
+      });
+
+      const recursionFormItem = this.isEdit ? [] : [{
+        label: "递归服务",
+        model: "recursion",
+        type: "bool-radio",
+        children: [{
+          value: true,
+          label: "开启"
+        }, {
+          value: false,
+          label: "关闭"
+        }],
+        placeholder: "请填选择是否口开启递归服务"
+      }];
+
+      return [
         {
           label: "视图名称",
           model: "name",
@@ -85,7 +128,7 @@ export default {
           type: "select",
           multiple: true,
           placeholder: "请选择ACL规则",
-          children: []
+          children: aclOptions
         },
         {
           label: "DNS64",
@@ -93,47 +136,14 @@ export default {
           type: "input",
           placeholder: "请填写DNS64"
         },
+        ...recursionFormItem,
         {
           label: "备注",
           model: "comment",
           type: "input",
           placeholder: "请填写备注信息"
         }
-      ]
-    };
-  },
-
-  computed: {
-    getTitle() {
-      return (this.isEdit ? "编辑" : "新建") + "视图";
-    },
-    isEdit() {
-      const isEdit = !!this.links.update;
-
-      // this.formItemList.some(item => {
-      //   if (item.model === "name") {
-      //     if (isEdit) {
-      //       item.type = "text";
-      //     } else {
-      //       item.type = "input";
-      //     }
-      //     return true;
-      //   }
-      //   return false;
-      // });
-      // 目前是采用调节判断，修改formitemlist来处理
-      // 第二种思路；将edit field作为参数传入commonform 中处理这个问题？
-      return isEdit;
-    },
-    showFields() {
-      const showFields = [];
-      if (this.isEdit) {
-        showFields.push("name");
-        if (this.formModel.name === "default") {
-          showFields.push("acls");
-        }
-      }
-      return showFields;
+      ];
     }
 
   },
@@ -146,13 +156,14 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, dns64, acls, comment, priority }) => {
+        this.$get({ url: this.links.self }).then(({ name, dns64, acls, comment, priority, recursion }) => {
           this.formModel = {
             name,
             acls,
             comment,
             dns64,
-            priority
+            priority,
+            recursion
           };
         }).catch();
       }
@@ -161,26 +172,8 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    },
-
-
-    acl(val) {
-
-      const aclOptions = val.map(item => {
-        return {
-          label: item.id,
-          text: item.name
-        };
-      });
-
-      this.formItemList.some(item => {
-        if (item.model === "acls") {
-          item.children = aclOptions;
-          return true;
-        }
-        return false;
-      });
     }
+
   },
 
   created() {

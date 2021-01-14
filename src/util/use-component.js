@@ -51,6 +51,9 @@ Vue.component("common-tab", CommonTab);
 import CommonForm from "@/components/CommonForm";
 Vue.component("common-form", CommonForm);
 
+import BoolRadio from "@/components/BoolRadio";
+Vue.component("bool-radio", BoolRadio);
+
 import NoDataList from "@/components/NoDataList";
 Vue.component("no-data-list", NoDataList);
 

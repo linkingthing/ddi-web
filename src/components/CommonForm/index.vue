@@ -39,6 +39,11 @@
           :name="item.slot"
         />
       </RadioGroup>
+      <bool-radio
+        v-if="item.type === 'bool-radio'"
+        v-model="formModel[item.model]"
+        :children="item.children"
+      />
       <CheckboxGroup
         v-if="item.type === 'checkbox'"
         v-model="formModel[item.model]"
