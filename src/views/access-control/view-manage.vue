@@ -70,7 +70,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          width: 220,
+          width: 300,
           render: (h, { row }) => {
             if (this.$hasPermission("view", "POST")) {
               return h("div", [
@@ -83,6 +83,14 @@ export default {
                 h("btn-del", {
                   on: {
                     click: () => this.delect(row.id)
+                  }
+                }),
+                h("btn-line", {
+                  props: {
+                    title: !row.recursion ? "开启递归" : "关闭递归"
+                  },
+                  on: {
+                    click: () => this.handleToggleRecursion(row)
                   }
                 }),
                 h("btn-move", {
@@ -174,6 +182,25 @@ export default {
         }
       });
     },
+    handleToggleRecursion({ links, recursion }) {
+      this.$Modal.confirm({
+        title: "提示",
+        content: `您确定要${recursion ? "关闭" : "开启"}该视图的递归服务吗？`,
+        onOk: () => {
+          this.$post({
+            url: `${links.update}?action=switchrecursion`,
+            params: { recursion: !recursion }
+          }).then(() => {
+            this.$Message.success("更新成功");
+            this.getView();
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
+      });
+
+
+    },
     handleMove({ priority, links, ...rest }, type) {
       let count = priority;
       if (type === "up") {
@@ -182,7 +209,7 @@ export default {
       } else {
         count += 1;
       }
-      
+
       this.$post({
         url: `${links.update}?action=changepriority`,
         params: { priority: count, ...rest }

@@ -316,65 +316,6 @@ export const isIpv6Segment = segment => {
   return !endString.includes("1");
 };
 
-window.Address6 = Address6;
-/**
- * 格式化日期
- * @param { Date|String } res 时间对象或字符串
- * @param { String } formatter 格式化方式  yyyy-MM-dd hh:mm:ss
- */
-export const formatDate = (res, formatter = "yyyy-MM-dd hh:mm:ss") => {
-  if (!res) return "";
-
-  let date = new Date(res);
-
-  if (isNaN(date.getTime())) throw new Error("日期格式错误");
-
-  const opt = {
-    "y+": date.getFullYear().toString(), // 年
-    "M+": (date.getMonth() + 1).toString(), // 月
-    "d+": date.getDate().toString(), // 日
-    "h+": date.getHours().toString(), // 时
-    "m+": date.getMinutes().toString(), // 分
-    "s+": date.getSeconds().toString() // 秒
-    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-  };
-
-  let ret;
-
-  for (let k in opt) {
-    ret = new RegExp(`(${k})`).exec(formatter);
-
-    if (ret) {
-      formatter = formatter.replace(
-        ret[1],
-        ret[1].length === 1 ? opt[k] : opt[k].padStart(ret[1].length, "0")
-      );
-    }
-  }
-
-  return formatter;
-};
-
-/**
- * 将驼峰字符串转换为短横线连接字符串
- * @param {String} str
- */
-export const toKebabCase = str => {
-  return str
-    .split("")
-    .map((item, idx) => {
-      let code = item.charCodeAt();
-
-      if (code >= 65 && code <= 90) {
-        const result = item.toLocaleLowerCase();
-
-        return idx ? `-${result}` : result;
-      }
-
-      return item;
-    })
-    .join("");
-};
 
 /**
  * 验证端口是否合法

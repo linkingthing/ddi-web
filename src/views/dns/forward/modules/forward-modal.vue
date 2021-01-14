@@ -32,6 +32,8 @@ import {
   ipv6IsValid
 } from "@/util/common";
 
+import { emptyStringValidator, serverValidator } from "@/util/validator";
+
 export default {
   props: {
     visible: {
@@ -55,9 +57,13 @@ export default {
       },
       {
         label: "服务器",
-        model: "forwarderIps",
+        model: "addresses",
         type: "textarea",
-        placeholder: "可以添加多个转发服务器，多个服务器必须用逗号分隔，每次最多填写10条",
+        placeholder: `可以添加多个转发服务器，并以换行符分隔，
+格式，IP地址：端口
+例如：29.23.34.34:400,[2001::FFF1]:8089
+端口选填，默认值为53
+`,
         autosize: { minRows: 4, maxRows: 8 }
       },
 
@@ -73,37 +79,21 @@ export default {
       name: [
         { required: true, message: "请填写组名称" }
       ],
-      forwarderIps: [
-        { required: true, message: "请填写组名称" },
+      addresses: [
+        { required: true, message: "请填写转发服务器" },
         {
-          validator: (rule, value, callback) => {
-            if (value.trim() === "") {
-              callback("请输入服务器地址");
-            }
-            const ipList = value.split(",");
-            const isPass = ipList.every(item => {
-              return (ipv4IsValid(item.trim()) || ipv6IsValid(item.trim())) && !item.includes("/");
-            });
-
-            if (ipList.length > 10) {
-              callback(new Error("每次最多填写10条"));
-            }
-
-            if (isPass) {
-              callback();
-            } else {
-              callback(new Error("请正确填写服务器地址"));
-            }
-
-
-          }
+          message: "请输入服务器地址",
+          validator: emptyStringValidator
+        },
+        {
+          validator: serverValidator
         }
       ]
     };
     return {
       formModel: {
         zonetype: "master",
-        forwarderIps: "",
+        addresses: "",
         name: ""
       },
       loading: false,
@@ -128,10 +118,10 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, forwarderIps, comment }) => {
+        this.$get({ url: this.links.self }).then(({ name, addresses, comment }) => {
           this.formModel = {
             name,
-            forwarderIps: forwarderIps.join(","),
+            addresses: addresses.join("\n"),
             comment
           };
         }).catch();
@@ -156,14 +146,14 @@ export default {
           const params = { ...this.formModel };
 
           this.loading = true;
-          if (typeof params.forwarderIps === "string") {
-            if (params.forwarderIps.trim().length) {
-              params.forwarderIps = params.forwarderIps.split(",").map(item => item.trim());
+          if (typeof params.addresses === "string") {
+            if (params.addresses.trim().length) {
+              params.addresses = params.addresses.split("\n").map(item => item.trim());
             } else {
-              params.forwarderIps = [];
+              params.addresses = [];
             }
           } else {
-            params.forwarderIps = [];
+            params.addresses = [];
           }
 
           if (this.isEdit) {

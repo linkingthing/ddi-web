@@ -129,7 +129,6 @@ Vue.prototype.$getViewList = async params => {
  * 修剪日期，将日期的多余的Z、T以及+号后面的内容去掉
  */
 Vue.prototype.$trimDate = (date, format = "YYYY-MM-DD HH:mm:ss") =>
-  // date ? date.replace("T", " ").replace(/(Z|\+\S*)/g, "") : "";
   date ? moment(date).format(format) : "";
 
 Vue.prototype.$get = get;
