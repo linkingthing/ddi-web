@@ -182,8 +182,9 @@ export default {
       } else {
         count += 1;
       }
-      this.$put({
-        url: links.update,
+      
+      this.$post({
+        url: `${links.update}?action=changepriority`,
         params: { priority: count, ...rest }
       }).then(() => {
         this.$Message.success("更新成功");
