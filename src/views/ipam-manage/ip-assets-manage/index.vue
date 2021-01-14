@@ -132,50 +132,13 @@
         >
           新建
         </Button>
-        <Tooltip
-          placement="bottom-end"
-          :always="always"
-          class="import-export-tooltip"
-        >
-          <Button
-            type="primary"
-            @click="handleOpenImport"
-            class="top-button"
-          >
-            导入/导出
-          </Button>
-          <div slot="content">
-            <div class="import-export-menu">
-              <div
-                class="import-export-menu-item"
-                @click="handleClickImportTable"
-              >
-                <img
-                  src="./import.png"
-                  alt=""
-                > 导入终端表格
-              </div>
-              <div
-                class="import-export-menu-item"
-                @click="handleClickExportTable"
-              >
-                <img
-                  src="./export.png"
-                  alt=""
-                > 导出终端表格
-              </div>
-              <div
-                class="import-export-menu-item"
-                @click="handleClickDownloadTemplate"
-              >
-                <img
-                  src="./template.png"
-                  alt=""
-                > 终端表格模板
-              </div>
-            </div>
-          </div>
-        </Tooltip>
+
+        <import-export-csv
+          style="margin-left: 20px;"
+          :links="links"
+          @on-import-success="onImportSuccess"
+          resource="终端"
+        />
 
       </template>
     </table-page>
@@ -190,53 +153,6 @@
       :visible.sync="showAdvance"
       @comfirmed="handleAdvancedQuery"
     />
-
-    <common-modal
-      :visible.sync="importVisible"
-      :width="415"
-      title="导入终端表格"
-      @confirm="handleUpload"
-      :loading="loading"
-    >
-      <div class="tips-info">
-        <img
-          class="tips-info-icon"
-          src="./icon-info.png"
-          alt=""
-        >
-        <span>请使用为您准备的“终端表格模板”填写终端信息</span>
-      </div>
-
-      <div class="base-upload">
-        <!-- <Input
-          style="width: 100%"
-          placeholder="请输入文件路径"
-          v-model="uploadParams.path"
-        /> -->
-
-        <div class="base-upload-filename">{{file.name}}</div>
-        <div>
-
-          <Upload
-            ref="upload"
-            action="/uploadfile"
-            :headers="headers"
-            :before-upload="beforeUpload"
-            :on-success="uploadSuccess"
-            :show-upload-list="false"
-            name="path"
-          >
-            <Button size="small">
-              <img
-                src="./icon-file.png"
-                alt=""
-                style="vertical-align: bottom;margin-right: 6px;"
-              >浏览文件</Button>
-          </Upload>
-        </div>
-      </div>
-    </common-modal>
-
   </div>
 </template>
 
@@ -460,54 +376,11 @@ export default {
       this.currentData = null;
     },
 
-    handleOpenImport() {
-      // this.always = !this.always;
+    onImportSuccess() {
+      this.current = 1;
+      this.handleQuery();
     },
-    handleClickImportTable() {
-      this.file = "";
-      this.uploadParams = { name: "" };
-      this.importVisible = true;
-    },
-    beforeUpload(file) {
-      // 上传前校验
-      // this.file = file;
-      // console.log(file)
-      // return false; // 阻止上传
-    },
-    uploadSuccess(response, file) {
-      this.uploadParams = { name: response.filename };
-      this.file = file;
-    },
-    handleUpload() {
-      // console.log(this.$refs.upload);
-      // this.$refs.upload.post(this.file);
-      const url = `${this.links.self}?action=importcsv`;
-      const params = this.uploadParams;
-      this.loading = true;
-      this.$post({ url, params }).then(() => {
-        this.$Message.success("指定成功"); // 指定csv所在路径
-        this.importVisible = false;
-        this.always = false;
-        this.current = 1;
-        this.handleQuery();
-        this.loading = false;
-      }).catch(err => {
-        this.loading = false;
-        this.$Message.error(err.response.data.message);
-      });
-    },
-    handleClickExportTable() {
-      const url = `${this.links.self}?action=exportcsv`;
-      this.$post({ url }).then(({ path }) => {
-        downloadFile(path);
-      });
-    },
-    handleClickDownloadTemplate() {
-      const url = `${this.links.self}?action=exportcsvtemplate`;
-      this.$post({ url }).then(({ path }) => {
-        downloadFile(path);
-      });
-    },
+
     handleEdit(res) {
       this.showEdit = true;
       this.currentData = { ...res };
