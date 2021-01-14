@@ -42,7 +42,7 @@ export const nameValidate = {
 };
 
 export const commonNameValidate = {
-  pattern: /^[a-zA-Z0-9_]{1,19}$/,
+  pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1,19}$/,
   message: "名称由不超过20个a-zA-Z0-9_组成"
 };
 

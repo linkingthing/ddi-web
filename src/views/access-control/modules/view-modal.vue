@@ -49,10 +49,10 @@ export default {
     this.rules = {
       name: [
         { required: true, message: "请填视图名称" },
+        commonNameValidate,
         {
-          type: "string",
-          max: 19,
-          message: "最多只能19个字符"
+          pattern: /^.*[^\d].*$/,
+          message: "名称不能为纯数字"
         }
       ],
       acls: [
