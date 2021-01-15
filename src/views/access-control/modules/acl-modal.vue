@@ -28,8 +28,9 @@
 
 <script>
 import { commonNameValidate, isIp } from "@/util/common";
-import { resStringToArray, resArrayToString } from "@/util/parser";
 import ISPSelect from "./ISPSelect";
+import IPListInput from "@/components/IPListInput";
+
 export default {
   props: {
     visible: {
@@ -56,14 +57,11 @@ export default {
       ],
       isp: [{ required: true, message: "请选择网络运营商" }],
       ips: [
-        { required: true, message: "请填写网络地址,逗号分割" },
+        { required: true, message: "请填写网络地址,换行分割" },
         {
           validator: function (rule, value, callback) {
-            const idValid = value.split(",").every(item => isIp(item.trim()));
+            const idValid = value.every(item => isIp(item.trim()));
             if (idValid) {
-              callback();
-            }
-            if ("cmcc,cucc,ctcc".includes(value)) {
               callback();
             }
             callback("请正确填写网络地址");
@@ -77,8 +75,9 @@ export default {
         status: "allow",
         lineType: "isp",
         name: "",
-        ips: "",
-        comment: ""
+        ips: [],
+        comment: "",
+        isp: ""
       },
       loading: false,
       dialogVisible: false
@@ -97,9 +96,12 @@ export default {
       let netAddress = {
         label: "网络地址",
         model: "ips",
-        type: "input",
-        placeholder: "请填写网络地址"
-      }
+        type: "component",
+        component: IPListInput,
+        props: {
+          placeholder: "请填写网络地址"
+        }
+      };
 
       if (this.formModel.lineType === "isp") {
         netAddress = {
@@ -108,7 +110,7 @@ export default {
           placeholder: "请填写网络地址",
           type: "component",
           component: ISPSelect
-        }
+        };
       }
 
       return [
@@ -174,7 +176,6 @@ export default {
             isp,
             lineType: !!isp ? "isp" : "custom"
           };
-          resArrayToString(this.formModel, ["ips"]);
         }).catch();
       }
       this.dialogVisible = val;
@@ -188,7 +189,17 @@ export default {
       if (val === "custom") {
         this.formModel.isp = "";
       } else {
-        this.formModel.ips = "";
+        this.formModel.ips = [];
+      }
+    },
+    "formModel.ips": {
+      deep: true,
+      handler() {
+        if (this.formModel.lineType === "ips") {
+          this.$nextTick().then(() => {
+            this.$refs["formInline"].validateField("ips");
+          });
+        }
       }
     }
   },
@@ -208,9 +219,6 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
-
-          resStringToArray(params, ["ips"]);
-
           this.loading = true;
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
@@ -234,7 +242,7 @@ export default {
             });
           }
         } else {
-          console.log(this.formModel)
+          console.log(this.formModel, "fail")
         }
       });
     }

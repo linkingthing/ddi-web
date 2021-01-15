@@ -103,6 +103,7 @@
         "args": "after-used"
       }
     ],
+    "no-extra-boolean-cast": "off",
     "no-console": [
       "warn",
       {
