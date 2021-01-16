@@ -38,12 +38,16 @@ export default {
           }
         },
         {
-          title: "区数量",
-          key: "masterzonesize",
+          title: "主区数量",
+          key: "masterZoneCount"
+        },
+        {
+          title: "辅区数量",
+          key: "slaveZoneCount"
         },
         {
           title: "记录数",
-          key: "rrsize",
+          key: "rrCount",
         },
         {
           title: "优先级",

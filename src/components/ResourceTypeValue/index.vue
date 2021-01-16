@@ -2,9 +2,12 @@
   <div class="typeValue">
     <form-item
       label="类型"
-      prop="datatype"
+      prop="rrType"
     >
-      <i-select v-model="params.datatype">
+      <i-select
+        v-model="params.rrType"
+        :disabled="typeDisabled"
+      >
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
@@ -21,16 +24,16 @@
       label="记录值"
       prop="rdata"
       :rules="[requiredValidate, 
-               params.datatype === 'A' && ipv4List,
-               params.datatype === 'AAAA' && ipv6List,
-               params.datatype === 'CNAME' && domainValidate,
-               params.datatype === 'URL' && urlValidate
+               params.rrType === 'A' && ipv4List,
+               params.rrType === 'AAAA' && ipv6List,
+               params.rrType === 'CNAME' && domainValidate,
+               params.rrType === 'URL' && urlValidate
       ]"
     >
       <i-input
         type="textarea"
         v-model="params.rdata"
-        :placeholder="['A', 'AAAA'].includes(params.datatype) ? '可以添加多个记录值，多个记录值必须用逗号分隔，每次最多填写20条': '请输入记录值' "
+        :placeholder="['A', 'AAAA'].includes(params.rrType) ? '可以添加多个记录值，多个记录值必须用逗号分隔，每次最多填写20条': '请输入记录值' "
       />
     </form-item>
   </div>
@@ -48,10 +51,14 @@ import {
 export default {
   components: {},
   props: {
+    typeDisabled: {
+      type: Boolean,
+      default: false
+    },
     params: {
       type: Object,
       default: () => ({
-        datatype: "A"
+        rrType: "A"
       })
     }
   },

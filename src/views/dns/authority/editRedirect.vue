@@ -25,7 +25,10 @@
             >
               <span>{{params.name}}</span>
             </form-item>
-            <TypeValue :params="params" />
+            <TypeValue
+              :params="params"
+              :type-disabled="true"
+            />
             <form-item
               label="TTL"
               prop="ttl"
@@ -69,7 +72,7 @@ export default {
       // 表单数据
       params: {
         name: "",
-        datatype: "",
+        rrType: "",
         rdata: "",
         ttl: 0,
         redirecttype: ""
@@ -88,7 +91,7 @@ export default {
           },
           nameValidate
         ],
-        datatype: [
+        rrType: [
           { required: true, message: "请选择资源类型", trigger: "change" }
         ],
         value: [{ required: true, message: "请填写记录值", trigger: "change" }],

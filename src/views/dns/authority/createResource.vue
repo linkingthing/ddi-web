@@ -12,6 +12,7 @@
       :label-width="100"
       :rules="ruleValidate"
       ref="formValidate"
+      class="rrs-modal"
     >
       <div class="pop-content">
         <div class="pop-box">
@@ -37,9 +38,18 @@
               :isrrs="true"
             />
             <form-item
+              label="启用"
+              prop="enabled"
+            >
+              <bool-radio
+                v-model="upgradeConfig.enabled"
+                :children="boolRadioChildren"
+                style="width: 100%"
+              />
+            </form-item>
+            <form-item
               label="TTL"
               prop="ttl"
-              style="margin-bottom: 0"
             >
               <Input
                 v-model="upgradeConfig.ttl"
@@ -47,6 +57,18 @@
                 style="width: 100%"
               />
             </form-item>
+            <form-item
+              label="备注"
+              prop="comment"
+              style="margin-bottom: 0"
+            >
+              <Input
+                v-model="upgradeConfig.comment"
+                placeholder="请输入备注"
+                style="width: 100%"
+              />
+            </form-item>
+
           </div>
         </div>
       </div>
@@ -66,20 +88,35 @@ export default {
   components: {
     TypeValue
   },
+  props: {
+    recordSuffix: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
+
+    this.boolRadioChildren = [{
+      value: true,
+      label: "开启"
+    }, {
+      value: false,
+      label: "关闭"
+    }];
     return {
       loading: false,
-      recordSuffix: "",
       // 是否显示mode
       configModal: false,
       // 表单数据
       tempttl: "",
       upgradeConfig: {
         name: "",
-        datatype: "A",
+        rrType: "A",
         rdata: "",
         rdataBackup: "",
-        ttl: 0
+        ttl: 0,
+        enabled: true,
+        comment: ""
       },
       viewId: "",
       zoneId: "",
@@ -101,7 +138,7 @@ export default {
             }
           }
         ],
-        datatype: [{ required: true, message: "请选择资源类型" }],
+        rrType: [{ required: true, message: "请选择资源类型" }],
         rdata: [{ required: true, message: "请填写记录值" }],
         ttl: [positiveIntegerValidate, {
           validator: ttlValidator
@@ -131,13 +168,7 @@ export default {
       this.viewId = viewId;
       this.zoneId = zoneId;
       this.configModal = true;
-      this.getZoneInfo();
       this.getGlobalConfig();
-    },
-    getZoneInfo() {
-      getParantData().then(({ name }) => {
-        this.recordSuffix = name;
-      });
     },
     update() {
       this.loading = true;
@@ -158,7 +189,7 @@ export default {
             this.loading = false;
             this.$Message.error(err.message);
           });
-      })
+      });
 
     },
     // 应用
@@ -173,5 +204,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.rrs-modal .ivu-radio-wrapper {
+  margin-right: 34px;
+}
 </style>

@@ -58,22 +58,22 @@ export default {
 
   // 资源记录
   getResourceRecord(viewId, zoneId, params) {
-    return axios.get(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs`, {
+    return axios.get(`${baseUrl}/views/${viewId}/authzones/${zoneId}/authrrs`, {
       params
     });
   },
   createResourceRecord(viewId, zoneId, params) {
-    return axios.post(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs`, params);
+    return axios.post(`${baseUrl}/views/${viewId}/authzones/${zoneId}/authrrs`, params);
   },
   deleteResourceById(viewId, zoneId, id) {
-    return axios.delete(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs/${id}`);
+    return axios.delete(`${baseUrl}/views/${viewId}/authzones/${zoneId}/authrrs/${id}`);
   },
   getResourceRecordById(viewId, zoneId, id) {
-    return axios.get(`${baseUrl}/views/${viewId}/zones/${zoneId}/rrs/${id}`);
+    return axios.get(`${baseUrl}/views/${viewId}/authzones/${zoneId}/authrrs/${id}`);
   },
   updateResource(viewId, zoneId, id, params) {
     return axios.put(
-      `${baseUrl}/views/${viewId}/zones/${zoneId}/rrs/${id}`,
+      `${baseUrl}/views/${viewId}/authzones/${zoneId}/authrrs/${id}`,
       params
     );
   },

@@ -37,12 +37,13 @@ export default {
           title: "区名称",
           key: "name",
           align: "left",
+          width: 160,
           render: (h, { row }) => {
             return h(
               "router-link",
               {
                 props: {
-                  to: this.$getRouteByLink(row.links.rrs, "dns")
+                  to: this.$getRouteByLink(row.links.authrrs, "dns")
                 }
               },
               row.name
@@ -52,27 +53,66 @@ export default {
         {
           title: "区类型",
           key: "zonetype",
+          width: 120,
           render: (h, { row }) => {
             return h("div", row.isarpa ? "反向区" : "正向区");
           }
         },
         {
           title: "TTL",
-          key: "ttl"
+          key: "ttl",
+          width: 100
         },
 
         {
           title: "记录数",
-          key: "rrsize"
+          key: "rrCount",
+          width: 100
+
+        },
+        {
+          title: "主辅区",
+          key: "role",
+          width: 100,
+          render: (h, { row }) => {
+            return h("div", row.role === "master" ? "主区" : "辅区");
+          }
+        },
+        {
+          title: "主区列表",
+          key: "role",
+          width: "300",
+          render: (h, { row }) => {
+            return h("Tags", {
+              props: {
+                list: row.role === "slave" ? row.masters : []
+              }
+            });
+          }
+        },
+        {
+          title: "辅区列表",
+          key: "role",
+          width: "300",
+          render: (h, { row }) => {
+            return h("Tags", {
+              props: {
+                list: row.role === "master" ? row.slaves : []
+              }
+            });
+          }
         },
         {
           title: "备注",
-          key: "comment"
+          key: "comment",
+          minWidth: 100,
+          tooltip: true
         },
         {
           title: "操作",
           key: "action",
           width: 220,
+          fixed: "right",
           render: (h, { row }) => {
             return h("div", [
               h("btn-edit", {
@@ -136,8 +176,9 @@ export default {
         page_num: this.current,
         page_size: 10
       };
-      services
-        .getZoneByViewId(this.id, params)
+
+
+      this.$get({ ...this.$getApiByRoute(), params })
         .then(({ links, data, pagination }) => {
           this.list = data;
           this.links = links;

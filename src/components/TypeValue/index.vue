@@ -2,9 +2,12 @@
   <div class="typeValue">
     <form-item
       label="类型"
-      prop="datatype"
+      prop="rrType"
     >
-      <i-select v-model="params.datatype">
+      <i-select
+        v-model="params.rrType"
+        :disabled="typeDisabled"
+      >
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
         <i-option value="CNAME">CNAME</i-option>
@@ -25,10 +28,10 @@
       label="记录值"
       prop="rdata"
       :rules="[requiredValidate, 
-               params.datatype === 'A' && isIPv4Validate,
-               params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
-               params.datatype === 'CNAME' && domainValidate,
-               params.datatype === 'URL' && urlValidate
+               params.rrType === 'A' && isIPv4Validate,
+               params.rrType === 'AAAA' && IPv6SimpleValidateFunc,
+               params.rrType === 'CNAME' && domainValidate,
+               params.rrType === 'URL' && urlValidate
       ]"
     >
       <i-input
@@ -38,14 +41,14 @@
     </form-item>
 
     <!-- <form-item
-      v-if="isrrs && ['A','AAAA'].includes(params.datatype)"
+      v-if="isrrs && ['A','AAAA'].includes(params.rrType)"
       label="备份记录值"
       prop="rdataBackup"
       :rules="[ 
-               params.datatype === 'A' && isIPv4Validate,
-               params.datatype === 'AAAA' && IPv6SimpleValidateFunc,
-               params.datatype === 'CNAME' && domainValidate,
-               params.datatype === 'URL' && urlValidate
+               params.rrType === 'A' && isIPv4Validate,
+               params.rrType === 'AAAA' && IPv6SimpleValidateFunc,
+               params.rrType === 'CNAME' && domainValidate,
+               params.rrType === 'URL' && urlValidate
       ]"
     >
       <i-input
@@ -67,10 +70,14 @@ import {
 export default {
   components: {},
   props: {
+    typeDisabled: {
+      type: Boolean,
+      default: false
+    },
     params: {
       type: Object,
       default: () => ({
-        datatype: "A"
+        rrType: "A"
       })
     },
     hasAll: {

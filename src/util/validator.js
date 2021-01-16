@@ -47,7 +47,19 @@ function checkPort(port, callback, line) {
 }
 
 export const serverValidator = (rule, value, callback) => {
-  const ipList = value.split(/\n/);
+  let ipList;
+
+  if (Array.isArray(value)) {
+    ipList = value;
+
+    if (ipList.filter(item => item.trim()).length === 0) {
+      callback();
+    }
+  }
+
+  if (typeof value === "string") {
+    ipList = value.split(/\n/);
+  }
   const isPass = ipList.every((item, index) => {
     let ip = item;
     let port = 53;

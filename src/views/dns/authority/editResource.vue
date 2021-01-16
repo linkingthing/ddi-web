@@ -31,6 +31,7 @@
               :params="params"
               :has-all="true"
               :isrrs="true"
+              :type-disabled="true"
             />
             <form-item
               label="TTL"
@@ -42,6 +43,18 @@
                 style="width: 100%"
               />
             </form-item>
+            <form-item
+              label="备注"
+              prop="comment"
+              style="margin-bottom: 0"
+            >
+              <Input
+                v-model="params.comment"
+                placeholder="请输入备注"
+                style="width: 100%"
+              />
+            </form-item>
+
           </div>
         </div>
       </div>
@@ -62,19 +75,24 @@ import { ttlValidator } from "@/util/validator";
 export default {
   name: "WebsiteUpConfig",
   components: { TypeValue },
+  props: {
+    recordSuffix: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       loading: false,
-      recordSuffix: "",
       // 是否显示mode
       analysisModal: false,
       // 表单数据
       params: {
         name: "",
-        datatype: "",
+        rrType: "",
         value: "A",
-        // rdataBackup: "",
-        ttl: 0
+        ttl: 0,
+        comment: ""
       },
       viewId: "",
       zoneId: "",
@@ -88,7 +106,7 @@ export default {
             validator: resourceDomainValidateFunc
           }
         ],
-        datatype: [{ required: true, message: "请选择资源类型" }],
+        rrType: [{ required: true, message: "请选择资源类型" }],
         value: [{ required: true }],
         ttl: [positiveIntegerValidate,
           {
@@ -98,9 +116,7 @@ export default {
       }
     };
   },
-  created() {
-    this.getZoneInfo();
-  },
+
   methods: {
     openModel(viewId, zoneId, id) {
       this.viewId = viewId;
@@ -109,11 +125,7 @@ export default {
       this.getResourceRecord(viewId, zoneId, id);
       this.analysisModal = true;
     },
-    getZoneInfo() {
-      getParantData().then(({ name }) => {
-        this.recordSuffix = name;
-      });
-    },
+
     getResourceRecord(viewId, zoneId, id) {
       services.getResourceRecordById(viewId, zoneId, id).then(data => {
         this.params = data;

@@ -39,7 +39,7 @@ export default {
         },
         {
           title: "重定向数量",
-          key: "urlRedirectSize",
+          key: "urlRedirectCount",
         },
       ],
       list: [],

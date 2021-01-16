@@ -11,15 +11,18 @@
         <i-button
           type="primary"
           @click="handleOpenCreate(viewId,zoneId)"
+          v-if="showCreate"
         >新建</i-button>
       </template>
     </table-page>
     <createResource
       ref="configRef"
+      :record-suffix="recordSuffix"
       @onCreateSuccess="getResources"
     />
     <editResource
       ref="analysisRef"
+      :record-suffix="recordSuffix"
       @onEditSuccess="getResources"
     />
   </div>
@@ -29,6 +32,8 @@
 import services from "@/services";
 import createResource from "./createResource";
 import editResource from "./editResource";
+import { getParantData } from "@/util/request";
+
 
 export default {
   name: "resourceRecord",
@@ -46,7 +51,7 @@ export default {
         },
         {
           title: "类型",
-          key: "datatype"
+          key: "rrType"
         },
         {
           title: "记录值",
@@ -57,9 +62,18 @@ export default {
           key: "ttl"
         },
         {
+          title: "备注",
+          key: "comment",
+          tooltip: true
+        },
+        {
           title: "操作",
           key: "action",
+          width: 200,
           render: (h, { row }) => {
+            if (!this.showOperate) {
+              return h("div");
+            }
             return h("div", [
               h("btn-edit", {
                 class: "k-btn",
@@ -76,6 +90,14 @@ export default {
                     this.delect(row.id);
                   }
                 }
+              }),
+              h("btn-line", {
+                props: {
+                  title: !row.enabled ? "启用" : "停用"
+                },
+                on: {
+                  click: () => this.handleToggleUse(row)
+                }
               })
             ]);
           }
@@ -85,35 +107,62 @@ export default {
       zoneId: " ",
       resList: [],
       total: 0,
-      current: 0
+      current: 0,
+      recordSuffix: "",
+      role: "",
     };
+  },
+
+  computed: {
+    isSlave() {
+      return this.role === "slave";
+    },
+    showCreate() {
+      return !this.isSlave;
+    },
+    showOperate() {
+      return !this.isSlave;
+    }
   },
   watch: {
     current() {
       this.getResources();
-
     }
   },
 
   created() {
     this.viewId = this.$route.params.id;
     this.zoneId = this.$route.params.zoneId;
+    this.getZoneInfo();
   },
-
   methods: {
+    getZoneInfo() {
+      getParantData().then(({ name, role }) => {
+        this.recordSuffix = name;
+        this.role = role;
+      });
+    },
     handleOpenCreate(viewId, zoneId) {
       this.$refs.configRef.openConfig(viewId, zoneId);
     },
     goAnalysis(viewId, zoneId, id) {
       this.$refs.analysisRef.openModel(viewId, zoneId, id);
     },
+    handleToggleUse({ links, enabled }) {
+      this.$post({
+        url: `${links.self}?action=${enabled ? "disable" : "enable"}`
+
+      }).then(res => {
+        this.$Message.success("切换成功");
+        this.getResources();
+      }).catch(err => err);
+    },
     getResources() {
       const params = {
         page_num: this.current,
         page_size: 10
       };
-      services
-        .getResourceRecord(this.viewId, this.zoneId, params)
+      this.$get({ ...this.$getApiByRoute(), params })
 
         .then(({ data, pagination }) => {
           this.resList = data;

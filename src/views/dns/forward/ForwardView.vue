@@ -39,7 +39,7 @@ export default {
         },
         {
           title: "域名数量",
-          key: "forwardzonesize",
+          key: "forwardZoneCount",
         },
         {
           title: "创建时间",

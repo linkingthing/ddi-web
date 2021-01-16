@@ -14,7 +14,7 @@ let assetsPublicPath = "./";
 
 // const url = "https://10.0.0.237:58081";
 
-const url = "https://10.0.0.211:58081";
+const url = "https://10.0.0.90:58081";
 
 // const url = "https://10.0.0.206:58081";
 

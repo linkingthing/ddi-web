@@ -39,11 +39,11 @@ export default {
         },
         {
           title: "重定向配置数量",
-          key: "localzonesize",
+          key: "localZoneCount",
         },
         {
           title: "NXDOMAIN重定向配置数量",
-          key: "nxdomainsize",
+          key: "nxdomainCount",
         },
         {
           title: "创建时间",

@@ -46,7 +46,7 @@ export default {
         },
         {
           title: "记录类型",
-          key: "datatype",
+          key: "rrType"
         },
         {
           title: "记录值",

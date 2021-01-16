@@ -35,7 +35,7 @@ export default {
     {
       // 权威区域查询
       name: "authority-zone-query",
-      path: "/dns/dns/views/:id/zones",
+      path: "/dns/dns/views/:id/authzones",
       component: () =>
         import(
           /* webpackChunkName: "option-config" */ "@/views/dns/authority/zoneQuery"
@@ -52,7 +52,7 @@ export default {
     {
       // 资源记录
       name: "resource-record",
-      path: "/dns/dns/views/:id/zones/:zoneId/rrs",
+      path: "/dns/dns/views/:id/authzones/:zoneId/authrrs",
       component: () =>
         import(
           /* webpackChuckName: "option-config" */ "@/views/dns/authority/resourceRecord"

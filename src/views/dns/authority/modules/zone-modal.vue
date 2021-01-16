@@ -28,7 +28,9 @@
 
 <script>
 import { isIp, ipv6IsValid, ipv4IsValid, domainReg } from "@/util/common";
-import { ttlValidator } from "@/util/validator";
+import { ttlValidator, serverValidator } from "@/util/validator";
+import IPListInput from "@/components/IPListInput";
+
 
 export default {
   props: {
@@ -48,9 +50,11 @@ export default {
     return {
       formModel: {
         name: "",
-        zonetype: "master",
         ttl: 3600,
-        isarpa: "false"
+        zoneType: "standard",
+        role: "master",
+        masters: [],
+        slaves: []
       },
       tempttl: "",
       loading: false,
@@ -75,7 +79,7 @@ export default {
               if (isEdit) {
                 callback();
               }
-              if (this.formModel.isarpa === "true") {
+              if (this.formModel.zoneType === "arpa") {
                 const [ip, len] = value.split("/");
 
                 if (ipv6IsValid(value)) {
@@ -119,9 +123,26 @@ export default {
             }
           }
         ],
-        isarpa: [
+        zoneType: [
           { required: true, message: "请选择区类型" }
         ],
+        role: [
+          { required: true, message: "请选择主辅区" },
+
+        ],
+        masters: [{
+          validator: (rule, value, callback) => {
+            if (this.formModel.role === "slave" && this.formModel.masters.filter(item => item.trim()).length === 0) {
+              callback("请输入主区地址");
+            }
+            callback();
+          }
+        }, {
+          validator: serverValidator
+        }],
+        slaves: [{
+          validator: serverValidator
+        }],
         ttl: [
           { required: true, message: "请填写TTL" },
           {
@@ -131,6 +152,29 @@ export default {
       };
     },
     formItemList() {
+
+      let serverList = {
+        label: "辅服务器",
+        model: "slaves",
+        type: "component",
+        component: IPListInput,
+        props: {
+          placeholder: "请填写辅服务器"
+        }
+      };
+
+      if (this.formModel.role === "slave") {
+        serverList = {
+          label: "主服务器",
+          model: "masters",
+          type: "component",
+          component: IPListInput,
+          props: {
+            placeholder: "请填写主服务器"
+          }
+        };
+      }
+
       return [
         {
           label: "区名称",
@@ -140,16 +184,16 @@ export default {
         },
         {
           label: "区类型",
-          model: "isarpa",
+          model: "zoneType",
           type: "radio",
           disabled: this.isEdit,
           placeholder: "请选择区类型",
           children: [{
-            label: "false",
+            label: "standard",
             text: "正向区"
           },
           {
-            label: "true",
+            label: "arpa",
             text: "反向区"
           }]
         },
@@ -157,8 +201,24 @@ export default {
           label: "TTL",
           model: "ttl",
           type: "input",
-          placeholder: "请填写TTL",
+          placeholder: "请填写TTL"
         },
+        {
+          label: "主辅区",
+          model: "role",
+          type: "radio",
+          children: [
+            {
+              text: "主区",
+              label: "master"
+            },
+            {
+              text: "辅区",
+              label: "slave"
+            }
+          ]
+        },
+        serverList,
         {
           label: "备注",
           model: "comment",
@@ -173,20 +233,16 @@ export default {
     visible(val) {
       if (!val) {
         this.$refs.formInline.resetFields();
-        this.formModel.zonetype = "master";
-        this.formModel.isarpa = "false";
         this.formModel.ttl = this.tempttl;
         return;
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ name, isarpa, ttl, comment, zonetype }) => {
+        this.$get({ url: this.links.self }).then(({ masters, slaves, ...rest }) => {
           this.formModel = {
-            name,
-            ttl,
-            comment,
-            isarpa: `${isarpa}`,
-            zonetype
+            masters: masters || [],
+            slaves: slaves || [],
+            ...rest
           };
         }).catch();
       } else {
@@ -197,6 +253,19 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
+    },
+
+    "formModel.masters": {
+      deep: true,
+      handler() {
+        this.$refs["formInline"].validateField("masters");
+      }
+    },
+    "formModel.slaves": {
+      deep: true,
+      handler() {
+        this.$refs["formInline"].validateField("slaves");
+      }
     }
   },
 
@@ -221,7 +290,6 @@ export default {
           this.loading = true;
           const params = { ...this.formModel };
           params.ttl = +params.ttl;
-          params.isarpa = params.isarpa === "true";
 
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {

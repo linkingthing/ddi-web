@@ -73,7 +73,7 @@ export default {
       // 表单数据
       upgradeConfig: {
         name: "",
-        datatype: "A",
+        rrType: "A",
         rdata: "",
         ttl: 0,
         redirecttype: "localzone"
@@ -91,7 +91,7 @@ export default {
           },
           nameValidate
         ],
-        datatype: [{ required: true, message: "请选择资源类型" }],
+        rrType: [{ required: true, message: "请选择资源类型" }],
         ttl: [
           { required: true, message: "请输入TTL" },
           positiveIntegerValidate,
