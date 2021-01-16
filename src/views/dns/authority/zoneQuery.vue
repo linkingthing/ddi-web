@@ -5,13 +5,21 @@
       :data="list"
       :columns="columns"
       :total="total"
-      :current.sync="current"
+      :current.sync="query.current"
     >
-      <template slot="top-right">
-        <i-button
-          type="primary"
-          @click="handleOpenCreate()"
-        >新建</i-button>
+      <template slot="neck">
+        <SearchBar
+          :params="query"
+          @on-search="handleSearch"
+        >
+
+          <i-button
+            slot="operate"
+            type="primary"
+            @click="handleOpenCreate()"
+          >新建</i-button>
+        </SearchBar>
+
       </template>
     </table-page>
     <zone-modal
@@ -25,10 +33,16 @@
 <script>
 import services from "@/services";
 import ZoneModal from "./modules/zone-modal";
+import SearchBar from "./modules/SearchBar";
+import _ from "lodash";
+
+import { zoneType } from "@/config/dns";
+
 export default {
   name: "zoneQuery",
   components: {
-    "zone-modal": ZoneModal
+    "zone-modal": ZoneModal,
+    SearchBar
   },
   data() {
     return {
@@ -52,10 +66,10 @@ export default {
         },
         {
           title: "区类型",
-          key: "zonetype",
+          key: "zoneType",
           width: 120,
           render: (h, { row }) => {
-            return h("div", row.isarpa ? "反向区" : "正向区");
+            return h("div", zoneType[row.zoneType]);
           }
         },
         {
@@ -124,27 +138,7 @@ export default {
                 on: {
                   click: () => this.delect(row.id)
                 }
-              }),
-              // h("i-switch", {
-              //   style: {
-              //     marginLeft: "16px"
-              //   },
-              //   props: {
-              //     "false-color": "#F2A16B",
-              //     value: row.rrsRole === "main"
-              //   },
-              //   on: {
-              //     "on-change": (value) => this.handleToggleMaster(value, row)
-              //   }
-              // }, [
-              //   h("span", {
-              //     slot: "open"
-              //   }, "主"),
-              //   h("span", {
-              //     slot: "close"
-              //   }, "备"),
-
-              // ])
+              })
             ]);
           }
         }
@@ -157,26 +151,42 @@ export default {
       list: [],
       visible: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      query: { current: 1 }
     };
   },
-  watch: {
-    current() {
-      this.getArea();
 
+  watch: {
+    "$route.query": {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.query = _.cloneDeep(value);
+        this.getArea(value);
+      }
     }
   },
   created() {
     this.id = this.$route.params.id;
     this.viewId = this.$route.query.id;
+
+    const { query } = this.$route;
+    this.query = _.cloneDeep(query);
+    if (query.current) {
+      this.query.current = Number(query.current);
+    }
   },
   methods: {
-    getArea() {
-      const params = {
-        page_num: this.current,
-        page_size: 10
-      };
 
+    handleSearch(query) {
+      this.$router.replace({
+        query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
+      });
+    },
+    getArea(query = this.query) {
+      const params = query;
+      params.page_size = 10;
+      params.page_num = query.current || 1;
 
       this.$get({ ...this.$getApiByRoute(), params })
         .then(({ links, data, pagination }) => {

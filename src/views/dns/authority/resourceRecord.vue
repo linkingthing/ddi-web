@@ -5,14 +5,23 @@
       :data="resList"
       :columns="columns"
       :total="total"
-      :current.sync="current"
+      :current.sync="query.current"
     >
-      <template slot="top-right">
-        <i-button
-          type="primary"
-          @click="handleOpenCreate(viewId,zoneId)"
-          v-if="showCreate"
-        >新建</i-button>
+
+      <template slot="neck">
+        <SearchBar
+          :params="query"
+          @on-search="handleSearch"
+        >
+
+          <i-button
+            slot="operate"
+            type="primary"
+            v-if="showCreate"
+            @click="handleOpenCreate(viewId,zoneId)"
+          >新建</i-button>
+        </SearchBar>
+
       </template>
     </table-page>
     <createResource
@@ -33,13 +42,16 @@ import services from "@/services";
 import createResource from "./createResource";
 import editResource from "./editResource";
 import { getParantData } from "@/util/request";
+import _ from "lodash";
+import SearchBar from "./modules/SearchBarForRRs";
 
 
 export default {
   name: "resourceRecord",
   components: {
     createResource,
-    editResource
+    editResource,
+    SearchBar
   },
   data() {
     return {
@@ -110,6 +122,10 @@ export default {
       current: 0,
       recordSuffix: "",
       role: "",
+
+      query: {
+        current: 1
+      }
     };
   },
 
@@ -124,9 +140,15 @@ export default {
       return !this.isSlave;
     }
   },
+
   watch: {
-    current() {
-      this.getResources();
+    "$route.query": {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.query = _.cloneDeep(value);
+        this.getResources(value);
+      }
     }
   },
 
@@ -134,8 +156,19 @@ export default {
     this.viewId = this.$route.params.id;
     this.zoneId = this.$route.params.zoneId;
     this.getZoneInfo();
+
+    const { query } = this.$route;
+    this.query = _.cloneDeep(query);
+    if (query.current) {
+      this.query.current = Number(query.current);
+    }
   },
   methods: {
+    handleSearch(query) {
+      this.$router.replace({
+        query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
+      });
+    },
     getZoneInfo() {
       getParantData().then(({ name, role }) => {
         this.recordSuffix = name;
@@ -157,11 +190,11 @@ export default {
         this.getResources();
       }).catch(err => err);
     },
-    getResources() {
-      const params = {
-        page_num: this.current,
-        page_size: 10
-      };
+    getResources(query = this.query) {
+      const params = query;
+      params.page_size = 10;
+      params.page_num = query.current || 1;
+
       this.$get({ ...this.$getApiByRoute(), params })
 
         .then(({ data, pagination }) => {
