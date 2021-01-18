@@ -8,31 +8,30 @@
       :current.sync="query.current"
     >
 
-      <!-- <template slot="neck">
-        <SearchBarForRRS
-          :params="query"
-          @on-search="handleSearch"
-        >
-          <template slot="operate">
+      <SearchBarForRRS
+        slot="neck"
+        :params="query"
+        @on-search="handleSearch"
+      >
+        <div slot="operate">
 
-            <i-button
-              type="primary"
-              v-if="showCreate"
-              @click="handleOpenCreate(viewId,zoneId)"
-            >新建</i-button>
+          <i-button
+            type="primary"
+            v-if="showCreate"
+            @click="handleOpenCreate(viewId,zoneId)"
+          >新建</i-button>
 
-            <import-export-csv
-              style="margin-left: 20px;"
-              :links="links"
-              @on-import-success="onImportSuccess"
-              resource="记录"
-              :title="isSlave ? '导出' : void 0"
-              :download-only="isSlave"
-            />
-          </template>
-        </SearchBarForRRS>
+          <import-export-csv
+            style="margin-left: 20px;"
+            :links="links"
+            @on-import-success="onImportSuccess"
+            resource="记录"
+            :title="isSlave ? '导出' : void 0"
+            :download-only="isSlave"
+          />
+        </div>
+      </SearchBarForRRS>
 
-      </template> -->
     </table-page>
     <createResource
       ref="configRef"
@@ -53,7 +52,7 @@ import createResource from "./createResource";
 import editResource from "./editResource";
 import { getParantData } from "@/util/request";
 import _ from "lodash";
-// import SearchBarForRRS from "./modules/SearchBarForRRS";
+import SearchBarForRRS from "./modules/SearchBarForRRS";
 
 
 export default {
@@ -61,7 +60,7 @@ export default {
   components: {
     createResource,
     editResource,
-    // SearchBarForRRS
+    SearchBarForRRS
   },
   data() {
     return {
