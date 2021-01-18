@@ -10,12 +10,12 @@
       >
         <FormItem
           prop="name"
-          label="区名称"
-          :label-width="80"
+          label="记录名称"
+          :label-width="100"
         >
           <Input
             v-model="searchParams.name"
-            placeholder="请输入区名称"
+            placeholder="请输入记录名称"
             class="m-select"
             clearable
           />

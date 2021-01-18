@@ -26,6 +26,7 @@
               :links="links"
               @on-import-success="onImportSuccess"
               resource="记录"
+              download-only
             />
           </template>
         </SearchBar>

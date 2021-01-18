@@ -11,6 +11,7 @@
       <div slot="content">
         <div class="import-export-menu">
           <div
+            v-if="!downloadOnly"
             class="import-export-menu-item"
             @click="handleClickImportTable"
           >
@@ -101,6 +102,10 @@ export default {
     links: {
       type: Object,
       default: () => ({ self: "" })
+    },
+    downloadOnly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
