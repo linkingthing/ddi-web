@@ -254,7 +254,12 @@ export default {
     dialogVisible(val) {
       this.$emit("update:visible", val);
     },
-
+    "formModel.zoneType": {
+      deep: true,
+      handler() {
+        this.$refs["formInline"].validateField("name");
+      }
+    },
     "formModel.masters": {
       deep: true,
       handler() {

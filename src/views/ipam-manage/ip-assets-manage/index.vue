@@ -130,6 +130,7 @@
           type="primary"
           @click="handleAdd"
           class="top-button"
+          id="openCreatebtn"
         >
           新建
         </Button>

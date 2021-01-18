@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { ipv6IsValid, ipv4IsValid } from "@/util/common";
+import { ipv6IsValid, ipv4IsValid, isIpv4Segment, isIpv6Segment } from "@/util/common";
 import { resArrayToString, resStringToArray } from "@/util/parser";
 import ClientClassFormItem from "./ClientClassFormItem";
 
@@ -69,13 +69,13 @@ export default {
             validator: (rule, value, callback) => {
 
               if (this.formModel.version === 4) {
-                if (!ipv4IsValid(value)) {
+                if (!isIpv4Segment(value)) {
                   callback("请输入正确IPv4地址");
                 }
 
               }
               if (this.formModel.version === 6) {
-                if (!ipv6IsValid(value)) {
+                if (!isIpv6Segment(value)) {
                   callback("请输入正确IPv6地址");
                 }
               }
