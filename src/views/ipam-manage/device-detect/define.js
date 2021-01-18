@@ -89,7 +89,7 @@ export const columns = scope => [
   {
     title: "最近探测时间",
     key: "lastRefreshTime",
-    minWidth: 150
+    minWidth: 180
   },
   {
     title: "操作",
