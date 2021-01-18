@@ -52,7 +52,7 @@ import createResource from "./createResource";
 import editResource from "./editResource";
 import { getParantData } from "@/util/request";
 import _ from "lodash";
-import SearchBar from "./modules/SearchBarForRRs";
+import SearchBar from "./modules/SearchBarForRRS";
 
 
 export default {
