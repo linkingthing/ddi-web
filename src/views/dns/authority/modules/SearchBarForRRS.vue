@@ -74,7 +74,7 @@
             placeholder="请输入备注"
           />
         </FormItem>
-        <btn-search @click="$emit('on-search', {enabled: searchParams.enabled === 'false' ? false: true, ...searchParams})" />
+        <btn-search @click="$emit('on-search', searchParams)" />
 
       </Form>
     </div>
@@ -131,7 +131,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .search-bar {
   display: flex;
   margin-top: 14px;
