@@ -32,7 +32,7 @@
           <span slot="close">关闭</span>
         </i-switch>
       </FormItem>
-
+      <!-- 
       <FormItem label="递归">
         <i-switch
           @on-change="handleRecursionEnableToggle"
@@ -43,7 +43,7 @@
           <span slot="open">开启</span>
           <span slot="close">关闭</span>
         </i-switch>
-      </FormItem>
+      </FormItem> -->
 
       <FormItem
         label="递归并发"

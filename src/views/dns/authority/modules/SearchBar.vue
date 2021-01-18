@@ -41,7 +41,7 @@
         </FormItem>
         <FormItem
           prop="role"
-          label="主辅区	"
+          label="主辅区"
         >
           <Select
             v-model="searchParams.role"
@@ -59,12 +59,14 @@
         </FormItem>
         <FormItem
           prop="address"
-          label="服务器"
+          label="主/辅区服务器"
         >
+          <!-- :label-width="120" -->
+
           <Input
             class="m-select"
             v-model="searchParams.address"
-            placeholder="请输入服务器"
+            placeholder="主/辅区服务器"
           ></Input>
         </FormItem>
 

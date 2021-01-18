@@ -57,7 +57,36 @@ export default {
         },
         {
           title: "优先级",
-          key: "priority"
+          key: "priority",
+          render: (h, { row }) => {
+            return h("div", [
+              h("span", row.priority),
+              h("btn-move", {
+                style: {
+                  display: (row.name === "default" || row.priority === 1) ? "none" : "inline-block"
+                },
+                props: {
+                  type: "up",
+                  // disabled: row.name === "default" || row.priority === 1
+                },
+                on: {
+                  click: () => this.handleMove(row, "up")
+                }
+              }),
+              h("btn-move", {
+                style: {
+                  display: (row.name === "default" || ((row.priority + 1) === this.default.priority)) ? "none" : "inline-block"
+                },
+                props: {
+                  type: "down",
+                  // disabled: row.name === "default" || ((row.priority + 1) === this.default.priority)
+                },
+                on: {
+                  click: () => this.handleMove(row, "down")
+                }
+              })
+            ])
+          }
         },
         {
           title: "访问控制",
@@ -82,7 +111,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          width: 300,
+          width: 220,
           render: (h, { row }) => {
             if (this.$hasPermission("view", "POST")) {
               return h("div", [
@@ -105,30 +134,7 @@ export default {
                     click: () => this.handleToggleRecursion(row)
                   }
                 }),
-                h("btn-move", {
-                  style: {
-                    display: (row.name === "default" || row.priority === 1) ? "none" : "inline-block"
-                  },
-                  props: {
-                    type: "up",
-                    // disabled: row.name === "default" || row.priority === 1
-                  },
-                  on: {
-                    click: () => this.handleMove(row, "up")
-                  }
-                }),
-                h("btn-move", {
-                  style: {
-                    display: (row.name === "default" || row.priority === 1) ? "none" : "inline-block"
-                  },
-                  props: {
-                    type: "down",
-                    // disabled: row.name === "default" || ((row.priority + 1) === this.default.priority)
-                  },
-                  on: {
-                    click: () => this.handleMove(row, "down")
-                  }
-                })
+
               ]);
             } else {
               h("div");

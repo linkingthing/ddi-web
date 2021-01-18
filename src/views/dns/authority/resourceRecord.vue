@@ -26,7 +26,8 @@
               :links="links"
               @on-import-success="onImportSuccess"
               resource="记录"
-              download-only
+              :title="isSlave ? '导出' : void 0"
+              :download-only="isSlave"
             />
           </template>
         </SearchBar>

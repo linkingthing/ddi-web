@@ -67,7 +67,7 @@ export default {
         acls: [],
         dns64: "",
         comment: "",
-        recursion: false
+        recursion: true
       },
       loading: false,
       dialogVisible: false,

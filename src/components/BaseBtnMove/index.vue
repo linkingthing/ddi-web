@@ -33,7 +33,7 @@ export default {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  margin-left: 16px;
+  margin-left: 10px;
   background-size: cover;
   vertical-align: bottom;
 }

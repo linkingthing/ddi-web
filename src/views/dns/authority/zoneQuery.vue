@@ -93,7 +93,7 @@ export default {
           }
         },
         {
-          title: "主区列表",
+          title: "主区服务器",
           key: "role",
           width: "300",
           render: (h, { row }) => {
@@ -105,7 +105,7 @@ export default {
           }
         },
         {
-          title: "辅区列表",
+          title: "辅区服务器",
           key: "role",
           width: "300",
           render: (h, { row }) => {
