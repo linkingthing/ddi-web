@@ -131,7 +131,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .search-bar {
   display: flex;
   margin-top: 14px;
