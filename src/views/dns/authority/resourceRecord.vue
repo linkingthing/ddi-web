@@ -13,7 +13,7 @@
           :params="query"
           @on-search="handleSearch"
         >
-          <template slot="operate">
+          <!-- <template slot="operate">
 
             <i-button
               type="primary"
@@ -29,7 +29,7 @@
               :title="isSlave ? '导出' : void 0"
               :download-only="isSlave"
             />
-          </template>
+          </template> -->
         </SearchBarForRRS>
 
       </template>
