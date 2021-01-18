@@ -8,12 +8,12 @@
       :current.sync="query.current"
     >
 
-      <template slot="neck">
+      <!-- <template slot="neck">
         <SearchBarForRRS
           :params="query"
           @on-search="handleSearch"
         >
-          <!-- <template slot="operate">
+          <template slot="operate">
 
             <i-button
               type="primary"
@@ -29,10 +29,10 @@
               :title="isSlave ? '导出' : void 0"
               :download-only="isSlave"
             />
-          </template> -->
+          </template>
         </SearchBarForRRS>
 
-      </template>
+      </template> -->
     </table-page>
     <createResource
       ref="configRef"
@@ -53,7 +53,7 @@ import createResource from "./createResource";
 import editResource from "./editResource";
 import { getParantData } from "@/util/request";
 import _ from "lodash";
-import SearchBarForRRS from "./modules/SearchBarForRRS";
+// import SearchBarForRRS from "./modules/SearchBarForRRS";
 
 
 export default {
@@ -61,7 +61,7 @@ export default {
   components: {
     createResource,
     editResource,
-    SearchBarForRRS
+    // SearchBarForRRS
   },
   data() {
     return {
