@@ -106,18 +106,24 @@ export default {
                   }
                 }),
                 h("btn-move", {
+                  style: {
+                    display: (row.name === "default" || row.priority === 1) ? "none" : "inline-block"
+                  },
                   props: {
                     type: "up",
-                    disabled: row.name === "default" || row.priority === 1
+                    // disabled: row.name === "default" || row.priority === 1
                   },
                   on: {
                     click: () => this.handleMove(row, "up")
                   }
                 }),
                 h("btn-move", {
+                  style: {
+                    display: (row.name === "default" || row.priority === 1) ? "none" : "inline-block"
+                  },
                   props: {
                     type: "down",
-                    disabled: row.name === "default" || ((row.priority + 1) === this.default.priority)
+                    // disabled: row.name === "default" || ((row.priority + 1) === this.default.priority)
                   },
                   on: {
                     click: () => this.handleMove(row, "down")

@@ -106,6 +106,9 @@ export default {
               }),
               h("btn-del", {
                 class: "k-btn",
+                style: {
+                  display: row.rrType === "SOA" ? "none" : "inline-block"
+                },
                 on: {
                   click: () => {
                     this.delect(row.id);
@@ -113,6 +116,9 @@ export default {
                 }
               }),
               h("btn-line", {
+                style: {
+                  display: row.rrType === "SOA" ? "none" : "inline-block"
+                },
                 props: {
                   title: !row.enabled ? "启用" : "停用"
                 },

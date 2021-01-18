@@ -4,9 +4,10 @@
       label="类型"
       prop="rrType"
     >
+      <span v-if="typeDisabled">{{params.rrType}}</span>
       <i-select
+        v-else
         v-model="params.rrType"
-        :disabled="typeDisabled"
       >
         <i-option value="A">A</i-option>
         <i-option value="AAAA">AAAA</i-option>
