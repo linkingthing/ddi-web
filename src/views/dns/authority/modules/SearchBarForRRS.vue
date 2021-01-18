@@ -36,6 +36,7 @@
               v-for="item in Object.keys(rrType)"
               :key="item"
             >{{rrType[item]}}</Option>
+            <Option value="SOA">SOA</Option>
           </Select>
 
         </FormItem>

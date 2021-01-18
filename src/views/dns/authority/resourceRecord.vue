@@ -9,7 +9,7 @@
     >
 
       <template slot="neck">
-        <SearchBar
+        <SearchBarForRRS
           :params="query"
           @on-search="handleSearch"
         >
@@ -30,7 +30,7 @@
               :download-only="isSlave"
             />
           </template>
-        </SearchBar>
+        </SearchBarForRRS>
 
       </template>
     </table-page>
@@ -53,7 +53,7 @@ import createResource from "./createResource";
 import editResource from "./editResource";
 import { getParantData } from "@/util/request";
 import _ from "lodash";
-import SearchBar from "./modules/SearchBarForRRS";
+import SearchBarForRRS from "./modules/SearchBarForRRS";
 
 
 export default {
@@ -61,7 +61,7 @@ export default {
   components: {
     createResource,
     editResource,
-    SearchBar
+    SearchBarForRRS
   },
   data() {
     return {
