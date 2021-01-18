@@ -4,80 +4,21 @@
       <Form
         ref="formInline"
         :model="searchParams"
-        :label-width="65"
         :label-colon="true"
         inline
       >
         <FormItem
           prop="name"
-          label="区名称"
-          :label-width="80"
+        
         >
           <Input
             v-model="searchParams.name"
-            placeholder="请输入区名称"
-            class="m-select"
+            placeholder="请输入视图名称"
             clearable
           />
 
         </FormItem>
-        <FormItem
-          prop="zone_type"
-          label="区类型"
-        >
-          <Select
-            v-model="searchParams.zone_type"
-            class="m-select"
-            placeholder="请选择区类型"
-            clearable
-          >
-            <Option
-              :value="item"
-              v-for="item in Object.keys(zoneType)"
-              :key="item"
-            >{{zoneType[item]}}</Option>
-          </Select>
-
-        </FormItem>
-        <FormItem
-          prop="role"
-          label="主辅区	"
-        >
-          <Select
-            v-model="searchParams.role"
-            class="m-select"
-            clearable
-            placeholder="请选择主辅区"
-          >
-            <Option
-              :value="item"
-              v-for="item in Object.keys(role)"
-              :key="item"
-            >{{role[item]}}</Option>
-          </Select>
-
-        </FormItem>
-        <FormItem
-          prop="address"
-          label="服务器"
-        >
-          <Input
-            class="m-select"
-            v-model="searchParams.address"
-            placeholder="请输入服务器"
-          ></Input>
-        </FormItem>
-
-        <FormItem
-          prop="comment"
-          label="备注"
-        >
-          <Input
-            v-model="searchParams.comment"
-            class="m-select"
-            placeholder="请输入备注"
-          ></Input>
-        </FormItem>
+     
         <btn-search @click="$emit('on-search', searchParams)" />
 
       </Form>
@@ -146,7 +87,6 @@ export default {
     }
   }
   .search-operate {
-    padding: 0 26px;
     & > * {
       margin-left: 10px;
     }

@@ -4,20 +4,28 @@
       :total="total"
       :data="list"
       :columns="columns"
-      :current.sync="current"
+      :current.sync="query.current"
     >
-      <template slot="top-right">
-        <i-button
-          type="primary"
-          @click="handleOpenCreate"
-          v-if="$hasPermission('acl', 'POST')"
-        >新建</i-button>
-        <import-export-csv
-          style="margin-left: 20px;"
-          :links="links"
-          @on-import-success="onImportSuccess"
-          resource="ACL"
-        />
+
+      <template slot="neck">
+        <SearchBar
+          :params="query"
+          @on-search="handleSearch"
+        >
+          <template slot="operate">
+            <i-button
+              type="primary"
+              @click="handleOpenCreate"
+              v-if="$hasPermission('acl', 'POST')"
+            >新建</i-button>
+            <import-export-csv
+              style="margin-left: 20px;"
+              :links="links"
+              @on-import-success="onImportSuccess"
+              resource="ACL"
+            />
+          </template>
+        </SearchBar>
 
       </template>
     </table-page>
@@ -34,11 +42,13 @@
 import services from "@/services";
 import AclModal from "./modules/acl-modal";
 
+import SearchBar from "./modules/SearchBarForAcl";
+
 export default {
   name: "accessControlList",
   components: {
-
-    AclModal
+    AclModal,
+    SearchBar
   },
   data() {
     const ispList = [{
@@ -133,18 +143,30 @@ export default {
       id: "",
       visible: false,
       links: {},
-      paramsLinks: {}
+      paramsLinks: {},
+      query: {
+        current: 1
+      }
     };
   },
+
   watch: {
-    current: {
-      handler() {
-        this.getManger();
+    "$route.query": {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.query = _.cloneDeep(value);
+        this.getManger(value);
       }
     }
   },
 
   methods: {
+    handleSearch(query) {
+      this.$router.replace({
+        query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
+      });
+    },
     onImportSuccess() {
       this.current = 1;
       this.getManger();
@@ -155,11 +177,11 @@ export default {
       });
     },
 
-    getManger() {
-      const params = {
-        page_num: this.current,
-        page_size: 10
-      };
+    getManger(query = this.query) {
+      const params = query;
+      params.page_size = 10;
+      params.page_num = query.current || 1;
+
       services
         .getAccessList(params)
         .then(({ data, links, pagination }) => {

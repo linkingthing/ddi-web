@@ -161,6 +161,9 @@ export default {
           case "export": return "导出";
           case "importcsv": return "批量导入";
 
+          case "disable": return "禁用";
+          case "enable": return "启用";
+
         }
       };
 

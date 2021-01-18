@@ -67,6 +67,7 @@
               v-model="condition.device_state"
               style="width:100px"
               class="top-input"
+              clearable
             >
               <Option
                 v-for="item in deviceStateList"

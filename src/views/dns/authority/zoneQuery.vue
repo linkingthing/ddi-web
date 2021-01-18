@@ -12,12 +12,12 @@
           :params="query"
           @on-search="handleSearch"
         >
-
-          <i-button
-            slot="operate"
-            type="primary"
-            @click="handleOpenCreate()"
-          >新建</i-button>
+          <template slot="operate">
+            <i-button
+              type="primary"
+              @click="handleOpenCreate()"
+            >新建</i-button>
+          </template>
         </SearchBar>
 
       </template>
@@ -177,7 +177,7 @@ export default {
     }
   },
   methods: {
-
+   
     handleSearch(query) {
       this.$router.replace({
         query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }

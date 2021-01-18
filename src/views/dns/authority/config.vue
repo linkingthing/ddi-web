@@ -4,17 +4,36 @@
       title="权威管理"
       :data="list"
       :columns="columns"
-      :current.sync="current"
+      :current.sync="query.current"
       :total="total"
-    />
+    >
+      <template slot="top-right">
+        <SearchBar
+          style="margin:0"
+          :params="query"
+          @on-search="handleSearch"
+        >
+          <template slot="operate">
+
+          </template>
+        </SearchBar>
+
+      </template>
+    </table-page>
   </div>
 </template>
 
 <script>
 import services from "@/services";
+import SearchBar from "./modules/SearchBarForView";
+import _ from "lodash";
+
 
 export default {
   name: "configGroupMg",
+  components: {
+    SearchBar
+  },
   data() {
     return {
       columns: [
@@ -71,21 +90,36 @@ export default {
       ],
       list: [],
       current: 0,
-      total: 0
+      total: 0,
+      query: {
+        current: 1
+      }
     };
   },
+
   watch: {
-    current() {
-      this.getConfig();
+    "$route.query": {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.query = _.cloneDeep(value);
+        this.getConfig(value);
+      }
     }
   },
 
+
   methods: {
-    getConfig() {
-      const params = {
-        page_num: this.current,
-        page_size: 10
-      };
+    handleSearch(query) {
+      this.$router.replace({
+        query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
+      });
+    },
+    getConfig(query = this.query) {
+      const params = query;
+      params.page_size = 10;
+      params.page_num = query.current || 1;
+
       services
         .getViewList(params)
         .then(({ data, pagination }) => {

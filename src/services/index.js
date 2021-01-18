@@ -47,13 +47,13 @@ export default {
   },
 
   getZoneByViewId(id, params) {
-    return axios.get(`${baseUrl}/views/${id}/zones`, { params });
+    return axios.get(`${baseUrl}/views/${id}/authzones`, { params });
   },
   deleteZone(viewId, zoneId) {
-    return axios.delete(`${baseUrl}/views/${viewId}/zones/${zoneId}`);
+    return axios.delete(`${baseUrl}/views/${viewId}/authzones/${zoneId}`);
   },
   createZone(viewId, params) {
-    return axios.post(`${baseUrl}/views/${viewId}/zones`, params);
+    return axios.post(`${baseUrl}/views/${viewId}/authzones`, params);
   },
 
   // 资源记录
@@ -161,21 +161,21 @@ export default {
 
   getForwardList(viewId, zoneId, params) {
     return axios.post(
-      `${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`,
+      `${baseUrl}/views/${viewId}/authzones/${zoneId}?action=forward`,
       params
     );
   },
 
   deleteForward(viewId, zoneId, params) {
     return axios.post(
-      `${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`,
+      `${baseUrl}/views/${viewId}/authzones/${zoneId}?action=forward`,
       params
     );
   },
 
   updateForward(viewId, zoneId, params) {
     return axios.post(
-      `${baseUrl}/views/${viewId}/zones/${zoneId}?action=forward`,
+      `${baseUrl}/views/${viewId}/authzones/${zoneId}?action=forward`,
       params
     );
   },

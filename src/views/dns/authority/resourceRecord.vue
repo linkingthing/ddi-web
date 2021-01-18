@@ -13,13 +13,21 @@
           :params="query"
           @on-search="handleSearch"
         >
+          <template slot="operate">
 
-          <i-button
-            slot="operate"
-            type="primary"
-            v-if="showCreate"
-            @click="handleOpenCreate(viewId,zoneId)"
-          >新建</i-button>
+            <i-button
+              type="primary"
+              v-if="showCreate"
+              @click="handleOpenCreate(viewId,zoneId)"
+            >新建</i-button>
+
+            <import-export-csv
+              style="margin-left: 20px;"
+              :links="links"
+              @on-import-success="onImportSuccess"
+              resource="记录"
+            />
+          </template>
         </SearchBar>
 
       </template>
@@ -125,7 +133,8 @@ export default {
 
       query: {
         current: 1
-      }
+      },
+      links: {}
     };
   },
 
@@ -164,6 +173,11 @@ export default {
     }
   },
   methods: {
+    onImportSuccess() {
+      console.log("=================")
+      this.query.current = 1;
+      this.getResources();
+    },
     handleSearch(query) {
       this.$router.replace({
         query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
@@ -197,9 +211,10 @@ export default {
 
       this.$get({ ...this.$getApiByRoute(), params })
 
-        .then(({ data, pagination }) => {
+        .then(({ data, pagination, links }) => {
           this.resList = data;
           this.total = pagination.total;
+          this.links = links;
         })
         .catch(err => {
           console.log(err);

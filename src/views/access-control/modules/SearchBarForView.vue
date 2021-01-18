@@ -4,78 +4,44 @@
       <Form
         ref="formInline"
         :model="searchParams"
-        :label-width="65"
+        :label-width="85"
         :label-colon="true"
         inline
       >
         <FormItem
           prop="name"
-          label="区名称"
-          :label-width="80"
+          label="规则名称"
+          :label-width="100"
         >
           <Input
             v-model="searchParams.name"
-            placeholder="请输入区名称"
+            placeholder="请输入规则名称"
             class="m-select"
             clearable
           />
 
         </FormItem>
         <FormItem
-          prop="zone_type"
-          label="区类型"
-        >
-          <Select
-            v-model="searchParams.zone_type"
-            class="m-select"
-            placeholder="请选择区类型"
-            clearable
-          >
-            <Option
-              :value="item"
-              v-for="item in Object.keys(zoneType)"
-              :key="item"
-            >{{zoneType[item]}}</Option>
-          </Select>
-
-        </FormItem>
-        <FormItem
-          prop="role"
-          label="主辅区	"
-        >
-          <Select
-            v-model="searchParams.role"
-            class="m-select"
-            clearable
-            placeholder="请选择主辅区"
-          >
-            <Option
-              :value="item"
-              v-for="item in Object.keys(role)"
-              :key="item"
-            >{{role[item]}}</Option>
-          </Select>
-
-        </FormItem>
-        <FormItem
-          prop="address"
-          label="服务器"
+          prop="acls"
+          label="访问控制"
         >
           <Input
+            v-model="searchParams.acls"
             class="m-select"
-            v-model="searchParams.address"
-            placeholder="请输入服务器"
+            placeholder="请输入访问控制"
+            clearable
           ></Input>
         </FormItem>
-
         <FormItem
           prop="comment"
           label="备注"
+          :label-width="60"
         >
           <Input
             v-model="searchParams.comment"
             class="m-select"
             placeholder="请输入备注"
+            clearable
           ></Input>
         </FormItem>
         <btn-search @click="$emit('on-search', searchParams)" />

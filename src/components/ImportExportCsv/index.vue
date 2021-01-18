@@ -147,6 +147,7 @@ export default {
         this.loading = false;
 
         this.$emit("on-upload-success");
+        this.$emit("on-import-success");
       }).catch(err => {
         this.loading = false;
         this.$Message.error(err.response.data.message);

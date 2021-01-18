@@ -25,11 +25,11 @@ export default {
   /** DNS */
   acl: "访问控制列表",
   view: "视图",
-  zone: "权威区",
+  authzone: "权威区",
   forwardzone: "转发区",
   forwardzones: "转发区",
   forwardergroup: "转发组",
-  rr: "资源记录",
+  authrr: "资源记录",
   forward: "转发组",
   forward_zone: "转发区",
   timesheduler: "时间策略",
@@ -65,7 +65,11 @@ export default {
   ddiuser: "当前用户信息",
   role: "角色信息",
   usergroup: "用户组",
-  whitelist: "白名单"
+  whitelist: "白名单",
+
+  authzoneauthrrs: "权威辅区",
+  authzoneaxfr: "辅区全量资源",
+  authzoneixfr: "辅区增量资源",
 };
 
 export const operateMap = {
@@ -76,5 +80,8 @@ export const operateMap = {
   update: "更新",
   delete: "删除",
   flush: "批量更新",
-  upload: "上传"
+  upload: "上传",
+
+  batchcreate: "批量创建",
+  
 };

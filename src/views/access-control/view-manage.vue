@@ -4,15 +4,25 @@
       :data="list"
       :columns="columns"
       :total="total"
-      :current.sync="current"
+      :current.sync="query.current"
     >
-      <template slot="top-right">
-        <i-button
-          v-if="$hasPermission('view', 'POST')"
-          type="primary"
-          @click="handleOpenCreate"
-        >新建</i-button>
+
+      <template slot="neck">
+        <SearchBar
+          :params="query"
+          @on-search="handleSearch"
+        >
+          <template slot="operate">
+            <i-button
+              v-if="$hasPermission('view', 'POST')"
+              type="primary"
+              @click="handleOpenCreate"
+            >新建</i-button>
+          </template>
+        </SearchBar>
+
       </template>
+
     </table-page>
 
     <ViewModal
@@ -28,12 +38,14 @@
 import services from "@/services";
 
 import ViewModal from "./modules/view-modal";
+import SearchBar from "./modules/SearchBarForView";
+import _ from "lodash";
 
 export default {
   name: "deviceMonitor",
   components: {
-
-    ViewModal
+    ViewModal,
+    SearchBar
   },
   data() {
     return {
@@ -125,18 +137,31 @@ export default {
       visible: false,
       links: {},
       paramsLinks: {},
-      default: {}
+      default: {},
+      query: {
+        current: 1
+      }
     };
   },
+
   watch: {
-    current: {
-      handler() {
-        this.getView();
+    "$route.query": {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.query = _.cloneDeep(value);
+        this.getView(value);
       }
     }
   },
 
+
   methods: {
+    handleSearch(query) {
+      this.$router.replace({
+        query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
+      });
+    },
     handleOpenCreate() {
       this.visible = true;
       this.paramsLinks = this.links;
@@ -145,11 +170,10 @@ export default {
       this.visible = true;
       this.paramsLinks = links;
     },
-    getView() {
-      const params = {
-        page_num: this.current,
-        page_size: 10
-      };
+    getView(query = this.query) {
+      const params = query;
+      params.page_size = 10;
+      params.page_num = query.current || 1;
       services
         .getViewList(params)
         .then(({ data, links, pagination }) => {
