@@ -87,6 +87,11 @@ export const columns = scope => [
     minWidth: 150
   },
   {
+    title: "最近探测时间",
+    key: "lastRefreshTime",
+    minWidth: 150
+  },
+  {
     title: "操作",
     width: 240,
     className: "operate-column",
