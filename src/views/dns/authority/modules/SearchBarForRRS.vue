@@ -74,7 +74,7 @@
             placeholder="请输入备注"
           />
         </FormItem>
-        <btn-search @click="$emit('on-search', searchParams)" />
+        <btn-search @click="handleSearch" />
 
       </Form>
     </div>
@@ -126,6 +126,9 @@ export default {
     handleClear() {
       this.searchParams.from = undefined;
       this.searchParams.to = undefined;
+    },
+    handleSearch() {
+      this.$emit("on-search", { enabled: this.searchParams.enabled === "false" ? false : true, ...this.searchParams });
     }
   }
 };
