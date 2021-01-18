@@ -62,7 +62,7 @@
             v-model="searchParams.rdata"
             class="m-select"
             placeholder="请输入记录值"
-          ></Input>
+          />
         </FormItem>
         <FormItem
           prop="comment"
@@ -72,14 +72,14 @@
             v-model="searchParams.comment"
             class="m-select"
             placeholder="请输入备注"
-          ></Input>
+          />
         </FormItem>
         <btn-search @click="$emit('on-search', {enabled: searchParams.enabled === 'false' ? false: true, ...searchParams})" />
 
       </Form>
     </div>
     <div class="search-operate">
-      <slot name="operate" />
+      <slot />
     </div>
   </div>
 </template>

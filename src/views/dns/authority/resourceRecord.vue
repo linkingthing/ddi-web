@@ -13,7 +13,7 @@
         :params="query"
         @on-search="handleSearch"
       >
-        <div slot="operate">
+        <div >
 
           <i-button
             type="primary"
