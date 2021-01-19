@@ -22,7 +22,7 @@ export default {
       path: "/address/dhcp/subnets",
       component: () =>
         import(
-          /* webpackChuckName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"
+          /* webpackChunkName: "subnet-pool-subnet" */ "@/views/dhcp-service/address-pool/subnet-list"
         ),
       meta: {
         title: "子网管理",
@@ -44,7 +44,7 @@ export default {
           path: "/address/dhcp/subnets/:id/pools",
           component: () =>
             import(
-              /* webpackChuckName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"
+              /* webpackChunkName: "address-pool-list" */ "@/views/dhcp-service/address-pool/pool-list"
             ),
           meta: {
             notInMenu: true,
@@ -59,7 +59,7 @@ export default {
           path: "/address/dhcp/subnets/:id/pdpools",
           component: () =>
             import(
-              /* webpackChuckName: "address-pdpool-list" */ "@/views/dhcp-service/address-pool/pdpool-list"
+              /* webpackChunkName: "address-pdpool-list" */ "@/views/dhcp-service/address-pool/pdpool-list"
             ),
           meta: {
             notInMenu: true,
@@ -74,7 +74,7 @@ export default {
           path: "/address/dhcp/subnets/:id/reservations",
           component: () =>
             import(
-              /* webpackChuckName: "address-reservations-list" */ "@/views/dhcp-service/address-pool/reservations-list"
+              /* webpackChunkName: "address-reservations-list" */ "@/views/dhcp-service/address-pool/reservations-list"
             ),
           meta: {
             notInMenu: true,
@@ -89,7 +89,7 @@ export default {
           path: "/address/dhcp/subnets/:id/staticaddresses",
           component: () =>
             import(
-              /* webpackChuckName: "static-address" */ "@/views/dhcp-service/address-pool/static-address"
+              /* webpackChunkName: "static-address" */ "@/views/dhcp-service/address-pool/static-address"
             ),
           meta: {
             notInMenu: true,
@@ -117,7 +117,7 @@ export default {
           path: "/address/dhcp/dhcpconfigs",
           component: () =>
             import(
-              /* webpackChuckName: "option-config" */ "@/views/dhcp-service/option-config/dhcp-configs"
+              /* webpackChunkName: "option-config" */ "@/views/dhcp-service/option-config/dhcp-configs"
             ),
           meta: {
             notInMenu: true,
@@ -132,7 +132,7 @@ export default {
           path: "/address/dhcp/clientclasses",
           component: () =>
             import(
-              /* webpackChuckName: "option-config" */ "@/views/dhcp-service/option-config/client-classes"
+              /* webpackChunkName: "option-config" */ "@/views/dhcp-service/option-config/client-classes"
             ),
           meta: {
             notInMenu: true,

@@ -6,6 +6,7 @@ var baseWebpackConfig = require("./webpack.base.conf");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 
+
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
   baseWebpackConfig.entry[name] = ["./build/dev-client"].concat(
@@ -15,14 +16,14 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
 
 module.exports = merge(baseWebpackConfig, {
   module: {
-    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap }),
+    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
   },
   // cheap-module-eval-source-map is faster for development
   devtool: "#cheap-module-eval-source-map",
   plugins: [
     new webpack.DefinePlugin({
       "process.env": config.dev.env,
-      PACK_SYSTEM: config.PACK_SYSTEM,
+      PACK_SYSTEM: config.PACK_SYSTEM
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),
@@ -31,8 +32,12 @@ module.exports = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "index.html",
-      inject: true,
+      inject: true
     }),
     new FriendlyErrorsPlugin(),
-  ],
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: require("./vendor-manifest.json")
+    })
+  ]
 });

@@ -20,7 +20,7 @@ export default {
     {
       name: "nodeManage",
       path: "/monitor",
-      component: () => import("@/views/node"),
+      component: () => import(/* webpackChunkName: "hellor" */ "@/views/node"),
       icon: "icon-node-monitor",
       meta: {
         range: "monitor",

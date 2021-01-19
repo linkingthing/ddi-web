@@ -24,7 +24,7 @@ export default {
       path: "/dns/dns/views_zones",
       component: () =>
         import(
-          /* webpackChunkName: "option-config" */ "@/views/dns/authority/config"
+          /* webpackChunkName: "authority" */ "@/views/dns/authority/config"
         ),
       meta: {
         title: "权威区",
@@ -38,7 +38,7 @@ export default {
       path: "/dns/dns/views/:id/authzones",
       component: () =>
         import(
-          /* webpackChunkName: "option-config" */ "@/views/dns/authority/zoneQuery"
+          /* webpackChunkName: "authority" */ "@/views/dns/authority/zoneQuery"
         ),
       meta: {
         title: ":id",
@@ -55,7 +55,7 @@ export default {
       path: "/dns/dns/views/:id/authzones/:zoneId/authrrs",
       component: () =>
         import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/authority/resourceRecord"
+          /* webpackChunkName: "authority" */ "@/views/dns/authority/resourceRecord"
         ),
       meta: {
         title: ":name",
@@ -72,7 +72,7 @@ export default {
       path: "/dns/dns/views_redirects",
       component: () =>
         import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/authority/redirectView"
+          /* webpackChunkName: "redirects" */ "@/views/dns/authority/redirectView"
         ),
       meta: {
         title: "重定向",
@@ -86,7 +86,7 @@ export default {
       path: "/dns/dns/views/:id/redirects",
       component: () =>
         import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/authority/redirect"
+          /* webpackChunkName: "redirects" */ "@/views/dns/authority/redirect"
         ),
       meta: {
         title: ":id",
@@ -103,7 +103,7 @@ export default {
       path: "/dns/dns/views_urlredirects",
       component: () =>
         import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirectsView"
+          /* webpackChunkName: "redirects" */ "@/views/dns/authority/urlredirectsView"
         ),
       meta: {
         title: "IPv6代理",
@@ -116,7 +116,7 @@ export default {
       path: "/dns/dns/views/:id/urlredirects",
       component: () =>
         import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/authority/urlredirects"
+          /* webpackChunkName: "redirects" */ "@/views/dns/authority/urlredirects"
         ),
       meta: {
         title: ":id",

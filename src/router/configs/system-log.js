@@ -18,7 +18,7 @@ export default {
       path: "/system/log/auditlogs",
       component: () =>
         import(
-          /* webpackChuckName: "operate-logs" */ "@/views/system/log/auditlog"
+          /* webpackChunkName: "operate-logs" */ "@/views/system/log/auditlog"
         ),
       icon: "icon-alarm",
       meta: {
@@ -33,7 +33,7 @@ export default {
       path: "/system/log/dnslogs",
       component: () =>
         import(
-          /* webpackChuckName: "operate-logs" */ "@/views/system/log/parselog"
+          /* webpackChunkName: "operate-logs" */ "@/views/system/log/parselog"
         ),
       icon: "icon-alarm",
       meta: {
@@ -48,7 +48,7 @@ export default {
     //   path: "/system/log/feedback",
     //   component: () =>
     //     import(
-    //       /* webpackChuckName: "operate-logs" */ "@/views/system/log/feedback"
+    //       /* webpackChunkName: "operate-logs" */ "@/views/system/log/feedback"
     //     ),
     //   meta: {
     //     range: "system",

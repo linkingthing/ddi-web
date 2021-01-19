@@ -22,7 +22,7 @@ export default {
     {
       name: 'ipam-address-manage',
       path: '/address/ipam/scannedsubnets',
-      component: () => import(/* webpackChuckName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
+      component: () => import(/* webpackChunkName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
         title: "IP资产管理",
         permission: "ipAddressMonitor"
@@ -31,7 +31,7 @@ export default {
     {
       name: 'ipam-network-interface',
       path: '/address/ipam/scannedsubnets/:scannedsubnetsId/networkinterfaces',
-      component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
+      component: () => import(/* webpackChunkName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
       meta: {
         notInMenu: true,
         active: "ipam-address-manage",
@@ -44,7 +44,7 @@ export default {
     {
       name: 'ipam-network-ipassets',
       path: '/address/ipam/scannedsubnets/:scannedsubnetsId/ipassets',
-      component: () => import(/* webpackChuckName: "ipam-network-interface" */ "@/views/ipam-manage/ipassets"),
+      component: () => import(/* webpackChunkName: "ipam-network-interface" */ "@/views/ipam-manage/ipassets"),
       meta: {
         notInMenu: true,
         active: "ipam-address-manage",
@@ -55,7 +55,7 @@ export default {
     {
       name: 'ip-assets-manage',
       path: '/address/ipam/assets',
-      component: () => import(/* webpackChuckName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
+      component: () => import(/* webpackChunkName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
       meta: {
         title: "终端资产管理",
         permission: "terminalManage"
@@ -65,7 +65,7 @@ export default {
     {
       name: 'device-detect',
       path: '/address/ipam/networkequipments',
-      component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/device-detect"),
+      component: () => import(/* webpackChunkName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
         title: "设备资产管理",
         permission: "deviceManage"
@@ -74,7 +74,7 @@ export default {
     // {
     //   name: 'topology',
     //   path: '/address/ipam/topology',
-    //   component: () => import(/* webpackChuckName: "device-detect" */ "@/views/ipam-manage/topology"),
+    //   component: () => import(/* webpackChunkName: "device-detect" */ "@/views/ipam-manage/topology"),
     //   meta: {
     //     title: "网络拓扑",
     //     permission: "netTopology"

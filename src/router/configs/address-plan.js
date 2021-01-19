@@ -16,10 +16,7 @@ export default {
     {
       name: "ipam-address-plan",
       path: "/address/ipam/plans",
-      component: () =>
-        import(
-          /* webpackChuckName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan"
-        ),
+      component: () => import(/* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan"),
       icon: "icon-plan",
 
       meta: {
@@ -33,7 +30,7 @@ export default {
       path: "/address/ipam/plans/create",
       component: () =>
         import(
-          /* webpackChuckName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"
         ),
       meta: {
         title: "语义规划",
@@ -48,7 +45,7 @@ export default {
       path: "/address/ipam/plans/:planId",
       component: () =>
         import(
-          /* webpackChuckName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"
         ),
       meta: {
         title: "语义规划",
@@ -63,7 +60,7 @@ export default {
       path: "/address/ipam/address/list",
       component: () =>
         import(
-          /* webpackChuckName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/address-list"
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/address-list"
         ),
       meta: {
         title: "子网列表",

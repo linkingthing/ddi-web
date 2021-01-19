@@ -29,7 +29,7 @@ export default {
       path: "/dns/dns/config",
       component: () =>
         import(
-          /* webpackChuckName: "option-config" */ "@/views/dns/global-config"
+          /* webpackChunkName: "global-config" */ "@/views/dns/global-config"
         )
     }
   ]

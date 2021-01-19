@@ -10,24 +10,20 @@
   ],
   "plugins": [
     "transform-runtime",
+    "syntax-dynamic-import"
     // [
     //   "import",
     //   {
-    //     "libraryName": "iview",
+    //     "libraryName": "view-design",
     //     "libraryDirectory": "src/components"
     //   }
     // ]
   ],
-  "comments": false,
+  // "comments": false, // 会影响到 webpackChunkName
   "env": {
     "test": {
-      "presets": [
-        "env",
-        "stage-2"
-      ],
-      "plugins": [
-        "istanbul"
-      ]
+      "presets": ["env", "stage-2"],
+      "plugins": ["istanbul"]
     }
   }
 }
