@@ -1,26 +1,24 @@
-# ddi
+# clx-web
 
-> 技术栈：vue + vuex + vue-router + vue-resource + less + iview
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+## Project setup
+```
+yarn install
 ```
 
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
 
+### Compiles and minifies for production
+```
+yarn build
+```
 
+### Lints and fixes files
+```
+yarn lint
+```
 
-
-
-
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
