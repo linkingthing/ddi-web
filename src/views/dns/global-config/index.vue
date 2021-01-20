@@ -32,18 +32,17 @@
           <span slot="close">关闭</span>
         </i-switch>
       </FormItem>
-      <!-- 
-      <FormItem label="递归">
-        <i-switch
-          @on-change="handleRecursionEnableToggle"
-          :value="params.recursionEnable"
-          :loading="secLoading"
-          size="large"
-        >
-          <span slot="open">开启</span>
-          <span slot="close">关闭</span>
-        </i-switch>
-      </FormItem> -->
+      
+      <FormItem label="主区服务端口">
+       <Input
+          v-model.number="params.transferPort"
+          style="width: 120px"
+        />
+        <Button
+          type="primary"
+          @click="handleSave('transferPort')"
+        >保存</Button>
+      </FormItem>
 
       <FormItem
         label="递归并发"
@@ -128,7 +127,8 @@ const updateModalEnum = {
   dnssec: "dnssec",
   blackhole: "blackhole",
   recursion: "recursion",
-  recursive: "recursive"
+  recursive: "recursive",
+  transferPort: "transferPort"
 }
 
 export default {
@@ -154,7 +154,8 @@ export default {
         logEnable: false,
         ttl: 3600,
         recursionEnable: false,
-        recursiveClients: 0
+        recursiveClients: 0,
+        transferPort: 53
       },
       links: null,
       logLoading: false,

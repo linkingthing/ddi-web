@@ -7,7 +7,7 @@ module.exports = {
     requireModuleExtension: true
   },
   devServer: {
-    https: true,
+    // https: true,
 
     proxy: {
       "/": {
