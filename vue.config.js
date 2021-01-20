@@ -1,9 +1,10 @@
 var url = "https://10.0.0.121:58081";
 
 module.exports = {
+  lintOnSave: false,
   css: {
     loaderOptions: {},
-    requireModuleExtension: true,
+    requireModuleExtension: true
   },
   devServer: {
     https: true,
@@ -13,8 +14,8 @@ module.exports = {
         target: url,
 
         ws: true,
-        changeOrigin: true,
-      },
-    },
-  },
+        changeOrigin: true
+      }
+    }
+  }
 };
