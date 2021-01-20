@@ -1,8 +1,22 @@
-import Vue from 'vue'
-import App from './App.vue'
+import "view-design/src/styles/index.less";
+import "./assets/less/index.less";
+import "./assets/less/var.less";
 
-Vue.config.productionTip = false
+import Vue from "vue";
+import App from "./App.vue";
+
+import "./util/use-component";
+import "./util/vue-extend";
+
+Vue.config.productionTip = false;
+
+import store from "./store";
+import router from "./router";
+import "./permission";
 
 new Vue({
+  el: "#app",
   render: h => h(App),
-}).$mount('#app')
+  store,
+  router
+});

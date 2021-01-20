@@ -1,0 +1,5 @@
+export const LOCK_STATUS_ENUM = {
+  OPEN: "OPEN",
+  CLOSE: "CLOSE",
+  DISABLED: "DISABLED"
+};
