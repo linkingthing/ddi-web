@@ -118,7 +118,7 @@ export default {
     getConfig(query = this.query) {
       const params = query;
       params.page_size = 10;
-      params.page_num = query.current || 1;
+      params.page_num = +query.current || 1;
 
       services
         .getViewList(params)

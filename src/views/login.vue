@@ -77,6 +77,7 @@
 import services from "@/services";
 import { mapMutations } from "vuex";
 import { resetRouter } from "@/router";
+// eslint-disable-next-line no-unused-vars
 import JsEncrypt from "jsencrypt";
 
 const publicKey = `-----BEGIN RSA Public Key-----
