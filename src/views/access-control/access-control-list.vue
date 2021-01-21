@@ -41,7 +41,7 @@
 <script>
 import services from "@/services";
 import AclModal from "./modules/acl-modal";
-
+import _ from "lodash";
 import SearchBar from "./modules/SearchBarForAcl";
 
 export default {
@@ -155,7 +155,10 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
-        this.query = _.cloneDeep(value);
+        this.query = _.cloneDeep({
+          ...value,
+          current: +value.current
+        });
         this.getManger(value);
       }
     }
@@ -168,7 +171,7 @@ export default {
       });
     },
     onImportSuccess() {
-      this.current = 1;
+      this.query.current = 1;
       this.getManger();
     },
     handleGo(path) {
@@ -180,7 +183,7 @@ export default {
     getManger(query = this.query) {
       const params = query;
       params.page_size = 10;
-      params.page_num = query.current || 1;
+      params.page_num = +query.current || 1;
 
       services
         .getAccessList(params)
@@ -188,6 +191,7 @@ export default {
           this.list = data;
           this.links = links;
           this.total = pagination.total;
+          this.query.current = pagination.pageNum;
         })
         .catch(err => {
           this.$Message.error(err.message);

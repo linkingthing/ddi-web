@@ -146,7 +146,9 @@ export default {
 
         if (val !== old && val > 0) {
           const { query } = this.$route;
-          this.$router.replace({ query: { ...query, current: val } });
+          // eslint-disable-next-line no-unused-vars
+          let { page_num, ...rest } = query;
+          this.$router.replace({ query: { ...rest, current: val } });
         }
       }
     },
