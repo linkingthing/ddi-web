@@ -162,7 +162,10 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
-        this.query = _.cloneDeep(value);
+        this.query = _.cloneDeep({
+          ...value,
+          current: +value.current
+        });
         this.getResources(value);
       }
     }

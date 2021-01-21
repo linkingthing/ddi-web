@@ -32,7 +32,8 @@
                params.rrType === 'A' && isIPv4Validate,
                params.rrType === 'AAAA' && IPv6SimpleValidateFunc,
                params.rrType === 'CNAME' && domainValidate,
-               params.rrType === 'URL' && urlValidate
+               params.rrType === 'URL' && urlValidate,
+               params.rrType === 'SOA' && soaValidate
       ]"
     >
       <i-input
@@ -65,7 +66,9 @@ import {
   isIPv4Validate,
   urlValidate,
   domainValidate,
-  IPv6SimpleValidateFunc
+  IPv6SimpleValidateFunc,
+  domainReg,
+  integerReg
 } from "@/util/common";
 
 export default {
@@ -96,6 +99,18 @@ export default {
     this.IPv6SimpleValidateFunc = IPv6SimpleValidateFunc;
     this.domainValidate = domainValidate;
     this.urlValidate = urlValidate;
+
+    this.soaValidate = {
+      validator: (rule, value, callback) => {
+        const [domain1, domain2, num1, num2, num3] = value.split(" ")
+        if (domainReg.test(domain1) && domainReg.test(domain2) && integerReg.test(num1) && integerReg.test(num2) && integerReg.test(num3)) {
+          callback();
+        } else {
+          callback("请正确输入SOA记录值： 2个域名 + 3个整形组成，空格分隔");
+
+        }
+      }
+    };
     return {};
   }
 };
