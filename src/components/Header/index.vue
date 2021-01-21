@@ -93,37 +93,40 @@
       v-if="showAgentEvent"
     >
       <div class="message-title">配置返显</div>
-      <div
-        class="message-item"
-        v-for="item in agentEventAll"
-        :key="item.id"
-      >
-        <div style="margin-right: 10px">
-          <Icon
-            style="font-size: 24px;color: #59BB73"
-            type="ios-checkmark-circle-outline"
-            v-if="item.succeed"
-          />
-          <Icon
-            style="font-size: 24px;color: #FF6464"
-            type="ios-warning-outline"
-            v-else
-          />
-        </div>
-        <div>
-          <h3 class="message-item-title">{{item.node}}
+      <div class="message-group">
+        <div
+          class="message-item"
+          v-for="item in agentEventAll"
+          :key="item.id"
+        >
+          <div style="margin-right: 10px">
             <Icon
-              style="font-size: 16px;color: #999; cursor: pointer"
-              custom="icon-detail"
-              @click="handleOpenMessage(item)"
+              style="font-size: 24px;color: #59BB73"
+              type="ios-checkmark-circle-outline"
+              v-if="item.succeed"
             />
-          </h3>
-          <p class="message-item-content">{{item.message}}</p>
-        </div>
-        <div class="message-item-info">
-          <time>{{item.operationTime.split(" ").join("\n")}}</time>
+            <Icon
+              style="font-size: 24px;color: #FF6464"
+              type="ios-warning-outline"
+              v-else
+            />
+          </div>
+          <div>
+            <h3 class="message-item-title">{{item.node}}
+              <Icon
+                style="font-size: 16px;color: #999; cursor: pointer"
+                custom="icon-detail"
+                @click="handleOpenMessage(item)"
+              />
+            </h3>
+            <p class="message-item-content">{{item.message}}</p>
+          </div>
+          <div class="message-item-info">
+            <time>{{item.operationTime.split(" ").join("\n")}}</time>
+          </div>
         </div>
       </div>
+
     </div>
     <common-modal
       :visible.sync="scopeAuthVisible"
@@ -533,6 +536,8 @@ export default {
 
 .message-list {
   position: fixed;
+  display: flex;
+  flex-direction: column;
   right: 0;
   top: 60px;
   bottom: 0;
@@ -540,11 +545,8 @@ export default {
   background: #fff;
   z-index: 100;
   border: 1px solid #ddd;
-  padding: 74px 20px 20px;
-  overflow: auto;
   box-shadow: 0px 0px 46px 0px rgba(120, 120, 120, 0.15);
   .message-title {
-    position: fixed;
     top: 60px;
     right: 0;
     height: 54px;
@@ -557,7 +559,11 @@ export default {
     background: #fff;
     z-index: 10;
   }
-
+  .message-group {
+    padding: 20px;
+    overflow: auto;
+    flex: 1
+  }
   .message-item {
     display: flex;
     margin-bottom: 12px;
