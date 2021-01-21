@@ -13,7 +13,7 @@
         :params="query"
         @on-search="handleSearch"
       >
-        <div >
+        <div>
 
           <i-button
             type="primary"
@@ -209,7 +209,9 @@ export default {
       }).then(res => {
         this.$Message.success("切换成功");
         this.getResources();
-      }).catch(err => err);
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
     },
     getResources(query = this.query) {
       const params = query;
