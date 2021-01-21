@@ -26,24 +26,6 @@
 
 <script>
 
-import {
-  ipv6IsValid,
-  isIPv4Reg,
-  getAddressType,
-  isPosNumber
-} from "@/util/common";
-
-const types = [
-  {
-    label: "ipv4",
-    value: "ipv4"
-  },
-  {
-    label: "ipv6",
-    value: "ipv6"
-  }
-];
-
 export default {
   props: {
     visible: {

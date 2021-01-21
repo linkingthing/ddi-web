@@ -60,11 +60,14 @@ export default {
         { required: true, message: "请填写网络地址,换行分割" },
         {
           validator: function (rule, value, callback) {
-            const idValid = value.every(item => isIp(item.trim()));
+            const idValid = value.every(item => {
+              return isIp(item.trim());
+            });
             if (idValid) {
               callback();
+            } else {
+              callback("请正确填写网络地址");
             }
-            callback("请正确填写网络地址");
           }
         }
       ]
@@ -195,7 +198,7 @@ export default {
     "formModel.ips": {
       deep: true,
       handler() {
-        if (this.formModel.lineType === "ips") {
+        if (this.formModel.lineType === "custom") {
           this.$nextTick().then(() => {
             this.$refs["formInline"].validateField("ips");
           });

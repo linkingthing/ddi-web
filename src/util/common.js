@@ -285,11 +285,19 @@ export const subnetValidateFunc = (rule, value, callback) => {
  * 判断是否是合法的ipv6，不校验掩码
  */
 export const ipv6IsValid = address => {
-  return new Address6(address).isValid();
+  try {
+   return new Address6(address).isCorrect()
+  }catch(e){
+    return false
+  }
 };
 
 export const ipv4IsValid = address => {
-  return new Address4(address).isValid();
+  try {
+    return new Address4(address).isCorrect()
+   }catch(e){
+     return false
+   }
 };
 
 export const isIp = address => {
@@ -315,7 +323,6 @@ export const isIpv6Segment = segment => {
   const endString = ipBinary.slice(subnetMask, ipBinary.length);
   return !endString.includes("1");
 };
-
 
 /**
  * 验证端口是否合法
