@@ -102,11 +102,11 @@ export default {
 
     this.soaValidate = {
       validator: (rule, value, callback) => {
-        const [domain1, domain2, num1, num2, num3] = value.split(" ")
-        if (domainReg.test(domain1) && domainReg.test(domain2) && integerReg.test(num1) && integerReg.test(num2) && integerReg.test(num3)) {
+        const [domain1, domain2, num1, num2, num3, num4, num5] = value.split(" ")
+        if (domainReg.test(domain1) && domainReg.test(domain2) && integerReg.test(num1) && integerReg.test(num2) && integerReg.test(num3) && integerReg.test(num4) && integerReg.test(num5)) {
           callback();
         } else {
-          callback("请正确输入SOA记录值： 2个域名 + 3个整形组成，空格分隔");
+          callback("请正确输入SOA记录值： 2个域名 + 5个整形组成，空格分隔");
 
         }
       }
