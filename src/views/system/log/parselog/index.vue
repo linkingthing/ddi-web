@@ -2,6 +2,7 @@
   <div class="parse-log">
 
     <table-page
+      :loading="loadingPage"
       :data="tableData"
       :columns="columns"
       :total="total"
@@ -122,7 +123,6 @@
 </template>
 
 <script>
-import qs from "qs";
 import resources from "@/dictionary/resources";
 
 export default {
@@ -137,6 +137,7 @@ export default {
       loading: false,
       tableData: [],
       links: {},
+      loadingPage: false,
       columns: [
         {
           title: "时间",
@@ -240,7 +241,7 @@ export default {
   methods: {
     async handleQuery() {
       this.loading = true;
-
+      this.loadingPage = true;
       try {
         let { data, links, pagination } = await this.$get({ url: this.url, params: this.getParams() });
         this.links = links;
@@ -255,6 +256,7 @@ export default {
       }
       finally {
         this.loading = false;
+        this.loadingPage = false;
       }
     },
 

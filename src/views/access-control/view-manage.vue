@@ -1,6 +1,7 @@
 <template>
   <div class="viewManage">
     <table-page
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -49,6 +50,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "视图名称",
@@ -189,6 +191,8 @@ export default {
       const params = query;
       params.page_size = 10;
       params.page_num = query.current || 1;
+
+      this.loading = true;
       services
         .getViewList(params)
         .then(({ data, links, pagination }) => {
@@ -200,7 +204,7 @@ export default {
         })
         .catch(function (err) {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     },
 
     // 删除

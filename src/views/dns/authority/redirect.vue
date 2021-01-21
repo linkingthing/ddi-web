@@ -2,6 +2,7 @@
   <div class="redirect">
     <table-page
       title="重定向"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -38,6 +39,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "域名",
@@ -124,6 +126,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       services
         .geRedirectionsByViewId(this.id, params)
         .then(function ({ data, pagination }) {
@@ -132,7 +135,7 @@ export default {
         })
         .catch(function (err) {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     },
 
     // 删除

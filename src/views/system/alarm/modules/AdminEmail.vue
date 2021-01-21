@@ -2,6 +2,7 @@
   <div class="admin-email">
 
     <table-page
+      :loading="loading"
       :total="list.length"
       :data="list"
       :columns="columns"
@@ -33,6 +34,7 @@ export default {
   props: {},
   data() {
     return {
+      loading: false,
       list: [],
       links: {},
       visible: false,
@@ -77,10 +79,11 @@ export default {
   mounted() { },
   methods: {
     getData() {
+      this.loading = true;
       this.$get(this.$getApiByRoute("/system/alarm/mailreceivers")).then(({ data, links }) => {
         this.list = data;
         this.links = links;
-      });
+      }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.paramsLinks = this.links;

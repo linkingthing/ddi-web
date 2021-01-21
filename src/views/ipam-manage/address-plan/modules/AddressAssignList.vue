@@ -1,6 +1,7 @@
 <template>
   <div class="AddressAssignList">
     <table-page
+      :loading="loading"
       :columns="columns"
       :data="filterListWithList"
       :pagination-enable="false"
@@ -38,6 +39,7 @@ export default {
     return {
       active: "netv6",
       query: "",
+      loading: false,
       columns: [{
         title: "地址规划",
         key: "prefix",
@@ -85,7 +87,7 @@ export default {
                 }
               }
             }, "新建子网")
-   
+
           ]);
         }
       }],
@@ -116,14 +118,14 @@ export default {
       const params = {
         page_size: 10,
         page_num: this.current
-
       };
+      this.loading = true;
       const url = `${self}?action=${action}`;
       this.$post({ url, params }).then(data => {
         this.dataList = (Array.isArray(data) ? data : []).filter(item => {
           return item.state !== "dispatch";
         });
-      });
+      }).finally(() => this.loading = false);
     },
 
     handleIpTypeChange(action) {

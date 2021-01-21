@@ -1,6 +1,7 @@
 <template>
   <div class="domainGroup">
     <table-page
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -30,6 +31,7 @@ export default {
   props: {},
   data() {
     return {
+      loading: false,
       visible: false,
       list: [],
       columns: [{
@@ -81,12 +83,13 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
         this.links = links;
         this.list = data;
         this.total = pagination.total;
         this.current = pagination.current;
-      });
+      }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.paramsLinks = this.links;

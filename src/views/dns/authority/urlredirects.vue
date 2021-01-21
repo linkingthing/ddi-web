@@ -1,6 +1,7 @@
 <template>
   <div class>
     <table-page
+      :loading="loading"
       :data="list"
       :columns="columns"
       :current.sync="current"
@@ -30,6 +31,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "域名",
@@ -84,6 +86,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       this.$getData(params)
         .then(({ data, links, pagination }) => {
           this.list = data;
@@ -93,7 +96,7 @@ export default {
         })
         .catch(function (err) {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.paramsLinks = this.links;

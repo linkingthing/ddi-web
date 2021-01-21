@@ -2,6 +2,7 @@
   <div class="TimePolicy">
     <table-page
       title="转发视图"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -24,7 +25,6 @@
 </template>
 
 <script>
-import { sortBy } from "lodash";
 import TimePolicyModal from "./modules/time-policy-modal";
 import { DateType } from "./modules/helper";
 
@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "名称",
@@ -112,6 +113,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       const { url } = this.$getApiByRoute();
       this.$get({ url, params }).then(({ data, links, pagination }) => {
         this.current = pagination.pageNum;
@@ -151,7 +153,7 @@ export default {
 
         }) : [];
         this.links = links;
-      });
+      }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.visible = true;

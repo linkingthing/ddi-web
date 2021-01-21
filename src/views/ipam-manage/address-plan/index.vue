@@ -11,6 +11,7 @@
       />
       <table-page
         v-else
+        :loading="loadingPage"
         :data="planList"
         :columns="columns"
         :total="total"
@@ -92,17 +93,12 @@
 
 <script>
 
-import { mapGetters, mapMutations } from "vuex";
-import { debounce } from "lodash";
-
 import NoDataList from "@/components/NoDataList";
 import { list2Tree } from "./modules/helper";
 
 
 import PlanTree from "./modules/PlanTree";
 
-
-import SafeLock from "./modules/SafeLock";
 import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
 
 import PlanModal from "./modules/PlanModal";
@@ -124,6 +120,7 @@ export default {
     return {
       visible: false,
       planList: [{}],
+      loadingPage: false,
       columns: [
         {
           title: "规划名称",
@@ -296,6 +293,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loadingPage = true;
       this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
         this.current = pagination.pageNum;
         this.total = pagination.total;
@@ -323,7 +321,7 @@ export default {
 
       }).catch((err) => {
         this.$handleError(err);
-      });
+      }).finally(() => this.loadingPage = false);
     },
 
     uploadSuccess(response, file) {

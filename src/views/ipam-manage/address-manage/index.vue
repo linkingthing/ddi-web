@@ -1,8 +1,8 @@
 <template>
   <div class="address-manage">
-    <IviewLoading v-if="loading" />
 
     <table-page
+      :loading="loading"
       :data="tableData"
       :columns="columns"
       @on-selection-change="handleSelecChange"
@@ -22,7 +22,7 @@ import { columns } from "./define";
 export default {
   data() {
     return {
-      loading: true,
+      loading: false,
       url: this.$getApiByRoute().url,
       tableData: [],
       columns: columns(this),

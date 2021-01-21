@@ -2,6 +2,7 @@
   <div class="option-config">
     <table-page
       title="OPTION列表"
+      :loading="loading"
       :data="tableData"
       :total="total"
       :columns="columns"
@@ -41,6 +42,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       tableData: [],
       columns: [
         {
@@ -96,10 +98,11 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       this.$getData(params).then(({ data, pagination }) => {
         this.tableData = data;
         this.total = pagination.total;
-      }).catch(err => err);
+      }).catch(err => err).finally(() => this.loading = false);
     },
 
 

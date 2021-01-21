@@ -2,6 +2,7 @@
   <div class="zoneQueryForward">
     <table-page
       title="转发区域"
+      :loading="loading"
       :data="dsliteList"
       :columns="columns"
       :total="total"
@@ -29,6 +30,7 @@ export default {
   components: { zoneModal },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "转发类型",
@@ -131,6 +133,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       this.$getData(params).then(({ data, links, pagination }) => {
         this.dsliteList = data.map(item => {
           const forwardItemMap = {
@@ -148,7 +151,7 @@ export default {
         this.total = pagination.total;
       }).catch(err => {
         this.$Message.error(err.message);
-      });
+      }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.visible = true;

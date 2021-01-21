@@ -1,6 +1,7 @@
 <template>
   <div class="acceccControlList">
     <table-page
+      :loading="loading"
       :total="total"
       :data="list"
       :columns="columns"
@@ -62,6 +63,7 @@ export default {
       value: "ctcc"
     }];
     return {
+      loading: false,
       columns: [
         {
           title: "规则名称",
@@ -184,7 +186,7 @@ export default {
       const params = query;
       params.page_size = 10;
       params.page_num = +query.current || 1;
-
+      this.loading = true;
       services
         .getAccessList(params)
         .then(({ data, links, pagination }) => {
@@ -195,7 +197,7 @@ export default {
         })
         .catch(err => {
           this.$Message.error(err.message);
-        });
+        }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.visible = true;

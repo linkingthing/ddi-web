@@ -1,6 +1,7 @@
 <template>
   <div class="priority">
     <table-page
+      :loading="loadingPage"
       title="解析优先级"
       :data="list"
       :columns="columns"
@@ -82,6 +83,7 @@ export default {
     return {
       visible: false,
       loading: false,
+      loadingPage: false,
       list: [],
       dragList: [],
       columns: [

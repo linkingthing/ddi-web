@@ -1,6 +1,7 @@
 <template>
   <div class="viewManage">
     <table-page
+      :loading="loading"
       :data="list"
       :columns="columns"
       :current.sync="current"
@@ -35,6 +36,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "用户组名称",
@@ -94,12 +96,13 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       this.$getData(params, "/auth/auth/usergroups").then(({ data, links, pagination }) => {
         this.links = links;
         this.list = data;
         this.total = pagination.total;
         this.current = pagination.pageNum;
-      });
+      }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.visible = true;

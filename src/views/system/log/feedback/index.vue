@@ -1,8 +1,7 @@
 <template>
   <div class="parse-log">
-    <IviewLoading v-if="loading" />
-
     <table-page
+      :loading="loading"
       :data="agentEventList"
       :columns="columns"
       :current.sync="currentPage"
@@ -107,7 +106,7 @@ export default {
     },
 
     formatContent(data) {
-      const { username, method, resourceKind, succeed, errMessage } = data;
+      const { username, method, resourceKind, } = data;
 
       const getOpperText = opper => {
         switch (opper.toLocaleLowerCase()) {
@@ -207,5 +206,4 @@ export default {
     }
   }
 }
-
 </style>

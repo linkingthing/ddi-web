@@ -2,6 +2,7 @@
   <div class="device-detect">
 
     <table-page
+      :loading="loadingPage"
       :data="tableData"
       :columns="columns"
       :is-padding-top="true"
@@ -115,7 +116,6 @@ import Detect from "./detect";
 import AdvancedSearch from "./advanced-query";
 
 import { columns, deviceTypes } from "./define";
-import { downloadFile } from "@/util/common";
 
 
 export default {
@@ -139,6 +139,7 @@ export default {
         // equipmentType: "",
         // manufacturer: ""
       },
+      loadingPage: false,
       tableData: [],
       columns: columns(this),
       showAdvance: false,
@@ -197,6 +198,7 @@ export default {
           page_num: this.current,
           page_size: 10
         };
+        this.loadingPage = true;
         let res = await this.$get({ url: this.$formatQuerys(params, this.url), params: aparams });
 
         this.tableData = res.data.map(item => {
@@ -218,6 +220,7 @@ export default {
       }
       finally {
         this.loading = false;
+        this.loadingPage = false;
       }
     },
 

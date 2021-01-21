@@ -2,6 +2,7 @@
   <div class>
     <table-page
       title="权威管理"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :current.sync="query.current"
@@ -36,6 +37,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "视图名称",
@@ -122,7 +124,7 @@ export default {
       const params = query;
       params.page_size = 10;
       params.page_num = +query.current || 1;
-
+      this.loading = true;
       services
         .getViewList(params)
         .then(({ data, pagination }) => {
@@ -131,7 +133,7 @@ export default {
         })
         .catch(function (err) {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     }
   }
 };

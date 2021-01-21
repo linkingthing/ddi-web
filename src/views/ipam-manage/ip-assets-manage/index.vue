@@ -43,6 +43,7 @@
     </div>
 
     <table-page
+      :loading="loading"
       :data="tableData"
       :columns="columns"
       :is-padding-top="true"

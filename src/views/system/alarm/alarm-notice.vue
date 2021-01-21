@@ -1,6 +1,7 @@
 <template>
   <div class="alarm-notice">
     <table-page
+      :loading="loading"
       :total="total"
       :data="executeList"
       :columns="columns"
@@ -35,6 +36,7 @@ export default {
   props: {},
   data() {
     return {
+      loading: false,
       columns: [
         {
           type: "selection",
@@ -173,7 +175,7 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
-       this.query = _.cloneDeep({
+        this.query = _.cloneDeep({
           ...value,
           current: +value.current
         });
@@ -195,6 +197,7 @@ export default {
       const params = query;
       params.page_size = 10;
       params.page_num = query.current || 1;
+      this.loading = true;
       this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;
         this.list = data;

@@ -12,6 +12,7 @@
       >搜索</Button>
     </div>
     <table-page
+      :loading="loading"
       :data="dataList"
       :columns="columns"
       :total="total"
@@ -45,6 +46,7 @@ export default {
   data() {
     return {
       dataList: [],
+      loading: false,
       columns: [{
         title: "IP地址",
         key: "ip"
@@ -104,6 +106,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       if (this.search !== "") {
         params.ip = this.search.trim();
       }
@@ -112,7 +115,7 @@ export default {
         this.dataList = data;
         this.current = pagination.pageNum;
         this.total = pagination.total;
-      });
+      }).finally(() => this.loading = false);
     },
     handleSearch() {
       this.getDataList();

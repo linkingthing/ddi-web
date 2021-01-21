@@ -2,6 +2,7 @@
   <div class="zoneQuery">
     <table-page
       title="区域查询"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -46,6 +47,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "区名称",
@@ -180,7 +182,7 @@ export default {
     }
   },
   methods: {
-   
+
     handleSearch(query) {
       this.$router.replace({
         query: { ..._.cloneDeep(this.$route.query), ..._.cloneDeep(query) }
@@ -190,7 +192,7 @@ export default {
       const params = query;
       params.page_size = 10;
       params.page_num = query.current || 1;
-
+      this.loading = true;
       this.$get({ ...this.$getApiByRoute(), params })
         .then(({ links, data, pagination }) => {
           this.list = data;
@@ -199,7 +201,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     },
     // 新建
     handleOpenCreate() {

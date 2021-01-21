@@ -1,6 +1,7 @@
 <template>
   <div class="alarm-config">
     <table-page
+      :loading="loading"
       :total="total"
       :data="list"
       :columns="columns"
@@ -19,6 +20,7 @@ export default {
       total: 0,
       current: 0,
       list: [],
+      loading: false,
       columns: [
         {
           title: "告警项",
@@ -102,6 +104,7 @@ export default {
         page_size: 10,
         page_num: this.current
       };
+      this.loading = true;
       this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;
         this.list = data;

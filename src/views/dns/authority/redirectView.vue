@@ -2,6 +2,7 @@
   <div class>
     <table-page
       title="重定向视图"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :current.sync="current"
@@ -17,6 +18,7 @@ export default {
   name: "parameterSet",
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "视图名称",
@@ -73,6 +75,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       services
         .getViewList(params)
         .then(({ data, pagination }) => {
@@ -81,7 +84,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     }
   }
 };

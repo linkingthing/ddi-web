@@ -2,6 +2,7 @@
   <div class>
     <table-page
       title="资源记录"
+      :loading="loading"
       :data="resList"
       :columns="columns"
       :total="total"
@@ -64,6 +65,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "记录名称",
@@ -184,7 +186,6 @@ export default {
   },
   methods: {
     onImportSuccess() {
-      console.log("=================")
       this.query.current = 1;
       this.getResources();
     },
@@ -220,7 +221,7 @@ export default {
       const params = query;
       params.page_size = 10;
       params.page_num = query.current || 1;
-
+      this.loading = true;
       this.$get({ ...this.$getApiByRoute(), params })
 
         .then(({ data, pagination, links }) => {
@@ -230,7 +231,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     },
     // 删除
     delect(data) {

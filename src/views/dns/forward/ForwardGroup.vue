@@ -2,6 +2,7 @@
   <div class="ForwardView">
     <table-page
       title="转发视图"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -33,6 +34,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "组名称",
@@ -113,11 +115,12 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       this.$getData(params).then(({ data, links, pagination }) => {
         this.list = data;
         this.links = links;
         this.total = pagination.total;
-      });
+      }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
       this.visible = true;

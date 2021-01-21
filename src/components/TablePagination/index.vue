@@ -18,6 +18,7 @@
 
     <template v-if="showTable">
       <Table
+        :loading="loading"
         v-if="tableInnerHeight"
         :data="data"
         :columns="columns"
@@ -26,6 +27,7 @@
         border
       />
       <Table
+        :loading="loading"
         v-else
         :data="data"
         :columns="columns"
@@ -59,15 +61,16 @@
 
 <script>
 
-import { throttle } from "lodash";
-
-
 let pageDataChangeFlat = false;
 
 export default {
   name: "TablePagination",
 
   props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: ""

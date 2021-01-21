@@ -1,8 +1,8 @@
 <template>
   <div class="audit-log">
-    <!-- <IviewLoading v-if="loading" /> -->
 
     <table-page
+      :loading="loading"
       :data="tableData"
       :columns="columns"
       :total="total"

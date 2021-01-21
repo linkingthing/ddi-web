@@ -2,6 +2,7 @@
   <div class="ForwardView">
     <table-page
       title="转发视图"
+      :loading="loading"
       :data="list"
       :columns="columns"
       :total="total"
@@ -17,6 +18,7 @@ export default {
   name: "applicationFirewall",
   data() {
     return {
+      loading: false,
       columns: [
         {
           title: "视图",
@@ -67,6 +69,7 @@ export default {
         page_num: this.current,
         page_size: 10
       };
+      this.loading = true;
       services
         .getViewList(params)
         .then(({ data, pagination }) => {
@@ -75,7 +78,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
-        });
+        }).finally(() => this.loading = false);
     }
   }
 };
