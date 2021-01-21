@@ -164,6 +164,9 @@ export default {
           case "disable": return "禁用";
           case "enable": return "启用";
 
+          case "changepriority": return "调整优先级";
+          case "switchrecursion": return "切换递归";
+
         }
       };
 
