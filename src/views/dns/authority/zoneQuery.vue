@@ -85,7 +85,7 @@ export default {
 
         },
         {
-          title: "主辅区",
+          title: "区角色",
           key: "role",
           width: 100,
           render: (h, { row }) => {

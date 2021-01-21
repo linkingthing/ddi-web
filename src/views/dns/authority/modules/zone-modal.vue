@@ -127,7 +127,7 @@ export default {
           { required: true, message: "请选择区类型" }
         ],
         role: [
-          { required: true, message: "请选择主辅区" },
+          { required: true, message: "请选择区角色" },
 
         ],
         masters: [{
@@ -159,7 +159,10 @@ export default {
         type: "component",
         component: IPListInput,
         props: {
-          placeholder: "请填写辅服务器"
+          placeholder: `可以添加多个辅服务器，并以换行符分隔，
+格式，IP地址：端口
+例如：29.23.34.34:400,[2001::FFF1]:8089
+端口选填，默认值为53`
         }
       };
 
@@ -170,7 +173,11 @@ export default {
           type: "component",
           component: IPListInput,
           props: {
-            placeholder: "请填写主服务器"
+            placeholder: `可以添加多个主服务器，并以换行符分隔，
+格式，IP地址：端口
+例如：29.23.34.34:400,[2001::FFF1]:8089
+端口选填，默认值为53`
+
           }
         };
       }
@@ -204,7 +211,7 @@ export default {
           placeholder: "请填写TTL"
         },
         {
-          label: "主辅区",
+          label: "区角色",
           model: "role",
           type: "radio",
           children: [

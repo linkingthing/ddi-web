@@ -41,13 +41,13 @@
         </FormItem>
         <FormItem
           prop="role"
-          label="主辅区"
+          label="区角色"
         >
           <Select
             v-model="searchParams.role"
             class="m-select"
             clearable
-            placeholder="请选择主辅区"
+            placeholder="请选择区角色"
           >
             <Option
               :value="item"
@@ -59,15 +59,15 @@
         </FormItem>
         <FormItem
           prop="address"
-          label="主/辅区服务器"
+          label="服务器"
         >
           <!-- :label-width="120" -->
 
           <Input
             class="m-select"
             v-model="searchParams.address"
-            placeholder="主/辅区服务器"
-          ></Input>
+            placeholder="主辅区服务器"
+          />
         </FormItem>
 
         <FormItem
