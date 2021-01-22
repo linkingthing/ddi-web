@@ -10,7 +10,7 @@
     <Form
       ref="formInline"
       label-position="left"
-      :label-width="80"
+      :label-width="85"
       :label-colon="true"
       :rules="rules"
       :model="formModel"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isIp, ipv6IsValid, ipv4IsValid, domainReg } from "@/util/common";
+import { ipv6IsValid, ipv4IsValid, domainReg } from "@/util/common";
 import { ttlValidator, serverValidator } from "@/util/validator";
 import IPListInput from "@/components/IPListInput";
 
@@ -130,10 +130,14 @@ export default {
           { required: true, message: "请选择区角色" },
 
         ],
-        masters: [{
+        masters: [{ required: true, message: "请输入主区地址" },
+        {
           validator: (rule, value, callback) => {
             if (this.formModel.role === "slave" && this.formModel.masters.filter(item => item.trim()).length === 0) {
               callback("请输入主区地址");
+            }
+            if (this.formModel.masters.length > 1) {
+              callback("主区只能输入一条");
             }
             callback();
           }
