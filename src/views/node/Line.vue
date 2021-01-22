@@ -48,9 +48,9 @@ const ThemeConfig = {
     primaryColor: "#6ec9e7",
     gradualColor: "#9fe5ff"
   },
-
-
 };
+
+
 export default {
   name: "ChartLine",
   components: { Chart, NoDataFigure },
@@ -86,6 +86,14 @@ export default {
     legend: {
       type: Array,
       default: () => ([])
+    },
+    showField: {
+      type: String,
+      default: ""
+    },
+    showLines: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -156,16 +164,30 @@ export default {
 
       if (this.multiple) {
 
+        const showLines = this.showLines;
+        let color = primaryColor;
+
         series = this.values.map(item => {
+          const name = this.seriesName || item.packetType || item.rcode || item.type || "值";
+          const data = (Array.isArray(item.values) && item.values.map(({ timestamp, value }) => [timestamp, value])) || (Array.isArray(item.ratios) && item.ratios.map(({ timestamp, ratio }) => [timestamp, ratio]));
+
+          if (showLines.length) {
+            if (showLines.includes(item[this.showField])) {
+              color = primaryColor;
+            } else {
+              color = "rgba(0, 0, 0, 0)";
+            }
+          }
 
           return {
             animation: false,
-            name: self.seriesName || item.packetType || item.rcode || item.type || "值",
-            data: (item.values && item.values.map(({ timestamp, value }) => [timestamp, value])) || (item.ratios && item.ratios.map(({ timestamp, ratio }) => [timestamp, ratio])),
+            name,
+            data,
             type: "line",
             symbol: "none",
             lineStyle: {
-              width: 3
+              width: 3,
+              color
             },
             smooth: true
           };

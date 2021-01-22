@@ -10,12 +10,11 @@ module.exports = {
   },
   devServer: {
     https: true,
-    disableHostCheck: true,
+    // disableHostCheck: true,
 
     proxy: {
       "/": {
         target: url,
-
         ws: true,
         changeOrigin: true
       }

@@ -67,7 +67,7 @@ export default {
   usergroup: "用户组",
   whitelist: "白名单",
 
-  authzoneauthrrs: "权威辅区",
+  authzoneauthrrs: "权威区",
   authzoneaxfr: "辅区全量资源",
   authzoneixfr: "辅区增量资源",
 };

@@ -42,12 +42,13 @@
       >
         <line-bar
           is-percent
+          multiple
           line-theme="color3"
           :labels="successRateLabels"
           :values="successRateValues"
-          series-name="解析成功率"
+          showField="rcode"
+          :showLines="['Success']"
         />
-        <!-- multiple -->
       </Card>
 
       <Card
@@ -328,7 +329,7 @@ export default {
             if (Array.isArray(item.resolvedratios)) {
               const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
               this.successRateLabels = labels;
-              this.successRateValues = values;
+              this.successRateValues = item.resolvedratios;
               this.resolvedratiosLinks = item.links;
             } else {
               this.successRateLabels = [];
@@ -366,7 +367,7 @@ export default {
         this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
           const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
           this.successRateLabels = labels;
-          this.successRateValues = values;
+          this.successRateValues = resolvedratios;
         }).catch(err => err);
       });
     },
