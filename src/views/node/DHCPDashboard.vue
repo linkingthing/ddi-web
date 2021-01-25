@@ -205,17 +205,7 @@ export default {
     this.init();
 
 
-    this.timer = setInterval(() => {
-
-      this.getSubnetUsedRatioList({ period: this.usageTime });
-
-      this.getPacketList({ period: this.dhcpTime });
-
-      this.getLeaseList({ period: this.leaseTime });
-
-      this.getLpsList({ period: this.lpsTime });
-
-    }, 10000);
+    // this.timer = setInterval(this.getAllInfo, 10000);
   },
 
   destroyed() {
@@ -227,6 +217,16 @@ export default {
       this.dhcpValues = [];
       this.dhcpLabels = [];
       this.getNodeInfo();
+    },
+
+    getAllInfo() {
+      this.getSubnetUsedRatioList({ period: this.usageTime });
+
+      this.getPacketList({ period: this.dhcpTime });
+
+      this.getLeaseList({ period: this.leaseTime });
+
+      this.getLpsList({ period: this.lpsTime });
     },
 
     intercept() {
@@ -244,29 +244,14 @@ export default {
           data.forEach(item => {
 
             if (item.id === "lps") {
-              const [labels, value] = valuesParser(item.lps.values || []);
-              this.dhcpLpsLabels = labels;
-              this.dhcpLpsValues = value;
               this.lpsLinks = item.links;
             }
 
             if (item.id === "lease") {
-              const [labels, value] = valuesParser(item.lease.values || []);
-              this.dhcpLeaseLabels = labels;
-              this.dhcpLeaseValues = value;
               this.leaseLinks = item.links;
             }
 
             if (item.id === "packets") {
-              if (Array.isArray(item.packets) && item.packets.length) {
-                const [labels] = valuesParser(item.packets[0].values);
-                this.dhcpLabels = labels;
-                this.packetsList = item.packets;
-              } else {
-                this.dhcpLabels = [];
-                this.packetsList = [];
-              }
-
 
               this.packetsLinks = item.links;
 
@@ -280,20 +265,6 @@ export default {
             if (item.id === "subnetusedratios") {
               this.useageLinks = item.links;
 
-              if (Array.isArray(item.subnetusedratios)) {
-                this.usageList = item.subnetusedratios.map(({ ipnet, usedRatios }) => {
-                  return {
-                    ipnet,
-                    usedRatios
-                  };
-                });
-              } else {
-                this.usageList = [];
-                this.keepShowUseageIpnet = "";
-                this.dhcpUsageLabels = [];
-                this.dhcpUsageValues = [];
-              }
-
 
               if (this.usageList.length) {
                 this.keepShowUseageIpnet = this.usageList[0].ipnet;
@@ -303,11 +274,13 @@ export default {
 
           });
         });
-      }).catch(err => err);
+      }).then(() => {
+        setTimeout(this.getAllInfo, 300)
+      });
     },
 
     getSubnetUsedRatioList(params) {
-      this.intercept().then(_ => {
+      this.intercept().then(() => {
         const temp = this.useageIpnet;
         this.useageIpnet = "";
         this.$get({ params, url: this.useageLinks.self }).then(({ subnetusedratios }) => {
@@ -331,7 +304,7 @@ export default {
     },
 
     getLpsList(params) {
-      this.intercept().then(_ => {
+      this.intercept().then(() => {
         this.$get({ params, url: this.lpsLinks.self }).then(({ lps: { values } }) => {
           const [labels, value] = valuesParser(values || []);
           this.dhcpLpsLabels = labels;
@@ -341,7 +314,7 @@ export default {
     },
 
     getLeaseList(params) {
-      this.intercept().then(_ => {
+      this.intercept().then(() => {
         this.$get({ params, url: this.leaseLinks.self }).then(({ lease: { values } }) => {
           const [labels, value] = valuesParser(values || []);
           this.dhcpLeaseLabels = labels;
@@ -355,7 +328,7 @@ export default {
       this.packetsVersion = 0;
       this.showPacketsLine = false;
 
-      this.intercept().then(_ => {
+      this.intercept().then(() => {
         this.$get({ params, url: this.packetsLinks.self }).then(({ packets }) => {
 
           if (Array.isArray(packets) && packets.length) {

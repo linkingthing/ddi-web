@@ -240,20 +240,22 @@ export default {
   created() { },
   mounted() {
     this.initDataRequest();
-    this.timer = setInterval(() => {
-      this.getQPSData();
-      this.getCachehitData();
-      this.getResolvedratiosData();
-      this.getQuerytyperatiosData();
-      this.getToptendomainsTimeData();
-      this.getTopIps();
-    }, 10000);
+    this.timer = setInterval(this.getAllInfo, 10000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
   },
 
   methods: {
+
+    getAllInfo() {
+      this.getQPSData();
+      this.getCachehitData();
+      this.getResolvedratiosData();
+      this.getQuerytyperatiosData();
+      this.getToptendomainsTimeData();
+      this.getTopIps();
+    },
     initDataRequest() {
       this.getNodeInfo();
     },
@@ -285,61 +287,32 @@ export default {
         data.forEach(item => {
 
           if (item.id === "toptenips") {
-            this.ips = item.toptenips;
             this.toptenipsLinks = item.links;
           }
 
           if (item.id === "toptendomains") {
-            this.domains = item.toptendomains;
             this.toptendomainsLinks = item.links;
           }
 
           if (item.id === "qps") {
-            const [labels, values] = valuesParser(item.qps.values || []);
-            this.qpsLabels = labels;
-            this.qpsValues = values;
             this.qpsLinks = item.links;
           }
 
           if (item.id === "cachehitratio") {
-            const [labels, values] = valuesParser(item.cachehitratio.ratios || []);
-            this.memoHitRateLabels = labels;
-            this.memoHitRateValues = values;
+
             this.cachehitLinks = item.links;
           }
 
           if (item.id === "querytyperatios") {
             this.querytyperatiosLinks = item.links;
-
-            // TODO: 略显尴尬
-            if (Array.isArray(item.querytyperatios)) {
-              this.types = item.querytyperatios.map(item => {
-                return {
-                  name: item.type,
-                  value: ({ ...item.ratios.pop() }).ratio || 0
-                };
-              });
-            } else {
-              this.types = [];
-            }
-
           }
 
           if (item.id === "resolvedratios") {
-            if (Array.isArray(item.resolvedratios)) {
-              const [labels, values] = valuesParser(item.resolvedratios.find(item => item.rcode === "Success").ratios || []);
-              this.successRateLabels = labels;
-              this.successRateValues = item.resolvedratios;
-              this.resolvedratiosLinks = item.links;
-            } else {
-              this.successRateLabels = [];
-              this.successRateValues = [];
-              this.resolvedratiosLinks = item.links;
-            }
-
+            this.resolvedratiosLinks = item.links;
           }
+
         });
-      });
+      }).then(this.getAllInfo);
     },
 
     getQPSData(params = { period: this.qpsTime }) {
