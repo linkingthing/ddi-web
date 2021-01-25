@@ -329,7 +329,7 @@ export default {
         const master = map[item.master];
         const controller = map[item.controllerIP];
 
-        if (item.controllerIP === item.id ) {
+        if (item.controllerIP === item.id) {
           tree.push(item);
         } else {
           if (item.master) {
@@ -394,21 +394,30 @@ export default {
 
           const { data: dnsData } = await this.$get({ url: links.dnses });
 
-          const qpsList = dnsData.find(item => item.id === "qps").qps.values;
+          const qpsObj = dnsData.find(item => item.id === "qps");
+
+          const qpsObjData = await this.$get({ url: qpsObj.links.self })
+
+          const qpsList = qpsObjData.qps.values;
 
           const lastQps = Array.isArray(qpsList) ? qpsList[qpsList.length - 1] : 0;
-
 
           if (typeof lastQps.value === "number") {
             totalQps += lastQps.value;
           }
 
 
-          const { data: dhcpData } = await this.$get({ url: links.dhcps });
 
-          const lpsList = dhcpData.find(item => item.id === "lps").lps.values;
+          const { data: dhcpObj } = await this.$get({ url: links.dhcps });
+
+          const dhcpObjData = dhcpObj.find(item => item.id === "lps");
+
+          const dhcpData = await this.$get({ url: dhcpObjData.links.self })
+
+
+
+          const lpsList = dhcpData.lps.values;
           const lastLps = Array.isArray(lpsList) ? lpsList[lpsList.length - 1] : {};
-
 
           if (typeof lastLps.value === "number") {
             totalLps += lastLps.value;
@@ -429,14 +438,13 @@ export default {
     },
 
     excuteRunTime() {
+
       const createMoment = moment(this.bootTime);
       const secondCount = moment().unix() - createMoment.unix();
-
       const days = parseInt(secondCount / (3600 * 24));
       const hours = parseInt((secondCount - days * 3600 * 24) / 3600);
       const minutes = parseInt((secondCount - days * 3600 * 24 - hours * 3600) / 60);
       const seconds = parseInt((secondCount - hours * 3600) % 60);
-
       return { days, hours, minutes, seconds }; // 2*3600*24+17*3600+55*60+44 237344
     },
 
