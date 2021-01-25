@@ -254,7 +254,7 @@ export default {
     },
 
     uploadFile() {
-      if (this.isHttps) {
+      if (this.isHttps && !this.isEdit) {
         this.$refs.keyUpload.clearFiles();
         this.$refs.crtUpload.clearFiles();
         return Promise.all([this.$refs.keyUpload.post(this.keyFile), this.$refs.crtUpload.post(this.crtFile)]);
