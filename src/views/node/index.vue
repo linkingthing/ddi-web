@@ -203,9 +203,6 @@ moment.locale("zh-cn");
 import ServerInfo from "./modules/server-info";
 import MapNodeItem from "./modules/map-node-item";
 
-
-import { treeData, commondata } from "./nodeListTestData";
-
 export default {
   components: {
     "server-info": ServerInfo,

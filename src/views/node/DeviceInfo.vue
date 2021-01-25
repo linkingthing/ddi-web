@@ -30,8 +30,6 @@
 </template>
 
 <script>
-import services from "@/services";
-
 export default {
   components: {},
   props: {

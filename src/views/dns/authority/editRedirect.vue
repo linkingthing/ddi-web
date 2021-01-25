@@ -132,6 +132,8 @@ export default {
         .catch(err => {
           this.loading = false;
           console.log(err);
+          this.$Message.error(err.message);
+
         });
     },
     // 应用
@@ -139,8 +141,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.update();
-        } else {
-          this.$Message.error("修改失败");
         }
       });
     }

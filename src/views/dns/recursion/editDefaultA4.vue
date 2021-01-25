@@ -162,8 +162,6 @@ export default {
           this.update();
           this.$Message.success("修改成功!");
           this.getResources();
-        } else {
-          this.$Message.error("修改失败");
         }
       });
     }

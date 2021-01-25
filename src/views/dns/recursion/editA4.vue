@@ -140,8 +140,6 @@ export default {
       this.$refs.formValidate.validate(valid => {
         if (valid) {
           this.update();
-        } else {
-          this.$Message.error("修改失败");
         }
       });
     }

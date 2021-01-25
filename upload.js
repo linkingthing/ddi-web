@@ -34,7 +34,7 @@ function build() {
   console.log(chalk.blue("[开始构建]"));
   const spinner = ora(`Loading ${chalk.blue("构建中")}`).start();
 
-  exec("npm run build", (err, stdout, stderr) => {
+  exec("yarn build", (err, stdout, stderr) => {
     if (err) return console.error(`exec error : ${err}`);
     spinner.stop();
     console.log(chalk.green("[构建成功]"));

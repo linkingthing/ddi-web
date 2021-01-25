@@ -150,7 +150,7 @@ export default {
         this.links = links;
         this.total = pagination.total;
       }).catch(err => {
-        this.$Message.error(err.message);
+        this.$Message.error(err.response.data.message);
       }).finally(() => this.loading = false);
     },
     handleOpenCreate() {

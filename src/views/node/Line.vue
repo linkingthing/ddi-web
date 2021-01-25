@@ -1,6 +1,7 @@
 <template>
+  <div v-if="isTimeOut">数据请求超时</div>
   <Chart
-    v-if="values && values.length"
+    v-else-if="values && values.length"
     :options="options"
   />
   <NoDataFigure v-else />
@@ -55,6 +56,10 @@ export default {
   name: "ChartLine",
   components: { Chart, NoDataFigure },
   props: {
+    isTimeOut: {
+      type: Boolean,
+      default: false
+    },
     isPercent: {
       type: Boolean,
       default: false
@@ -165,7 +170,7 @@ export default {
       if (this.multiple) {
 
         const showLines = this.showLines;
-        let color = primaryColor;
+        let color = void 0;
 
         series = this.values.map(item => {
           const name = this.seriesName || item.packetType || item.rcode || item.type || "值";
@@ -173,7 +178,7 @@ export default {
 
           if (showLines.length) {
             if (showLines.includes(item[this.showField])) {
-              color = primaryColor;
+              color = null;
             } else {
               color = "rgba(0, 0, 0, 0)";
             }

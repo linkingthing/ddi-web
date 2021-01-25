@@ -114,7 +114,7 @@ export default {
             this.$Message.info("删除成功");
             this.getData();
           }).catch(err => {
-            this.$Message.error(err.message);
+            this.$Message.error(err.response.data.message);
           });
         },
         onCancel: () => {

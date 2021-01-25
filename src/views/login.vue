@@ -155,7 +155,7 @@ export default {
               }
             })
             .catch(err => {
-              this.$Message.error(err.response.data.message);
+              this.$Message.error(err.message);
             });
         }
       });

@@ -139,7 +139,7 @@ export default {
             this.$Message.info("删除成功");
             this.getDataList();
           }).catch(err => {
-            this.$Message.error(err.message);
+            this.$Message.error(err.response.data.message);
           });
         }
       });

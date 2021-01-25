@@ -28,10 +28,14 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
+    "chalk": "^4.1.0",
+    "compressing": "^1.5.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "less": "^2.7.3",
     "less-loader": "^3.0.0",
+    "ora": "^5.3.0",
+    "ssh2": "^0.8.9",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [

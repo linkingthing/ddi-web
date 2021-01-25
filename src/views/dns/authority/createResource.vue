@@ -187,7 +187,7 @@ export default {
           })
           .catch((err) => {
             this.loading = false;
-            this.$Message.error(err.response.data.message);
+            this.$Message.error(err.message);
           });
       });
 

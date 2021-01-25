@@ -144,7 +144,7 @@ export default {
         })
         .catch(err => {
           this.loading = false;
-          this.$Message.error("修改失败！");
+          this.$Message.error(err.message);
         });
     },
     // 应用
