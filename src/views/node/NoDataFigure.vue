@@ -4,7 +4,7 @@
     style="text-align:center;color: #666"
   >
     <img
-      src="../../assets/images/empt.png"
+      src="../../assets/images/nodata.png"
       alt=""
     >
     <figcaption>
@@ -25,7 +25,7 @@ export default {
   height: 240px;
   padding: 40px;
   img {
-    width: 100px;
+    width: 120px;
   }
   figcaption {
     font-size: 14px;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isTimeOut">数据请求超时</div>
+  <Timeout v-if="isTimeOut"  style="height: 312px;"/>
   <Chart
     v-else-if="values && values.length"
     :options="options"
@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import Timeout from "@/components/Timeout";
 import Chart from "./Chart";
 import NoDataFigure from "./NoDataFigure";
 import moment from "moment";
@@ -54,7 +55,7 @@ const ThemeConfig = {
 
 export default {
   name: "ChartLine",
-  components: { Chart, NoDataFigure },
+  components: { Chart, NoDataFigure, Timeout },
   props: {
     isTimeOut: {
       type: Boolean,

@@ -1,6 +1,11 @@
 <template>
   <div class="top-list">
-    <ul v-if="data && data.length">
+    <Timeout
+      v-if="isTimeOut"
+      style="height: 312px;"
+    />
+
+    <ul v-else-if="data && data.length">
       <li
         class="top-item"
         v-for="(item, index) in data"
@@ -36,6 +41,7 @@
 <script>
 import NoDataFigure from "../NoDataFigure";
 
+import Timeout from "@/components/Timeout";
 
 const exSlot = {
   functional: true,
@@ -51,8 +57,12 @@ const exSlot = {
 
 
 export default {
-  components: { NoDataFigure, exSlot },
+  components: { NoDataFigure, exSlot, Timeout },
   props: {
+    isTimeOut: {
+      type: Boolean,
+      default: false
+    },
     columns: {
       type: Array,
       default: () => []

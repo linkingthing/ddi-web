@@ -9,7 +9,10 @@
 
     </h1>
     <div class="card-list">
-      <Card title="CPU利用率">
+      <Card
+        title="CPU利用率"
+        :hasTimeFilter="false"
+      >
         <line-bar
           is-percent
           line-theme="color1"
@@ -19,7 +22,10 @@
         />
       </Card>
 
-      <Card title="内存利用率">
+      <Card
+        title="内存利用率"
+        :hasTimeFilter="false"
+      >
         <line-bar
           is-percent
           line-theme="color2"
@@ -29,7 +35,10 @@
         />
       </Card>
 
-      <Card title="磁盘利用率">
+      <Card
+        title="磁盘利用率"
+        :hasTimeFilter="false"
+      >
         <line-bar
           is-percent
           line-theme="color3"
@@ -39,7 +48,10 @@
         />
       </Card>
 
-      <Card title="网络流量(Bps)">
+      <Card
+        title="网络流量(Bps)"
+        :hasTimeFilter="false"
+      >
         <line-bar
           line-theme="color4"
           :labels="networkLabels"

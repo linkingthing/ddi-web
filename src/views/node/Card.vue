@@ -12,6 +12,7 @@
           @click="handleDownload"
         >导出CSV</Button>
         <DatePicker
+          v-if="hasTimeFilter"
           :value="innerValue"
           @on-change="handleDataChange"
           type="date"
@@ -26,6 +27,10 @@
 </template>
 
 <script>
+
+import moment from "moment";
+moment.locale("zh-cn");
+
 export default {
   props: {
     title: {
@@ -39,7 +44,11 @@ export default {
     value: {
       type: String,
       default: ""
-    }
+    },
+    hasTimeFilter: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {
@@ -57,13 +66,17 @@ export default {
   methods: {
     handleDownload() {
       const url = `${this.download.self}?action=exportcsv`;
+      const defaultTime = moment().format("YYYY-MM-DD");
       const params = {
-        period: this.value
+        from: this.value || defaultTime,
+        to: this.value || defaultTime
       };
 
       this.$post({ url, params }).then(res => {
         const { downloadPath, fileName } = this.pathParser(res);
         this.downloadFile(downloadPath, fileName);
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
       });
 
     },

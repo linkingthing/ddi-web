@@ -32,12 +32,9 @@
   </div>
 </template>
 
-<style lang="less">
-@import "./index.less";
-</style>
 
 <script>
-import img from "@/assets/images/no-data-1.png";
+import img from "./nodata.png";
 
 export default {
   name: "ListNoData",
@@ -88,5 +85,26 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
+.no-data-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    p{
+        line-height: 1;
+        margin: 32px 0 30px;
+        font-size: 14px;
+        color: #999;
+    }
+
+    .ivu-btn{
+        min-width: 100px;
+        margin-right: 24px;
+
+        &:last-child{
+            margin-right: 0;
+        }
+    }
+}
 </style>

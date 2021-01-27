@@ -19,6 +19,6 @@ module.exports = {
         changeOrigin: true
       }
     },
-    public: "10.0.0.164:8080" // sockjs-node/info 报错
+    public: "localhost:8080" // sockjs-node/info 报错
   }
 };

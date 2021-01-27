@@ -31,6 +31,7 @@
           line-theme="color1"
           :labels="dhcpUsageLabels"
           :values="dhcpUsageValues"
+          :isTimeOut="dhcpTimeOut"
         />
       </Card>
 
@@ -44,6 +45,7 @@
           :labels="dhcpLpsLabels"
           :values="dhcpLpsValues"
           series-name="LPS统计"
+          :isTimeOut="dhcpLpsTimeOut"
         />
       </Card>
 
@@ -66,6 +68,7 @@
           multiple
           :labels="dhcpLabels"
           :values="dhcpValues"
+          :isTimeOut="dhcpValueTimeOut"
         />
       </Card>
 
@@ -79,6 +82,7 @@
           :labels="dhcpLeaseLabels"
           :values="dhcpLeaseValues"
           series-name="Leases总量"
+          :isTimeOut="dhcpLeaseTimeOut"
         />
       </Card>
     </div>
@@ -106,30 +110,34 @@ export default {
     return {
       node: "",
 
-      lpsTime: 6,
+      lpsTime: "",
       lpsLinks: {},
       dhcpLpsLabels: [],
       dhcpLpsValues: [],
+      dhcpLpsTimeOut: false,
 
-      dhcpTime: 6,
+      dhcpTime: "",
       packetsLinks: {},
       dhcpLabels: [],
       dhcpValues: [],
+      dhcpValueTimeOut: false,
       keepShowPacketsVersion: "",
       packetsVersion: "",
       packetsList: [],
       showPacketsLine: false,
 
 
-      usageTime: 6,
+      usageTime: "",
       useageLinks: {},
       dhcpUsageLabels: [],
       dhcpUsageValues: [],
+      dhcpTimeOut: false,
 
-      leaseTime: 6,
+      leaseTime: "",
       leaseLinks: {},
       dhcpLeaseLabels: [],
       dhcpLeaseValues: [],
+      dhcpLeaseTimeOut: false,
 
       timer: null,
       assignList: [],
@@ -147,20 +155,20 @@ export default {
       this.init();
     },
 
-    usageTime(period) {
-      this.getSubnetUsedRatioList({ period });
+    usageTime(date) {
+      this.getSubnetUsedRatioList({ from: date, to: date });
     },
 
-    dhcpTime(period) {
-      this.getPacketList({ period });
+    dhcpTime(date) {
+      this.getPacketList({ from: date, to: date });
     },
 
-    leaseTime(period) {
-      this.getLeaseList({ period });
+    leaseTime(date) {
+      this.getLeaseList({ from: date, to: date });
     },
 
-    lpsTime(period) {
-      this.getLpsList({ period });
+    lpsTime(date) {
+      this.getLpsList({ from: date, to: date });
     },
     keepShowUseageIpnet(val) {
       this.useageIpnet = val;
@@ -172,6 +180,9 @@ export default {
         const [labels, value] = valuesParser(usedRatios || []);
         this.dhcpUsageLabels = labels;
         this.dhcpUsageValues = value;
+        this.dhcpTimeOut = false;
+      } else {
+        this.dhcpTimeOut = true;
       }
     },
 
@@ -220,13 +231,13 @@ export default {
     },
 
     getAllInfo() {
-      this.getSubnetUsedRatioList({ period: this.usageTime });
+      this.getSubnetUsedRatioList({ from: this.usageTime, to: this.usageTime });
 
-      this.getPacketList({ period: this.dhcpTime });
+      this.getPacketList({ from: this.dhcpTime, to: this.dhcpTime });
 
-      this.getLeaseList({ period: this.leaseTime });
+      this.getLeaseList({ from: this.leaseTime, to: this.leaseTime });
 
-      this.getLpsList({ period: this.lpsTime });
+      this.getLpsList({ from: this.lpsTime, to: this.lpsTime });
     },
 
     intercept() {
@@ -265,7 +276,6 @@ export default {
             if (item.id === "subnetusedratios") {
               this.useageLinks = item.links;
 
-
               if (this.usageList.length) {
                 this.keepShowUseageIpnet = this.usageList[0].ipnet;
               }
@@ -273,10 +283,10 @@ export default {
             }
 
           });
+        }).then(() => {
+          setTimeout(this.getAllInfo, 0)
         });
-      }).then(() => {
-        setTimeout(this.getAllInfo, 300)
-      });
+      })
     },
 
     getSubnetUsedRatioList(params) {
@@ -291,6 +301,9 @@ export default {
                 usedRatios
               };
             });
+            if (this.usageList.length) {
+              this.keepShowUseageIpnet = this.usageList[0].ipnet;
+            }
           } else {
             this.usageList = [];
             this.keepShowUseageIpnet = "";
@@ -309,7 +322,10 @@ export default {
           const [labels, value] = valuesParser(values || []);
           this.dhcpLpsLabels = labels;
           this.dhcpLpsValues = value;
-        }).catch(err => err);
+          this.dhcpLpsTimeOut = false;
+        }).catch(err => {
+          this.dhcpLpsTimeOut = true;
+        });
       });
     },
 
@@ -319,7 +335,10 @@ export default {
           const [labels, value] = valuesParser(values || []);
           this.dhcpLeaseLabels = labels;
           this.dhcpLeaseValues = value;
-        }).catch(err => err);
+          this.dhcpLeaseTimeOut = false;
+        }).catch(() => {
+          this.dhcpLeaseTimeOut = true;
+        });
       });
     },
 
@@ -344,7 +363,10 @@ export default {
           this.$nextTick().then(() => {
             this.showPacketsLine = true;
           });
-        }).catch(err => err);
+          this.dhcpValueTimeOut = false;
+        }).catch(() => {
+          this.dhcpValueTimeOut = true;
+        });
       });
     }
 

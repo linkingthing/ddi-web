@@ -18,6 +18,7 @@
           :labels="qpsLabels"
           :values="qpsValues"
           series-name="qps"
+          :isTimeOut="qpsTimeOut"
         />
       </Card>
 
@@ -32,6 +33,7 @@
           :labels="memoHitRateLabels"
           :values="memoHitRateValues"
           series-name="缓存命中率"
+          :isTimeOut="memoTimeOut"
         />
       </Card>
 
@@ -46,6 +48,7 @@
           line-theme="color3"
           :labels="successRateLabels"
           :values="successRateValues"
+          :isTimeOut="successTimeOut"
           showField="rcode"
           :showLines="['Success']"
         />
@@ -56,7 +59,10 @@
         v-model="querytyperatiosTime"
         :download="querytyperatiosLinks"
       >
-        <Pie :values="types" />
+        <Pie
+          :values="types"
+          :isTimeOut="querytypeTimeOut"
+        />
       </Card>
 
       <Card
@@ -68,6 +74,7 @@
           :data="domains"
           :columns="topDomainColumns"
           style="padding-top: 20px"
+          :isTimeOut="topDomainTimeOut"
         />
       </Card>
 
@@ -79,6 +86,7 @@
         <TopList
           :data="ips"
           :columns="topIPColumns"
+          :isTimeOut="topIpTimeOut"
           style="padding-top: 20px"
         />
       </Card>
@@ -186,29 +194,35 @@ export default {
       qpsLinks: {},
       qpsLabels: [],
       qpsValues: [],
+      qpsTimeOut: false,
 
       toptenipsTime: "",
       toptenipsLinks: {},
       ips: [],
+      topIpTimeOut: false,
 
       toptendomainsTime: "",
       toptendomainsLinks: {},
       domains: [],
+      topDomainTimeOut: false,
 
       querytyperatiosTime: "",
       querytyperatiosLinks: {},
       types: [],
       status: [],
+      querytypeTimeOut: false,
 
       resolvedratiosTime: "",
       resolvedratiosLinks: {},
       successRateLabels: [],
       successRateValues: [],
+      successTimeOut: false,
 
       cachehitTime: "",
       cachehitLinks: {},
       memoHitRateLabels: [],
-      memoHitRateValues: []
+      memoHitRateValues: [],
+      memoTimeOut: false
     };
   },
   computed: {},
@@ -243,7 +257,7 @@ export default {
   created() { },
   mounted() {
     this.initDataRequest();
-    this.timer = setInterval(this.getAllInfo, 5*60*1000);
+    this.timer = setInterval(this.getAllInfo, 5 * 60 * 1000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -325,7 +339,10 @@ export default {
           const [labels, value] = valuesParser(values);
           this.qpsLabels = labels;
           this.qpsValues = value;
-        }).catch(err => err);
+          this.qpsTimeOut = false;
+        }).catch(() => {
+          this.qpsTimeOut = true;
+        });
       });
     },
 
@@ -335,7 +352,10 @@ export default {
           const [labels, value] = valuesParser(cachehitratio.ratios);
           this.memoHitRateLabels = labels;
           this.memoHitRateValues = value;
-        }).catch(err => err);
+          this.memoTimeOut = false;
+        }).catch(() => {
+          this.memoTimeOut = true;
+        });
       });
     },
 
@@ -345,7 +365,10 @@ export default {
           const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
           this.successRateLabels = labels;
           this.successRateValues = resolvedratios;
-        }).catch(err => err);
+          this.successTimeOut = false;
+        }).catch(err => {
+          this.successTimeOut = true;
+        });
       });
     },
 
@@ -358,8 +381,11 @@ export default {
               value: item.ratios[item.ratios.length - 1].ratio || 0
             };
           });
+          this.querytypeTimeOut = false;
 
-        }).catch(err => err);
+        }).catch(err => {
+          this.querytypeTimeOut = true;
+        });
       });
     },
 
@@ -367,7 +393,10 @@ export default {
       this.intercept().then(_ => {
         this.$get({ params, url: this.toptendomainsLinks.self }).then(({ toptendomains }) => {
           this.domains = toptendomains;
-        }).catch(err => err);
+          this.topDomainTimeOut = false;
+        }).catch(() => {
+          this.topDomainTimeOut = true;
+        });
       });
     },
 
@@ -375,7 +404,10 @@ export default {
       this.intercept().then(_ => {
         this.$get({ params, url: this.toptenipsLinks.self }).then(({ toptenips }) => {
           this.ips = toptenips;
-        }).catch(err => err);
+          this.topIpTimeOut = false;
+        }).catch(err => {
+          this.topIpTimeOut = true;
+        });
       });
     },
 
