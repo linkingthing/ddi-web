@@ -213,8 +213,7 @@ export default {
   mounted() {
     this.init();
 
-
-    // this.timer = setInterval(this.getAllInfo, 10000);
+    this.timer = setInterval(this.getAllInfo, 5*60*1000);
   },
 
   destroyed() {
