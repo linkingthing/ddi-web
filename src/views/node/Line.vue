@@ -127,7 +127,6 @@ export default {
         }
       }
 
-
       let series = [
         {
           animation: false,
@@ -238,13 +237,13 @@ export default {
           },
           axisLabel: {
 
-            interval: function (index) {
-              const points = [0, 50, 100, 150, 200, 250, 300];
-              return points.includes(index);
-            },
+            // interval: function (index,d,c) {
+            //   const points = [0, 50, 100, 150, 200, 250, 300];
+            //   return points.includes(parseInt(index));
+            // },
 
-            showMinLabel: true,
-            showMaxLabel: true,
+            // showMinLabel: true,
+            // showMaxLabel: true,
             margin: 16,
             formatter: function (params) {
               return moment(params).format(dateFormat).split(" ").join("\n");
@@ -283,12 +282,6 @@ export default {
 
         tooltip: {
           trigger: "axis",
-          // axisPointer: {
-          //   type: "cross",
-          //   label: {
-          //     backgroundColor: "#6a7985"
-          //   }
-          // },
           formatter: function (value) {
             let title = value.length && value[0].name;
             return `<p>${moment(title).format(dateFormat)}</p>` + value.map(item => {

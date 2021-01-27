@@ -11,17 +11,14 @@
           type="primary"
           @click="handleDownload"
         >导出CSV</Button>
-        <Select
-          v-if="value"
-          style="width: 110px; margin-left: 20px"
-          v-model="innerValue"
-        >
-          <Option
-            v-for="(item) in dateList"
-            :key="item.hours"
-            :value="item.hours"
-          >{{item.label}}</Option>
-        </Select>
+        <DatePicker
+          :value="innerValue"
+          @on-change="handleDataChange"
+          type="date"
+          placeholder="请选择日期"
+          style="width: 120px"
+        ></DatePicker>
+
       </div>
     </header>
     <slot />
@@ -40,48 +37,19 @@ export default {
       default: () => ({})
     },
     value: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ""
     }
   },
   data() {
-    this.dateList = [
-      {
-        label: "6小时",
-        hours: 6 // from
-      },
-      {
-        label: "12小时",
-        hours: 12
-      },
-      {
-        label: "1天",
-        hours: 24
-      },
-      {
-        label: "7天",
-        hours: 168
-      },
-      {
-        label: "1个月",
-        hours: 720
-      },
-      {
-        label: "3个月",
-        hours: 2160
-      }
-    ];
     return {
-      innerValue: 6
+      innerValue: ""
     };
   },
   computed: {},
   watch: {
     value(val) {
       this.innerValue = val;
-    },
-    innerValue(val) {
-      this.$emit("input", val);
     }
   },
   created() { },
@@ -114,6 +82,10 @@ export default {
       a.href = path;
       a.download = fileName;
       a.click();
+    },
+
+    handleDataChange(date) {
+      this.$emit("input", date);
     }
   }
 };

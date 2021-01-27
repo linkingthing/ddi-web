@@ -182,30 +182,30 @@ export default {
       ],
       timer: null,
 
-      qpsTime: 6,
+      qpsTime: "",
       qpsLinks: {},
       qpsLabels: [],
       qpsValues: [],
 
-      toptenipsTime: 6,
+      toptenipsTime: "",
       toptenipsLinks: {},
       ips: [],
 
-      toptendomainsTime: 6,
+      toptendomainsTime: "",
       toptendomainsLinks: {},
       domains: [],
 
-      querytyperatiosTime: 6,
+      querytyperatiosTime: "",
       querytyperatiosLinks: {},
       types: [],
       status: [],
 
-      resolvedratiosTime: 6,
+      resolvedratiosTime: "",
       resolvedratiosLinks: {},
       successRateLabels: [],
       successRateValues: [],
 
-      cachehitTime: 6,
+      cachehitTime: "",
       cachehitLinks: {},
       memoHitRateLabels: [],
       memoHitRateValues: []
@@ -216,31 +216,34 @@ export default {
     node() {
       this.initDataRequest();
     },
-    qpsTime(period) {
-      this.getQPSData({ period });
+    qpsTime: {
+      deep: true,
+      handler(date) {
+        this.getQPSData({ from: date, to: date });
+      }
     },
-    toptenipsTime(period) {
-      this.getTopIps({ period });
+    toptenipsTime(date) {
+      this.getTopIps({ from: date, to: date });
     },
-    toptendomainsTime(period) {
-      this.getToptendomainsTimeData({ period });
+    toptendomainsTime(date) {
+      this.getToptendomainsTimeData({ from: date, to: date });
     },
-    querytyperatiosTime(period) {
-      this.getQuerytyperatiosData({ period });
+    querytyperatiosTime(date) {
+      this.getQuerytyperatiosData({ from: date, to: date });
 
     },
-    resolvedratiosTime(period) {
-      this.getResolvedratiosData({ period });
+    resolvedratiosTime(date) {
+      this.getResolvedratiosData({ from: date, to: date });
     },
-    cachehitTime(period) {
-      this.getCachehitData({ period });
+    cachehitTime(date) {
+      this.getCachehitData({ from: date, to: date });
     }
 
   },
   created() { },
   mounted() {
     this.initDataRequest();
-    this.timer = setInterval(this.getAllInfo, 10000);
+    this.timer = setInterval(this.getAllInfo, 5*60*1000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -249,12 +252,13 @@ export default {
   methods: {
 
     getAllInfo() {
-      this.getQPSData();
-      this.getCachehitData();
-      this.getResolvedratiosData();
-      this.getQuerytyperatiosData();
-      this.getToptendomainsTimeData();
-      this.getTopIps();
+
+      this.getQPSData({ from: this.qpsTime, to: this.qpsTime });
+      this.getCachehitData({ from: this.cachehitTime, to: this.cachehitTime });
+      this.getResolvedratiosData({ from: this.resolvedratiosTime, to: this.resolvedratiosTime });
+      this.getQuerytyperatiosData({ from: this.querytyperatiosTime, to: this.querytyperatiosTime });
+      this.getToptendomainsTimeData({ from: this.toptendomainsTime, to: this.toptendomainsTime });
+      this.getTopIps({ from: this.toptenipsTime, to: this.toptenipsTime });
     },
     initDataRequest() {
       this.getNodeInfo();
@@ -315,7 +319,7 @@ export default {
       }).then(this.getAllInfo);
     },
 
-    getQPSData(params = { period: this.qpsTime }) {
+    getQPSData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.qpsLinks.self }).then(({ qps: { values } }) => {
           const [labels, value] = valuesParser(values);
@@ -325,7 +329,7 @@ export default {
       });
     },
 
-    getCachehitData(params = { period: this.cachehitTime }) {
+    getCachehitData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.cachehitLinks.self }).then(({ cachehitratio }) => {
           const [labels, value] = valuesParser(cachehitratio.ratios);
@@ -335,7 +339,7 @@ export default {
       });
     },
 
-    getResolvedratiosData(params = { period: this.resolvedratiosTime }) {
+    getResolvedratiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
           const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
@@ -345,7 +349,7 @@ export default {
       });
     },
 
-    getQuerytyperatiosData(params = { period: this.querytyperatiosTime }) {
+    getQuerytyperatiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.querytyperatiosLinks.self }).then(({ querytyperatios }) => {
           this.types = querytyperatios.map(item => {
@@ -359,7 +363,7 @@ export default {
       });
     },
 
-    getToptendomainsTimeData(params = { period: this.toptendomainsTime }) {
+    getToptendomainsTimeData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.toptendomainsLinks.self }).then(({ toptendomains }) => {
           this.domains = toptendomains;
@@ -367,7 +371,7 @@ export default {
       });
     },
 
-    getTopIps(params = { period: this.toptenipsTime }) {
+    getTopIps(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.toptenipsLinks.self }).then(({ toptenips }) => {
           this.ips = toptenips;
