@@ -1,6 +1,11 @@
 <template>
+  <Timeout
+    v-if="isTimeOut"
+    style="height: 312px;"
+  />
+
   <Chart
-    v-if="values.length"
+    v-else-if="values.length"
     :options="options"
   />
   <NoDataFigure v-else />
@@ -10,10 +15,15 @@
 <script>
 import Chart from "./Chart";
 import NoDataFigure from "./NoDataFigure";
+import Timeout from "@/components/Timeout";
 
 export default {
   name: "ChartLine",
   props: {
+    isTimeOut: {
+      type: Boolean,
+      default: false
+    },
     values: {
       type: Array,
       default: () => {
@@ -21,7 +31,7 @@ export default {
       }
     }
   },
-  components: { Chart, NoDataFigure },
+  components: { Chart, NoDataFigure, Timeout },
   computed: {
     options() {
       const innerValue = this.values; // [...this.values, { name: "rrr", value: 1.1 }, { name: "www", value: 22 }];

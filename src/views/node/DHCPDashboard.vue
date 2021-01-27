@@ -181,8 +181,6 @@ export default {
         this.dhcpUsageLabels = labels;
         this.dhcpUsageValues = value;
         this.dhcpTimeOut = false;
-      } else {
-        this.dhcpTimeOut = true;
       }
     },
 
@@ -312,8 +310,12 @@ export default {
           }
 
           this.useageIpnet = temp;
+          this.dhcpTimeOut = false;
+
         });
-      }).catch(err => err);
+      }).catch(err => {
+        this.dhcpTimeOut = true;
+      });
     },
 
     getLpsList(params) {

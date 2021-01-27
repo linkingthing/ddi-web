@@ -361,26 +361,33 @@ export default {
 
     getResolvedratiosData(params) {
       this.intercept().then(_ => {
-        this.$get({ params, url: this.resolvedratiosLinks.self }).then(({ resolvedratios }) => {
-          const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
-          this.successRateLabels = labels;
-          this.successRateValues = resolvedratios;
-          this.successTimeOut = false;
-        }).catch(err => {
-          this.successTimeOut = true;
-        });
+        this.$get({ params, url: this.resolvedratiosLinks.self })
+          .then(data => {
+            this.successTimeOut = false;
+            return data;
+          }, () => {
+            this.successTimeOut = true;
+          })
+          .then(({ resolvedratios }) => {
+            const [labels, values] = valuesParser(resolvedratios.find(item => item.rcode === "Success").ratios);
+            this.successRateLabels = labels;
+            this.successRateValues = resolvedratios;
+            this.successTimeOut = false;
+          }).catch(err => {
+            this.successRateValues = [];
+          });
       });
     },
 
     getQuerytyperatiosData(params) {
       this.intercept().then(_ => {
         this.$get({ params, url: this.querytyperatiosLinks.self }).then(({ querytyperatios }) => {
-          this.types = querytyperatios.map(item => {
+          this.types = Array.isArray(querytyperatios) ? querytyperatios.map(item => {
             return {
               name: item.type,
               value: item.ratios[item.ratios.length - 1].ratio || 0
             };
-          });
+          }): [];
           this.querytypeTimeOut = false;
 
         }).catch(err => {
