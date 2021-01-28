@@ -66,7 +66,7 @@ export default {
   methods: {
     handleDownload() {
       const url = `${this.download.self}?action=exportcsv`;
-      const defaultTime = moment().format("YYYY-MM-DD");
+      const defaultTime = void 0; // moment().format("YYYY-MM-DD");
       const params = {
         from: this.value || defaultTime,
         to: this.value || defaultTime
