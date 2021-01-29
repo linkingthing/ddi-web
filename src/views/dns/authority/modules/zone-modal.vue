@@ -177,7 +177,7 @@ export default {
           type: "component",
           component: IPListInput,
           props: {
-            placeholder: `可以添加多个主服务器，并以换行符分隔，
+            placeholder: `只能添加一个主服务器，
 格式，IP地址：端口
 例如：29.23.34.34:400,[2001::FFF1]:8089
 端口选填，默认值为53`
