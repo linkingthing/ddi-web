@@ -247,7 +247,7 @@ export default {
               this.getResources();
             })
             .catch((err) => {
-              this.$Message.error(err.message);
+              this.$Message.error(err.response.data.message);
             });
         }
       });

@@ -69,7 +69,6 @@ import {
   resourceDomainValidateFunc,
   positiveIntegerValidate
 } from "@/util/common";
-import { getParantData } from "@/util/request";
 import { ttlValidator } from "@/util/validator";
 
 export default {
@@ -144,7 +143,7 @@ export default {
         })
         .catch(err => {
           this.loading = false;
-          this.$Message.error(err.message);
+          this.$Message.error(err.response.data.message);
         });
     },
     // 应用

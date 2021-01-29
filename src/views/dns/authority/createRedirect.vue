@@ -134,7 +134,7 @@ export default {
         })
         .catch((err) => {
           this.loading = false;
-          this.$Message.error(err.message);
+          this.$Message.error(err.response.data.message);
         });
     },
     // 应用

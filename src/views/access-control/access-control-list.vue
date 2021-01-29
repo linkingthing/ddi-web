@@ -197,7 +197,7 @@ export default {
           this.query.current = pagination.pageNum;
         })
         .catch(err => {
-          this.$Message.error(err.message);
+          this.$Message.error(err.response.data.message);
         }).finally(() => this.loading = false);
     },
     handleOpenCreate() {
@@ -221,7 +221,7 @@ export default {
               this.getManger();
             })
             .catch(err => {
-              this.$Message.error(err.message);
+              this.$Message.error(err.response.data.message);
             });
         }
       });
