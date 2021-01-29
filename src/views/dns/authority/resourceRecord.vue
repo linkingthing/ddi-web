@@ -78,7 +78,8 @@ export default {
         },
         {
           title: "记录值",
-          key: "rdata"
+          key: "rdata",
+          tooltip: true
         },
         {
           title: "TTL",
