@@ -49,7 +49,7 @@
       </Card>
 
       <Card
-        title="网络流量(Bps)"
+        title="网络流量(KB/s)"
         :hasTimeFilter="false"
       >
         <line-bar

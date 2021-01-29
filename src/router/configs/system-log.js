@@ -7,7 +7,6 @@ export default {
     range: "system",
     title: "日志信息",
     permission: "logInfo"
-
   },
   name: "system-log",
   icon: "icon-log",
@@ -25,8 +24,7 @@ export default {
         range: "system",
         title: "操作日志",
         permission: "operateLog"
-
-      },
+      }
     },
     {
       name: "parse-logs",
@@ -40,22 +38,7 @@ export default {
         range: "system",
         title: "解析日志",
         permission: "parseLog"
-
-      },
-    },
-    // {
-    //   name: "feedback-logs",
-    //   path: "/system/log/feedback",
-    //   component: () =>
-    //     import(
-    //       /* webpackChunkName: "operate-logs" */ "@/views/system/log/feedback"
-    //     ),
-    //   meta: {
-    //     range: "system",
-    //     title: "配置返显",
-    //     permission: "configFeedback"
-
-    //   },
-    // },
-  ],
+      }
+    }
+  ]
 };

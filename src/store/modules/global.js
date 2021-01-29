@@ -11,6 +11,7 @@ const state = {
 
   alarmCount: 0,
   agentEventList: [],
+  agentAssociatedCount: 0,
 
   routes: [],
   routesCounter: 1
@@ -22,23 +23,20 @@ const getters = {
   userInfo: state => state.userInfo,
   alarmCount: state => state.alarmCount,
   agentEventCount: state => state.agentEventList.length,
-  agentEventList: state => (
-    { current, size = 10 } = { current: 1, size: 10 }
-  ) => {
-    const startPage = (current - 1) * size;
-    const endPage = current * size;
-    return state.agentEventList.slice(startPage, endPage);
-  },
   agentEventAll: throttle(state => {
-    return state.agentEventList.map(item => {
-      const message = `${operateMap[item.method]} ${resources[item.resource]} ${
-        item.succeed ? "成功" : "失败"
-      } `;
-      return {
-        ...item,
-        message
-      };
-    });
+    if (state.agentAssociatedCount) {
+      return state.agentEventList.map(item => {
+        const message = `${operateMap[item.method]} ${
+          resources[item.resource]
+        } ${item.succeed ? "成功" : "失败"} `;
+        return {
+          ...item,
+          message
+        };
+      });
+    } else {
+      return [];
+    }
   }, 400),
   routes: state => state.routes,
   rangeList: state => {
@@ -62,6 +60,7 @@ const mutations = {
   },
   addAgentEventList(state, agentEvent) {
     state.agentEventList.unshift(agentEvent);
+    state.agentAssociatedCount++;
   },
 
   setRoutes(state, routes) {

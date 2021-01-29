@@ -2,7 +2,7 @@ import store from "@/store";
 
 const baseConfig = {
   baseUrl: "/apis/ws.linkingthing.com/v1",
-  hostname: "10.0.0.121",
+  hostname: "10.0.0.8",
   port: "58081"
 };
 
@@ -43,5 +43,3 @@ agenteventWs.onmessage = function (e) {
   const data = JSON.parse(e.data);
   store.commit("addAgentEventList", data);
 };
-
-

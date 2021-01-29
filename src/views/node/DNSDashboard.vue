@@ -105,10 +105,7 @@ moment.locale("zh-cn");
 import { valuesParser } from "./tools";
 import NodeSelect from "./modules/node-select";
 import TopList from "./modules/top-list";
-
-
 import eventBus from "@/util/bus";
-
 
 export default {
   name: "DNSDashboard",
@@ -148,6 +145,9 @@ export default {
           width: 60,
           render: (h, { row }) => {
             return h("btn-line", {
+              style: {
+                display: this.$hasPermission("domainportraits", "GET") ? "inline-block" : "none"
+              },
               on: {
                 click: () => this.handleSearchDomain(row.domain)
               },
@@ -178,6 +178,9 @@ export default {
           width: 60,
           render: (h, { row }) => {
             return h("btn-line", {
+              style: {
+                display: this.$hasPermission("ipportrait", "GET") ? "inline-block" : "none"
+              },
               on: {
                 click: () => this.handleSearchIp(row.ip)
               },
@@ -387,7 +390,7 @@ export default {
               name: item.type,
               value: item.ratios[item.ratios.length - 1].ratio || 0
             };
-          }): [];
+          }) : [];
           this.querytypeTimeOut = false;
 
         }).catch(err => {

@@ -45,21 +45,26 @@ export default {
         title: "操作",
         key: "",
         render: (h, { row }) => {
-          return h("div", [
-            [h("btn-edit", {
-              on: {
-                click: () => {
-                  this.handleEdit(row);
+          if (this.$hasPermission("domaingroup", "POST")) {
+            return h("div", [
+              [h("btn-edit", {
+                on: {
+                  click: () => {
+                    this.handleEdit(row);
+                  }
                 }
-              }
-            }), h("btn-del", {
-              on: {
-                click: () => {
-                  this.handleDelete(row);
+              }), h("btn-del", {
+                on: {
+                  click: () => {
+                    this.handleDelete(row);
+                  }
                 }
-              }
-            })]
-          ])
+              })]
+            ])
+          } else {
+            h("div");
+          }
+
         }
       }],
       links: {},
