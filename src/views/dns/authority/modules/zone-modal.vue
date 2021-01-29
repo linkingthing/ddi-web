@@ -249,11 +249,11 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ masters, slaves, ...rest }) => {
+        this.$get({ url: this.links.self }).then(({ masters, slaves, name, ttl, zoneType, role }) => {
           this.formModel = {
             masters: masters || [],
             slaves: slaves || [],
-            ...rest
+            name, ttl, zoneType, role
           };
         }).catch();
       } else {
