@@ -9,6 +9,7 @@
     >
       <template slot="top-right">
         <i-button
+          v-if="$hasPermission('domaingroup', 'POST')"
           type="primary"
           @click="handleOpenCreate"
         >新建</i-button>

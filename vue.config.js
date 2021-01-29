@@ -1,5 +1,5 @@
 
-const url = "https://10.0.0.90:58081";
+const url = "https://10.0.0.8:58081";
 
 module.exports = {
   lintOnSave: false, // 关闭eslint

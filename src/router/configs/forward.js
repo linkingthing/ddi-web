@@ -33,7 +33,8 @@ export default {
       path: "/dns/dns/forwardergroups",
       component: () => import("@/views/dns/forward/ForwardGroup"),
       meta: {
-        title: "转发组"
+        title: "转发组",
+        permission: "forwardGroup"
       }
     },
 
@@ -59,7 +60,8 @@ export default {
           /* webpackChunkName: "domain-group" */ "@/views/dns/domain-group"
         ),
       meta: {
-        title: "域名组"
+        title: "域名组",
+        permission: "domainGroup"
       }
     },
     {
@@ -68,7 +70,7 @@ export default {
       component: () => import("@/views/dns/forward/TimePolicy"),
       meta: {
         title: "时间策略",
-        permission: "forwardGroup"
+        permission: "timeScheduler"
       }
     },
     // {

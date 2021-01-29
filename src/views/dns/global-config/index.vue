@@ -32,13 +32,15 @@
           <span slot="close">关闭</span>
         </i-switch>
       </FormItem>
-      
+
       <FormItem label="主区服务端口">
-       <Input
+        <Input
           v-model.number="params.transferPort"
           style="width: 120px"
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
         />
         <Button
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
           type="primary"
           @click="handleSave('transferPort')"
         >保存</Button>
@@ -51,10 +53,12 @@
         <Input
           v-model="params.recursiveClients"
           style="width: 120px"
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
         />
         <Button
           type="primary"
           @click="handleSave('recursive')"
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
         >保存</Button>
       </FormItem>
 
@@ -65,6 +69,7 @@
         <Input
           v-model="params.ttl"
           style="width: 120px"
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
         />
         <Button
           v-if="$hasPermissionCreate('dnsglobalconfig')"
@@ -80,6 +85,7 @@
           :value="params.blackholeEnable"
           :loading="secLoading"
           size="large"
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
         >
           <span slot="open">开启</span>
           <span slot="close">关闭</span>
@@ -92,6 +98,7 @@
       >
         <Input
           type="textarea"
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
           placeholder="例如:
 10.0.0.1
 192.160.0.0/24
@@ -103,6 +110,7 @@
           style="width: 324px"
         />
         <Button
+          :disabled="!$hasPermissionCreate('dnsglobalconfig')"
           style="vertical-align: top;"
           type="primary"
           @click="handleSave('blackhole')"

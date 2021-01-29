@@ -1,7 +1,7 @@
 export default [
   {
     name: "概览",
-    id: "overview",
+    id: "overview", // router.meta.permission
     module: "monitor",
     resouces: ["node"]
   },
@@ -45,13 +45,13 @@ export default [
     name: "区域查询",
     id: "authorityZone",
     module: "dns",
-    resouces: ["zone"]
+    resouces: ["authzone"]
   },
   {
     name: "资源记录",
     id: "rrs",
     module: "dns",
-    resouces: ["rr"]
+    resouces: ["authrr"]
   },
   {
     name: "重定向视图",
@@ -93,7 +93,7 @@ export default [
     name: "转发组",
     id: "forwardGroup",
     module: "dns",
-    resouces: ["forward"]
+    resouces: ["forwardergroup"]
   },
   {
     name: "转发规则",
@@ -102,10 +102,16 @@ export default [
     resouces: ["forwardzone"]
   },
   {
-    name: "转发策略",
-    id: "forwardPolicy",
+    name: "域名组",
+    id: "domainGroup",
     module: "dns",
-    resouces: ["forwardzone"]
+    resouces: ["domaingroup"]
+  },
+  {
+    name: "时间策略",
+    id: "timeScheduler",
+    module: "dns",
+    resouces: ["timescheduler"]
   },
   {
     name: "递归安全",

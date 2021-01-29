@@ -20,6 +20,7 @@
               v-if="$hasPermission('acl', 'POST')"
             >新建</i-button>
             <import-export-csv
+              v-if="$hasPermission('acl', 'POST')"
               style="margin-left: 20px;"
               :links="links"
               @on-import-success="onImportSuccess"
