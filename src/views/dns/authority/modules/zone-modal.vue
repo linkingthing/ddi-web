@@ -320,6 +320,11 @@ export default {
       if (!val) {
         this.$refs.formInline.resetFields();
         this.formModel.ttl = this.tempttl;
+        this.formModel.masters = [];
+        this.formModel.secret = "";
+        this.formModel.algorithm = "";
+        this.formModel.key = "";
+        this.formModel.slaves = [];
         return;
       }
 
@@ -393,7 +398,19 @@ export default {
 
 
           if (this.isEdit) {
-            this.$put({ url: this.links.update, params }).then(res => {
+
+            let options = { ...params };
+            if (params.role === "master") {
+              options.masters = [];
+              options.secret = "";
+              options.algorithm = "";
+              options.key = ""
+            } else {
+              options.slaves = [];
+            }
+
+
+            this.$put({ url: this.links.update, params: options }).then(res => {
               this.$$success("编辑成功");
               this.$emit("success");
               this.dialogVisible = false;
