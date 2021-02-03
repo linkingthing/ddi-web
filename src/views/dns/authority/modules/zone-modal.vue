@@ -152,12 +152,13 @@ export default {
           {
             validator: ttlValidator
           }
-        ]
+        ],
+        algorithm: [{ required: true, message: "请选择算法" },]
       };
     },
     formItemList() {
 
-      let serverList = {
+      let serverList = [{
         label: "辅服务器",
         model: "slaves",
         type: "component",
@@ -168,10 +169,10 @@ export default {
 例如：29.23.34.34:400,[2001::FFF1]:8089
 `
         }
-      };
+      }];
 
       if (this.formModel.role === "slave") {
-        serverList = {
+        serverList = [{
           label: "主服务器",
           model: "masters",
           type: "component",
@@ -181,9 +182,41 @@ export default {
 格式，IP地址：端口
 例如：29.23.34.34:400,[2001::FFF1]:8089
 `
-
           }
-        };
+        },
+
+        {
+          label: "秘钥名",
+          model: "key",
+          type: "input",
+        }, {
+          label: "秘钥值",
+          model: "secret",
+          type: "input",
+
+        }, {
+          label: "加密算法",
+          model: "algorithm",
+          type: "select",
+          children: [
+            {
+              label: "hmac-md5",
+              text: "md5",
+            },
+            {
+              label: "hmac-sha1",
+              text: "sha1",
+            },
+            {
+              label: "hmac-sha256",
+              text: "sha256",
+            },
+            {
+              label: "hmac-sha512",
+              text: "sha512",
+            }
+          ]
+        },];
       }
 
       return [
@@ -229,7 +262,7 @@ export default {
             }
           ]
         },
-        serverList,
+        ...serverList,
         {
           label: "备注",
           model: "comment",
@@ -249,11 +282,11 @@ export default {
       }
 
       if (this.links.update) {
-        this.$get({ url: this.links.self }).then(({ masters, slaves, name, ttl, zoneType, role }) => {
+        this.$get({ url: this.links.self }).then(({ masters, slaves, name, ttl, zoneType, role, key, secret, algorithm }) => {
           this.formModel = {
             masters: masters || [],
             slaves: slaves || [],
-            name, ttl, zoneType, role
+            name, ttl, zoneType, role, key, secret, algorithm
           };
         }).catch();
       } else {
@@ -306,6 +339,16 @@ export default {
           this.loading = true;
           const params = { ...this.formModel };
           params.ttl = +params.ttl;
+
+
+          if (Array.isArray(params.slaves)) {
+            params.slaves = params.slaves.filter(item => !!item.trim())
+          }
+          if (Array.isArray(params.slaves)) {
+            params.slaves = params.slaves.filter(item => !!item.trim())
+          }
+
+
 
           if (this.isEdit) {
             this.$put({ url: this.links.update, params }).then(res => {
