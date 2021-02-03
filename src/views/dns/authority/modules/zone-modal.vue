@@ -54,7 +54,10 @@ export default {
         zoneType: "standard",
         role: "master",
         masters: [],
-        slaves: []
+        slaves: [],
+        key: "",
+        secret: "",
+        algorithm: ""
       },
       tempttl: "",
       loading: false,
@@ -153,7 +156,45 @@ export default {
             validator: ttlValidator
           }
         ],
-        algorithm: [{ required: true, message: "请选择算法" },]
+        key: [{
+          validator: (rule, value, callback) => {
+            if (this.formModel.algorithm || this.formModel.secret.trim()) {
+              if (value.trim()) {
+                callback();
+              } else {
+                callback("请输入秘钥名");
+              }
+            } else {
+              callback();
+            }
+          }
+        }],
+        secret: [{
+          validator: (rule, value, callback) => {
+            if (this.formModel.key.trim() || this.formModel.algorithm) {
+              if (value.trim()) {
+                callback();
+              } else {
+                callback("请选择秘钥");
+              }
+            } else {
+              callback();
+            }
+          }
+        }],
+        algorithm: [{
+          validator: (rule, value, callback) => {
+            if (this.formModel.key.trim() || this.formModel.secret.trim()) {
+              if (value) {
+                callback();
+              } else {
+                callback("请选择算法");
+              }
+            } else {
+              callback();
+            }
+          }
+        }]
       };
     },
     formItemList() {
@@ -198,6 +239,7 @@ export default {
           label: "加密算法",
           model: "algorithm",
           type: "select",
+          clearable: true,
           children: [
             {
               label: "hmac-md5",
