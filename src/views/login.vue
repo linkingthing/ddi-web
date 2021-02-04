@@ -4,8 +4,8 @@
       <div class="login-head">
         <img
           class="header-logo"
-          src="/login-logo.png"
-          alt="header-logo"
+          src="login-logo.png"
+          alt="login-logo"
         >
       </div>
       <div>
@@ -29,7 +29,7 @@
               size="large"
               type="text"
               v-model="params.username"
-              placeholder="用户名称"
+              placeholder="请输入用户名称"
             />
             <span slot="prefix">http://</span>
             </Input>
@@ -45,7 +45,7 @@
               type="password"
               v-model="params.password"
               @keyup.enter.native="login"
-              placeholder="登录密码"
+              placeholder="请输入用户密码"
             />
 
             </Input>
@@ -72,7 +72,7 @@
           <Button
             type="primary"
             @click="login"
-            style="width: 230px;margin-top: 36px"
+            style="width: 230px;margin-top: 36px;background: #285DFF;opacity: 0.9;"
           >登录</Button>
         </Form>
       </div>
@@ -122,13 +122,13 @@ export default {
         username: [
           {
             required: true,
-            message: "请输入输入用户名"
+            message: "请输入用户名称"
           }
         ],
         password: [
           {
             required: true,
-            message: "请输入输入密码"
+            message: "请输入用户密码"
           }
           // {
           //   type: "string",

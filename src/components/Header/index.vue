@@ -14,7 +14,7 @@
             :src="require('@/assets/images/logo-words.png')"
             alt=""
           > -->
-         <img src="/logo.png" alt="logo">
+         <img src="logo.png" alt="logo">
         </div>
         <div class="main-menu">
           <Menu
