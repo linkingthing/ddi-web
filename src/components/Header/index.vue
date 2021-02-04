@@ -3,7 +3,7 @@
     <div class="header">
       <div class="header-inner">
         <div class="logo">
-          <!-- <div class="logo-image">
+          <div class="logo-image">
             <img
               :src="require('@/assets/images/logo.png')"
               alt
@@ -13,12 +13,8 @@
             class="logo-text"
             :src="require('@/assets/images/logo-words.png')"
             alt=""
-          > -->
-          <img
-            style="width: 180px;margin-left: 11px;"
-            :src="require('@/assets/images/logo-temp.png')"
-            alt
           >
+         
         </div>
         <div class="main-menu">
           <Menu
