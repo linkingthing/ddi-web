@@ -2,7 +2,11 @@
   <div class="login-content">
     <div class="login">
       <div class="login-head">
-        <h1>CLXOne®</h1>
+        <img
+          class="header-logo"
+          src="/login-logo.png"
+          alt="header-logo"
+        >
       </div>
       <div>
         <Form
@@ -11,23 +15,31 @@
           :rules="rules"
           class="login-form"
         >
-          <FormItem prop="username">
+          <FormItem
+            prop="username"
+            style="margin-bottom: 36px"
+          >
+            <img
+              class="login-icon"
+              src="../assets/images/login-icon-user.png"
+              alt=""
+            >
+
             <Input
               size="large"
               type="text"
               v-model="params.username"
-              @keyup.enter="login"
               placeholder="用户名称"
             />
-            <img
-              src="../assets/images/user.png"
-              class="icon"
-              alt
-              slot="prepend"
-            >
+            <span slot="prefix">http://</span>
             </Input>
           </FormItem>
           <FormItem prop="password">
+            <img
+              class="login-icon"
+              src="../assets/images/login-icon-password.png"
+              alt=""
+            >
             <Input
               size="large"
               type="password"
@@ -35,12 +47,7 @@
               @keyup.enter.native="login"
               placeholder="登录密码"
             />
-            <img
-              src="../assets/images/password.png"
-              class="icon"
-              alt
-              slot="prepend"
-            >
+
             </Input>
           </FormItem>
           <!-- <FormItem>
@@ -64,8 +71,8 @@
           </FormItem> -->
           <Button
             type="primary"
-            long
             @click="login"
+            style="width: 230px;margin-top: 36px"
           >登录</Button>
         </Form>
       </div>
@@ -140,7 +147,7 @@ export default {
     login() {
       this.$refs["formLogin"].validate(valid => {
         if (valid) {
-          const params = {...this.params};
+          const params = { ...this.params };
           params.password = jse.encrypt(params.password);
           services
             .login(params)
@@ -165,11 +172,17 @@ export default {
 </script>
 <style lang="less">
 .login-content {
+  .ivu-input {
+    padding-left: 40px;
+  }
+  .ivu-input-large {
+    height: 50px;
+  }
   .ivu-btn {
     background: #2d9fff;
     border-color: #2d9fff;
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
+    line-height: 50px;
 
     span {
       font-size: 16px;
@@ -182,28 +195,39 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: url("../assets/images/login-bg.png");
+  background-image: url("../assets/images/login-bg.jpg");
   background-size: cover;
 }
 .login {
-  width: 500px;
+  width: 460px;
   position: absolute;
   right: 10%;
-  top: 200px;
-  box-shadow: 0 0 20px #f5f5f5;
+  top: 50%;
+  margin-top: -170px;
 
   .login-head h1 {
     color: #59a2ec;
     font-size: 33px;
-    padding: 20px 70px 0;
     text-align: center;
+  }
+
+  .header-logo {
+    display: block;
+    margin-bottom: 54px;
+  }
+  .login-icon {
+    position: absolute;
+    z-index: 10;
+    top: 14px;
+    left: 10px;
+    width: 22px;
+    height: 22px;
   }
 
   .header-text {
   }
 
   .login-form {
-    padding: 30px 70px 50px;
     .icon {
       width: 20px;
     }
