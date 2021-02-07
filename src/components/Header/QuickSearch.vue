@@ -121,9 +121,10 @@
         <div class="card">
           <h3 class="card-title">访问历史
             <Select
+              clearable
               v-model="top"
-              style="width: 120px;float:right"
-              placeholder="请选择数量"
+              style="width: 140px;float:right"
+              placeholder="请选择TOP排名"
             >
               <Option
                 clearable
@@ -136,7 +137,7 @@
             <Select
               clearable
               v-model="topPeriod"
-              style="width: 120px;float:right"
+              style="width: 140px;float:right"
               placeholder="请选择时间段"
             >
               <Option
@@ -151,6 +152,7 @@
           <Table
             :data="historyData"
             :columns="historyColumns"
+            :loading="loading"
           >
           </Table>
         </div>
@@ -190,8 +192,8 @@
           <Select
             clearable
             v-model="topSource"
-            style="width: 120px;float:right"
-            placeholder="请选择数量"
+            style="width: 140px;float:right"
+            placeholder="请选择TOP排名"
           >
             <Option
               v-for="item in topOptions"
@@ -202,7 +204,7 @@
           <Select
             clearable
             v-model="topSourcePeriod"
-            style="width: 120px;float:right"
+            style="width: 140px;float:right"
             placeholder="请选择时间段"
           >
             <Option
@@ -215,6 +217,7 @@
         <Table
           :data="domainData"
           :columns="domainColums"
+          :loading="loading"
           style=""
         ></Table>
 
@@ -227,6 +230,7 @@
         <Table
           :data="rrsData"
           :columns="rssColumns"
+          :loading="loading"
         ></Table>
       </div>
     </section>
@@ -269,6 +273,9 @@ export default {
       {
         value: "50",
         label: "top 50",
+      }, {
+        value: "100",
+        label: "top 100",
       }];
 
     this.periodOption = [{
