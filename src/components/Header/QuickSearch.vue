@@ -119,12 +119,39 @@
       </div>
       <div class="base-info">
         <div class="card">
-          <h3 class="card-title">访问历史</h3>
+          <h3 class="card-title">访问历史
+            <Select
+              v-model="top"
+              style="width: 120px;float:right"
+              placeholder="请选择数量"
+            >
+              <Option
+                clearable
+                v-for="item in topOptions"
+                :key="item.value"
+                :value="item.value"
+              >{{item.label}}</Option>
+            </Select>
+
+            <Select
+              clearable
+              v-model="topPeriod"
+              style="width: 120px;float:right"
+              placeholder="请选择时间段"
+            >
+              <Option
+                v-for="item in periodOption"
+                :key="item.value"
+                :value="item.value"
+              >{{item.label}}</Option>
+            </Select>
+
+          </h3>
+
           <Table
             :data="historyData"
             :columns="historyColumns"
           >
-
           </Table>
         </div>
         <div class="card">
@@ -159,14 +186,38 @@
         class="card"
         style="width: 100%;margin-bottom: 20px"
       >
-        <h3 class="card-title">TOP10 IP</h3>
+        <h3 class="card-title">访问源地址
+          <Select
+            clearable
+            v-model="topSource"
+            style="width: 120px;float:right"
+            placeholder="请选择数量"
+          >
+            <Option
+              v-for="item in topOptions"
+              :key="item.value"
+              :value="item.value"
+            >{{item.label}}</Option>
+          </Select>
+          <Select
+            clearable
+            v-model="topSourcePeriod"
+            style="width: 120px;float:right"
+            placeholder="请选择时间段"
+          >
+            <Option
+              v-for="item in periodOption"
+              :key="item.value"
+              :value="item.value"
+            >{{item.label}}</Option>
+          </Select>
+        </h3>
         <Table
           :data="domainData"
           :columns="domainColums"
           style=""
         ></Table>
 
-        </Table>
       </div>
       <div
         class="card"
@@ -206,6 +257,31 @@ export default {
     this.ipTypeMap = ipTypeMap;
     this.ipStateMap = ipStateMap;
 
+    this.topOptions = [
+      {
+        value: "10",
+        label: "top 10",
+      },
+      {
+        value: "20",
+        label: "top 20",
+      },
+      {
+        value: "50",
+        label: "top 50",
+      }];
+
+    this.periodOption = [{
+      value: 1,
+      label: "最近1天"
+    }, {
+      value: 7,
+      label: "最近7天"
+    }, {
+      value: 30,
+      label: "最近30天"
+    }]
+
     this.tabList = [{
       id: "ip",
       label: "IP查询"
@@ -219,6 +295,7 @@ export default {
       active: "ip",
 
       ip: "",
+      topPeriod: "",
       historyData: [],
       historyColumns: [
         {
@@ -257,6 +334,8 @@ export default {
         }
       ],
 
+
+      top: "",
       assignHistoryData: [],
       assignHistoryColumns: [{
         type: "index",
@@ -288,7 +367,8 @@ export default {
 
 
       domain: "",
-
+      topSource: 10,
+      topSourcePeriod: "",
       domainData: [],
       domainColums: [
         {
@@ -437,6 +517,18 @@ export default {
     },
     innerVisible(val) {
       this.$emit("update:visible", val);
+    },
+    top() {
+      this.getData();
+    },
+    topPeriod() {
+      this.getData();
+    },
+    topSource() {
+      this.getDomainData()
+    },
+    topSourcePeriod() {
+      this.getDomainData()
     }
   },
   created() {
@@ -461,7 +553,9 @@ export default {
     getData() {
       const url = "/apis/linkingthing.com/metric/v1/ipportraits";
       const params = {
-        ip: this.ip
+        ip: this.ip,
+        top: this.top,
+        period: this.topPeriod
       };
       this.loading = true;
       this.$get({ url, params }).then(({ data }) => {
@@ -551,7 +645,9 @@ export default {
       const url = "/apis/linkingthing.com/metric/v1/domainportraits";
 
       const params = {
-        domain: this.domain
+        domain: this.domain,
+        top: this.topSource,
+        period: this.topSourcePeriod
       };
       this.$get({ url, params }).then(({ data }) => {
         this.loading = false;
@@ -641,6 +737,7 @@ export default {
       color: #333;
       line-height: 20px;
       margin-bottom: 12px;
+      overflow: hidden;
     }
     .card-list {
       border-left: 1px solid #e6e6e6;

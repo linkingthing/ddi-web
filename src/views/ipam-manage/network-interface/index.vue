@@ -12,7 +12,7 @@
             >
               <img
                 style="width: 16px;margin-bottom: 1px;vertical-align: bottom;"
-                :src="require('./icon-ques-mark.png')"
+                :src="require('./icon-info.png')"
                 alt=""
               >
             </Tooltip>
@@ -195,7 +195,7 @@ export default {
         mac: "",
         ipstate: ""
       },
-      unmanagedRatio: "",
+      unusedRatio: "",
       total: 0,
       current: 0
     };
@@ -203,10 +203,18 @@ export default {
 
   computed: {
     usedRatio() {
-      return ((1 - Number(this.unmanagedRatio)) * 100).toFixed(2) + "%";
+      if (this.source === "dhcp") {
+        return ((1 - Number(this.unusedRatio)) * 100).toFixed(2) + "%";
+      } else {
+        return "--"
+      }
     },
     notUsedRatio() {
-      return (Number(this.unmanagedRatio) * 100).toFixed(2) + "%";
+      if (this.source === "dhcp") {
+        return (Number(this.unusedRatio) * 100).toFixed(2) + "%";
+      } else {
+        return "--"
+      }
     }
 
   },
@@ -302,14 +310,16 @@ export default {
           conflictRatio,
           inactiveRatio,
           unassignedRatio,
-          unmanagedRatio,
+          unusedRatio,
           zombieRatio,
           reservationRatio,
           staticAddressRatio,
-          subnet
+          subnet,
+          source
         } = await this.$getParantData();
 
-        this.unmanagedRatio = unmanagedRatio;
+        this.source = source;
+        this.unusedRatio = unusedRatio;
         this.subnet = subnet;
 
         let typeLegends = [...this.typeLegends];
@@ -319,8 +329,6 @@ export default {
         typeLegends[1].percent = parseFloat(parseFloat(+unassignedRatio * 100).toFixed(2));
         typeLegends[2].percent = parseFloat(parseFloat(+reservationRatio * 100).toFixed(2));
         typeLegends[3].percent = parseFloat(parseFloat(+staticAddressRatio * 100).toFixed(2));
-
-        // typeLegends[4].percent = parseFloat(parseFloat(+unmanagedRatio * 100).toFixed(2));
 
         statusLegends[0].percent = parseFloat(parseFloat(+activeRatio * 100).toFixed(2));
         statusLegends[1].percent = parseFloat(parseFloat(+inactiveRatio * 100).toFixed(2));

@@ -1,3 +1,8 @@
+const sourceMap = {
+  dhcp: "dhcp".toLocaleUpperCase(),
+  snmp: "snmp".toLocaleUpperCase()
+};
+
 export const columns = scope => [
   {
     title: "子网",
@@ -5,6 +10,9 @@ export const columns = scope => [
       return h(
         "a",
         {
+          style: {
+            // color: row.source === "dhcp" ? "" : "#ff6464"
+          },
           class: "is-link",
           on: {
             click: () => {
@@ -18,19 +26,30 @@ export const columns = scope => [
     width: "440"
   },
   {
+    title: "子网跟踪",
+    key: "source",
+    render: (h, { row }) => {
+      return h("div", sourceMap[row.source]);
+    }
+  },
+  {
     title: "名称",
     key: "tags"
   },
   {
     title: "使用率",
-    key: "usedRatio",
+    key: "unusedRatio",
     width: "180",
     render: (h, { row }) => {
-      return h("common-process", {
-        props: {
-          percent: row.usedRatio
-        }
-      });
+      if (row.source === "dhcp") {
+        return h("common-process", {
+          props: {
+            percent: 1 - row.unusedRatio
+          }
+        });
+      } else {
+        return h("div", "--");
+      }
     }
   },
   {
@@ -38,21 +57,24 @@ export const columns = scope => [
     key: "action",
     width: "180",
     render: (h, { row }) => {
-      return h(
-        "a",
-        {
-          class: "is-link",
+      if (row.source === "dhcp") {
+        return h(
+          "a",
+          {
+            class: "is-link",
 
-          attr: {
-            href: "javscript:;"
+            attr: {
+              href: "javscript:;"
+            },
+            on: {
+              click: () => scope.handleGoIpHistory(row)
+            }
           },
-          on: {
-            click: () => scope.handleGoIpHistory(row)
-          }
-          
-        },
-        "IP历史"
-      );
+          "IP历史"
+        );
+      } else {
+        return h("div", "--");
+      }
     }
   }
 ];
