@@ -197,7 +197,8 @@ export default {
       },
       unusedRatio: "",
       total: 0,
-      current: 0
+      current: 0,
+      source: ""
     };
   },
 
@@ -556,17 +557,37 @@ export default {
       }
     },
 
+
+    getSubnetLinks() {
+      const params = {
+        subnet: this.subnet
+      }
+
+      return this.$get({ ...this.$getApiByRoute(`/address/dhcp/subnets`), params }).then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          const [{ links }] = data;
+          return links
+        } else {
+          throw new Error(`未查到该子网:${this.subnet}`)
+        }
+      }).catch(err => {
+        throw new Error(err)
+      })
+
+    },
+
     /**
      * 转固定
      */
     async handleFix(row) {
       this.loading = true;
 
-      let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/reservations`).url;
 
       try {
+        let links = await this.getSubnetLinks();
+
         await this.$post({
-          url,
+          url: links.reservations,
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
             ipAddress: row.ip
@@ -583,17 +604,25 @@ export default {
         this.loading = false;
       }
     },
-    handleStatic(row) {
-      let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/staticaddresses`).url;
-      const params = {
-        hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
-        ipAddress: row.ip
-      };
-      this.$post({ url, params }).then(() => {
-        this.$$success("操作成功！");
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-      });
+    async handleStatic(row) {
+      try {
+        let links = await this.getSubnetLinks();
+        let url = links.staticaddresses;
+        const params = {
+          hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
+          ipAddress: row.ip
+        };
+        this.$post({ url, params }).then(() => {
+          this.$$success("操作成功！");
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
+        });
+      } catch (err) {
+        this.$handleError(err);
+      }
+      finally {
+        this.loading = false;
+      }
     },
     handleDownloadCsv() {
       let { url } = this.$getApiByRoute(`/address/ipam/scannedsubnets/${this.$route.params.scannedsubnetsId}`);
