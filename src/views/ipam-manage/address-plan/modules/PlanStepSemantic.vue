@@ -1,12 +1,14 @@
 <template>
   <div class="PlanStepSemantic">
+
     <SemanticTree prefix="语义树" />
     <SemanticContent />
+
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 import SemanticTree from "./SemanticTree";
 import SemanticContent from "./SemanticContent";
 export default {
@@ -24,6 +26,11 @@ export default {
   mounted() {
     this.getLayoutInfo();
   },
+  beforeDestroy() {
+    console.log(2, "beforeDestroy")
+
+    this.setLoadingTree(true);
+  },
   destroyed() {
     this.resetLayoutData();
   },
@@ -34,7 +41,8 @@ export default {
       "setPrefixs",
       "initTree",
       "setNodes",
-      "resetLayoutData"
+      "resetLayoutData",
+      "setLoadingTree"
     ]),
     ...mapActions([
       "getCurrentPlanInfo"
