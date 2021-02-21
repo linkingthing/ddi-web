@@ -286,18 +286,18 @@ export const subnetValidateFunc = (rule, value, callback) => {
  */
 export const ipv6IsValid = address => {
   try {
-   return new Address6(address).isCorrect()
-  }catch(e){
-    return false
+    return new Address6(address).isCorrect();
+  } catch (e) {
+    return false;
   }
 };
 
 export const ipv4IsValid = address => {
   try {
-    return new Address4(address).isCorrect()
-   }catch(e){
-     return false
-   }
+    return new Address4(address).isCorrect();
+  } catch (e) {
+    return false;
+  }
 };
 
 export const isIp = address => {
@@ -351,4 +351,33 @@ export function includes(arr1, arr2) {
   return arr2.every(item => {
     return arr1.includes(item);
   });
+}
+
+/**
+ * 列表转成树
+ */
+export function list2Tree(
+  data,
+  { pid = "0", pidField = "pid", children = "nodes" },
+
+  depth = 0
+) {
+  let res = [];
+  data.forEach(item => {
+    if (item[pidField] === pid) {
+      let itemChildren = list2Tree(
+        data,
+        { pid: item.id, pidField, children },
+        depth + 1
+      );
+      if (itemChildren.length) item[children] = itemChildren;
+      item.expand = true;
+      item.open = true;
+      res.push({
+        ...item,
+        depth
+      });
+    }
+  });
+  return res;
 }

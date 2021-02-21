@@ -6,11 +6,12 @@ export default {
   meta: {
     range: "address",
     title: "资产治理",
-    isFlat: true,
+    // isFlat: true,
     permission: "ipAddressPlan"
   },
   name: "addressPlan",
   redirect: { name: "ipam-address-plan" },
+  icon: "icon-dhcp",
 
   children: [
     {
@@ -68,6 +69,21 @@ export default {
         active: "ipam-address-plan",
         from: "ipam-address-plan"
       }
+    },
+
+    {
+      name: "ipam-address-list",
+      path: "/address/ipam/address/organize",
+      component: () =>
+        import(
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/organize"
+        ),
+      meta: {
+        title: "组织管理",
+        // active: "ipam-address-plan",
+        // from: "ipam-address-plan"
+      }
     }
+
   ]
 };

@@ -238,7 +238,7 @@ export default {
               //     title: "下载规划表格"
               //   }
               // }),
-              h("btn-line", {
+              h("btn-del", {
                 on: {
                   click: () => this.handleDelete(row)
                 },

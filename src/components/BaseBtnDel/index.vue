@@ -3,6 +3,7 @@
     title="删除"
     :disabled="disabled"
     @click.native="!disabled && $emit('click')"
+    color="#fd8f64"
   ></btn-line>
 </template>
 

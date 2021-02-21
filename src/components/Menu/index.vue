@@ -104,7 +104,8 @@ export default {
         "dhcp-dhcp",
         "system-log",
         "system-alarms",
-        "auth-user"
+        "auth-user",
+        "addressPlan",
       ],
       tab: "" // 路由tab
     };
