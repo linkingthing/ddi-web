@@ -77,8 +77,11 @@
 import services from "@/services";
 import { mapMutations } from "vuex";
 import { resetRouter } from "@/router";
+import store from "@/store";
 // eslint-disable-next-line no-unused-vars
-import JsEncrypt from "jsencrypt";
+// import JsEncrypt from "jsencrypt";
+import JSEncrypt from 'jsencrypt/bin/jsencrypt.min.js'
+
 
 const publicKey = `-----BEGIN RSA Public Key-----
 MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK+W1jWdJh9S0WvOmv19ET6TRG2IdR5G
@@ -133,6 +136,14 @@ export default {
     };
   },
   created() {
+    const { token } = this.$route.query;
+    console.log(token)
+    if (token) {
+      store.commit("SET_TOKEN", token);
+
+      this.loginPass();
+    }
+
   },
   methods: {
     ...mapMutations(["SET_TOKEN", "SET_USERINFO", "setRoutes"]),
@@ -140,24 +151,27 @@ export default {
     login() {
       this.$refs["formLogin"].validate(valid => {
         if (valid) {
-          const params = {...this.params};
+          const params = { ...this.params };
           params.password = jse.encrypt(params.password);
           services
             .login(params)
             .then(res => {
               if (res.code === 200) {
-                this.SET_USERINFO(false);
-                this.setRoutes([]);
-                resetRouter();
-                this.$router.push({
-                  path: "/"
-                });
+                this.loginPass();
               }
             })
             .catch(err => {
               this.$Message.error(err.response.data.message);
             });
         }
+      });
+    },
+    loginPass() {
+      this.SET_USERINFO(false);
+      this.setRoutes([]);
+      resetRouter();
+      this.$router.push({
+        path: "/"
       });
     }
   }
