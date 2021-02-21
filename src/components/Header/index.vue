@@ -15,8 +15,7 @@
             alt=""
           > -->
           <img
-            style="width: 180px;margin-left: 11px;"
-            :src="require('@/assets/images/logo-temp.png')"
+            src="logo.png"
             alt
           >
         </div>
@@ -172,12 +171,12 @@ const mainMenuList = [
     module: "address",
     icon: "icon-computer"
   },
-  {
-    title: "域名服务",
-    url: "/dns",
-    module: "dns",
-    icon: "icon-dns"
-  },
+  // {
+  //   title: "域名服务",
+  //   url: "/dns",
+  //   module: "dns",
+  //   icon: "icon-dns"
+  // },
   {
     title: "系统管理",
     url: "/system",
@@ -193,11 +192,11 @@ const userDropdownMenu = [
     key: "password",
     permission: "user"
   },
-  {
-    label: "访问控制",
-    key: "permissions",
-    permission: "super"
-  },
+  // {
+  //   label: "访问控制",
+  //   key: "permissions",
+  //   permission: "super"
+  // },
   {
     label: "权限范围",
     key: "getAuthorityInfo",
@@ -439,6 +438,7 @@ export default {
     align-items: center;
     width: @menuWidth;
     vertical-align: middle;
+    justify-content: center;
 
     .logo-image {
       text-align: center;

@@ -28,16 +28,16 @@ export default {
         permission: "overview"
       }
     },
-    {
-      name: "DNSDashboard",
-      path: "/monitor/dns",
-      component: () => import("@/views/node/DNSDashboard"),
-      icon: "icon-dns-monitor",
-      meta: {
-        title: "DNS统计",
-        permission: "dnsStatistics"
-      }
-    },
+    // {
+    //   name: "DNSDashboard",
+    //   path: "/monitor/dns",
+    //   component: () => import("@/views/node/DNSDashboard"),
+    //   icon: "icon-dns-monitor",
+    //   meta: {
+    //     title: "DNS统计",
+    //     permission: "dnsStatistics"
+    //   }
+    // },
     {
       name: "DHCPDashboard",
       path: "/monitor/dhcp",

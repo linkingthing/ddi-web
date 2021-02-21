@@ -26,19 +26,19 @@ export default {
         permission: "operateLog"
       }
     },
-    {
-      name: "parse-logs",
-      path: "/system/log/dnslogs",
-      component: () =>
-        import(
-          /* webpackChunkName: "operate-logs" */ "@/views/system/log/parselog"
-        ),
-      icon: "icon-alarm",
-      meta: {
-        range: "system",
-        title: "解析日志",
-        permission: "parseLog"
-      }
-    }
+    // {
+    //   name: "parse-logs",
+    //   path: "/system/log/dnslogs",
+    //   component: () =>
+    //     import(
+    //       /* webpackChunkName: "operate-logs" */ "@/views/system/log/parselog"
+    //     ),
+    //   icon: "icon-alarm",
+    //   meta: {
+    //     range: "system",
+    //     title: "解析日志",
+    //     permission: "parseLog"
+    //   }
+    // }
   ]
 };
