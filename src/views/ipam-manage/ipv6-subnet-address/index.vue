@@ -15,16 +15,16 @@
         >
           <template slot="operate">
             <import-export-csv
-              v-if="$hasPermission('networkv4', 'POST')"
+              v-if="$hasPermission('networkv6', 'POST')"
               style="margin-left: 20px;"
               :links="links"
               @on-import-success="onImportSuccess"
-              resource="Ipv4"
+              resource="Ipv6"
             />
             <i-button
               type="primary"
               @click="handleOpenCreate"
-              v-if="$hasPermission('networkv4', 'POST')"
+              v-if="$hasPermission('networkv6', 'POST')"
             >新建子网</i-button>
           </template>
         </SearchBar>
@@ -185,7 +185,7 @@ export default {
       params.page_size = 10;
       params.page_num = +query.current || 1;
       this.loading = true;
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/networkv4s", params })
+      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/networkv6s", params })
 
         .then(({ data, links, pagination }) => {
           this.list = data;

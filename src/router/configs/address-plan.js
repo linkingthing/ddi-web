@@ -96,8 +96,17 @@ export default {
         ),
       meta: {
         title: "Ipv4子网管理"
-        // active: "ipam-address-plan",
-        // from: "ipam-address-plan"
+      }
+    },
+    {
+      name: "ipam-address-ipv6-subnet-address",
+      path: "/address/ipam/address/ipv6-subnet-address",
+      component: () =>
+        import(
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/ipv6-subnet-address"
+        ),
+      meta: {
+        title: "Ipv6子网管理"
       }
     },
     {
