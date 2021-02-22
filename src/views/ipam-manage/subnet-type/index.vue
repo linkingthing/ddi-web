@@ -28,6 +28,14 @@
 <script>
 import SubnetTypeModal from "./subnet-type-modal";
 
+const presetSubnetTypeMap = {
+  guest: "访客子网",
+  management: "管理子网",
+  office: "办公子网",
+  server: "服务器子网",
+  vpn: "VPN子网"
+}
+
 export default {
   components: {
     SubnetTypeModal
@@ -37,6 +45,9 @@ export default {
     this.columns = [{
       title: "子网类型",
       key: "name",
+      render: (h, { row }) => {
+        return h("div", row.custom ? row.name : presetSubnetTypeMap[row.name])
+      }
     }, {
       title: "备注",
       key: "comment",
