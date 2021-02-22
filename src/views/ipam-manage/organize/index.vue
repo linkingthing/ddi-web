@@ -267,9 +267,6 @@ export default {
         this.currentNode = cloneDeep(data.find(item => item.id === this.currentId)) || {};
         this.currentChildenNodeList = this.currentNode.children || [];
 
-
-
-
       }).finally(() => {
         this.treeLoading = false;
       })

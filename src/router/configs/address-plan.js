@@ -88,6 +88,19 @@ export default {
       }
     },
     {
+      name: "ipam-address-ipv4-subnet-address",
+      path: "/address/ipam/address/ipv4-subnet-address",
+      component: () =>
+        import(
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/ipv4-subnet-address"
+        ),
+      meta: {
+        title: "Ipv4子网管理"
+        // active: "ipam-address-plan",
+        // from: "ipam-address-plan"
+      }
+    },
+    {
       name: "ipam-subnet-type",
       path: "/address/ipam/address/subnet-type",
       component: () =>
