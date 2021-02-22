@@ -250,7 +250,7 @@ export default {
           this.links = links;
           this.getSemantic(links)
         }
-      }).finally(() => {
+      }).catch(() => {
         this.treeLoading = false;
       })
     },
@@ -261,10 +261,17 @@ export default {
           pidField: "parentId",
           children: "children"
         });
-
+        if (!this.currentId && data.length) {
+          this.currentId = data[0].id
+        }
         this.currentNode = cloneDeep(data.find(item => item.id === this.currentId)) || {};
         this.currentChildenNodeList = this.currentNode.children || [];
 
+
+
+
+      }).finally(() => {
+        this.treeLoading = false;
       })
 
     },
