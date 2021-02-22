@@ -17,7 +17,10 @@ export default {
     {
       name: "ipam-address-plan",
       path: "/address/ipam/plans",
-      component: () => import(/* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan"),
+      component: () =>
+        import(
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan"
+        ),
       icon: "icon-plan",
 
       meta: {
@@ -72,18 +75,28 @@ export default {
     },
 
     {
-      name: "ipam-address-list",
+      name: "ipam-address-organize",
       path: "/address/ipam/address/organize",
       component: () =>
         import(
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/organize"
         ),
       meta: {
-        title: "组织管理",
+        title: "组织管理"
         // active: "ipam-address-plan",
         // from: "ipam-address-plan"
       }
+    },
+    {
+      name: "ipam-subnet-type",
+      path: "/address/ipam/address/subnet-type",
+      component: () =>
+        import(
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/subnet-type"
+        ),
+      meta: {
+        title: "子网类型"
+      }
     }
-
   ]
 };
