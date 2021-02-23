@@ -46,7 +46,11 @@ const getters = {
 
 const mutations = {
   SET_TOKEN(state, token) {
-    Cache.set("token", token);
+    if (token) {
+      Cache.set("token", token);
+    } else {
+      Cache.remove("token");
+    }
     state.token = token;
   },
   SET_USERTYPE(state, userType) {

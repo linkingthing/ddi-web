@@ -46,6 +46,7 @@ instance.interceptors.response.use(
 
     if (status === 401) {
       router.push("/login");
+      store.commit("SET_TOKEN", "")
       throw "401 您当前没有执行权限，请与超级管理员联系";
     }
     if (status === 403) {

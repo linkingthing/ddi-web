@@ -10,7 +10,11 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     const { token, routes } = store.getters;
-    if (token) {
+    const routeToken = to.query.token;
+    if (routeToken) {
+      store.commit("SET_TOKEN", routeToken);
+    }
+    if (token || routeToken) {
       const hasRouter = routes.length;
       if (hasRouter) {
         next();

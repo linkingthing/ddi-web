@@ -148,10 +148,8 @@ export default {
   },
   created() {
     const { token } = this.$route.query;
-    console.log(token)
     if (token) {
       store.commit("SET_TOKEN", token);
-
       this.loginPass();
     }
 
