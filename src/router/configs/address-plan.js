@@ -15,6 +15,20 @@ export default {
 
   children: [
     {
+      name: "ipam-address-ip-info-manage",
+      path: "/address/ipam/ip-info-manage",
+      component: () =>
+        import(
+          /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/ip-info-manage"
+        ),
+      icon: "icon-plan",
+
+      meta: {
+        title: "IP信息管理",
+        permission: "ipAddressPlan"
+      }
+    },
+    {
       name: "ipam-address-plan",
       path: "/address/ipam/plans",
       component: () =>
