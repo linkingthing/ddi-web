@@ -146,7 +146,7 @@ export default {
         },
         {
           title: "IPv6前缀",
-          key: "prefixs",
+          key: "prefixes",
           align: "left",
           render: (h, { row }) => {
             return h("a", {
@@ -162,7 +162,7 @@ export default {
                   });
                 }
               }
-            }, row.prefixs);
+            }, row.prefixes);
 
 
           }
@@ -196,48 +196,18 @@ export default {
               h("btn-line", {
                 nativeOn: {
                   click: () => {
-                    this.$router.push({ name: "ipam-address-list", query: { self: row.links.self, action: "listviewv6" } });
+                    const { links } = row;
+                    let url = this.$getRouteByLink(links.self, "address");
+                    this.$router.push({
+                      path: url
+                    });
                   }
                 },
                 props: {
-                  title: "子网列表"
+                  title: "规划"
                 }
               }),
-              h("btn-line", {
-                nativeOn: {
-                  click: () => {
 
-                    this.handleOpenMap(row);
-                  }
-                },
-
-                props: {
-                  title: "地图"
-                }
-              }),
-              h("btn-line", {
-
-                on: {
-                  click: () => {
-                    this.handleReportPlan(row);
-                  }
-                },
-
-                props: {
-                  title: "上报规划",
-                  disabled: !row.responsordispatch
-                }
-              }),
-              // h("btn-line", {
-              //   nativeOn: {
-              //     click: () => {
-              //       this.handleDownloadPlan(row);
-              //     }
-              //   },
-              //   props: {
-              //     title: "下载规划表格"
-              //   }
-              // }),
               h("btn-del", {
                 on: {
                   click: () => this.handleDelete(row)
@@ -294,7 +264,7 @@ export default {
         page_size: 10
       };
       this.loadingPage = true;
-      this.$get({ ...this.$getApiByRoute(), params }).then(({ data, links, pagination }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/plans", params }).then(({ data, links, pagination }) => {
         this.current = pagination.pageNum;
         this.total = pagination.total;
         const { user } = this.$store.getters.userInfo;
@@ -414,8 +384,7 @@ export default {
     },
 
     handleAddPlan() {
-      const { url } = this.$getApiByRoute();
-      this.paramsLinks = { self: url };
+      this.paramsLinks = this.links;
       this.visible = true;
     },
     handleUploadPlan() {

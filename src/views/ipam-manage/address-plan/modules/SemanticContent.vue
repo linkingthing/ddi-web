@@ -74,7 +74,14 @@
             </div>
 
           </div>
-
+          <div>
+            <Button
+              type="primary"
+              style="margin: 0 20px"
+              :disabled="settableNextBitWidth"
+              @click="handleSetNextBitWidth"
+            >确定</Button>
+          </div>
           <div>
             <SegmentAxis
               v-if="currentNodePrefix.length"
@@ -84,14 +91,6 @@
               :bit-width="Number(currentNodeBitWidth)"
             />
 
-          </div>
-          <div style="margin-left: auto;">
-            <Button
-              type="primary"
-              style="margin-left: 20px"
-              :disabled="settableNextBitWidth"
-              @click="handleSetNextBitWidth"
-            >确定</Button>
           </div>
 
         </div>
@@ -114,6 +113,18 @@
               src="./question.png"
             >
           </Tooltip>
+          <div
+            class="action-input-item"
+            style="margin-left: 20px"
+          >
+            <label class="label">剩余地址块:</label>
+            <span
+              class="action-box-input"
+              style="padding: 3px 0;"
+            >
+              {{surplus || "_ _"}}
+            </span>
+          </div>
         </div>
 
       </section>
@@ -121,42 +132,33 @@
       <div class="SemanticContent-action">
 
         <div class="action-input-item">
-          <label class="label">语义节点数：</label>
+          <label class="label">组织子网个数：</label>
           <div class="action-box">
             <Spinner
               class="action-box-input"
-              :disabled="settableSemanticNodeCount"
-              v-model="nodeCount"
+              v-model="subSemanticPrefixCount"
               placeholder="请输入语义节点数"
               :min="semanticNodeList.length"
               :max="allAddressBlockCount"
             />
+            <!-- :disabled="settableSemanticNodeCount" -->
+
           </div>
         </div>
 
         <div class="action-input-item">
-          <label class="label">新增节点地址数：</label>
+          <label class="label">子网地址起始值：</label>
           <div class="action-box">
-            <Spinner
+            <Input
               class="action-box-input"
-              :disabled="settableStepSize"
               v-model="stepsize"
-              placeholder="请输入新增节点地址数"
-              :min="0"
-              :max="allAddressBlockCount"
+              placeholder="请输入子网地址起始值"
             />
+            <!-- :disabled="settableStepSize" -->
+
           </div>
         </div>
 
-        <div class="action-input-item">
-          <label class="label">剩余地址块:</label>
-          <span
-            class="action-box-input"
-            style="padding: 3px 0;"
-          >
-            {{surplus || "_ _"}}
-          </span>
-        </div>
         <div style="margin-left: auto;">
           <Button
             type="primary"
@@ -279,7 +281,7 @@
 
       </div>
 
-      <section v-if="semanticNodeList.length">
+      <section>
 
         <div class="SemanticContent-table">
           <div class="SemanticContent-table-operate">
@@ -353,7 +355,12 @@
               @on-change="handleSelectSemanticList"
             >
 
+              <div
+                v-if="!filterCurrentNodeChildren.length"
+                style="text-align:center;line-height: 50px;border-bottom:1px solid #ddd"
+              >暂无数据</div>
               <CommonScroller
+                v-else
                 :data="filterCurrentNodeChildren"
                 :item-size="2"
                 :buffer="300"
@@ -425,7 +432,6 @@ import Spinner from "@/components/Spinner";
 import SegmentAxis from "@/components/SegmentAxis";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { cloneDeep } from "lodash";
-import { RecycleScroller } from 'vue-virtual-scroller'
 import CommonScroller from "@/components/CommonScroller";
 import { isIpv4Segment, includes } from "@/util/common";
 import {
@@ -436,8 +442,6 @@ import {
   modifiedEnum,
   planTypeEnum,
 } from "./helper";
-
-import eventBus from "@/util/bus";
 
 const tempSemanticNameMap = {};
 
@@ -456,7 +460,6 @@ export default {
   components: {
     SegmentAxis,
     Spinner,
-    RecycleScroller,
     exSlot,
     CommonScroller
   },
@@ -477,6 +480,10 @@ export default {
       bitWidth: "",
       tempBitWidth: "",
       stepsize: "",
+      prefixBeginValue: "",
+      subSemanticPrefixCount: "",
+
+
       detailVisible: false,
       columnsDetail: [
         {
@@ -543,7 +550,7 @@ export default {
       "allPlanNodes",
     ]),
     currentNodeName() {
-      return this.currentNode && this.currentNode.name;
+      return this.currentNode && this.currentNode.semanticName;
     },
     settableNextBitWidth() {
       // 位宽是否可修改
@@ -675,11 +682,12 @@ export default {
     filterCurrentNodeChildren() {
       const currentNodeChildren = cloneDeep(this.semanticNodeList);
       return currentNodeChildren
-        .filter(item => item.name.includes(this.filterKeyword.trim()))
+        .filter(item => item.semanticName.includes(this.filterKeyword.trim()))
         .map(item => {
+          const prefixs = Array.isArray(item.networkV6s) ? item.networkV6s.map(item => item.prefix) : []
           return {
             ...item,
-            showprefixs: (Array.isArray(item.prefixs) && item.prefixs.length) ? `${item.prefixs.join(",\n")}` : "_ _",
+            showprefixs: (Array.isArray(prefixs) && prefixs.length) ? `${prefixs.join(",\n")}` : "_ _",
             _disabled: hasSon(this.nodes, item.id) || (item.sponsordispatch && item.sponsordispatch.issponsor)
           };
         });
@@ -698,40 +706,49 @@ export default {
           width: 80
         },
         {
-          title: "语义名称",
-          key: "name",
+          title: "组织机构",
+          key: "semanticName",
           maxWidth: 200,
           minWidth: 150,
-          render: (h, { row }) => {
+          // render: (h, { row }) => {
+          //   console.log(1, row)
+          //   return h("div", 1)
 
-            return h("line-edit",
-              {
-                on: {
-                  "on-edit-begain": () => this.editList.push(row.id),
-                  "on-edit-change": val => tempSemanticNameMap[row.id] = val,
-                  "on-edit-finish": val => {
-                    this.editList = this.editList.filter(item => item !== row.id);
-                    this.handleSaveSemanticName(row, val);
-                  }
-                },
-                props: {
-                  isEdit: this.editList.includes(row.id),
-                  isPercent: false,
-                  value: tempSemanticNameMap[row.id] || row.name,
-                  width: "124px",
-                  checkfunc: (val) => this.checkNamefunc(val, row)
-                }
-              }
+          // return h("line-edit",
+          //   {
+          //     on: {
+          //       "on-edit-begain": () => this.editList.push(row.id),
+          //       "on-edit-change": val => tempSemanticNameMap[row.id] = val,
+          //       "on-edit-finish": val => {
+          //         this.editList = this.editList.filter(item => item !== row.id);
+          //         this.handleSaveSemanticName(row, val);
+          //       }
+          //     },
+          //     props: {
+          //       isEdit: this.editList.includes(row.id),
+          //       isPercent: false,
+          //       value: tempSemanticNameMap[row.id] || row.name,
+          //       width: "124px",
+          //       checkfunc: (val) => this.checkNamefunc(val, row)
+          //     }
+          //   }
 
-            );
-          }
+          // );
+          // }
         },
 
         {
           title: "地址个数",
           key: "addressCount",
           maxWidth: 150,
-          minWidth: 100
+          minWidth: 100,
+          render: (h, { row }) => {
+            console.log(row)
+            if (row.networkV6s && Array.isArray(row.networkV6s)) {
+              return <div>{row.networkV6s.length}</div>
+            }
+            return <div>0</div>
+          }
         },
         {
           title: "IPv6地址",
@@ -740,44 +757,7 @@ export default {
           maxWidth: 280,
           minWidth: 100
         },
-        {
-          title: "IPv4子网",
-          key: "ipv4s",
-          maxWidth: 580,
-          minWidth: 120,
-          render: (h, { row }) => {
-            const content = (row.ipv4s && row.ipv4s.length) ? `${row.ipv4s.join(", \n")}` : "_ _";
-            let ref = "lineEditRef";
-            let lineEditRef = this.$createElement("line-edit", {
-              ref,
-              on: {
-                "on-edit-begain": () => this.editIpv4List.push(row.id),
-                "on-edit-finish": val => {
-                  this.editIpv4List = this.editIpv4List.filter(item => item !== row.id);
-                  this.handleSaveIpv4s(row, val, ref);
-                }
-              },
-              props: {
-                isPercent: false,
-                isEdit: this.editIpv4List.includes(row.id),
-                value: Array.isArray(row.ipv4s) ? row.ipv4s.join(",") : "",
-                width: "160px",
-                defaultText: "_ _",
-                checkfunc: (val) => this.checkfunc(val, row)
-              }
-            });
-            return this.$createElement("Tooltip", {
-              class: {
-                "ipToolTip": true
-              },
-              props: {
-                placement: "bottom-start",
-                content
-              }
-            }, [lineEditRef]
-            );
-          }
-        },
+
         {
           title: "操作",
           key: "action",
@@ -787,31 +767,7 @@ export default {
             const has = !!this.nodes.find(item => item.parentsemanticid === row.id);
             const hasDispath = row.state === "dispatch";
             return h("div", [
-              h("btn-line", {
-                style: {
-                  marginRight: "10px"
-                },
-                on: {
-                  click: () => this.handleDispath(row)
-                },
-                props: {
-                  title: "下发",
-                  disabled: (!row.plannodes.length || has) && !hasDispath
-                }
-              }),
-              h("btn-line", {
-                style: {
-                  marginRight: "10px"
-                },
-                on: {
-                  click: () => this.handleRepeal(row)
-                },
-                props: {
-                  title: "撤回",
-                  disabled: !row.sponsordispatch
 
-                }
-              }),
               h("btn-edit", {
                 style: {
                   marginRight: "10px"
@@ -842,6 +798,7 @@ export default {
     currentNode: {
       deep: true,
       handler(val) {
+        console.log(val, val.semanticPlan)
         this.search = "";
         this.handleFilter();
 
@@ -849,38 +806,73 @@ export default {
           return;
         }
 
-        this.nodeCount = this.currentNodeChildren.length;
+        if (val.networkV6s) {
+          const prefixs = val.networkV6s
+          this.currentNodePrefix = prefixs.map(item => item.prefix);
 
-        if (val.prefixs && Array.isArray(val.prefixs) && val.prefixs.length) {
-          this.currentNodePrefix = val.prefixs;
-          const [, len] = val.prefixs[0].split("/");
-          this.prefixLen = len;
-          this.currentNodePrefixLen = len;
+          if (this.currentNodePrefix.length) {
+            const [, len] = this.currentNodePrefix[0].split("/");
+            this.prefixLen = len;
+            this.currentNodePrefixLen = len;
+          }
+
+
         } else {
           this.currentNodePrefix = [];
-          this.currentNodePrefixLen = 0;
+
         }
 
-        if (val.subnodebitwidth) {
-          this.currentNodeBitWidth = val.subnodebitwidth;
+        if (val.semanticPlan) {
+          const { bitWidth, prefixBeginValue, subSemanticPrefixCount } = val.semanticPlan;
+
+          if (bitWidth) {
+            this.currentNodeBitWidth = bitWidth;
+            this.tempBitWidth = bitWidth || "";
+          } else {
+            this.currentNodeBitWidth = 0;
+            this.tempBitWidth = "";
+          }
+
+          this.prefixBeginValue = prefixBeginValue;
+          this.subSemanticPrefixCount = subSemanticPrefixCount
+
         } else {
           this.currentNodeBitWidth = 0;
-        }
-
-        if ((typeof val.subnodebitwidth === "number")) {
-          this.bitWidth = val.subnodebitwidth;
-          this.tempBitWidth = val.subnodebitwidth || "";
-        } else {
-          this.bitWidth = 0;
           this.tempBitWidth = "";
         }
 
+        this.nodeCount = this.currentNodeChildren.length;
+
+        // if (val.prefixs && Array.isArray(val.prefixs) && val.prefixs.length) {
+        //   this.currentNodePrefix = val.prefixs;
+        //   const [, len] = val.prefixs[0].split("/");
+        //   this.prefixLen = len;
+        //   this.currentNodePrefixLen = len;
+        // } else {
+        //   this.currentNodePrefix = [];
+        //   this.currentNodePrefixLen = 0;
+        // }
+
+        // if (val.subnodebitwidth) {
+        //   this.currentNodeBitWidth = val.subnodebitwidth;
+        // } else {
+        //   this.currentNodeBitWidth = 0;
+        // }
+
+        // if ((typeof val.subnodebitwidth === "number")) {
+        //   this.bitWidth = val.subnodebitwidth;
+        //   this.tempBitWidth = val.subnodebitwidth || "";
+        // } else {
+        //   this.bitWidth = 0;
+        //   this.tempBitWidth = "";
+        // }
+
         // stepsize
-        if ((typeof val.stepsize === "number")) {
-          this.stepsize = val.stepsize;
-        } else {
-          this.stepsize = 0;
-        }
+        // if ((typeof val.stepsize === "number")) {
+        //   this.stepsize = val.stepsize;
+        // } else {
+        //   this.stepsize = 0;
+        // }
 
       }
     },
@@ -899,7 +891,6 @@ export default {
   },
   created() { },
   mounted() {
-    // eventBus.$on("savePlan", this.handleSave);
   },
   methods: {
     ...mapMutations([
@@ -912,6 +903,28 @@ export default {
     ...mapActions([
       "getCurrentPlanInfo"
     ]),
+
+
+    updateSemanticPlanByAction() {
+
+      const params = {
+        nodeId: this.currentNode.id,
+        bitWidth: Number(this.tempBitWidth),
+        subSemanticPrefixCount: this.subSemanticPrefixCount,
+        prefixBeginValue: this.prefixBeginValue
+      }
+
+
+      const { url } = this.$getApiByRoute();
+      const action = `${url}?action=update_semantic_plan`;
+      this.$post({ url: action, params }).then(() => {
+        this.$Modal.remove();
+        this.$Message.success("设置成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+
+    },
     handleSetNextBitWidth() {
       const bitWidth = Number(this.tempBitWidth);
       if (Number.isNaN(bitWidth)) {
@@ -941,15 +954,19 @@ export default {
       this.bitWidth = bitWidth;
       this.changeCurrentNode("subnodebitwidth", bitWidth);
 
-      const params = { subnodebitwidth: bitWidth, id: this.currentNode.id };
-      const { url } = this.$getApiByRoute();
-      const action = `${url}?action=updatebitwidth`;
-      this.$post({ url: action, params }).then(() => {
-        this.$Modal.remove();
-        this.$Message.success("位宽设置成功");
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-      });
+      // const params = { subnodebitwidth: bitWidth, id: this.currentNode.id };
+      // console.log(this.currentNode.id)
+
+      // const { url } = this.$getApiByRoute();
+      // const action = `${url}?action=update_semantic_plan`;
+      // this.$post({ url: action, params }).then(() => {
+      //   this.$Modal.remove();
+      //   this.$Message.success("位宽设置成功");
+      // }).catch(err => {
+      //   this.$Message.error(err.response.data.message);
+      // });
+
+      this.updateSemanticPlanByAction();
 
     },
     changeCurrentNode(attr, val) {
@@ -1014,18 +1031,6 @@ export default {
         this.$Message.info("地址步长请输入数字");
         return;
       }
-
-
-      const surplus = this.surplus;
-
-      const willUseAddressBlockCount = shouldCreateLength * stepsize;
-
-      // 空间计算，总共 >= 已使用 + 将分配，
-
-      // if (surplus < willUseAddressBlockCount) {
-      //   this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
-      //   return;
-      // }
 
 
       // pjk :check
@@ -1139,26 +1144,8 @@ export default {
       });
     },
     handleDeleteSemantic(row) {
-      this.$Modal.confirm({
-        title: "语义节点删除确认",
-        content: "<p>请再次语义节点删除确认</p>",
-        loading: true,
-        onOk: () => {
-          const params = { id: row.id };
-          const { url } = this.$getApiByRoute();
-          const action = `${url}?action=deletesemantic`;
-          this.$post({ url: action, params }).then(() => {
-            this.$Modal.remove();
-            this.$Message.success("语义节点删除成功");
-            // this.semanticNodeList = this.semanticNodeList.filter(item => item.id !== row.id  );
-            this.getPlanInfo();
-          }).catch(err => {
-            this.$Modal.remove();
-            this.$Message.error(err.response.data.message);
-          });
-        }
-      });
-
+      const prefixs = this.currentNode.prefixs;
+      this.cleanPlanByAction([row], prefixs);
     },
     handleDispath(row) {
       // 获取后校验，下拉
@@ -1362,13 +1349,14 @@ export default {
     // 调api 计算ipv6
     executeIpv6ByAction(semanticNodes, prefixs) {
       const { url } = this.$getApiByRoute();
-      const action = `${url}?action=autoformulatesemantic`;
+      const action = `${url}?action=plan_prefix_v6`;
 
       const params = {
-        parentSemanticId: this.currentNode.id,
+        parentId: this.currentNode.id,
         prefixs,
-        semanticNodes
+        subNodeIds: semanticNodes.map(item => item.id)
       };
+
 
       this.$post({ url: action, params })
         .then(res => {
@@ -1425,20 +1413,21 @@ export default {
 
     cleanPlanByAction(semanticNodes, prefixs) {
 
+      console.log(semanticNodes)
       this.$Modal.confirm({
         title: "清空规划确认提示",
         content: `<p>您是否需要清空所有子语义节点的IPv6规划地址？</p>`,
         onOk: () => {
           const { url } = this.$getApiByRoute();
-          const action = `${url}?action=cleansemanticplannodes`;
+          const action = `${url}?action=clean_prefix_v6`;
           const params = {
-            parentSemanticId: this.currentNode.id,
+            parentId: this.currentNode.id,
             prefixs,
-            semanticNodes
+            subNodeIds: semanticNodes.map(item => item.id)
           };
 
           this.$post({ url: action, params })
-            .then(res => {
+            .then(() => {
               this.$Message.success("清空规划成功");
               this.selectSemanticList = [];
               this.customPlanVisible = false;
@@ -1458,10 +1447,16 @@ export default {
     },
 
     handleOneKeyPlan() {
-      const prefixs = this.currentNode.prefixs;
-      const semanticNodeList = this.semanticNodeList;
-      this.executeIpv6ByAction(semanticNodeList, prefixs);
-      this.checkAllGroup = [];
+      const { networkV6s } = this.currentNode;
+      if (networkV6s && Array.isArray(networkV6s)) {
+        const prefixs = networkV6s.map(item => item.prefix);
+        const semanticNodeList = this.semanticNodeList;
+        this.executeIpv6ByAction(semanticNodeList, prefixs);
+        this.checkAllGroup = [];
+      } else {
+        this.$Message.info("prefix获取到，请先规划上层")
+      }
+
     },
 
     autoOneKey() {

@@ -80,7 +80,8 @@ export default {
       loading: false,
       dialogVisible: false,
       viewList: [],
-      planList: []
+      planList: [],
+      semanticId: "",
     };
   },
 
@@ -135,11 +136,25 @@ export default {
 
   },
 
+  created() {
+    this.getSematicRootId();
+  },
+
   methods: {
 
 
     reset() {
       this.$refs["formInline"].resetFields();
+    },
+
+    getSematicRootId() {
+      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/semantics" }).then(({ data }) => {
+        console.log(data)
+        if (Array.isArray(data) && data.length) {
+          const [{ id }] = data;
+          this.semanticId = id;
+        }
+      })
     },
 
     handleConfirm(name) {
@@ -148,37 +163,8 @@ export default {
 
           this.loading = true;
           const params = { ...this.formModel };
-          params.prefixs = params.prefixs.split(",").map(item => item.trim());
-          params.maxmaskwidths = Array.from(params.prefixs).fill(64);
-
-          const parentsemanticid = uuidv4(); // 语义节点id，也就是planNode的parentsemanticid
-          const rootPlanNodes = params.prefixs.map((prefix, index) => {
-            return {
-              id: uuidv4(),
-              prefix: prefix,
-              semanticid: parentsemanticid,
-              parentplannodeid: "0", // 网络节点的上层网络节点
-              sequence: index,
-              value: index + 1,
-              name: `根网络节点`,
-              bitWidth: 0,
-              maxmaskwidth: 64
-            };
-          });
-
-          params.semanticnodes = [{
-            id: parentsemanticid,
-            modified: modifiedEnum.STRUCTURED,
-            name: params.name,
-            parentsemanticid: "0",
-            stepsize: 0,
-            sequence: 1,
-            // autocreate: true,
-            ipv4s: [],
-            plannodes: rootPlanNodes
-          }];
-
-
+          params.prefixes = params.prefixs.split(",").map(item => item.trim());
+          params.semantic = this.semanticId;
 
           // this.$router.push({ name: "ipam-address-plan-create", query: params });
           this.$post({ url: this.links.self, params }).then((res) => {

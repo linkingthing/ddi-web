@@ -212,7 +212,7 @@ export default {
         content: "确定删除？",
         onOk: () => {
           this.$delete({ url: links.remove })
-            .then(res => {
+            .then(() => {
               this.$Message.success("删除成功");
               this.getManger();
             })

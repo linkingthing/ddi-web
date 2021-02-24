@@ -249,6 +249,8 @@ export default {
           const [{ links }] = data;
           this.links = links;
           this.getSemantic(links)
+        } else {
+          this.treeLoading = false;
         }
       }).catch(() => {
         this.treeLoading = false;

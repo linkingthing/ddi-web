@@ -6,7 +6,7 @@ import {
 } from "@/views/ipam-manage/address-plan/modules/helper";
 import router from "@/router";
 
-import { get } from "@/util/axios";
+import { post } from "@/util/axios";
 const uuid = uuidv4();
 
 const state = {
@@ -34,13 +34,13 @@ const getters = {
   loadingContent: state => state.loadingContent,
 
   tree: state => {
-    return list2Tree(cloneDeep(state.nodes), "0");
+    return list2Tree(cloneDeep(state.nodes), "root");
   },
   filterTree: state => {
     const smallTree = cloneDeep(state.nodes).filter(item => {
       return item.state !== "dispatch" || item.sponsordispatch;
     });
-    return list2Tree(smallTree, "0", "children");
+    return list2Tree(smallTree, "root", "children");
   },
   nodes: state => state.nodes,
   allPlanNodes: state => {
@@ -52,7 +52,7 @@ const getters = {
   },
   currentNodeChildren: state => {
     return state.nodes.filter(
-      item => item.parentsemanticid === state.currentNodeId
+      item => item.parentId === state.currentNodeId
     );
   },
   hasChange: state => state.hasChange
@@ -147,26 +147,37 @@ const mutations = {
 };
 
 const actions = {
-  getCurrentPlanInfo({ commit }, url) {
+  getCurrentPlanInfo({ commit }, { url }) {
     commit("setLoadingTree", true);
     commit("setLoadingContent", true);
 
-    get(url).then(({ name, prefixs, semanticnodes }) => {
-      commit("setPlanName", name);
-      commit("setPrefixs", prefixs);
+    post({ url: url + "?action=list_plan_tree" }).then(({ name, planTree }) => {
 
-      semanticnodes.forEach(node => {
-        node.plannodes = node.plannodes || [];
-        // 从plannodes节点中将prefix捞出，用于聚焦树节点时候面板展示
-        const prefixArr = node.plannodes.reduce((result, plannode) => {
-          return result.concat(plannode.prefix);
-        }, []);
-        node.prefixs = prefixArr;
+      const root = planTree.find(item => item.parentId === "root");
 
-        node.addressCount = node.plannodes.length;
-      });
+      if (root && root.networkV6s) {
+        const prefixs = root.networkV6s.map(item => item.prefix);
+        commit("setPrefixs", prefixs);
+      } else {
+        commit("setPrefixs", []);
+      }
 
-      commit("setNodes", semanticnodes);
+      if (root) {
+        commit("setPlanName", root.semanticName);
+      }
+
+      // semanticnodes.forEach(node => {
+      //   node.plannodes = node.plannodes || [];
+      //   // 从plannodes节点中将prefix捞出，用于聚焦树节点时候面板展示
+      //   const prefixArr = node.plannodes.reduce((result, plannode) => {
+      //     return result.concat(plannode.prefix);
+      //   }, []);
+      //   node.prefixs = prefixArr;
+
+      //   node.addressCount = node.plannodes.length;
+      // });
+
+      commit("setNodes", planTree);
 
       commit("setLoadingTree", false);
       commit("setLoadingContent", false);

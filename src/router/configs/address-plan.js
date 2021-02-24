@@ -60,7 +60,7 @@ export default {
 
     {
       name: "ipam-address-plan-semantics",
-      path: "/address/ipam/plans/:planId",
+      path: "/address/ipam_new/plans/:planId",
       component: () =>
         import(
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"

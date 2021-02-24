@@ -5,69 +5,6 @@ import _, { isNumber } from "lodash";
 export const defaultBitWidth = 4;
 import { v4 as uuidv4 } from "uuid";
 
-export function buildLayoutParams(
-  currentLayout,
-  autofill = true,
-  allValue = false
-) {
-  const params = _.cloneDeep(currentLayout);
-
-  // 自动value赋值
-  if (autofill) {
-    autoFillValue(params.nodes);
-  }
-
-  if (allValue) {
-    fillAllValue(params.nodes, allValue);
-  }
-
-  openModified(params.nodes); // TODO： 后期做局部跟新优化需要去掉
-
-  autoSequence(params.nodes);
-
-  const nodes = treeFlat(params.nodes);
-
-  delete params.creationTimestamp;
-  delete params.deletionTimestamp;
-  delete params.expand;
-  delete params.links;
-  delete params.type;
-  delete params.bitWidth;
-  delete params.prefix;
-  delete params.id;
-
-  params.nodes = nodes;
-  params.autofill = autofill;
-
-  return params;
-}
-
-/**
- * 自动填充value
- */
-function autoFillValue(tree) {
-  if (Array.isArray(tree)) {
-    tree.forEach((node, index) => {
-      node.value = index + 1;
-      node.modified = 1;
-      autoFillValue(node.nodes);
-    });
-  }
-}
-
-/**
- * 给每个节点填充value为负一
- */
-function fillAllValue(tree, value) {
-  if (Array.isArray(tree)) {
-    tree.forEach((node, index) => {
-      node.value = node.value || value;
-      node.modified = 1;
-      fillAllValue(node.nodes, value);
-    });
-  }
-}
-
 export function hasAllBitWidth(tree, isValid = true) {
   if (Array.isArray(tree)) {
     tree.forEach(node => {
@@ -80,15 +17,6 @@ export function hasAllBitWidth(tree, isValid = true) {
     });
   }
   return isValid;
-}
-
-function autoSequence(tree) {
-  if (Array.isArray(tree)) {
-    tree.forEach((node, index) => {
-      node.sequence = index + 1;
-      autoSequence(node.nodes);
-    });
-  }
 }
 
 /**
@@ -265,19 +193,15 @@ export function findExpandPath(
 /**
  * 列表转成树
  */
-export function list2Tree(
-  data,
-  parentsemanticid,
-  children = "nodes",
-  depth = 0
-) {
+export function list2Tree(data, parentId, children = "nodes", depth = 0) {
   let res = [];
   data.forEach(item => {
-    if (item.parentsemanticid === parentsemanticid) {
+    if (item.parentId === parentId) {
       let itemChildren = list2Tree(data, item.id, children, depth + 1);
       if (itemChildren.length) item[children] = itemChildren;
       item.expand = true;
       item.open = true;
+      item.name = item.semanticName
       res.push({
         ...item,
         depth
@@ -609,20 +533,10 @@ export const hasGrandson = (nodes, id, allNodes = nodes) => {
   }
 };
 
-export const hasSon = (nodes, id, allNodes = nodes) => {
+export const hasSon = (nodes, id) => {
   const children = nodes.filter(node => {
     return node.parentsemanticid === id;
   });
 
   return !!children.length;
 };
-
-/**
- * 华丽离场
- * 处理1000个节点的地址规划，跳转到其他路由卡死问题
- * */
-
-export function gorgeousDeparture() {
-  // 销毁 contentTable
-  // 销毁 tree
-}
