@@ -1049,7 +1049,7 @@ export default {
             return {
               ...item,
               count: currentCount,
-              initCount: currentCount,
+              initCount: 0,
 
             }
           });
