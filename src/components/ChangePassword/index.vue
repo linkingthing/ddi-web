@@ -149,9 +149,15 @@ export default {
           this.loading = true;
           this.$post({ url: `/apis/linkingthing.com/auth/v1/users/${username}?action=${this.action}`, params })
             .then(() => {
-              this.$Message.success("修改成功");
+              this.$Message.success("修改成功,将自动退出，请重新登陆");
               this.dialogVisible = false;
-            }).finlly(() => {
+              setTimeout(() => {
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 2000)
+
+            }).finally(() => {
               this.loading = false;
             });
         }
