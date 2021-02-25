@@ -21,7 +21,7 @@ export default {
   children: [
     {
       name: 'ipam-address-manage',
-      path: '/address/ipam/scannedsubnets',
+      path: '/address/asset/scannedsubnets',
       component: () => import(/* webpackChunkName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
         title: "IP资产管理",
@@ -30,7 +30,7 @@ export default {
     },
     {
       name: 'ipam-network-interface',
-      path: '/address/ipam/scannedsubnets/:scannedsubnetsId/networkinterfaces',
+      path: '/address/asset/scannedsubnets/:scannedsubnetsId/networkinterfaces',
       component: () => import(/* webpackChunkName: "ipam-network-interface" */ "@/views/ipam-manage/network-interface"),
       meta: {
         notInMenu: true,
@@ -43,7 +43,7 @@ export default {
     },
     {
       name: 'ipam-network-ipassets',
-      path: '/address/ipam/scannedsubnets/:scannedsubnetsId/ipassets',
+      path: '/address/asset/scannedsubnets/:scannedsubnetsId/ipassets',
       component: () => import(/* webpackChunkName: "ipam-network-interface" */ "@/views/ipam-manage/ipassets"),
       meta: {
         notInMenu: true,
@@ -54,7 +54,7 @@ export default {
     },
     {
       name: 'ip-assets-manage',
-      path: '/address/ipam/assets',
+      path: '/address/asset/devices',
       component: () => import(/* webpackChunkName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
       meta: {
         title: "终端资产管理",
@@ -64,7 +64,7 @@ export default {
     },
     {
       name: 'device-detect',
-      path: '/address/ipam/networkequipments',
+      path: '/address/asset/networkequipments',
       component: () => import(/* webpackChunkName: "device-detect" */ "@/views/ipam-manage/device-detect"),
       meta: {
         title: "设备资产管理",
