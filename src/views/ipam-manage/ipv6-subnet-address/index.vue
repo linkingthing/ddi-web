@@ -185,7 +185,7 @@ export default {
       params.page_size = 10;
       params.page_num = +query.current || 1;
       this.loading = true;
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/networkv6s", params })
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/networkv6s", params })
 
         .then(({ data, links, pagination }) => {
           this.list = data;

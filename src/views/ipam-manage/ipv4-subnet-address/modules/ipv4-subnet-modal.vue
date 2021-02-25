@@ -197,7 +197,7 @@ export default {
   methods: {
 
     getSemanticList() {
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/semantics" }).then(({ data }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/semantics" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
           const [{ links }] = data;
           this.$post({ url: `${links.self}?action=list_tree` }).then((data) => {
@@ -208,7 +208,7 @@ export default {
     },
 
     getSubnetType() {
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/networktypes" }).then(({ data }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/networktypes" }).then(({ data }) => {
         this.subnetTypeList = data;
       })
     },

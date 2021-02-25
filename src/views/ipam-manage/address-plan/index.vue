@@ -1,6 +1,8 @@
 <template>
   <div class="plan">
 
+    <!-- <SemanticTree /> -->
+
     <div class="plan-content">
 
       <NoDataList
@@ -98,6 +100,7 @@ import { list2Tree } from "./modules/helper";
 
 
 import PlanTree from "./modules/PlanTree";
+import SemanticTree from "./modules/SemanticTree";
 
 import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
 
@@ -109,7 +112,8 @@ export default {
   components: {
     NoDataList,
     PlanModal,
-    PlanTree
+    PlanTree,
+    SemanticTree
   },
 
   data() {
@@ -149,22 +153,20 @@ export default {
           key: "prefixes",
           align: "left",
           render: (h, { row }) => {
-            return h("a", {
+            return h("span", {
               attrs: {
                 href: "javascript:;"
               },
-              on: {
-                click: () => {
-                  const { links } = row;
-                  let url = this.$getRouteByLink(links.self, "address");
-                  this.$router.push({
-                    path: url
-                  });
-                }
-              }
+              // on: {
+              //   click: () => {
+              //     const { links } = row;
+              //     let url = this.$getRouteByLink(links.self, "address");
+              //     this.$router.push({
+              //       path: url
+              //     });
+              //   }
+              // }
             }, row.prefixes);
-
-
           }
         },
         // {
@@ -186,8 +188,8 @@ export default {
         {
           title: "操作",
           key: "name",
-          // width: 410,
-          width: 300,
+          width: 150,
+          // width: 300,
           render: (h, { row }) => {
             return h("div", {
               class: "table-btn-box"
@@ -264,7 +266,7 @@ export default {
         page_size: 10
       };
       this.loadingPage = true;
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/plans", params }).then(({ data, links, pagination }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/plans", params }).then(({ data, links, pagination }) => {
         this.current = pagination.pageNum;
         this.total = pagination.total;
         const { user } = this.$store.getters.userInfo;

@@ -243,7 +243,7 @@ export default {
   methods: {
     getSemanticList() {
       this.treeLoading = true;
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/semantics" }).then(({ data }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/semantics" }).then(({ data }) => {
         console.log(data)
         if (Array.isArray(data) && data.length) {
           const [{ links }] = data;
@@ -305,7 +305,7 @@ export default {
               parentId: "root",
               rootId: "root"
             }
-            this.$post({ url: "/apis/linkingthing.com/ipam_new/v1/semantics", params }).then(({ links, id, rootId }) => {
+            this.$post({ url: "/apis/linkingthing.com/ipam/v1/semantics", params }).then(({ links, id, rootId }) => {
               this.createSubnode(links.self, { id, rootId, parentId: id }, this.formModel.count)
             }).catch(err => {
               this.$Message.error(err.response.data.message)

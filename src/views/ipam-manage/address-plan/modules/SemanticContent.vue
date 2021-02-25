@@ -122,7 +122,7 @@
               class="action-box-input"
               style="padding: 3px 0;"
             >
-              {{surplus || "_ _"}}
+              {{remainAddressCount || "_ _"}}
             </span>
           </div>
         </div>
@@ -151,7 +151,7 @@
           <div class="action-box">
             <Input
               class="action-box-input"
-              v-model="stepsize"
+              v-model="prefixBeginValue"
               placeholder="请输入子网地址起始值"
             />
             <!-- :disabled="settableStepSize" -->
@@ -163,8 +163,9 @@
           <Button
             type="primary"
             @click="handleClickCreateSemanticNode"
-            :disabled="settableCreateSemanticNode"
           >确定</Button>
+          <!-- :disabled="settableCreateSemanticNode" -->
+
         </div>
       </div>
 
@@ -482,9 +483,11 @@ export default {
       stepsize: "",
       prefixBeginValue: "",
       subSemanticPrefixCount: "",
-
+      remainAddressCount: 0,
 
       detailVisible: false,
+
+      dataDetail: [],
       columnsDetail: [
         {
           title: "前缀",
@@ -496,7 +499,7 @@ export default {
         },
         {
           title: "可规划地址",
-          key: "name",
+          key: "addressAvailableScope",
           width: 500
         }
       ],
@@ -534,7 +537,9 @@ export default {
 
       editList: [],
       editIpv4List: [],
-      tableLoading: false
+      tableLoading: false,
+
+
 
     };
   },
@@ -550,7 +555,7 @@ export default {
       "allPlanNodes",
     ]),
     currentNodeName() {
-      return this.currentNode && this.currentNode.semanticName;
+      return this.currentNode && this.currentNode.name;
     },
     settableNextBitWidth() {
       // 位宽是否可修改
@@ -636,53 +641,17 @@ export default {
     },
     allAddressBlockCount() {
       let result = 0;
-      if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
-        const { subnodebitwidth } = this.currentNode;
-        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 1)
+      if (this.currentNode && this.currentNode.networkV6s && this.currentNode.networkV6s.length && this.currentNode.semanticPlan) {
+        const { bitWidth } = this.currentNode.semanticPlan;
+        result = this.currentNode.networkV6s.length * (2 ** bitWidth - 1)
       }
       return result;
     },
-    surplus() {
-      // 剩余地址数
-      let result = 0;
-      if (this.currentNode && this.currentNode.prefixs && this.currentNode.prefixs.length) {
-        const { subnodebitwidth } = this.currentNode;
-        if (!subnodebitwidth) {
-          return result;
-        }
-        const currentNodeChildren = this.nodes.filter(item => item.parentsemanticid === this.currentNode.id);
 
-        const childrenLen =
-          currentNodeChildren
-            .map(({ plannodes }) =>
-              Array.isArray(plannodes) ? plannodes.length : 0)
-            .reduce((prev, result) => {
-              return result + prev;
-            }, 0);
-
-        result = this.currentNode.prefixs.length * (2 ** subnodebitwidth - 1) - childrenLen;
-      }
-      return result;
-    },
-    dataDetail() {
-      const prefix = this.currentNodePrefix;
-      const subnodebitwidth = this.currentNode ? this.currentNode.subnodebitwidth : 0;
-      const count = subnodebitwidth ? 2 ** Number(subnodebitwidth) - 1 : 0;
-
-      return prefix.map(item => {
-        const minAblePlan = executeNextIpv6Segment(item, 1, subnodebitwidth);
-        const maxAblePlan = executeNextIpv6Segment(item, count, subnodebitwidth);
-        return {
-          prefix: item,
-          count,
-          name: subnodebitwidth ? `${minAblePlan}~${maxAblePlan}` : "--"
-        };
-      });
-    },
     filterCurrentNodeChildren() {
       const currentNodeChildren = cloneDeep(this.semanticNodeList);
       return currentNodeChildren
-        .filter(item => item.semanticName.includes(this.filterKeyword.trim()))
+        .filter(item => item.name.includes(this.filterKeyword.trim()))
         .map(item => {
           const prefixs = Array.isArray(item.networkV6s) ? item.networkV6s.map(item => item.prefix) : []
           return {
@@ -707,34 +676,9 @@ export default {
         },
         {
           title: "组织机构",
-          key: "semanticName",
+          key: "name",
           maxWidth: 200,
           minWidth: 150,
-          // render: (h, { row }) => {
-          //   console.log(1, row)
-          //   return h("div", 1)
-
-          // return h("line-edit",
-          //   {
-          //     on: {
-          //       "on-edit-begain": () => this.editList.push(row.id),
-          //       "on-edit-change": val => tempSemanticNameMap[row.id] = val,
-          //       "on-edit-finish": val => {
-          //         this.editList = this.editList.filter(item => item !== row.id);
-          //         this.handleSaveSemanticName(row, val);
-          //       }
-          //     },
-          //     props: {
-          //       isEdit: this.editList.includes(row.id),
-          //       isPercent: false,
-          //       value: tempSemanticNameMap[row.id] || row.name,
-          //       width: "124px",
-          //       checkfunc: (val) => this.checkNamefunc(val, row)
-          //     }
-          //   }
-
-          // );
-          // }
         },
 
         {
@@ -773,7 +717,7 @@ export default {
                   marginRight: "10px"
                 },
                 props: {
-                  disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0)
+                  // disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0)
                 },
                 on: {
                   click: () => this.handleOpenEditNode(row)
@@ -819,11 +763,10 @@ export default {
 
         } else {
           this.currentNodePrefix = [];
-
         }
 
         if (val.semanticPlan) {
-          const { bitWidth, prefixBeginValue, subSemanticPrefixCount } = val.semanticPlan;
+          const { bitWidth, prefixBeginValue, subSemanticPrefixCount, remainAddressCount } = val.semanticPlan;
 
           if (bitWidth) {
             this.currentNodeBitWidth = bitWidth;
@@ -833,46 +776,20 @@ export default {
             this.tempBitWidth = "";
           }
 
+          this.remainAddressCount = remainAddressCount;
           this.prefixBeginValue = prefixBeginValue;
           this.subSemanticPrefixCount = subSemanticPrefixCount
 
         } else {
           this.currentNodeBitWidth = 0;
           this.tempBitWidth = "";
+          this.remainAddressCount = 0
         }
 
         this.nodeCount = this.currentNodeChildren.length;
 
-        // if (val.prefixs && Array.isArray(val.prefixs) && val.prefixs.length) {
-        //   this.currentNodePrefix = val.prefixs;
-        //   const [, len] = val.prefixs[0].split("/");
-        //   this.prefixLen = len;
-        //   this.currentNodePrefixLen = len;
-        // } else {
-        //   this.currentNodePrefix = [];
-        //   this.currentNodePrefixLen = 0;
-        // }
 
-        // if (val.subnodebitwidth) {
-        //   this.currentNodeBitWidth = val.subnodebitwidth;
-        // } else {
-        //   this.currentNodeBitWidth = 0;
-        // }
-
-        // if ((typeof val.subnodebitwidth === "number")) {
-        //   this.bitWidth = val.subnodebitwidth;
-        //   this.tempBitWidth = val.subnodebitwidth || "";
-        // } else {
-        //   this.bitWidth = 0;
-        //   this.tempBitWidth = "";
-        // }
-
-        // stepsize
-        // if ((typeof val.stepsize === "number")) {
-        //   this.stepsize = val.stepsize;
-        // } else {
-        //   this.stepsize = 0;
-        // }
+        this.getDataDetail();
 
       }
     },
@@ -904,13 +821,33 @@ export default {
       "getCurrentPlanInfo"
     ]),
 
+    getDataDetail() {
+      const { url } = this.$getApiByRoute();
+
+      const params = {
+        semanticId: this.currentNode.id
+      }
+      this.$post({ url: `${url}?action=get_plan_detail`, params }).then((data) => {
+        if (data) {
+          this.dataDetail = data.planDetails.map(item => {
+            return {
+              ...item,
+              count: item.prefixUsedCount + item.remainAddressCount
+            }
+          });
+        } else {
+          this.dataDetail = [];
+        }
+
+      });
+    },
 
     updateSemanticPlanByAction() {
 
       const params = {
         nodeId: this.currentNode.id,
         bitWidth: Number(this.tempBitWidth),
-        subSemanticPrefixCount: this.subSemanticPrefixCount,
+        subSemanticPrefixCount: +this.subSemanticPrefixCount,
         prefixBeginValue: this.prefixBeginValue
       }
 
@@ -954,18 +891,6 @@ export default {
       this.bitWidth = bitWidth;
       this.changeCurrentNode("subnodebitwidth", bitWidth);
 
-      // const params = { subnodebitwidth: bitWidth, id: this.currentNode.id };
-      // console.log(this.currentNode.id)
-
-      // const { url } = this.$getApiByRoute();
-      // const action = `${url}?action=update_semantic_plan`;
-      // this.$post({ url: action, params }).then(() => {
-      //   this.$Modal.remove();
-      //   this.$Message.success("位宽设置成功");
-      // }).catch(err => {
-      //   this.$Message.error(err.response.data.message);
-      // });
-
       this.updateSemanticPlanByAction();
 
     },
@@ -981,18 +906,13 @@ export default {
     handleToggleDetail() {
       this.detailVisible = !this.detailVisible;
     },
-    handleAddOne() {
-      // TODO: 考虑必要限制
-      this.nodeCount = +this.nodeCount + 1;
-    },
+
     handleClickCreateSemanticNode() {
 
-      const bitWidth = Number(this.bitWidth);
+      const bitWidth = Number(this.currentNodeBitWidth);
       const oldNodeCount = this.currentNodeChildren.length;
 
-      const currentSemanticNodeListLength = this.semanticNodeList.length;
       const willCreateSemanticNodeListLength = Number(this.nodeCount);
-      const shouldCreateLength = willCreateSemanticNodeListLength - currentSemanticNodeListLength;
 
 
       // 校验位宽
@@ -1018,52 +938,7 @@ export default {
         return;
       }
 
-      // 地址步长校验
-
-      const stepsize = Number(this.stepsize); // 拿到最新值
-
-      if (Number.isNaN(stepsize)) {
-        this.$Message.info("地址步长输入有误，请更正");
-        return;
-      }
-
-      if (stepsize < 1) {
-        this.$Message.info("地址步长请输入数字");
-        return;
-      }
-
-
-      // pjk :check
-      const maxAddressBlock = this.currentNodePrefix.length * (2 ** bitWidth - 1);
-      if (willCreateSemanticNodeListLength * stepsize > maxAddressBlock) {
-        this.$Message.info("地址空间不足，可缩小平均每个子节点地址值数量或者向上级申请增加地址空间");
-        return;
-      }
-
-
-      const params = {
-        semanticId: this.currentNode.id,
-        subNodeNumbers: willCreateSemanticNodeListLength,
-        stepSize: stepsize
-      };
-      const url = "/apis/linkingthing.com/ipam/v1/plans";
-      const action = `${url}?action=updatesemanticnumber`;
-      this.$post({ url: action, params }).then((addNodes) => {
-        if (Array.isArray(addNodes) && addNodes.length && this.semanticNodeList.length) {
-          const { autocreate } = this.semanticNodeList[0];
-          if (autocreate === planTypeEnum.ONEKEYPLAN) {
-            const prefixs = this.currentNode.prefixs;
-            this.executeIpv6ByAction(addNodes, prefixs);
-            return;
-          }
-        } else {
-          this.$Message.success("更新成功");
-          this.getPlanInfo();
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$Message.error(err.response.data.message);
-      });
+      this.updateSemanticPlanByAction();
 
     },
 
@@ -1086,63 +961,6 @@ export default {
       return { isValid: true };
     },
 
-    handleSaveSemanticName(row, name) {
-      this.tableLoading = true;
-      const params = { name, id: row.id };
-
-      const url = "/apis/linkingthing.com/ipam/v1/plans";
-      const action = `${url}?action=updatesemanticinfo`;
-      this.$post({ url: action, params }).then(() => {
-        this.getPlanInfo();
-        this.$Message.success("更新成功");
-        Reflect.deleteProperty(tempSemanticNameMap, row.id);
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-      }).finally(() => {
-        this.tableLoading = false;
-      });
-    },
-    checkfunc(ipv4str, row) {
-      const ipv4s = ipv4str.split(",");
-      if (ipv4str.trim() === "") {
-        return { isValid: true };
-      }
-
-      if (ipv4s.length !== [...new Set(ipv4s)].length) {
-        return { isValid: false, message: "ipv4s重复，请更正" };
-      }
-
-      // 防止全局ipv4重复
-      const IPv4List = this.nodes.filter(item => item.id !== row.id && item.state !== "dispatch").map(item => item.ipv4s || []).flat();
-      if (includes(IPv4List, ipv4s)) {
-        return { isValid: false, message: "ipv4s重复，请更正" };
-      }
-      console.log(IPv4List)
-
-      const isValid = !!ipv4s.every(item => {
-        const [ip, len] = item.split("/");
-        return !!len && isIpv4Segment(item);
-      });
-
-      return { isValid, message: "ipv4网段输入有误，请更正" };
-
-    },
-    handleSaveIpv4s(row, ipv4str) {
-      const ipv4s = ipv4str.split(",").filter(item => !!item);
-
-      const params = { ipv4s, id: row.id };
-      const { url } = this.$getApiByRoute();
-      const action = `${url}?action=updatesemanticipv4`;
-      this.$post({ url: action, params }).then(() => {
-        this.$Message.success("更新成功");
-        this.getPlanInfo();
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-        this.editIpv4List.push(row.id);
-      }).finally(() => {
-
-      });
-    },
     handleDeleteSemantic(row) {
       const prefixs = this.currentNode.prefixs;
       this.cleanPlanByAction([row], prefixs);
@@ -1214,57 +1032,37 @@ export default {
       });
 
 
-
-
     },
     handleOpenEditNode(row) {
 
-      this.nodeEditVisible = true;
-      const prefixList = this.currentNodePrefix;
+      const { url } = this.$getApiByRoute();
 
-      const allPlanNodes = this.allPlanNodes;
-      const semanticNodeList = this.semanticNodeList;
-      const bitWidth = this.bitWidth;
+      const params = {
+        semanticId: this.currentNode.id
+      }
 
-      const prefixMap = {};
-      row.plannodes = row.plannodes || [];
-      row.plannodes.forEach(plannode => {
-        if (prefixMap[plannode.parentplannodeid]) {
-          prefixMap[plannode.parentplannodeid].count += 1;
-        } else {
-          const { prefix } = allPlanNodes.find(item => item.id === plannode.parentplannodeid);
+      this.$post({ url: `${url}?action=get_plan_detail`, params }).then((data) => {
+        if (data) {
+          const { planDetails } = data;
+          const currentCount = Array.isArray(row.networkV6s) && row.networkV6s.length || 0;
+          const prefixMap = planDetails.map(item => {
+            return {
+              ...item,
+              count: currentCount,
+              initCount: currentCount,
 
-          prefixMap[plannode.parentplannodeid] = {
-            prefix,
-            count: 1
-          };
+            }
+          });
+
+          this.currentNodeofChooseChild.prefixMap = prefixMap;
+          this.currentNodeofChooseChild.row = row;
+          this.prefixMap = prefixMap;
+          this.nodeEditVisible = true;
         }
-      });
-
-      this.currentNodeofChooseChild.row = row;
-      const prefixMapTemp = prefixList.map(prefix => {
-        const { count } = Object.values(prefixMap).find(item => item.prefix === prefix) || { count: 0 };
-
-        const availableValueList = executeValueRecyclePool(
-          [prefix],
-          semanticNodeList,
-          bitWidth
-        );
-
-        return {
-          prefix,
-          count,
-          availableValueList,
-          initCount: count
-        };
-      });
-      this.currentNodeofChooseChild.prefixMap = prefixMapTemp;
-
-      this.prefixMap = prefixMapTemp;
-
+      })
     },
     handleCountChange(item) {
-      const maxCount = item.availableValueList.length + item.initCount;
+      const maxCount = item.remainAddressCount + item.initCount;
       if (item.count > maxCount || item.count < item.initCount || Number.isNaN(Number(item.count))) {
         this.$Message.info(`请输入${item.initCount}到${maxCount}的数字`);
         this.$nextTick().then(() => {
@@ -1280,7 +1078,7 @@ export default {
       }
     },
     handlePlusCount(item) {
-      const maxCount = item.availableValueList.length + item.initCount;
+      const maxCount = item.remainAddressCount + item.initCount;
       if (item.count < maxCount) {
         item.count += 1;
       }
@@ -1290,34 +1088,28 @@ export default {
 
     },
     handleSaveChildNode() {
-
-
       const node = (this.currentNodeofChooseChild);
       this.$refs["currentNodeofChooseChildRef"].validate(valid => {
         if (valid) {
-
-          const { prefixMap } = node;
-          const semanticNode = node.row;
-
+          const { prefixMap, row } = node;
 
           const prefixs = [];
           const prefixNumbers = [];
           prefixMap.forEach(({ initCount, count, prefix }) => {
             if (count > initCount) {
               prefixs.push(prefix);
-              prefixNumbers.push(count - initCount);
+              prefixNumbers.push(count);
             }
           });
 
-
           const { url } = this.$getApiByRoute();
-          const action = `${url}?action=addsemanticplannode`;
+          const action = `${url}?action=update_prefix_v6`;
 
           const params = {
-            parentSemanticId: this.currentNode.id,
             prefixs,
-            prefixNumbers,
-            semantic: semanticNode
+            prefixCounts: prefixNumbers,
+            parentId: this.currentNode.id,
+            subNodeId: row.id
           };
 
           this.$post({ url: action, params })
@@ -1339,7 +1131,6 @@ export default {
             .finally(() => {
               this.getPlanInfo();
             });
-
 
         }
       });

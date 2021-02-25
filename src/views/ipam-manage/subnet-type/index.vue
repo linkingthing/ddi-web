@@ -104,7 +104,7 @@ export default {
         page_num: this.current
       }
       this.loadingPage = true;
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/networktypes", params }).then(({ data, links, pagination }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/networktypes", params }).then(({ data, links, pagination }) => {
         this.dataList = data;
         this.links = links;
         this.total = pagination.total;

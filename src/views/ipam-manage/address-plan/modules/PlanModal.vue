@@ -148,7 +148,7 @@ export default {
     },
 
     getSematicRootId() {
-      this.$get({ url: "/apis/linkingthing.com/ipam_new/v1/semantics" }).then(({ data }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/semantics" }).then(({ data }) => {
         console.log(data)
         if (Array.isArray(data) && data.length) {
           const [{ id }] = data;

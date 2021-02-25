@@ -201,7 +201,6 @@ export function list2Tree(data, parentId, children = "nodes", depth = 0) {
       if (itemChildren.length) item[children] = itemChildren;
       item.expand = true;
       item.open = true;
-      item.name = item.semanticName
       res.push({
         ...item,
         depth

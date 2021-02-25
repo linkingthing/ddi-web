@@ -10,7 +10,7 @@ export default {
     permission: "ipAddressPlan"
   },
   name: "addressPlan",
-  redirect: { name: "ipam-address-plan" },
+  redirect: { name: "ipam-address-ip-info-manage" },
   icon: "icon-dhcp",
 
   children: [
@@ -39,7 +39,10 @@ export default {
 
       meta: {
         title: "IP地址规划",
-        permission: "ipAddressPlan"
+        permission: "ipAddressPlan",
+        notInMenu: true,
+        active: "ipam-address-ip-info-manage",
+        from: "ipam-address-ip-info-manage"
       }
     },
 
@@ -60,7 +63,7 @@ export default {
 
     {
       name: "ipam-address-plan-semantics",
-      path: "/address/ipam_new/plans/:planId",
+      path: "/address/ipam/plans/:planId",
       component: () =>
         import(
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/address-plan/semantics"
