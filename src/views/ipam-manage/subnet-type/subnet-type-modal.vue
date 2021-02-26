@@ -27,7 +27,13 @@
 </template>
 
 <script>
-
+const presetSubnetTypeMap = {
+  guest: "访客子网",
+  management: "管理子网",
+  office: "办公子网",
+  server: "服务器子网",
+  vpn: "VPN子网"
+}
 
 export default {
   props: {
@@ -47,6 +53,15 @@ export default {
     this.rules = {
       name: [
         { required: true, message: "请填子网类型名称" },
+        {
+          validator: (rule, value, callback) => {
+            if (Object.values(presetSubnetTypeMap).includes(value.trim())) {
+              callback("子网名不能重复")
+            } else {
+              callback()
+            }
+          }
+        },
       ],
       comment: [
         // { required: true, message: "请填备注" },
