@@ -306,6 +306,9 @@ export const isIp = address => {
 
 export const isIpv4Segment = segment => {
   try {
+    if (!segment.includes("/")) {
+      return false;
+    }
     const ipv4 = new Address4(segment);
     const { subnetMask } = ipv4;
     const ipBinary = ipv4.binaryZeroPad();
@@ -317,6 +320,9 @@ export const isIpv4Segment = segment => {
 };
 
 export const isIpv6Segment = segment => {
+  if (!segment.includes("/")) {
+    return false;
+  }
   const ipv6 = new Address6(segment);
   const { subnetMask } = ipv6;
   const ipBinary = ipv6.binaryZeroPad();
