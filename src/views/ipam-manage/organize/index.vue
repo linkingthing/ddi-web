@@ -230,6 +230,11 @@ export default {
       handler() {
         this.currentChildenNodeList = this.currentNode.children || [];
       }
+    },
+    dialogVisible(val) {
+      if (!val) {
+        this.$refs["formInline"].resetFields();
+      }
     }
   },
   created() {
