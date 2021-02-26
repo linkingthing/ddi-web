@@ -696,10 +696,25 @@ export default {
         },
         {
           title: "IPv6地址",
-          key: "showprefixs",
-          tooltip: true,
+          key: "prefixs",
+
           maxWidth: 280,
-          minWidth: 100
+          minWidth: 100,
+          render: (h, { row }) => {
+            console.log(row.showprefixs)
+            return <Tooltip transfer style="width: 100%">
+              <div class="ellipsis">{row.showprefixs}</div>
+
+              <div slot="content">
+                {
+                  row.showprefixs.split(",").map(item => {
+                    return <p>{item}</p>
+                  })
+                }
+              </div>
+
+            </Tooltip>
+          }
         },
 
         {
@@ -784,6 +799,8 @@ export default {
           this.currentNodeBitWidth = 0;
           this.tempBitWidth = "";
           this.remainAddressCount = 0
+          this.subSemanticPrefixCount = 0;
+          this.prefixBeginValue = "";
         }
 
         this.nodeCount = this.currentNodeChildren.length;
@@ -857,6 +874,7 @@ export default {
       this.$post({ url: action, params }).then(() => {
         this.$Modal.remove();
         this.$Message.success("设置成功");
+        this.$emit("updateTree")
       }).catch(err => {
         this.$Message.error(err.response.data.message);
       });

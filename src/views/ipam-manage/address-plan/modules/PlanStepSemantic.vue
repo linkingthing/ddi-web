@@ -2,7 +2,7 @@
   <div class="PlanStepSemantic">
 
     <SemanticTree prefix="语义树" />
-    <SemanticContent />
+    <SemanticContent @updateTree="getLayoutInfo"/>
 
   </div>
 </template>
