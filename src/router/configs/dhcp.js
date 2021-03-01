@@ -143,6 +143,18 @@ export default {
           }
         }
       ]
-    }
+    },
+    {
+      name: "dynamic-address-pool-template",
+      path: "/address/dhcp/dynamic-address-pool-template",
+      component: () =>
+        import(
+          /* webpackChunkName: "subnet-pool-subnet" */ "@/views/dhcp-service/dynamic-address-pool-template"
+        ),
+      meta: {
+        title: "动态地址池模板",
+        // permission: "addressPoolManage"
+      }
+    },
   ]
 };
