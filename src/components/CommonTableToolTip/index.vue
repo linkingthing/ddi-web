@@ -1,14 +1,18 @@
 <template>
   <div class="CommonTableToolTip">
-    <Tooltip transfer>
-      <div class="ellipsis">{{value.join(",")}}</div>
+    <Tooltip
+      transfer
+      v-if="innerValue.length"
+    >
+      <div class="ellipsis">{{innerValue.join(",")}}</div>
       <div slot="content">
         <p
-          v-for="item in value"
-          :key="item"
+          v-for="(item,index) in innerValue"
+          :key="item+index"
         >{{item}}</p>
       </div>
     </Tooltip>
+    <span v-else></span>
   </div>
 </template>
 
@@ -23,10 +27,23 @@ export default {
   },
   data() {
     return {
+      innerValue: []
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    value: {
+      immediate: true,
+      deep: true,
+      handler(value) {
+        if (Array.isArray(value)) {
+          this.innerValue = value
+        } else {
+          this.innerValue = [];
+        }
+      }
+    }
+  },
   created() { },
   mounted() { },
   methods: {}

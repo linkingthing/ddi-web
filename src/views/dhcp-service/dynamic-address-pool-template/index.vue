@@ -81,7 +81,7 @@ export default {
       }, {
         title: "DNS",
         key: "domainServers",
-        render:(h,{row}) => {
+        render: (h, { row }) => {
           return <common-table-tool-tip value={row.domainServers} />
         }
       }]
@@ -109,20 +109,15 @@ export default {
         middleList.push({
           title: "默认网关",
           key: "routers",
-          render:(h,{row}) => {
-          return <common-table-tool-tip value={row.routers} />
-        }
+          render: (h, { row }) => {
+            return <common-table-tool-tip value={row.routers} />
+          }
         }, {
           title: "OPTION60",
           key: "clientClass"
         });
       }
-      if (this.active === "6") {
-        middleList.push({
-          title: "OPTION18",
-          key: ""
-        })
-      }
+
 
       return [...frontList, ...middleList, ...endList];
     },

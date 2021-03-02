@@ -6,7 +6,7 @@
       :active="tab"
       :tab-list="tabList"
     />
-    <router-view />
+    <router-view :version="addressType" />
   </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
     return {
       tabList: [],
       tab: "",
-      addressType: "",
+      addressType: null,
       subnetLenth: 0
     };
   },

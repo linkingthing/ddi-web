@@ -9,27 +9,38 @@
       :total="total"
       :current.sync="current"
     >
-      <template slot="top-right">
-        <div style="display: flex">
-          <Input
-            search
-            enter-button
-            placeholder="请输入子网地址"
-            v-model="search.subnet"
-            @on-search="handleSearch"
+      <template slot="neck">
+        <div class="address-pool-search">
+
+          <CommonTab
+            :active="String(active)"
+            :tab-list="tabList"
+            @change="(value) => { active = +value }"
           />
-          <Button
-            type="primary"
-            @click="handleAdd"
-            class="top-button button-add"
-          >
-            新建
-          </Button>
+
+          <div class="address-pool-search-right">
+            <Input
+              search
+              enter-button
+              placeholder="请输入子网地址"
+              v-model="search.subnet"
+              @on-search="handleSearch"
+              style="width: 200px;margin-right: 20px"
+            />
+            <Button
+              type="primary"
+              @click="handleAdd"
+              class="top-button button-add"
+            >
+              新建
+            </Button>
+          </div>
         </div>
 
       </template>
     </TablePagination>
     <Edit
+      :version="active"
       :visible.sync="showEdit"
       :links="links"
       @success="getDataList"
@@ -44,17 +55,29 @@
 <script>
 import TablePagination from "@/components/TablePagination";
 import Edit from "./edit";
+import CommonTab from "@/components/CommonTab";
 
 import { columns } from "./define";
 
 export default {
   components: {
     TablePagination,
-    Edit
+    Edit,
+    CommonTab
   },
 
   data() {
+    this.tabList = [{
+      id: "4",
+      label: "IPv4"
+    }, {
+      id: "6",
+      label: "IPv6"
+    }];
+
     return {
+      active: 4,
+
       loading: true,
       keywords: "",
       search: {
@@ -71,6 +94,9 @@ export default {
 
   watch: {
     current() {
+      this.getDataList();
+    },
+    active() {
       this.getDataList();
     }
   },
@@ -104,7 +130,8 @@ export default {
       const params = {
         page_num: this.current,
         page_size: 10,
-        subnet
+        subnet,
+        version: this.active
       };
       this.$getData(params).then(({ data, pagination }) => {
         this.loading = false;
@@ -140,3 +167,15 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+.address-pool-search {
+  display: flex;
+  padding: 20px 26px 0;
+
+  .address-pool-search-right {
+    margin-left: auto;
+    display: flex;
+  }
+}
+</style>

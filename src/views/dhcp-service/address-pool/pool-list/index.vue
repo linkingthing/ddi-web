@@ -25,6 +25,7 @@
       :visible.sync="showEdit"
       :links="links"
       @success="getDataList"
+      :version="version"
     />
   </div>
 </template>
@@ -41,6 +42,12 @@ export default {
   components: {
     TablePagination,
     Edit
+  },
+  props: {
+    version: {
+      type: Number,
+      default: null
+    }
   },
 
   data() {
@@ -89,7 +96,10 @@ export default {
   watch: {
     current() {
       this.getDataList();
-    }
+    },
+    
+  },
+  created() {
   },
   methods: {
 

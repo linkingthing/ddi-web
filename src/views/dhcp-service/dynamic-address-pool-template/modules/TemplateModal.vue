@@ -25,22 +25,22 @@
           v-model="formData.name"
         />
       </FormItem>
-      <FormItem
+      <!-- <FormItem
         label="地址池类型"
         prop="version"
       >
         <RadioGroup v-model="formData.version">
           <Radio
-            :disabled="isEdit"
+            :disabled="true"
             :label="4"
             style="margin-right: 20px"
           >IPv4地址池</Radio>
           <Radio
             :label="6"
-            :disabled="isEdit"
+            :disabled="true"
           >IPv6地址池</Radio>
         </RadioGroup>
-      </FormItem>
+      </FormItem> -->
       <FormItem
         label="地址起始位置"
         prop="beginOffset"
@@ -89,17 +89,6 @@
         </FormItem>
 
       </template>
-
-      <FormItem
-        v-if="formData.version === 6"
-        label="0ption18"
-        prop="clientClass"
-      >
-        <Input
-          placeholder=""
-          v-model="formData.clientClass"
-        />
-      </FormItem>
 
       <FormItem
         label="备注"
@@ -170,7 +159,7 @@ export default {
       return isEdit;
     },
     title() {
-      return (!this.isEdit ? "新建" : "编辑") + "动态地址池模板"
+      return (!this.isEdit ? "新建" : "编辑") + (this.version === "4" ? "IPv4" : "IPv6") + "动态地址池模板"
     }
   },
   watch: {

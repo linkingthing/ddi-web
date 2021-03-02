@@ -38,6 +38,10 @@ export default {
     links: {
       type: Object,
       default: () => ({})
+    },
+    version: {
+      type: Number,
+      default: null
     }
   },
 
@@ -157,32 +161,15 @@ export default {
         }
       ];
 
-      if (this.formModel.version === 6) {
+      if (this.version === 6) {
         formListResult = ipv6FormList;
       }
 
-      if (this.formModel.version === 4) {
+      if (this.version === 4) {
         formListResult = ipv4FormList;
       }
 
-      if (this.isManualCreate) {
-        const typeChange = {
-          label: "Ip类型",
-          model: "version",
-          type: "radio",
-          placeholder: "请填写默认网关",
-          children: [{
-            label: 4,
-            text: "IPv4"
-          },
-          {
-            label: 6,
-            text: "IPv6"
-          }]
-        };
-
-        formListResult.unshift(typeChange);
-      }
+     
       return formListResult;
     },
 
@@ -206,7 +193,6 @@ export default {
     dialogVisible(val) {
       if (!val) {
         this.formModel = {
-          version: 4,
           subnet: "",
           tags: ""
         };
@@ -247,6 +233,9 @@ export default {
     },
     "formModel.subnet"() {
       this.$refs.form.validate();
+    },
+    version(version) {
+      this.formModel.version = version;
     }
   },
 
