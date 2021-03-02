@@ -1,18 +1,24 @@
-export const columns = scope => [    
+export const columns = scope => [
   {
     title: "子网地址",
     key: "ipnet",
     align: "left",
     render: (h, { row }) => {
       return h("div", [
-        h("a", {
-          class: "is-link",
-          on: {
-            click: () => {
-              scope.$router.push({ path: `/address/dhcp/subnets/${row.id}/pools?address=${row.ipnet}` });
+        h(
+          "a",
+          {
+            class: "is-link",
+            on: {
+              click: () => {
+                scope.$router.push({
+                  path: `/address/dhcp/subnets/${row.id}/pools?address=${row.ipnet}`
+                });
+              }
             }
-          }
-        }, row.subnet)
+          },
+          row.subnet
+        )
       ]);
     }
   },
@@ -22,22 +28,25 @@ export const columns = scope => [
   },
   {
     title: "地址总量",
-    key: "capacity",
-    render: (h, { row }) => {
-      return row.version === 4 && h("div", row.capacity);
-    }
+    key: "capacity"
   },
+  {
+    title: "已使用地址个数",
+    key: "usedCount"
+  },
+
   {
     title: "DHCP使用率",
     key: "usedRatio",
     width: "180",
     render: (h, { row }) => {
-      return row.version === 4 && h("common-process",{
-        props: {
-          percent: +row.usedRatio 
-        }
-      });    
-
+      return row.version === 4
+        ? h("common-process", {
+            props: {
+              percent: +row.usedRatio
+            }
+          })
+        : h("div", "--");
     }
   },
   {
