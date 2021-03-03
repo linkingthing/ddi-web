@@ -80,124 +80,96 @@
       <div class="line">
       </div>
 
-      <div class="center-form">
+      <div>
 
-        <Form
-          :model="params"
-          :label-width="110"
-          :rules="rules"
-          label-position="left"
-          ref="form"
-        >
-          <template v-if="isUp">
-
+        <template v-if="isUp">
+          <Form
+            class="center-form"
+            :model="reportParams"
+            :label-width="110"
+            :rules="rules"
+            label-position="left"
+            ref="formReport"
+          >
             <FormItem
               label="启动上报服务"
-              prop="enablereport"
+              prop="enableReport"
               style="text-align:right"
             >
-              <i-switch v-model="params.enablereport" />
+              <i-switch v-model="reportParams.enableReport" />
             </FormItem>
             <FormItem
               label="上级系统IP地址"
-              prop="reportserveraddr"
+              prop="reportServerAddr"
             >
               <Input
-                :disabled="!params.enablereport"
-                v-model="params.reportserveraddr"
+                :disabled="!reportParams.enableReport"
+                v-model="reportParams.reportServerAddr"
                 placeholder="请填写上级系统IP地址"
-              ></Input>
+              />
             </FormItem>
-          </template>
-          <template v-else>
-            <FormItem
-              label="启动下发服务"
-              prop="enabledispatch"
-              style="text-align:right"
+
+            <FormItem :label-width="0">
+              <Button
+                :disabled="submitAbled"
+                type="primary"
+                long
+                @click="handleSubmitReport('formReport')"
+              >确定</Button>
+            </FormItem>
+          </Form>
+        </template>
+        <template v-else>
+          <div>
+            <Form
+              :label-colon="true"
+              style="width:300px;margin: 20px auto 0"
             >
-              <i-switch v-model="params.enabledispatch" />
-            </FormItem>
+              <FormItem
+                style="text-align:right;margin:0"
+                label="启动下发服务"
+                prop="enabledispatch"
+              >
+                <i-switch
+                  v-model="dispatchConfig.enableDispatch"
+                  @on-change="handleChangeDispatchConfig"
+                />
+              </FormItem>
+            </Form>
+          </div>
+          <table-page
+            :data="dataList"
+            :columns="columns"
+            :loading="tableLoading"
+            :total="total"
+            :current.sync="current"
+          >
 
-            <FormItem
-              label="子系统信息"
-              prop="enabledispatch"
-              class="enabledispatch"
-            >
+            <div slot="top-right">
+              <Button
+                type="primary"
+                @click="handleOpenSingleAdd"
+              >新增</Button>
+            </div>
+          </table-page>
 
-              <div>
-                <div class="enabledispatch-action">
-                  <Button
-                    type="primary"
-                    size="small"
-                    @click="handleOpenSingleAdd"
-                    :disabled="!params.enabledispatch"
-                  >单个添加</Button>
-                  <Upload
-                    ref="upload"
-                    action="/uploadfile"
-                    :before-upload="handleUpload"
-                    :headers="headers"
-                    name="path"
-                    :on-success="uploadSuccess"
-                    :on-error="uploadError"
-                  >
+        </template>
 
-                    <Button
-                      type="primary"
-                      ghost
-                      size="small"
-                      @click="handleBatchImport"
-                      :disabled="!params.enabledispatch"
-                    >批量导入</Button>
-                  </Upload>
-                </div>
-                <div class="enabledispatch-show">
-                  <ul>
-                    <li
-                      :key="item.id"
-                      v-for="item in params.dispatchclients"
-                    >
-                      <Tag
-                        closable
-                        @on-close="handleDeleteSystemInfo(item)"
-                      >
-
-                        {{item.name}}, {{item.clientaddr}}
-                      </Tag>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </FormItem>
-
-          </template>
-
-          <FormItem :label-width="0">
-            <Button
-              style="margin-top:40px"
-              :disabled="submitAbled"
-              type="primary"
-              long
-              @click="handleSubmit('form')"
-            >确定</Button>
-          </FormItem>
-
-        </Form>
       </div>
     </div>
 
     <common-modal
       :visible.sync="singleAddVisible"
       :width="415"
-      title="添加子系统信息"
-      @confirm="handleSaveSystemInfo('systemInfo')"
+      :title="title"
+      @confirm="handleSaveSystemInfo('form')"
     >
       <Form
         :model="systemInfo"
         :label-width="110"
         :rules="systemRules"
         label-position="left"
-        ref="systemInfo"
+        ref="form"
       >
 
         <FormItem
@@ -209,10 +181,17 @@
         </FormItem>
         <FormItem
           label="IP地址"
-          prop="clientaddr"
+          prop="clientAddr"
           style="text-align:right"
         >
-          <Input v-model="systemInfo.clientaddr" />
+          <Input v-model="systemInfo.clientAddr" />
+        </FormItem>
+        <FormItem
+          label="备注"
+          prop="comment"
+          style="text-align:right"
+        >
+          <Input v-model="systemInfo.comment" />
         </FormItem>
       </Form>
     </common-modal>
@@ -221,8 +200,6 @@
 </template>
 
 <script>
-
-import { v4 as uuidv4 } from "uuid";
 import { isIp } from "@/util/common";
 
 export default {
@@ -257,16 +234,12 @@ export default {
           }
         }
       ],
-      clientaddr: [
+      clientAddr: [
         {
           required: true, message: "请输入IP地址"
         },
         {
           validator: (rule, value, callback) => {
-            const hasIPList = Array.isArray(this.params.dispatchclients) ? this.params.dispatchclients.map(item => item.clientaddr) : [];
-            if (hasIPList.includes(value.trim())) {
-              callback("IP不能重复");
-            }
 
             if (isIp(value)) {
               callback();
@@ -283,13 +256,46 @@ export default {
         enablereport: true,
         reportserveraddr: "",
         dispatchclients: [],
-        enabledispatch: false
+        enabledispatch: false,
       },
+      reportParams: {
+        enableReport: false,
+        reportServerAddr: ""
+      },
+      dispatchConfig: {
+        enableDispatch: false,
+      },
+
+      tableLoading: false,
+      dataList: [],
+      columns: [{
+        title: "子系统名称",
+        key: "name",
+      }, {
+        title: "IP地址",
+        key: "clientAddr",
+      }, {
+        title: "备注",
+        key: "comment",
+      }, {
+        title: "操作",
+        key: "",
+        render: (h, { row }) => {
+          return (<div>
+            <btn-edit onClick={() => this.handleEdit(row)} />
+            <btn-del onClick={() => this.handleDelete(row)} />
+          </div>)
+        }
+      }],
+      current: 0,
+      total: 0,
+
+      currentLinks: {},
       singleAddVisible: false,
       systemInfo: {
-        id: "",
         name: "",
-        clientaddr: ""
+        clientAddr: "",
+        comment: ""
       }
     };
   },
@@ -299,95 +305,135 @@ export default {
     },
     submitAbled() {
       return false;
+    },
+    title() {
+      return (this.currentLinks.update ? "编辑" : "添加") + "子系统信息";
     }
   },
-  watch: {},
+  watch: {
+    current() {
+      this.getDispatchList();
+    },
+    singleAddVisible(val) {
+      if (!val) {
+        this.currentLinks = {};
+      }
+    }
+  },
   created() { },
   mounted() {
-    this.getDataList();
+    this.getIpReportConfigs();
+    this.getDispathConfig();
   },
   methods: {
-    getDataList() {
-      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs";
-      this.$get({ url }).then(({ data }) => {
-
+    getIpReportConfigs() {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipreportconfigs" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
-          this.submitType = "$put";
-          this.params = data[0];
-        } else {
-          this.submitType = "$post";
+          const [{ enableReport, reportServerAddr, links }] = data;
+          this.reportParams.enableReport = enableReport;
+          this.reportParams.reportServerAddr = reportServerAddr;
+          this.reportParamsLinks = links;
         }
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
+      })
+    },
+    handleSubmitReport(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          const params = this.reportParams;
+          this.$put({ url: this.reportParamsLinks.update, params }).then(() => {
+            this.$$success("保存成功");
+          }).catch(err => {
+            this.$$error(err.response.data.message);
+          })
+        }
       });
     },
-    handleOpenSingleAdd() {
+
+    getDispathConfig() {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs" }).then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          const [{ enableDispatch }] = data;
+          this.dispatchConfig.enableDispatch = enableDispatch;
+        }
+      })
+    },
+
+    handleChangeDispatchConfig() {
+      const params = this.dispatchConfig;
+      this.$put({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs/ipdispatchconfigid", params }).then(() => {
+        this.$Message.success("切换成功");
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      })
+    },
+
+    getDispatchList() {
+      const params = {
+        page_size: 10,
+        page_num: this.current
+      }
+      this.tableLoading = true;
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs/ipdispatchconfigid/dispatchclients", params })
+        .then(({ data, pagination }) => {
+          this.dataList = data;
+          this.total = pagination.total;
+        }).finally(() => {
+          this.tableLoading = false;
+        })
+    },
+    handleEdit({ links, clientAddr, name, comment }) {
       this.singleAddVisible = true;
+      this.systemInfo.clientAddr = clientAddr;
+      this.systemInfo.name = name;
+      this.systemInfo.comment = comment;
+      this.currentLinks = links;
+    },
+    handleDelete({ links }) {
+      this.$Modal.confirm({
+        title: "删除提示",
+        content: "请再次确定是否删除该记录？",
+        onOk: () => {
+          this.$delete({ url: links.remove }).then(() => {
+            this.getDispatchList()
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          })
+        }
+      });
+    },
+
+    handleOpenSingleAdd() {
+      this.$refs.form.resetFields();
+      this.singleAddVisible = true;
+
     },
     handleSaveSystemInfo(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          if (Array.isArray(this.params.dispatchclients)) {
-            this.params.dispatchclients.push({ ...this.systemInfo, id: uuidv4() });
+          const params = this.systemInfo;
+
+          if (this.currentLinks.update) {
+            this.$put({ url: this.currentLinks.update, params }).then(() => {
+              this.$Message.success("更新成功");
+              this.singleAddVisible = false;
+              this.getDispatchList();
+            }).catch(err => {
+              this.$Message.error(err.response.data.message);
+            })
           } else {
-            this.params.dispatchclients = [{ ...this.systemInfo, id: uuidv4() }];
+            this.$post({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs/ipdispatchconfigid/dispatchclients", params }).then(() => {
+              this.$Message.success("创建成功");
+              this.singleAddVisible = false;
+              this.getDispatchList();
+            }).catch(err => {
+              this.$Message.error(err.response.data.message);
+            })
           }
 
-          this.$nextTick().then(() => {
-            this.$refs[name].resetFields();
-            this.singleAddVisible = false;
-          });
         }
       });
     },
-    handleDeleteSystemInfo({ id }) {
-      this.params.dispatchclients = this.params.dispatchclients.filter(item => item.id !== id);
-    },
-    handleUpload(file) {
-      this.$refs.upload.clearFiles();
 
-      // const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs?action=importcsv";
-
-      // this.$post({ url })
-
-      // const reader = new FileReader();
-      // reader.readAsText(file, "utf-8");
-      // reader.onload = () => {
-      //   const str = reader.result;
-      //   const rows = str.split("\n");
-      //   const [[name, clientaddr], ...data] = rows.map(item => item.split(",").map(i => i.trim())).filter(item => {
-      //     return item.length >= 2;
-      //   });
-
-      //   const result = [];
-      //   data.forEach(([aname, ip]) => {
-      //     result.push({
-      //       [name]: aname,
-      //       [clientaddr]: ip
-      //     });
-      //   });
-      //   this.params.dispatchclients.push(...result);
-      // };
-
-    },
-    uploadSuccess(file) {
-
-      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs/ipDispatchConfigId?action=importcsv";
-      const params = {
-        name: file.filename
-      };
-      this.$post({ url, params }).then(() => {
-        this.$Message.success("导入成功");
-        this.getDataList();
-        this.$refs.upload.clearFiles();
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-      });
-    },
-    uploadError() {
-      this.$Message.error("上传失败");
-    },
-    handleBatchImport() { },
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
@@ -410,7 +456,7 @@ export default {
 .system-linkage {
   padding-top: 60px;
   .system-linkage-content {
-    width: 1000px;
+    width: 1180px;
     margin: 20px auto;
     height: 20px;
     .proccess-bar {
@@ -433,6 +479,7 @@ export default {
         display: flex;
         letter-spacing: 20px;
         line-height: 80px;
+        padding-left: 41px;
         .proccess-bar-line-mark {
           letter-spacing: 3px;
           width: 41px;
