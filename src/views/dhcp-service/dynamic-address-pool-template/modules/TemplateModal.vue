@@ -25,22 +25,6 @@
           v-model="formData.name"
         />
       </FormItem>
-      <!-- <FormItem
-        label="地址池类型"
-        prop="version"
-      >
-        <RadioGroup v-model="formData.version">
-          <Radio
-            :disabled="true"
-            :label="4"
-            style="margin-right: 20px"
-          >IPv4地址池</Radio>
-          <Radio
-            :label="6"
-            :disabled="true"
-          >IPv6地址池</Radio>
-        </RadioGroup>
-      </FormItem> -->
       <FormItem
         label="地址起始位置"
         prop="beginOffset"
@@ -63,10 +47,8 @@
         label="DNS"
         prop="domainServers"
       >
-        <Input
-          placeholder=""
-          v-model="formData.domainServers"
-        />
+
+        <DomainServers v-model="formData.domainServers" />
       </FormItem>
 
       <template v-if="formData.version === 4">
@@ -107,10 +89,12 @@
 
 import ClientClassFormItem from "../../address-pool/subnet-list/edit/ClientClassFormItem";
 import { resArrayToString, resStringToArray } from "@/util/parser";
+import DomainServers from "@/components/DomainServers";
 
 export default {
   components: {
-    ClientClassFormItem
+    ClientClassFormItem,
+    DomainServers
   },
   props: {
     visible: {
@@ -149,7 +133,11 @@ export default {
       loading: false,
       dialogVisible: false,
       formData: {
-        version: 4
+        version: 4,
+        name: "",
+        beginOffset: "",
+        capacity: "",
+
       }
     };
   },
