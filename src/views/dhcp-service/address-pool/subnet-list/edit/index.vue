@@ -62,7 +62,7 @@ export default {
 
   computed: {
     getTitle() {
-      return this.isCreate ? "新增子网地址" : "编辑子网地址";
+      return (this.isCreate ? "新增" : "编辑") + `${this.version === 4 ? "IPv4" : "IPv6"}` + "子网地址";
     },
     rules() {
 
@@ -72,13 +72,12 @@ export default {
           {
             validator: (rule, value, callback) => {
 
-              if (this.formModel.version === 4) {
+              if (this.version === 4) {
                 if (!isIpv4Segment(value)) {
                   callback("请输入正确IPv4地址");
                 }
-
               }
-              if (this.formModel.version === 6) {
+              if (this.version === 6) {
                 if (!isIpv6Segment(value)) {
                   callback("请输入正确IPv6地址");
                 }
@@ -87,6 +86,7 @@ export default {
               if (!value.includes("/")) {
                 callback("请输入正确IP地址网段");
               }
+
               callback();
             }
           }
@@ -169,7 +169,7 @@ export default {
         formListResult = ipv4FormList;
       }
 
-     
+
       return formListResult;
     },
 

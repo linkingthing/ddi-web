@@ -46,7 +46,7 @@ export const columns = scope => [
               percent: +row.usedRatio
             }
           })
-        : h("div", "--");
+        : h("div", `${row.usedCount}/${row.capacity}`);
     }
   },
   {

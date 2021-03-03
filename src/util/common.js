@@ -286,18 +286,18 @@ export const subnetValidateFunc = (rule, value, callback) => {
  */
 export const ipv6IsValid = address => {
   try {
-   return new Address6(address).isCorrect()
-  }catch(e){
-    return false
+    return new Address6(address).isCorrect();
+  } catch (e) {
+    return false;
   }
 };
 
 export const ipv4IsValid = address => {
   try {
-    return new Address4(address).isCorrect()
-   }catch(e){
-     return false
-   }
+    return new Address4(address).isCorrect();
+  } catch (e) {
+    return false;
+  }
 };
 
 export const isIp = address => {
@@ -317,11 +317,15 @@ export const isIpv4Segment = segment => {
 };
 
 export const isIpv6Segment = segment => {
-  const ipv6 = new Address6(segment);
-  const { subnetMask } = ipv6;
-  const ipBinary = ipv6.binaryZeroPad();
-  const endString = ipBinary.slice(subnetMask, ipBinary.length);
-  return !endString.includes("1");
+  try {
+    const ipv6 = new Address6(segment);
+    const { subnetMask } = ipv6;
+    const ipBinary = ipv6.binaryZeroPad();
+    const endString = ipBinary.slice(subnetMask, ipBinary.length);
+    return !endString.includes("1");
+  } catch (e) {
+    return false;
+  }
 };
 
 /**
