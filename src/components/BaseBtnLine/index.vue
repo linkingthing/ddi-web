@@ -42,7 +42,7 @@ export default {
   cursor: pointer;
   &.btn-disabeled {
     color: #ddd !important;
-    border-color: #ddd;
+    border-color: #ddd!important;
     cursor: not-allowed;
   }
 }

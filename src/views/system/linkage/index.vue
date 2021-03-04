@@ -93,18 +93,18 @@
 
             <FormItem
               label="启动上报服务"
-              prop="enablereport"
+              prop="enableReport"
               style="text-align:right"
             >
-              <i-switch v-model="params.enablereport" />
+              <i-switch v-model="params.enableReport" />
             </FormItem>
             <FormItem
               label="上级系统IP地址"
-              prop="reportserveraddr"
+              prop="reportServerAddr"
             >
               <Input
-                :disabled="!params.enablereport"
-                v-model="params.reportserveraddr"
+                :disabled="!params.enableReport"
+                v-model="params.reportServerAddr"
                 placeholder="请填写上级系统IP地址"
               ></Input>
             </FormItem>
@@ -112,15 +112,15 @@
           <template v-else>
             <FormItem
               label="启动下发服务"
-              prop="enabledispatch"
+              prop="enableDispatch"
               style="text-align:right"
             >
-              <i-switch v-model="params.enabledispatch" />
+              <i-switch v-model="params.enableDispatch" />
             </FormItem>
 
             <FormItem
               label="子系统信息"
-              prop="enabledispatch"
+              prop="enableDispatch"
               class="enabledispatch"
             >
 
@@ -130,7 +130,7 @@
                     type="primary"
                     size="small"
                     @click="handleOpenSingleAdd"
-                    :disabled="!params.enabledispatch"
+                    :disabled="!params.enableDispatch"
                   >单个添加</Button>
                   <Upload
                     ref="upload"
@@ -147,7 +147,7 @@
                       ghost
                       size="small"
                       @click="handleBatchImport"
-                      :disabled="!params.enabledispatch"
+                      :disabled="!params.enableDispatch"
                     >批量导入</Button>
                   </Upload>
                 </div>
@@ -155,14 +155,14 @@
                   <ul>
                     <li
                       :key="item.id"
-                      v-for="item in params.dispatchclients"
+                      v-for="item in params.dispatchClients"
                     >
                       <Tag
                         closable
                         @on-close="handleDeleteSystemInfo(item)"
                       >
 
-                        {{item.name}}, {{item.clientaddr}}
+                        {{item.name}}, {{item.clientAddr}}
                       </Tag>
                     </li>
                   </ul>
@@ -209,10 +209,10 @@
         </FormItem>
         <FormItem
           label="IP地址"
-          prop="clientaddr"
+          prop="clientAddr"
           style="text-align:right"
         >
-          <Input v-model="systemInfo.clientaddr" />
+          <Input v-model="systemInfo.clientAddr" />
         </FormItem>
       </Form>
     </common-modal>
@@ -248,7 +248,7 @@ export default {
               callback("请输入系统名");
             }
 
-            const hasIPList = Array.isArray(this.params.dispatchclients) ? this.params.dispatchclients.map(item => item.name) : [];
+            const hasIPList = Array.isArray(this.params.dispatchClients) ? this.params.dispatchClients.map(item => item.name) : [];
             if (hasIPList.includes(value.trim())) {
               callback("系统名不能重复");
             }
@@ -257,13 +257,13 @@ export default {
           }
         }
       ],
-      clientaddr: [
+      clientAddr: [
         {
           required: true, message: "请输入IP地址"
         },
         {
           validator: (rule, value, callback) => {
-            const hasIPList = Array.isArray(this.params.dispatchclients) ? this.params.dispatchclients.map(item => item.clientaddr) : [];
+            const hasIPList = Array.isArray(this.params.dispatchClients) ? this.params.dispatchClients.map(item => item.clientAddr) : [];
             if (hasIPList.includes(value.trim())) {
               callback("IP不能重复");
             }
@@ -280,16 +280,16 @@ export default {
     return {
       serveType: "UP",
       params: {
-        enablereport: true,
-        reportserveraddr: "",
-        dispatchclients: [],
-        enabledispatch: false
+        enableReport: true,
+        reportServerAddr: "",
+        dispatchClients: [],
+        enableDispatch: false
       },
       singleAddVisible: false,
       systemInfo: {
         id: "",
         name: "",
-        clientaddr: ""
+        clientAddr: ""
       }
     };
   },
@@ -308,7 +308,7 @@ export default {
   },
   methods: {
     getDataList() {
-      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs";
+      const url = "/apis/linkingthing.com/ipam/v1/dispatchconfigs";
       this.$get({ url }).then(({ data }) => {
 
         if (Array.isArray(data) && data.length) {
@@ -327,10 +327,10 @@ export default {
     handleSaveSystemInfo(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          if (Array.isArray(this.params.dispatchclients)) {
-            this.params.dispatchclients.push({ ...this.systemInfo, id: uuidv4() });
+          if (Array.isArray(this.params.dispatchClients)) {
+            this.params.dispatchClients.push({ ...this.systemInfo, id: uuidv4() });
           } else {
-            this.params.dispatchclients = [{ ...this.systemInfo, id: uuidv4() }];
+            this.params.dispatchClients = [{ ...this.systemInfo, id: uuidv4() }];
           }
 
           this.$nextTick().then(() => {
@@ -341,7 +341,7 @@ export default {
       });
     },
     handleDeleteSystemInfo({ id }) {
-      this.params.dispatchclients = this.params.dispatchclients.filter(item => item.id !== id);
+      this.params.dispatchClients = this.params.dispatchClients.filter(item => item.id !== id);
     },
     handleUpload(file) {
       this.$refs.upload.clearFiles();
@@ -372,7 +372,7 @@ export default {
     },
     uploadSuccess(file) {
 
-      const url = "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs/ipDispatchConfigId?action=importcsv";
+      const url = "/apis/linkingthing.com/ipam/v1/dispatchconfigs/ipDispatchConfigId?action=importcsv";
       const params = {
         name: file.filename
       };
@@ -391,7 +391,7 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          const url = this.params.links ? this.params.links.self : "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs";
+          const url = this.params.links ? this.params.links.self : "/apis/linkingthing.com/ipam/v1/dispatchconfigs";
           const params = this.params;
           this[this.submitType]({ url, params }).then(() => {
             this.$Message.success("保存成功");

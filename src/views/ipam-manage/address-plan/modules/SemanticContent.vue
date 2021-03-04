@@ -251,7 +251,7 @@
           </Form>
         </common-modal>
 
-        <common-modal
+        <!-- <common-modal
           :visible.sync="dispatchVisible"
           title="IPv6前缀下发"
           :width="483"
@@ -278,7 +278,7 @@
             </FormItem>
           </Form>
 
-        </common-modal>
+        </common-modal> -->
 
       </div>
 
@@ -985,7 +985,7 @@ export default {
     },
     handleDispath(row) {
       // 获取后校验，下拉
-      this.$get({ url: "/apis/linkingthing.com/ipam/v1/ipdispatchconfigs" }).then(({ data }) => {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/dispatchconfigs" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
 
           this.$refs.dispatchRef.resetFields();

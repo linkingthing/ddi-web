@@ -21,7 +21,10 @@
               type="primary"
               @click="$router.push({name: 'ipam-address-plan'})"
             >地址规划</Button>
-            <Button type="primary">信息上报</Button>
+            <Button
+              type="primary"
+              @click="handleClickReport"
+            >信息上报</Button>
             <Button
               type="primary"
               @click="handleOpenMap"
@@ -64,6 +67,35 @@
       />
 
     </Modal>
+
+    <common-modal
+      :visible.sync="dispatchVisible"
+      title="IPv6前缀下发"
+      :width="483"
+      @confirm="handleSaveDispatch('dispatchRef')"
+    >
+      <Form
+        :model="dispatchParams"
+        :label-width="100"
+        ref="dispatchRef"
+      >
+        <FormItem
+          prop="remoteAddr"
+          label="子系统选择"
+          :rules="{required: true, message: '请选择子系统'}"
+        >
+          <Select v-model="dispatchParams.remoteAddr">
+            <Option
+              v-for="item in dispatchClients"
+              :key="item.id"
+              :value="item.clientAddr"
+            >{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+
+    </common-modal>
+
   </div>
 </template>
 
@@ -136,10 +168,11 @@ export default {
       }, {
         title: "操作",
         key: "action",
-        width: 150,
+        width: 200,
         render: (h, { row }) => {
           return <div>
-            <btn-line title="下发" />
+            <btn-line title="下发" onClick={() => this.handleDispath(row)} />
+            <btn-line title="撤回" disabled={!row.dispatch} onClick={() => row.dispatch && this.handleRepeal(row)} />
             <btn-line title="详情" onClick={() => this.handleOpenDetailModal(row)} />
           </div>
         }
@@ -154,6 +187,7 @@ export default {
 
       links: {},
       current: {},
+
 
       detailVisible: false,
       tab: "list_v6",
@@ -173,6 +207,16 @@ export default {
       }],
       detailData: [],
 
+      currentSemanticId: "",
+      reportServerAddr: "",
+      dispatchVisible: false,
+      dispatchParams: {
+        remoteAddr: "",
+        semanticInfos: []
+      },
+      dispatchClients: [],
+
+
     };
   },
   computed: {},
@@ -181,6 +225,7 @@ export default {
   },
   created() {
     this.getDataList();
+    this.getReportConfig();
   },
   mounted() { },
   methods: {
@@ -188,9 +233,10 @@ export default {
       this.loading = true;
       this.$get({ url: "/apis/linkingthing.com/ipam/v1/semanticinfos" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
-          const [{ links }] = data;
+          const [{ links, id }] = data;
           this.getItemList(links);
           this.links = links;
+          this.currentSemanticId = id;
 
         }
       }).catch(err => {
@@ -231,6 +277,111 @@ export default {
         }
       }).finally(() => {
         this.detailLoading = false;
+      });
+    },
+
+    getReportConfig() {
+      const url = "/apis/linkingthing.com/ipam/v1/dispatchconfigs";
+      this.$get({ url }).then(({ data }) => {
+
+        if (Array.isArray(data) && data.length) {
+          const [{ reportServerAddr }] = data;
+          this.reportServerAddr = reportServerAddr;
+        }
+      });
+    },
+    handleClickReport() {
+      if (this.reportServerAddr === "") {
+        this.$Message.info("请先在系统联动配置上报信息");
+        return
+      }
+      const url = `${this.links.self}?action=report_forward`;
+      const params = {
+        remoteAddr: this.reportServerAddr,
+        semanticInfos: [
+          {
+            id: this.currentSemanticId
+          }
+        ]
+      }
+      this.$post({ url, params }).then(res => {
+        console.log(res)
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      });
+    },
+
+    handleDispath(row) {
+      // 获取后校验，下拉
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/dispatchconfigs" }).then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+
+          this.$refs.dispatchRef.resetFields();
+          this.dispatchVisible = true;
+          this.dispatchParams.semanticInfos = [row];
+
+          const [{ dispatchClients }] = data;
+          this.dispatchClients = dispatchClients;
+          console.log(dispatchClients)
+        } else {
+          this.$Message.info("请先配置系统联动");
+        }
+      });
+    },
+
+    handleRepeal(row) {
+      this.$Modal.confirm({
+        title: "撤销下发确认提示",
+        content: `<p>您需要撤销对子系统的下发操作吗？</p>`,
+        onOk: () => {
+          const { remoteAddr, id } = row.dispatch;
+          const params = {
+            remoteAddr,
+            semanticInfos: [{ id }]
+          };
+
+          const url = `${this.links.self}?action=repeal_forward`;
+
+          this.$post({ url, params }).then(res => {
+            this.$Message.success("撤回成功");
+            this.getPlanInfo();
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+
+        },
+        onCancel: () => {
+          this.$Message.info("取消成功");
+        }
+      });
+
+
+    },
+
+    handleSaveDispatch(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+
+          this.$Modal.confirm({
+            title: "下发确认提示",
+            content: `<p>您确定要下发到子系统吗?</p>`,
+            onOk: () => {
+              const params = this.dispatchParams;
+              const url = `${this.links.self}?action=dispatch_forward`;
+              this.$post({ url, params }).then(() => {
+                this.getDataList();
+                this.dispatchVisible = false;
+                this.$Message.success("下发成功");
+              }).catch(err => {
+                this.$Message.error(err.response.data.message);
+              });
+            },
+            onCancel: () => {
+              this.$Message.info("取消成功");
+            }
+          });
+
+        }
       });
     },
 
