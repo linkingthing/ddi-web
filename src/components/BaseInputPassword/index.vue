@@ -6,7 +6,7 @@
     />
     <Icon
       class="icon-eye"
-      :class="type === 'password' ? 'icon-show': 'icon-hide'"
+      :class="type === 'text' ? 'icon-show': 'icon-hide'"
       @click="handleToggleType"
     />
   </div>
