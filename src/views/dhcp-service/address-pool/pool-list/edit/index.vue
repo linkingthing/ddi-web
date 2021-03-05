@@ -42,14 +42,20 @@
         label="起始地址"
         prop="beginAddress"
       >
-        <Input v-model="formData.beginAddress" />
+        <Input
+          v-model="formData.beginAddress"
+          :disabled="!isCustom"
+        />
       </FormItem>
 
       <FormItem
         label="结束地址"
         prop="endAddress"
       >
-        <Input v-model="formData.endAddress" />
+        <Input
+          v-model="formData.endAddress"
+          :disabled="!isCustom"
+        />
       </FormItem>
 
       <FormItem
@@ -57,21 +63,30 @@
         label="默认网关"
         prop="routers"
       >
-        <DomainServers v-model="formData.routers" />
+        <DomainServers
+          v-model="formData.routers"
+          :disabled="!isCustom"
+        />
       </FormItem>
 
       <FormItem
         label="DNS"
         prop="domainServers"
       >
-        <DomainServers v-model="formData.domainServers" />
+        <DomainServers
+          v-model="formData.domainServers"
+          :disabled="!isCustom"
+        />
       </FormItem>
       <FormItem
         v-if="version === 4"
         label="0ption60"
         prop=""
       >
-        <ClientClassFormItem v-model="formData.clientClass" />
+        <ClientClassFormItem
+          v-model="formData.clientClass"
+          :disabled="!isCustom"
+        />
       </FormItem>
 
     </Form>
@@ -157,6 +172,9 @@ export default {
     },
     isEdit() {
       return !!this.links.update;
+    },
+    isCustom() {
+      return this.formData.template === "custom"
     }
   },
 

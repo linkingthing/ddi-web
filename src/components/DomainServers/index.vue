@@ -2,6 +2,7 @@
   <Input
     class="DomainServers"
     v-model="innerValue"
+    :disabled="disabled"
   />
 </template>
 
@@ -12,6 +13,10 @@ export default {
     value: {
       type: Array,
       default: () => ([])
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   model: {

@@ -1,8 +1,8 @@
 <template>
   <div class="">
-    <Checkbox v-model="disabled">启用</Checkbox>
+    <Checkbox v-model="innerDisabled" :disabled="disabled">启用</Checkbox>
     <Select
-      :disabled="!disabled"
+      :disabled="disabled || !innerDisabled"
       :value="value"
       style="width:180px"
       @on-change="handleChange"
@@ -23,17 +23,21 @@ export default {
     value: {
       type: String,
       default: ""
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     }
   },
   data() {
     return {
-      disabled: false,
+      innerDisabled: false,
       clientClassList: [],
       clientclasses: ""
     };
   },
   watch: {
-    disabled(val) {
+    innerDisabled(val) {
       if (!val) {
         this.$emit("input", "");
       }
@@ -43,9 +47,9 @@ export default {
       handler(value) {
         console.log(value)
         if (value) {
-          this.disabled = true;
+          this.innerDisabled = true;
         } else {
-          this.disabled = false;
+          this.innerDisabled = false;
         }
       }
     }
@@ -53,7 +57,7 @@ export default {
   created() {
     this.$get({ url: "/apis/linkingthing.com/dhcp/v1/clientclasses" }).then(({ data }) => {
       this.clientClassList = data;
-      this.disabled = !!this.value;
+      this.innerDisabled = !!this.value;
     });
   },
   methods: {
