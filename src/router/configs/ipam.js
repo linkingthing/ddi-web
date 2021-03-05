@@ -24,7 +24,7 @@ export default {
       path: '/address/ipam/scannedsubnets',
       component: () => import(/* webpackChunkName: "ipam-address-manage" */ "@/views/ipam-manage/address-manage"),
       meta: {
-        title: "IP资产管理",
+        title: "IP资产",
         permission: "ipAddressMonitor"
       }
     },
