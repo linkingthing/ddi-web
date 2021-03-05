@@ -1,6 +1,8 @@
 <template>
   <div class="ip-info-manage">
+    <NoData v-if="noData" />
     <table-page
+      v-else
       :loading="loading"
       :total="total"
       :data="list"
@@ -103,11 +105,12 @@
 
 import PlanTree from "../address-plan/modules/PlanTree";
 import { list2Tree } from "../address-plan/modules/helper";
-
+import NoData from "./modules/NoData";
 
 export default {
   components: {
-    PlanTree
+    PlanTree,
+    NoData
   },
   props: {},
   data() {
@@ -119,6 +122,7 @@ export default {
       label: "Ipv4子网",
     }];
     return {
+      noData: false,
       loading: false,
       total: 0,
       list: [],
@@ -237,7 +241,8 @@ export default {
           this.getItemList(links);
           this.links = links;
           this.currentSemanticId = id;
-
+        } else {
+          this.noData = true;
         }
       }).catch(err => {
         this.loading = false;

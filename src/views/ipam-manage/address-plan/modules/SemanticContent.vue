@@ -291,6 +291,7 @@
                 type="primary"
                 @click="handleOneKeyPlan"
                 :disabled="availableOneKeyPlan"
+                style="margin-right: 10px"
               >一键规划</Button>
               <Button
                 type="primary"
@@ -298,6 +299,7 @@
                 @click="handleOpenCustomPlan"
                 :disabled="availableCustomPlan"
                 v-if="showCustomPlan"
+                style="margin-right: 10px"
               >自定义规划</Button>
 
               <Button
@@ -598,6 +600,8 @@ export default {
       // 目标节点，也就是当前语义节点节点的子节点，也就是将去设置的节点以及兄弟节点 autoCreate
 
       const currentNodeChildren = this.semanticNodeList;
+
+      // planModel
       if (currentNodeChildren.length) {
         const { autocreate } = currentNodeChildren[0];
         if (autocreate === planTypeEnum.ONEKEYPLAN) {
@@ -1062,6 +1066,7 @@ export default {
       this.$post({ url: `${url}?action=get_plan_detail`, params }).then((data) => {
         if (data) {
           const { planDetails } = data;
+          console.log(row)
           const currentCount = Array.isArray(row.networkV6s) && row.networkV6s.length || 0;
           const prefixMap = planDetails.map(item => {
             return {
@@ -1156,14 +1161,15 @@ export default {
     },
 
     // 调api 计算ipv6
-    executeIpv6ByAction(semanticNodes, prefixs) {
+    executeIpv6ByAction(semanticNodes, prefixs, planModel) {
       const { url } = this.$getApiByRoute();
       const action = `${url}?action=plan_prefix_v6`;
 
       const params = {
         parentId: this.currentNode.id,
         prefixs,
-        subNodeIds: semanticNodes.map(item => item.id)
+        subNodeIds: semanticNodes.map(item => item.id),
+        planModel
       };
 
 
@@ -1260,7 +1266,7 @@ export default {
       if (networkV6s && Array.isArray(networkV6s)) {
         const prefixs = networkV6s.map(item => item.prefix);
         const semanticNodeList = this.semanticNodeList;
-        this.executeIpv6ByAction(semanticNodeList, prefixs);
+        this.executeIpv6ByAction(semanticNodeList, prefixs, planTypeEnum.ONEKEYPLAN);
         this.checkAllGroup = [];
       } else {
         this.$Message.info("prefix获取到，请先规划上层")
@@ -1294,7 +1300,7 @@ export default {
           const { choosePrefix } = this.customPlan;
           const prefixs = [choosePrefix];
           const selectSemanticNodeList = this.selectSemanticList;
-          this.executeIpv6ByAction(selectSemanticNodeList, prefixs);
+          this.executeIpv6ByAction(selectSemanticNodeList, prefixs, planTypeEnum.HANDLEPLAN);
           this.checkAllGroup = [];
         }
       });

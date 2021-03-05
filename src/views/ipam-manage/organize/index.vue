@@ -45,8 +45,8 @@
         </div>
 
       </div>
-      <div class="organize-content">
-        <div class="organize-content-header">
+      <div class="organize-content" v-if="!noData">
+        <div class="organize-content-header" >
           <h3>
             <CommonEditText
               v-model="currentNode.name"
@@ -193,6 +193,7 @@ export default {
         count: ""
       },
       treeData: [],
+      noData: false,
       links: {},
       currentId: "",
       currentNode: {},
@@ -255,6 +256,7 @@ export default {
           this.links = links;
           this.getSemantic(links)
         } else {
+          this.noData = true;
           this.treeLoading = false;
         }
       }).catch(() => {
