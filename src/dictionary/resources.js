@@ -52,6 +52,7 @@ export default {
   networkequipment: "设备管理",
   networkinterface: "网络接口",
   staticaddress: "静态地址",
+  pooltemplate: "地址池模板",
 
   /** metric */
   node: "node",

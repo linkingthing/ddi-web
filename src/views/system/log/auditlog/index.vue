@@ -166,6 +166,7 @@ export default {
 
           case "changepriority": return "调整优先级";
           case "switchrecursion": return "切换递归";
+          case "valid_template": return "验证模板";
 
         }
       };
