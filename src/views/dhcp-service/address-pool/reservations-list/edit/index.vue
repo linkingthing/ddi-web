@@ -95,7 +95,10 @@ export default {
       }]
     };
     return {
-      formModel: {},
+      formModel: {
+        ipAddress: "",
+        hwAddress: "",
+      },
       loading: false,
       dialogVisible: false
     };

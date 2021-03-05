@@ -52,6 +52,7 @@ export default {
 
 <style lang="less" >
 .CommonTableToolTip {
+  margin-top: 5px;
   .ivu-tooltip {
     width: 100%;
   }
