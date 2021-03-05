@@ -37,10 +37,21 @@ export default {
       if (!val) {
         this.$emit("input", "");
       }
+    },
+    value: {
+      immediate: true,
+      handler(value) {
+        console.log(value)
+        if (value) {
+          this.disabled = true;
+        } else {
+          this.disabled = false;
+        }
+      }
     }
   },
   created() {
-    this.$get({ url: "/apis/linkingthing.com/dhcp/v1/clientclasses" }).then(({data}) => {
+    this.$get({ url: "/apis/linkingthing.com/dhcp/v1/clientclasses" }).then(({ data }) => {
       this.clientClassList = data;
       this.disabled = !!this.value;
     });
