@@ -76,6 +76,7 @@ export default {
       dialogVisible: false,
       subnetTypeList: [],
       semanticList: [],
+      hasSemanticId: false
     };
   },
 
@@ -87,6 +88,10 @@ export default {
       return !!this.links.update;
     },
     formItemList() {
+      let disabled = false;
+      if (this.isEdit && this.hasSemanticId) {
+        disabled = true
+      }
       return [
         {
           label: "子网地址",
@@ -106,6 +111,7 @@ export default {
           type: "select",
           placeholder: "请填写组织机构",
           filterable: true,
+          disabled,
           children: this.semanticList.map(item => {
             return {
               text: item.name,
@@ -160,6 +166,7 @@ export default {
             business
           };
 
+          this.hasSemanticId = semanticId;
 
         }).catch();
       }
