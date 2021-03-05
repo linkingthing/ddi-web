@@ -21,7 +21,6 @@
         prop="template"
       >
         <Select
-          clearable
           filterable
           v-model="formData.template"
         >
@@ -139,7 +138,7 @@ export default {
     };
     return {
       formData: {
-        template: "",
+        template: "custom",
         beginAddress: "",
         endAddress: "",
         routers: [],
