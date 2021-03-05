@@ -59,6 +59,14 @@ export default {
           key: "hwAddress",
         },
         {
+          title: "地址总量",
+          key: "capacity"
+        },
+        {
+          title: "已使用地址个数",
+          key: "usedCount"
+        },
+        {
           title: "操作",
           render: (h, { row }) => {
             return h("div", [

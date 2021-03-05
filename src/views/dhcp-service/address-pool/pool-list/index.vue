@@ -66,6 +66,13 @@ export default {
           key: "endAddress"
         },
         {
+          title: "已使用/未使用",
+          key: "usedCount",
+          render: (h, {row}) => {
+            return <div>{row.usedCount}/{row.capacity}</div>
+          }
+        },
+        {
           title: "操作",
           render: (h, { row }) => {
             return h("div", [
