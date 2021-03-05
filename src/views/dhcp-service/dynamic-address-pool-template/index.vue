@@ -14,13 +14,24 @@
             :tab-list="tabList"
             @change="(value) => { active = value }"
           />
-          <Button
-            type="primary"
-            @click="handleAdd"
-            class="pool-template-btn"
-          >
-            新建
-          </Button>
+
+          <div class="pool-template-btn">
+            <Input
+              search
+              enter-button
+              placeholder="请输入模板名称"
+              v-model="search"
+              @on-search="handleSearch"
+              style="width: 200px;margin-right: 20px"
+            />
+            <Button
+              type="primary"
+              @click="handleAdd"
+            >
+              新建
+            </Button>
+          </div>
+
         </div>
 
       </template>
@@ -56,7 +67,7 @@ export default {
 
     return {
       active: "4",
-
+      search: "",
       loading: false,
       tableData: [],
       total: 0,
@@ -146,7 +157,8 @@ export default {
     getDataList() {
       this.loading = true;
       const params = {
-        version: this.active
+        version: this.active,
+        name: this.search
       }
       this.$get({ url: "/apis/linkingthing.com/dhcp/v1/pooltemplates", params }).then(({ data, links }) => {
         this.tableData = data;
@@ -157,10 +169,14 @@ export default {
         this.loading = false;
       });
     },
+    handleSearch() {
+      this.getDataList();
+    },
     handleAdd() {
       this.currentLinks = this.links;
       this.visible = true;
     },
+
     handleEdit({ links }) {
       this.currentLinks = links;
       this.visible = true;
@@ -188,6 +204,7 @@ export default {
   display: flex;
   padding: 16px 26px 0;
   .pool-template-btn {
+    display: flex;
     margin-left: auto;
   }
 }

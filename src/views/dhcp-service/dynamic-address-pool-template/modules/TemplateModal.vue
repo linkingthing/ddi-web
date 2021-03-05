@@ -57,10 +57,7 @@
           label="默认网关"
           prop="routers"
         >
-          <Input
-            placeholder=""
-            v-model="formData.routers"
-          />
+          <DomainServers v-model="formData.routers" />
         </FormItem>
         <FormItem
           label="0ption60"
@@ -88,7 +85,6 @@
 <script>
 
 import ClientClassFormItem from "../../address-pool/subnet-list/edit/ClientClassFormItem";
-import { resArrayToString, resStringToArray } from "@/util/parser";
 import DomainServers from "@/components/DomainServers";
 
 export default {
@@ -137,7 +133,10 @@ export default {
         name: "",
         beginOffset: "",
         capacity: "",
-
+        domainServers: [],
+        routers: [],
+        clientClass: "",
+        comment: ""
       }
     };
   },
@@ -160,8 +159,6 @@ export default {
       if (this.links.update) {
         this.loading = true;
         this.$get({ url: this.links.self }).then(res => {
-          resArrayToString(res, ["domainServers", "routers"]);
-
           this.formData = res;
         }).catch().finally(() => {
           this.loading = false;
@@ -188,8 +185,6 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = this.formData;
-          resStringToArray(params, ["domainServers", "routers"]);
-
           if (this.isEdit) {
             this.$put({
               url: this.links.update,
