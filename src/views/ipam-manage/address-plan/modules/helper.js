@@ -509,7 +509,7 @@ export const modifiedEnum = {
 };
 
 export const planTypeEnum = {
-  UNDEFINED: "",
+  UNDEFINED: "undefined",
   ONEKEYPLAN: "auto",
   HANDLEPLAN: "custom"
 };

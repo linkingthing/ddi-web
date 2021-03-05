@@ -599,24 +599,14 @@ export default {
     currentTargetNodeAutoCreate() {
       // 目标节点，也就是当前语义节点节点的子节点，也就是将去设置的节点以及兄弟节点 autoCreate
 
-      const currentNodeChildren = this.semanticNodeList;
+      const { semanticPlan } = this.currentNode;
 
-      // planModel
-      if (currentNodeChildren.length) {
-        const { autocreate } = currentNodeChildren[0];
-        if (autocreate === planTypeEnum.ONEKEYPLAN) {
-          return planTypeEnum.ONEKEYPLAN;
-        }
-
-        const isHandlePlan = currentNodeChildren.some(item => item.autocreate === planTypeEnum.HANDLEPLAN);
-
-        if (isHandlePlan) {
-          return planTypeEnum.HANDLEPLAN;
-        }
-
+      if (semanticPlan) {
+        return semanticPlan.planModel
+      } else {
         return planTypeEnum.UNDEFINED;
       }
-      return void 0;
+
     },
     availableOneKeyPlan() {
       const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.ONEKEYPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
@@ -1226,7 +1216,7 @@ export default {
         });
     },
 
-    cleanPlanByAction(semanticNodes, prefixs) {
+    cleanPlanByAction(semanticNodes, prefixs, planModel) {
 
       console.log(semanticNodes)
       this.$Modal.confirm({
@@ -1238,7 +1228,8 @@ export default {
           const params = {
             parentId: this.currentNode.id,
             prefixs,
-            subNodeIds: semanticNodes.map(item => item.id)
+            subNodeIds: semanticNodes.map(item => item.id),
+            planModel
           };
 
           this.$post({ url: action, params })
@@ -1319,7 +1310,7 @@ export default {
 
       } else {
         const semanticNodeList = this.semanticNodeList;
-        this.cleanPlanByAction(semanticNodeList, prefixs);
+        this.cleanPlanByAction(semanticNodeList, prefixs, planTypeEnum.UNDEFINED);
       }
     },
     handleSave(message = "保存成功") {

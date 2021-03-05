@@ -339,6 +339,7 @@ export default {
           this.$Message.success("创建成功")
           this.getSemanticList();
           this.dialogVisible = false;
+          this.noData = false;
         }).catch(err => {
           this.$Message.error(err.response.data.message)
         })
