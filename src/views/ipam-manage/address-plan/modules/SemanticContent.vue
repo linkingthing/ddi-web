@@ -1050,18 +1050,18 @@ export default {
       const { url } = this.$getApiByRoute();
 
       const params = {
-        semanticId: this.currentNode.id
+        semanticId: this.currentNode.id,
+        subSemanticId: row.id
       }
 
       this.$post({ url: `${url}?action=get_plan_detail`, params }).then((data) => {
         if (data) {
           const { planDetails } = data;
           console.log(row)
-          const currentCount = Array.isArray(row.networkV6s) && row.networkV6s.length || 0;
           const prefixMap = planDetails.map(item => {
             return {
               ...item,
-              count: currentCount,
+              count: item.prefixUsedCount,
               initCount: 0,
 
             }
