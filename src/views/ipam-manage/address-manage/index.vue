@@ -8,20 +8,49 @@
       @on-selection-change="handleSelecChange"
       :total="total"
       :current.sync="current"
-    />
+    >
+      <div
+        slot="neck"
+        class="address-manage-head"
+      >
+
+        <CommonTab
+          :active="String(active)"
+          :tab-list="tabList"
+          @change="(value) => { active = +value }"
+        />
+      </div>
+    </table-page>
   </div>
 </template>
 
 <style lang="less">
 @import "./index.less";
+.address-manage-head {
+  padding: 16px 26px 0;
+}
 </style>
 
 <script>
 import { columns } from "./define";
+import CommonTab from "@/components/CommonTab";
 
 export default {
+  components: {
+    CommonTab
+  },
   data() {
+    this.tabList = [{
+      id: "4",
+      label: "IPv4"
+    }, {
+      id: "6",
+      label: "IPv6"
+    }];
+
     return {
+      active: "4",
+
       loading: false,
       url: this.$getApiByRoute().url,
       tableData: [],
@@ -38,6 +67,18 @@ export default {
   watch: {
     current() {
       this.handleQuery();
+    },
+    active(version) {
+      this.$router.replace({
+        query: { ...this.$route.query, version }
+      });
+      this.handleQuery();
+    }
+  },
+  created() {
+    const { version } = this.$route.query;
+    if (version) {
+      this.active = +version;
     }
   },
 
@@ -50,7 +91,9 @@ export default {
       try {
         const params = {
           page_num: this.current,
-          page_size: 10
+          page_size: 10,
+          version: this.active
+
         };
         let { data, pagination } = await this.$get({ url: this.url, params });
 

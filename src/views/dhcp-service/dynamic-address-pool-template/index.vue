@@ -127,11 +127,20 @@ export default {
     current() {
       this.getDataList();
     },
-    active() {
+    active(version) {
+      this.$router.replace({
+        query: { ...this.$route.query, version }
+      });
+
       this.getDataList();
     }
   },
-  created() { },
+  created() {
+    const { version } = this.$route.query;
+    if (version) {
+      this.active = version;
+    }
+  },
   mounted() { },
   methods: {
     getDataList() {
