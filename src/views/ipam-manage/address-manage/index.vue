@@ -8,7 +8,17 @@
       @on-selection-change="handleSelecChange"
       :total="total"
       :current.sync="current"
-    />
+    >
+      <div slot="top-right">
+        <Input
+          search
+          enter-button
+          placeholder="请输入子网地址"
+          v-model="search"
+          @on-search="handleSearch"
+        />
+      </div>
+    </table-page>
   </div>
 </template>
 
@@ -32,7 +42,8 @@ export default {
       showManualScan: false,
       editData: null,
       total: 0,
-      current: 0
+      current: 0,
+      search: ""
     };
   },
   watch: {
@@ -42,6 +53,9 @@ export default {
   },
 
   methods: {
+    handleSearch() {
+      this.handleQuery();
+    },
     async handleQuery() {
       this.loading = true;
 
@@ -50,7 +64,8 @@ export default {
       try {
         const params = {
           page_num: this.current,
-          page_size: 10
+          page_size: 10,
+          subnet: this.search
         };
         let { data, pagination } = await this.$get({ url: this.url, params });
 
