@@ -208,7 +208,7 @@ export default {
         if (Array.isArray(data) && data.length) {
           const [{ links }] = data;
           this.$post({ url: `${links.self}?action=list_tree` }).then((data) => {
-            this.semanticList = data;
+            this.semanticList = data || [];
           })
         }
       })
