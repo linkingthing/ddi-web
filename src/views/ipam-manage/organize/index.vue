@@ -7,7 +7,15 @@
             <h1>组织机构</h1>
             <p>选中机构即可编辑该机构的子机构</p>
           </div>
-          <button>导出</button>
+
+          <import-export-csv
+            v-if="$hasPermission('semantic', 'POST')"
+            :links="links"
+            @on-import-success="onImportSuccess"
+            resource="机构"
+          >
+            <button>导出</button>
+          </import-export-csv>
 
         </div>
         <div class="organize-tree-content">
@@ -45,8 +53,11 @@
         </div>
 
       </div>
-      <div class="organize-content" v-if="!noData">
-        <div class="organize-content-header" >
+      <div
+        class="organize-content"
+        v-if="!noData"
+      >
+        <div class="organize-content-header">
           <h3>
             <CommonEditText
               v-model="currentNode.name"
@@ -247,6 +258,9 @@ export default {
   },
   mounted() { },
   methods: {
+    onImportSuccess() {
+      this.getSemanticList()
+    },
     getSemanticList() {
       this.treeLoading = true;
       this.$get({ url: "/apis/linkingthing.com/ipam/v1/semantics" }).then(({ data }) => {

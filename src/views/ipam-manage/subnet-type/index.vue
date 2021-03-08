@@ -8,6 +8,13 @@
       :current.sync="current"
     >
       <template slot="top-right">
+        <import-export-csv
+          v-if="$hasPermission('networktype', 'POST')"
+          style="margin-right: 20px;"
+          :links="links"
+          @on-import-success="onImportSuccess"
+          resource="类型"
+        />
 
         <Button
           type="primary"
@@ -112,6 +119,10 @@ export default {
       }).finally(() => {
         this.loadingPage = false;
       });
+    },
+    onImportSuccess() {
+      this.current = 1;
+      this.getList();
     },
     handleClickOpenToCreate() {
       this.visible = true;

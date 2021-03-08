@@ -1,8 +1,5 @@
 <template>
   <div class="plan">
-
-    <!-- <SemanticTree /> -->
-
     <div class="plan-content">
 
       <NoDataList
@@ -20,16 +17,21 @@
         :current.sync="current"
       >
         <template slot="top-right">
+          <Button
+            type="primary"
+            @click="handleUploadPlan"
+          >导入规划表格</Button>
+
+          <Button
+            type="primary"
+            @click="handleDownloadTemplate"
+            style="margin: 0 20px"
+          >下载模板</Button>
 
           <Button
             type="primary"
             @click="handleAddPlan"
           >新建规划</Button>
-
-          <!-- <Button
-            type="primary"
-            @click="handleUploadPlan"
-          >导入规划表格</Button> -->
 
         </template>
       </table-page>
@@ -64,7 +66,7 @@
           src="./icon-info.png"
           alt=""
         >
-        <span>请使用为您准备的“设备表格模板”填写终端信息</span>
+        <span>请使用为您准备的“规划表格模板”填写终端信息</span>
       </div>
 
       <div class="base-upload">
@@ -188,12 +190,20 @@ export default {
         {
           title: "操作",
           key: "name",
-          width: 150,
+          width: 200,
           // width: 300,
           render: (h, { row }) => {
             return h("div", {
               class: "table-btn-box"
             }, [
+              h("btn-line", {
+                props: {
+                  title: "导出"
+                },
+                nativeOn: {
+                  click: () => this.handleDownloadPlan(row)
+                }
+              }),
 
               h("btn-line", {
                 nativeOn: {
@@ -407,9 +417,14 @@ export default {
         this.$Message.error(err.response.data.message);
       });
     },
+    handleDownloadTemplate() {
+      const url = `${this.links.self}?action=exportcsvtemplate`;
+      this.$post({ url }).then(({ path }) => {
+        downloadFile(path);
+      });
+    },
     handleDownloadPlan({ links }) {
-      const params = { path: "123.csv" };
-      this.$post({ url: `${links.self}?action=export`, params }).then(({ path }) => {
+      this.$post({ url: `${links.self}?action=exportcsvtemplate` }).then(({ path }) => {
         downloadFile(path);
       });
     }

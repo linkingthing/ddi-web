@@ -5,7 +5,17 @@
       :always="always"
       class="import-export-tooltip"
     >
-      <Button type="primary">
+
+      <template
+        v-slot:default
+        v-if="$slots.default"
+      >
+        <slot />
+      </template>
+      <Button
+        type="primary"
+        v-else
+      >
         {{title}}
       </Button>
       <div slot="content">
@@ -121,7 +131,9 @@ export default {
   },
   computed: {},
   watch: {},
-  created() { },
+  created() {
+    console.log(this)
+  },
   mounted() { },
   methods: {
     handleClickImportTable() {
