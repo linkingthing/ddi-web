@@ -52,8 +52,11 @@ export default {
   },
   computed: {},
   watch: {
-    value(val) {
-      this.innerValue = val || "";
+    value: {
+      immediate: true,
+      handler(val) {
+        this.innerValue = val || "";
+      },
     },
     innerValue(val) {
       this.$emit("input", Number(val));

@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { cloneDeep } from "lodash";
-import { list2Tree } from "@/views/ipam-manage/address-plan/modules/helper";
+import {
+  findExpandPath,
+  list2Tree
+} from "@/views/ipam-manage/address-plan/modules/helper";
 import router from "@/router";
 
 import { get } from "@/util/axios";
@@ -12,7 +15,9 @@ const state = {
   layout: {},
   nodes: [],
   currentNodeId: "",
-  hasChange: false
+  hasChange: false,
+  loadingTree: false,
+  loadingContent: false
 };
 
 const getters = {
@@ -20,8 +25,14 @@ const getters = {
   planName: state => state.planName,
   currentNodeId: state => state.currentNodeId,
   currentNode: state => {
+    if (state.currentNodeId === "") {
+      return [];
+    }
     return state.nodes.find(item => item.id === state.currentNodeId);
   },
+  loadingTree: state => state.loadingTree,
+  loadingContent: state => state.loadingContent,
+
   tree: state => {
     return list2Tree(cloneDeep(state.nodes), "0");
   },
@@ -29,7 +40,7 @@ const getters = {
     const smallTree = cloneDeep(state.nodes).filter(item => {
       return item.state !== "dispatch" || item.sponsordispatch;
     });
-    return list2Tree(smallTree, "0");
+    return list2Tree(smallTree, "0", "children");
   },
   nodes: state => state.nodes,
   allPlanNodes: state => {
@@ -60,6 +71,12 @@ const mutations = {
   },
   setPrefixs(state, prefixs) {
     state.prefixs = prefixs;
+  },
+  setLoadingTree(state, loadingTree) {
+    state.loadingTree = loadingTree;
+  },
+  setLoadingContent(state, loadingContent) {
+    state.loadingContent = loadingContent;
   },
   setNodes(state, nodes) {
     state.nodes = nodes;
@@ -106,7 +123,7 @@ const mutations = {
   },
   saveNodes(state, nodes) {
     const newNodes = cloneDeep(state.nodes);
-    nodes.forEach(function (node) {
+    nodes.forEach(function(node) {
       const index = newNodes.findIndex(item => {
         return item.id === node.id;
       });
@@ -131,6 +148,9 @@ const mutations = {
 
 const actions = {
   getCurrentPlanInfo({ commit }, url) {
+    commit("setLoadingTree", true);
+    commit("setLoadingContent", true);
+
     get(url).then(({ name, prefixs, semanticnodes }) => {
       commit("setPlanName", name);
       commit("setPrefixs", prefixs);
@@ -147,6 +167,13 @@ const actions = {
       });
 
       commit("setNodes", semanticnodes);
+
+      commit("setLoadingTree", false);
+      commit("setLoadingContent", false);
+
+      // setTimeout(() => {
+      //   commit("setLoadingContent", false);
+      // }, 200);
     });
   }
 };

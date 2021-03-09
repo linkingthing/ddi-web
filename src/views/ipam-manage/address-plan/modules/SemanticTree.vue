@@ -2,11 +2,23 @@
   <div class="SemanticTree">
     <SemanticTreeHeader prefix="语义树" />
     <div class="tree">
-      <Tree
+      <Spin
+        fix
+        v-if="loadingTree"
+      ></Spin>
+
+      <!-- <Tree
+        v-else
         :data="treeData"
         children-key="nodes"
         @on-select-change="handleSelectNode"
         :render="renderContent"
+      /> -->
+
+      <tree
+        :setting="setting"
+        :nodes="treeData"
+        @onClick="handleSelectNode"
       />
     </div>
 
@@ -14,19 +26,18 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters, mapState } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 import { cloneDeep } from "lodash";
 import SemanticTreeHeader from "./SemanticTreeHeader";
-import ChoosePlanWayModal from "./ChoosePlanWayModal";
-import { buildLayoutParams, hasAllBitWidth, executeTreeNodePrefix } from "./helper";
-import eventBus from "@/util/bus";
 
 import ableReport from "./able-report.png";
 import alreadyDispatch from "./already-dispatch.png";
+import tree from "vue-giant-tree";
 
 export default {
   components: {
-    SemanticTreeHeader
+    SemanticTreeHeader,
+    tree
   },
   props: {
     prefix: {
@@ -35,6 +46,9 @@ export default {
     }
   },
   data() {
+    this.setting = {
+      treeId: "id"
+    };
     return {
       treeData: [],
       visible: false,
@@ -46,7 +60,8 @@ export default {
       "currentNodeId",
       "tree",
       "hasChange",
-      "filterTree"
+      "filterTree",
+      "loadingTree"
     ])
 
   },
@@ -70,7 +85,7 @@ export default {
     }
 
   },
-  created() { },
+
   mounted() {
   },
   methods: {
@@ -80,9 +95,7 @@ export default {
       "setHasChange"
     ]),
 
-    handleSelectNode(nodes, node) {
-      // console.log("handleSelectNode", nodes, node, this.currentNodeId)
-
+    handleSelectNode($, id, node) {
 
       if (node.depth === 8) {
         this.$Message.info("支持最高层级不超过8级");
@@ -102,7 +115,7 @@ export default {
             content: "<p>选择确定即使保存，选择取消即是取消改动</p>",
             loading: true,
             onOk: () => {
-              eventBus.$emit("savePlan");
+              // eventBus.$emit("savePlan");
               this.$nextTick()
                 .then(() => {
                   this.setHasChange(false);
@@ -123,6 +136,8 @@ export default {
     },
     renderContent(h, { root, node, data }) {
       // data.selected = true;
+
+
       let name = transfer(data.name);
       const isSearch = this.keywords.length > 0 && data.name.includes(this.keywords);
 
@@ -196,7 +211,7 @@ export default {
           })
         ])
       ]);
-    }
+    },
 
   }
 };
@@ -204,6 +219,7 @@ export default {
 
 <style lang="less" scoped>
 .SemanticTree {
+  position: relative;
   width: 330px;
   background: #f4f4f4;
   border-radius: 4px;

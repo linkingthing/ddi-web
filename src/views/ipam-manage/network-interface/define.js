@@ -55,7 +55,8 @@ export const columns = scope => [
               width: "70px"
             },
             props: {
-              type: "default"
+              type: "default",
+              disabled: row.ipType === "unmanagered"
             },
             on: {
               click: () => {
@@ -91,17 +92,12 @@ export const columns = scope => [
             class: "table-row-button",
             style: {
               width: "60px"
-              // display: `${
-              //   row.ipState === "conflict" && row.ipType === "unmanagered"
-              //     ? "inline-block"
-              //     : "none"
-              // } `
             },
             props: {
               type: "default",
               disabled:
                 row.ipType === "reservation" ||
-                !(row.ipState === "conflict" && row.ipType === "unmanagered")
+                !(row.ipState === "conflict" && row.ipType === "unused")
             },
             on: {
               click: () => {
@@ -119,15 +115,24 @@ export const columns = scope => [
 ];
 
 // 三种情况显示转固定
+/**
+ * 地址类型转换
+可以转成静态地址：地址类型为未使用地址、地址状态为冲突地址
+可以转成固定地址：
+地址类型为未使用地址、地址状态为冲突地址
+地址类型为未分配地址、地址状态为冲突地址
+地址类型为已分配地址、地址状态为活跃地址
+不活跃的静态地址可以回收（删除）
+*/
 function showFix(row) {
   if (row.ipState === "conflict") {
-    if (["unmanagered", "unassigned"].includes(row.ipType)) {
+    if (["unused", "unassigned"].includes(row.ipType)) {
       return true;
     }
   }
 
   if (row.ipState === "active") {
-    if (row.ipType === "unassigned") {
+    if (row.ipType === "assigned") {
       return true;
     }
   }
@@ -135,7 +140,13 @@ function showFix(row) {
   return false;
 }
 
-export const typeColors = ["#06DFE9", "#0E90FF", "#97DB24", "#6E6EF5"];
+export const typeColors = [
+  "#06DFE9",
+  "#0E90FF",
+  "#97DB24",
+  "#6E6EF5",
+  "#1EE9CA"
+];
 export const statusColors = ["#1EE9CA", "#1272FF", "#FF6464", "#FFB83C"];
 
 const noDataColors = ["#ebebeb"];
@@ -153,11 +164,13 @@ export const ipTypeMap = {
   static: {
     label: "静态地址"
   },
-  unmanagered: {
+  unused: {
     label: "未使用地址"
+  },
+  unmanagered: {
+    label: "未管理地址"
   }
 };
-
 
 export const typeLegends = [
   {
@@ -189,6 +202,12 @@ export const typeLegends = [
     percent: 0,
     label: "未使用地址",
     color: typeColors[4],
+    type: "unused"
+  },
+  {
+    percent: 0,
+    label: "未管理地址",
+    color: typeColors[5],
     type: "unmanagered"
   }
 ];

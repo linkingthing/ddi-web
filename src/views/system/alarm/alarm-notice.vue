@@ -67,6 +67,13 @@ export default {
           align: "left",
           render: (h, { row }) => {
 
+            if (row.name === "illegalDhcp") {
+              return h(
+                "div",
+                `发现 ${alarmConfig[row.name]} IP: ${row.illegalDhcpIp} ${row.illegalDhcpMac && "MAC:"}  ${row.illegalDhcpMac}`
+              )
+            }
+
             if (row.name === "ipConflict") {
               return h("div", `${row.conflictIp} 冲突`);
             }

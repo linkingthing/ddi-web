@@ -14,7 +14,7 @@ const state = {
   agentAssociatedCount: 0,
 
   routes: [],
-  routesCounter: 1
+  routesCounter: 1,
 };
 
 const getters = {

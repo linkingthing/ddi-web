@@ -242,7 +242,28 @@ export function executeTreeNodePrefix(
 }
 
 /**
+ * 查找展开路径
  *
+ */
+
+export function findExpandPath(
+  nodes,
+  id,
+  pid = "parentsemanticid",
+  result = []
+) {
+  let targetNode = nodes.find(item => item.id === id);
+  if (targetNode) {
+    result.push(targetNode[pid]);
+    if (targetNode[pid] !== "0") {
+      findExpandPath(nodes, targetNode[pid], pid, result);
+    }
+  }
+  return result;
+}
+
+/**
+ * 列表转成树
  */
 export function list2Tree(
   data,
@@ -256,6 +277,7 @@ export function list2Tree(
       let itemChildren = list2Tree(data, item.id, children, depth + 1);
       if (itemChildren.length) item[children] = itemChildren;
       item.expand = true;
+      item.open = true;
       res.push({
         ...item,
         depth
@@ -457,7 +479,7 @@ export const executeValueRecyclePool = (
   const maxValue = 2 ** bitWidth - 1;
   const allValueList = prefixList
     .map(prefix => {
-      return Array.from({ length: maxValue }, function (item, index) {
+      return Array.from({ length: maxValue }, function(item, index) {
         return {
           prefix,
           realPrefix: executeNextIpv6Segment(prefix, index + 1, bitWidth),
@@ -594,3 +616,13 @@ export const hasSon = (nodes, id, allNodes = nodes) => {
 
   return !!children.length;
 };
+
+/**
+ * 华丽离场
+ * 处理1000个节点的地址规划，跳转到其他路由卡死问题
+ * */
+
+export function gorgeousDeparture() {
+  // 销毁 contentTable
+  // 销毁 tree
+}

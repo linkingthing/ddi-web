@@ -1,6 +1,14 @@
 <template>
+
   <div class="SemanticContent">
-    <div class="SemanticContent-inner">
+    <Spin
+      fix
+      v-if="loadingContent"
+    ></Spin>
+    <div
+      v-else
+      class="SemanticContent-inner"
+    >
 
       <div class="SemanticContent-header">
         <h1 :title="currentNodeName">{{currentNodeName}}</h1>
@@ -312,24 +320,97 @@
             </div>
           </div>
 
-          <Table
+          <!-- <Table
             :loading="tableLoading"
             ref="selection"
             class="dataTable"
             :columns="semanticColumns"
             :data="filterCurrentNodeChildren"
             @on-selection-change="handleSelectSemanticList"
-          />
+          /> -->
+          <div class="scroller">
+
+            <div class="scroller-table-header">
+              <div
+                class="scroller-th"
+                v-for="column in semanticColumns"
+                :key="column.key"
+                :style="{width: column.width+ 'px'}"
+              >
+                <template v-if="column.type === 'selection'">
+                  <Checkbox @on-change="handleSelectAll"><span></span> </Checkbox>
+
+                </template>
+                <template v-else>
+                  {{column.title || "#"}}
+                </template>
+
+              </div>
+            </div>
+            <CheckboxGroup
+              style="height: 100%;flex: 1;overflow: hidden;"
+              v-model="checkAllGroup"
+              @on-change="handleSelectSemanticList"
+            >
+
+              <CommonScroller
+                :data="filterCurrentNodeChildren"
+                :item-size="2"
+                :buffer="300"
+                key-field="id"
+                v-slot="{item ,index}"
+              >
+                <div class="scroller-semantic">
+                  <div
+                    :style="{width: column.width+ 'px'}"
+                    class="scroller-td"
+                    v-for="(column) in semanticColumns"
+                    :key="column.key"
+                  >
+                    <template v-if="column.type === 'index'">
+
+                      <span class="index">{{index + 1}}</span>
+                    </template>
+
+                    <template v-if="column.type === 'selection'">
+                      <Checkbox :label="item.id"><span></span> </Checkbox>
+
+                    </template>
+
+                    <template v-else-if="typeof column.render==='function'">
+                      <exSlot
+                        :render="column.render"
+                        :row="item"
+                        :index="index"
+                        :column="column"
+                      />
+                    </template>
+                    <template v-else-if="column.tooltip">
+                      <Tooltip style="width: 100%;z-index:1">
+                        <div slot="content">
+                          <p
+                            v-for="ii in item[column.key].split(',')"
+                            :key="ii"
+                          >{{ii}}</p>
+                        </div>
+                        <div style="overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;">
+                          {{item[column.key]}}
+
+                        </div>
+                      </Tooltip>
+                    </template>
+
+                    <template v-else> {{item[column.key]}}</template>
+                  </div>
+                </div>
+              </CommonScroller>
+            </CheckboxGroup>
+          </div>
 
         </div>
-        <!-- <div class="SemanticContent-opera">
-          <Button
-            type="primary"
-            size="large"
-            style="width: 300px;"
-            @click="handleSave('保存成功')"
-          >保存</Button>
-        </div> -->
+
       </section>
 
     </div>
@@ -343,30 +424,41 @@
 import Spinner from "@/components/Spinner";
 import SegmentAxis from "@/components/SegmentAxis";
 import { mapGetters, mapMutations, mapActions } from "vuex";
-import { debounce, cloneDeep } from "lodash";
-import { v4 as uuidv4 } from "uuid";
-
-import { ipv4IsValid, isIpv4Segment, includes } from "@/util/common";
+import { cloneDeep } from "lodash";
+import { RecycleScroller } from 'vue-virtual-scroller'
+import CommonScroller from "@/components/CommonScroller";
+import { isIpv4Segment, includes } from "@/util/common";
 import {
   executeNextIpv6Segment,
-  planSemanticNodesValue,
   hasSon,
   hasGrandson,
-  createPlanNode,
   executeValueRecyclePool,
   modifiedEnum,
   planTypeEnum,
-  executeUesedValueList
 } from "./helper";
 
 import eventBus from "@/util/bus";
 
 const tempSemanticNameMap = {};
 
+const exSlot = {
+  functional: true,
+  render: (h, context) => {
+    const params = {
+      row: context.props.row,
+      index: context.props.index
+    };
+    if (context.props.column) params.column = context.props.column;
+    return context.props.render(h, params);
+  }
+};
 export default {
   components: {
     SegmentAxis,
-    Spinner
+    Spinner,
+    RecycleScroller,
+    exSlot,
+    CommonScroller
   },
   props: {},
   data() {
@@ -407,7 +499,7 @@ export default {
       customPlan: {
         choosePrefix: ""
       },
-
+      checkAllGroup: [],
       selectSemanticList: [], // 自定义规划时
 
       nodeEditVisible: false,
@@ -441,13 +533,14 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "loadingContent",
       "planName",
       "prefixs",
       "nodes",
       "tree",
       "currentNode",
       "currentNodeChildren",
-      "allPlanNodes"
+      "allPlanNodes",
     ]),
     currentNodeName() {
       return this.currentNode && this.currentNode.name;
@@ -593,7 +686,6 @@ export default {
     },
 
     semanticColumns() {
-
 
       let selection = !this.availableCustomPlan ? [{
         type: "selection",
@@ -800,14 +892,14 @@ export default {
         this.semanticNodeList = cloneDeep(val);  // 为了避免 nodeCount 先改大再改小
       }
     },
-
-    tempBitWidth(val, old) {
-
+    tempBitWidth(val) {
+      console.log(val, 66)
     }
+
   },
   created() { },
   mounted() {
-    eventBus.$on("savePlan", this.handleSave);
+    // eventBus.$on("savePlan", this.handleSave);
   },
   methods: {
     ...mapMutations([
@@ -1303,6 +1395,8 @@ export default {
             this.$Message.success("规划成功");
             this.selectSemanticList = [];
             this.customPlanVisible = false;
+            this.checkAllGroup = [];
+
           }
 
         })
@@ -1367,15 +1461,21 @@ export default {
       const prefixs = this.currentNode.prefixs;
       const semanticNodeList = this.semanticNodeList;
       this.executeIpv6ByAction(semanticNodeList, prefixs);
+      this.checkAllGroup = [];
     },
 
     autoOneKey() {
       // 进行过一次一键规划的，后面增加的节点默认自动规划
       this.handleOneKeyPlan();
     },
-    handleSelectSemanticList(list) {
-      this.selectSemanticList = list;
+    handleSelectAll(checked) {
+      this.checkAllGroup = checked ? this.filterCurrentNodeChildren.map(item => item.id) : [];
+      this.selectSemanticList = checked ? this.filterCurrentNodeChildren : [];
     },
+    handleSelectSemanticList(list) {
+      this.selectSemanticList = this.filterCurrentNodeChildren.filter(item => list.includes(item.id));
+    },
+
     handleOpenCustomPlan() {
       if (this.selectSemanticList.length) {
         this.customPlanVisible = true;
@@ -1391,6 +1491,7 @@ export default {
           const prefixs = [choosePrefix];
           const selectSemanticNodeList = this.selectSemanticList;
           this.executeIpv6ByAction(selectSemanticNodeList, prefixs);
+          this.checkAllGroup = [];
         }
       });
     },
@@ -1404,6 +1505,8 @@ export default {
         } else {
           this.$Message.info("请选择需要清空地址的子语义");
         }
+        this.checkAllGroup = [];
+
       } else {
         const semanticNodeList = this.semanticNodeList;
         this.cleanPlanByAction(semanticNodeList, prefixs);
@@ -1471,7 +1574,7 @@ export default {
   }
 
   .dataTable {
-    max-width: calc(~"100vw - 660px");
+    max-width: calc(~"100vw - 690px");
     border: 1px solid #e6e6e6;
     border-bottom: none;
   }
@@ -1693,5 +1796,57 @@ export default {
 
 .btn-count {
   cursor: pointer;
+}
+
+.scroller {
+  height: calc(~"100vh - 530px");
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+
+  .scroller-table-header {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    .scroller-th {
+      display: table-cell;
+      min-width: 0;
+      height: 48px;
+      box-sizing: border-box;
+      text-align: left;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      border-bottom: 1px solid #e8eaec;
+      padding: 10px;
+      background-color: #f5f7fa;
+      color: #9f9f9f;
+    }
+  }
+  .scroller-semantic {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    border-left: 1px solid #e8eaec;
+
+    .scroller-td {
+      display: table-cell;
+      min-width: 0;
+      height: 48px;
+      box-sizing: border-box;
+      text-align: left;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      border-bottom: 1px solid #e8eaec;
+      padding: 10px;
+
+      .ivu-tooltip-popper {
+        z-index: 5 !important;
+      }
+    }
+  }
+}
+
+.tempDisplay {
+  display: none;
 }
 </style>

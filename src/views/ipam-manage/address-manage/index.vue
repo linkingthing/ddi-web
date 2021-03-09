@@ -99,7 +99,7 @@ export default {
 
         this.tableData = data.map(item => {
           item.creationTimestamp = this.$trimDate(item.creationTimestamp);
-          item.usedRatio = parseFloat(parseFloat((1 - (item.unmanagedRatio || 0))).toFixed(2));
+          item.usedRatio = parseFloat(parseFloat((1 - (item.unusedRatio || 0))).toFixed(2));
           return item;
         });
 

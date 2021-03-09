@@ -12,7 +12,7 @@
             >
               <img
                 style="width: 16px;margin-bottom: 1px;vertical-align: bottom;"
-                :src="require('./icon-ques-mark.png')"
+                :src="require('./icon-info.png')"
                 alt=""
               >
             </Tooltip>
@@ -195,18 +195,27 @@ export default {
         mac: "",
         ipstate: ""
       },
-      unmanagedRatio: "",
+      unusedRatio: "",
       total: 0,
-      current: 0
+      current: 0,
+      source: ""
     };
   },
 
   computed: {
     usedRatio() {
-      return ((1 - Number(this.unmanagedRatio)) * 100).toFixed(2) + "%";
+      if (this.source === "dhcp") {
+        return ((1 - Number(this.unusedRatio)) * 100).toFixed(2) + "%";
+      } else {
+        return "--"
+      }
     },
     notUsedRatio() {
-      return (Number(this.unmanagedRatio) * 100).toFixed(2) + "%";
+      if (this.source === "dhcp") {
+        return (Number(this.unusedRatio) * 100).toFixed(2) + "%";
+      } else {
+        return "--"
+      }
     }
 
   },
@@ -302,14 +311,16 @@ export default {
           conflictRatio,
           inactiveRatio,
           unassignedRatio,
-          unmanagedRatio,
+          unusedRatio,
           zombieRatio,
           reservationRatio,
           staticAddressRatio,
-          subnet
+          subnet,
+          source
         } = await this.$getParantData();
 
-        this.unmanagedRatio = unmanagedRatio;
+        this.source = source;
+        this.unusedRatio = unusedRatio;
         this.subnet = subnet;
 
         let typeLegends = [...this.typeLegends];
@@ -319,8 +330,6 @@ export default {
         typeLegends[1].percent = parseFloat(parseFloat(+unassignedRatio * 100).toFixed(2));
         typeLegends[2].percent = parseFloat(parseFloat(+reservationRatio * 100).toFixed(2));
         typeLegends[3].percent = parseFloat(parseFloat(+staticAddressRatio * 100).toFixed(2));
-
-        // typeLegends[4].percent = parseFloat(parseFloat(+unmanagedRatio * 100).toFixed(2));
 
         statusLegends[0].percent = parseFloat(parseFloat(+activeRatio * 100).toFixed(2));
         statusLegends[1].percent = parseFloat(parseFloat(+inactiveRatio * 100).toFixed(2));
@@ -548,17 +557,37 @@ export default {
       }
     },
 
+
+    getSubnetLinks() {
+      const params = {
+        subnet: this.subnet
+      }
+
+      return this.$get({ ...this.$getApiByRoute(`/address/dhcp/subnets`), params }).then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          const [{ links }] = data;
+          return links
+        } else {
+          throw new Error(`未查到该子网:${this.subnet}`)
+        }
+      }).catch(err => {
+        throw new Error(err)
+      })
+
+    },
+
     /**
      * 转固定
      */
     async handleFix(row) {
       this.loading = true;
 
-      let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/reservations`).url;
 
       try {
+        let links = await this.getSubnetLinks();
+
         await this.$post({
-          url,
+          url: links.reservations,
           params: {
             hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
             ipAddress: row.ip
@@ -575,17 +604,25 @@ export default {
         this.loading = false;
       }
     },
-    handleStatic(row) {
-      let url = this.$getApiByRoute(`/address/dhcp/subnets/${this.$route.params.scannedsubnetsId}/staticaddresses`).url;
-      const params = {
-        hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
-        ipAddress: row.ip
-      };
-      this.$post({ url, params }).then(() => {
-        this.$$success("操作成功！");
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-      });
+    async handleStatic(row) {
+      try {
+        let links = await this.getSubnetLinks();
+        let url = links.staticaddresses;
+        const params = {
+          hwAddress: row.mac ? row.mac.replace(/-/g, ":") : "",
+          ipAddress: row.ip
+        };
+        this.$post({ url, params }).then(() => {
+          this.$$success("操作成功！");
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
+        });
+      } catch (err) {
+        this.$handleError(err);
+      }
+      finally {
+        this.loading = false;
+      }
     },
     handleDownloadCsv() {
       let { url } = this.$getApiByRoute(`/address/ipam/scannedsubnets/${this.$route.params.scannedsubnetsId}`);
