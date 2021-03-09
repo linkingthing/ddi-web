@@ -15,17 +15,18 @@
         >
           <template slot="operate">
             <import-export-csv
-              v-if="$hasPermission('networkv6', 'POST')"
               style="margin-left: 20px;"
               :links="links"
               @on-import-success="onImportSuccess"
               resource="Ipv6"
             />
+            <!-- v-if="$hasPermission('networkv6', 'POST')" -->
             <i-button
               type="primary"
               @click="handleOpenCreate"
-              v-if="$hasPermission('networkv6', 'POST')"
             >新建子网</i-button>
+            <!-- v-if="$hasPermission('networkv6', 'POST')" -->
+
           </template>
         </SearchBar>
 

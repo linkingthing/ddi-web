@@ -162,6 +162,41 @@ export default [
     resouces: ["plan"]
   },
   {
+    name: "IP信息管理",
+    id: "semanticinfo",
+    module: "address",
+    resouces: ["semanticinfo"]
+  },
+
+  {
+    name: "组织管理",
+    id: "semantic",
+    module: "address",
+    resouces: ["semantic"]
+  },
+  {
+    name: "Ipv4子网管理",
+    id: "networkv4",
+    module: "address",
+    resouces: ["networkv4"]
+  },
+
+  {
+    name: "Ipv6子网管理",
+    id: "networkv6",
+    module: "address",
+    resouces: ["networkv6"]
+  },
+
+
+  {
+    name: "子网类型",
+    id: "networktype",
+    module: "address",
+    resouces: ["networktype"]
+  },
+  
+  {
     name: "IP地址监测",
     id: "ipAddressMonitor",
     module: "address",
@@ -239,7 +274,7 @@ export default [
     module: "address",
     resouces: ["clientclass"]
   },
-  
+
   {
     name: "日志信息",
     id: "logInfo",

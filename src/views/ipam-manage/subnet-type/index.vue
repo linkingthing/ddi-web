@@ -17,6 +17,7 @@
         />
 
         <Button
+          v-if="$hasPermission('networktype', 'POST')"
           type="primary"
           @click="handleClickOpenToCreate"
         >新建子网类型</Button>
@@ -62,15 +63,17 @@ export default {
       title: "操作",
       key: "",
       render: (h, { row }) => {
+        const deleteBtn = this.$hasPermission('networktype', 'DELETE') ? h("btn-del", {
+          style: {
+            display: row.custom ? "inline-block" : "none"
+          },
+          on: {
+            click: () => this.handleDelete(row)
+          }
+        }) : null
+
         return h("div", [
-          h("btn-del", {
-            style: {
-              display: row.custom ? "inline-block" : "none"
-            },
-            on: {
-              click: () => this.handleDelete(row)
-            }
-          }),
+          deleteBtn,
           // h("btn-edit", {
           //   props: {
           //     title: ""

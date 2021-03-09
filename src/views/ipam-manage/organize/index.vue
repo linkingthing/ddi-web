@@ -42,12 +42,18 @@
               class="organize-tree-add"
               v-else
             >
-              <p>暂无机构，请点击添加</p>
-              <Button
-                type="primary"
-                style="width: 126px"
-                @click="handleClickOpenCreate"
-              >添加</Button>
+              <template v-if="$hasPermission('semantic', 'POST')">
+                <p>暂无机构，请点击添加</p>
+                <Button
+                  type="primary"
+                  style="width: 126px"
+                  @click="handleClickOpenCreate"
+                >添加</Button>
+              </template>
+              <template v-else>
+                <p>暂无机构</p>
+
+              </template>
             </div>
           </template>
         </div>

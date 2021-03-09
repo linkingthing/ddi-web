@@ -1,4 +1,5 @@
 import Layout from "@/views/layout";
+import permission from "../../config/permission";
 
 export default {
   path: "/address",
@@ -7,7 +8,7 @@ export default {
     range: "address",
     title: "资产治理",
     // isFlat: true,
-    permission: "ipAddressPlan"
+    permission: "*"
   },
   name: "addressPlan",
   redirect: { name: "ipam-address-ip-info-manage" },
@@ -25,7 +26,7 @@ export default {
 
       meta: {
         title: "IP信息管理",
-        permission: "ipAddressPlan"
+        permission: "semanticinfo"
       }
     },
     {
@@ -99,9 +100,10 @@ export default {
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/organize"
         ),
       meta: {
-        title: "组织管理"
+        title: "组织管理",
         // active: "ipam-address-plan",
         // from: "ipam-address-plan"
+        permission: "semantic"
       }
     },
     {
@@ -112,7 +114,8 @@ export default {
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/ipv4-subnet-address"
         ),
       meta: {
-        title: "Ipv4子网管理"
+        title: "Ipv4子网管理",
+        permission: "networkv4"
       }
     },
     {
@@ -123,7 +126,8 @@ export default {
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/ipv6-subnet-address"
         ),
       meta: {
-        title: "Ipv6子网管理"
+        title: "Ipv6子网管理",
+        permission: "networkv6"
       }
     },
     {
@@ -134,7 +138,8 @@ export default {
           /* webpackChunkName: "ipam-address-plan" */ "@/views/ipam-manage/subnet-type"
         ),
       meta: {
-        title: "子网类型"
+        title: "子网类型",
+        permission: "networktype"
       }
     }
   ]
