@@ -4,31 +4,67 @@
     :visible.sync="dialogVisible"
     :title="getTitle"
     :width="413"
-    @confirm="handleConfirm('formInline')"
+    @confirm="handleConfirm('form')"
     :loading="loading"
   >
     <Form
-      ref="formInline"
+      ref="form"
       label-position="left"
       :label-width="100"
       :label-colon="true"
       :rules="rules"
       :model="formModel"
     >
+      <FormItem
+        prop="name"
+        label="规划名称"
+      >
+        <span v-if="isEdit">{{formModel.name}}</span>
+        <Input
+          v-else
+          placeholder="请填写规划名称"
+          v-model="formModel.name"
+        />
+      </FormItem>
+      <FormItem
+        prop="prefix"
+        label="地址前缀"
+      >
+        <Select
+          v-model="formModel.prefix"
+          filterable
+          allow-create
+          clearable
+          @on-change="handleSelect"
+          placeholder="请输入地址前缀"
+        >
+          <Option
+            v-for="item in ipv6List"
+            :value="item.prefix"
+            :key="item.id"
+          >{{ item.prefix }}</Option>
+        </Select>
+      </FormItem>
+      <FormItem
+        prop="prefixes"
+        label="地址前缀"
+      >
+        <Tag
+          v-for="item in formModel.prefixes"
+          :key="item"
+          :name="item"
+          closable
+          @on-close="handleRemove"
+        >{{item}}</Tag>
 
-      <common-form
-        :form-model="formModel"
-        :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name'] : []"
-      />
+      </FormItem>
 
     </Form>
   </common-modal>
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
-import { modifiedEnum } from "./helper";
+import { isIpv6Segment } from "@/util/common";
 
 export default {
   props: {
@@ -65,16 +101,16 @@ export default {
         }
       }],
 
-      prefixs: [{
+      prefixes: [{
         required: true,
         message: "请输入地址前缀"
       }]
-
     };
 
     return {
       formModel: {
-        prefixs: "",
+        prefixes: [],
+        prefix: "",
         name: ""
       },
       loading: false,
@@ -82,6 +118,7 @@ export default {
       viewList: [],
       planList: [],
       semanticId: "",
+      ipv6List: []
     };
   },
 
@@ -92,22 +129,6 @@ export default {
     isEdit() {
       return !!this.links.update;
     },
-    formItemList() {
-      return [
-        {
-          label: "规划名称",
-          model: "name",
-          type: "input",
-          placeholder: "请填写规划名称",
-        },
-        {
-          label: "IPv6前缀",
-          model: "prefixs",
-          type: "textarea",
-          placeholder: "请填写IPv6前缀"
-        }
-      ];
-    }
   },
 
   watch: {
@@ -120,7 +141,6 @@ export default {
       if (this.links.update) {
         this.$get({ url: this.links.self }).then(data => {
           this.formModel = {
-            prefixs: data.prefixs.join(","),
             ...data
           };
 
@@ -132,15 +152,27 @@ export default {
 
     dialogVisible(val) {
       this.$emit("update:visible", val);
-    }
+    },
+
 
   },
 
   created() {
     this.getSematicRootId();
+    this.getIpv6List();
   },
 
   methods: {
+
+    getIpv6List() {
+      this.$get({ url: "/apis/linkingthing.com/ipam/v1/networkv6s" }).then(({ data }) => {
+        if (Array.isArray(data)) {
+          this.ipv6List = data;
+        } else {
+          this.ipv6List = []
+        }
+      })
+    },
 
 
     reset() {
@@ -149,21 +181,48 @@ export default {
 
     getSematicRootId() {
       this.$get({ url: "/apis/linkingthing.com/ipam/v1/semantics" }).then(({ data }) => {
-        console.log(data)
         if (Array.isArray(data) && data.length) {
           const [{ id }] = data;
           this.semanticId = id;
         }
       })
     },
+    pushPrefix(value) {
+      if (this.formModel.prefixes.includes(value)) {
+        this.$Message.info("请勿重复添加");
+      } else {
+        if (value.trim() !== "") {
+          this.formModel.prefixes.push(value);
+        }
+      }
 
+    },
+    handleCreate() {
+    },
+    handleSelect(value) {
+
+      if (typeof value === "undefined") {
+        return;
+      }
+
+      if (isIpv6Segment(value)) {
+        this.pushPrefix(value)
+      } else {
+        this.$Message.error("请正确输入IPv6网段");
+      }
+
+    },
+    handleRemove(event, name) {
+      const index = this.formModel.prefixes.indexOf(name);
+      this.formModel.prefixes.splice(index, 1);
+    },
     handleConfirm(name) {
+
       this.$refs[name].validate(valid => {
         if (valid) {
 
           this.loading = true;
           const params = { ...this.formModel };
-          params.prefixes = params.prefixs.split(",").map(item => item.trim());
           params.semantic = this.semanticId;
 
           // this.$router.push({ name: "ipam-address-plan-create", query: params });

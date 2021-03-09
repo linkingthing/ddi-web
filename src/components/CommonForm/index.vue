@@ -99,6 +99,7 @@
         :placeholder="item.placeholder"
         :multiple="item.multiple"
         :clearable="item.clearable"
+        :allowCreate="item.allowCreate"
       >
         <Option
           v-for="e in item.children"

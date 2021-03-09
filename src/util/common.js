@@ -320,14 +320,18 @@ export const isIpv4Segment = segment => {
 };
 
 export const isIpv6Segment = segment => {
-  if (!segment.includes("/")) {
+  try {
+    if (!segment.includes("/")) {
+      return false;
+    }
+    const ipv6 = new Address6(segment);
+    const { subnetMask } = ipv6;
+    const ipBinary = ipv6.binaryZeroPad();
+    const endString = ipBinary.slice(subnetMask, ipBinary.length);
+    return !endString.includes("1");
+  } catch (e) {
     return false;
   }
-  const ipv6 = new Address6(segment);
-  const { subnetMask } = ipv6;
-  const ipBinary = ipv6.binaryZeroPad();
-  const endString = ipBinary.slice(subnetMask, ipBinary.length);
-  return !endString.includes("1");
 };
 
 /**
