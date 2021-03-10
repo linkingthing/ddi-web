@@ -461,7 +461,7 @@ export default {
 
       button {
         float: right;
-        width: 44px;
+        padding: 0 10px;
         height: 26px;
         background: #ffffff;
         border-radius: 4px;
