@@ -117,7 +117,7 @@ export default {
                   title: "地址池配置",
                 },
                 on: {
-                  // click: () => this.handleOpenEdit(row)
+                  click: () => this.handleCreateSubnet(row)
                 }
               }),
               h("btn-edit", {
@@ -200,6 +200,41 @@ export default {
     handleOpenCreate() {
       this.visible = true;
       this.paramsLinks = this.links;
+    },
+    async handleCreateSubnet({ prefix, semanticName }) {
+      /**
+       * 1. 查询子网
+       * 2. 有子网则跳转下级
+       * 3. 没有子网则创建
+       * */
+      // prefix
+      const { data } = await this.findSubnet(prefix);
+      if (data.length) {
+        const [{ links }] = data;
+        this.$router.push({ path: this.$getRouteByLink(links.pools, "address") })
+
+      } else {
+        const url = "/apis/linkingthing.com/dhcp/v1/subnets";
+        const params = {
+          domainServers: [],
+          relayAgentAddresses: [],
+          routers: [],
+          subnet: prefix,
+          tags: semanticName,
+          version: 4,
+        };
+        this.$post({ url, params }).then(res => {
+          this.$Message.success("创建成功");
+        }).catch(err => {
+          this.$Message.error(err.response.data.message);
+        })
+
+      }
+
+    },
+
+    findSubnet(prefix) {
+      return this.$get({ url: `/apis/linkingthing.com/dhcp/v1/subnets?subnet=${prefix}` })
     },
     handleOpenEdit({ links }) {
       this.visible = true;
