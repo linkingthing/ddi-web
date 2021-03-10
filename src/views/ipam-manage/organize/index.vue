@@ -86,7 +86,7 @@
                 <th
                   align="left"
                   width="80"
-                >#</th>
+                >序号</th>
                 <th align="left">子机构（双击可修改名称）</th>
                 <th width="80">操作</th>
               </tr>

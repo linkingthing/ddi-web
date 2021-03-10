@@ -92,7 +92,7 @@ export default {
           label: "子网地址",
           model: "prefix",
           type: "input",
-          placeholder: "请填写子网地址(网段)",
+          placeholder: "请填写子网地址，例：10.0.0.0/24",
         },
         {
           label: "子网名称",
