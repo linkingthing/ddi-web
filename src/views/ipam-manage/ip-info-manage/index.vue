@@ -26,6 +26,7 @@
             <Button
               type="primary"
               @click="handleClickReport"
+              :disabled="ableClickReport"
             >信息上报</Button>
             <Button
               type="primary"
@@ -174,9 +175,15 @@ export default {
         key: "action",
         width: 200,
         render: (h, { row }) => {
+          let ableRepeal = false;
+
+          if (row.dispatch && row.dispatch.isSponsor) {
+            ableRepeal = true
+          }
+
           return <div>
             <btn-line title="下发" onClick={() => this.handleDispath(row)} />
-            <btn-line title="撤回" disabled={!row.dispatch} onClick={() => row.dispatch && this.handleRepeal(row)} />
+            <btn-line title="撤回" disabled={!ableRepeal} onClick={() => row.dispatch && this.handleRepeal(row)} />
             <btn-line title="详情" onClick={() => this.handleOpenDetailModal(row)} />
           </div>
         }
@@ -220,6 +227,8 @@ export default {
       },
       dispatchClients: [],
 
+      ableClickReport: true
+
 
     };
   },
@@ -229,7 +238,7 @@ export default {
   },
   created() {
     this.getDataList();
-    this.getReportConfig();
+    // this.getReportConfig();
   },
   mounted() { },
   methods: {
@@ -237,10 +246,14 @@ export default {
       this.loading = true;
       this.$get({ url: "/apis/linkingthing.com/ipam/v1/semanticinfos" }).then(({ data }) => {
         if (Array.isArray(data) && data.length) {
-          const [{ links, id }] = data;
+          const [{ links, id, dispatch }] = data;
           this.getItemList(links);
           this.links = links;
           this.currentSemanticId = id;
+
+          if (dispatch && !dispatch.isSponsor) {
+            this.ableClickReport = false;
+          }
         } else {
           this.noData = true;
         }
@@ -266,7 +279,6 @@ export default {
     handleTab(_, tab) {
       this.tab = tab.id;
       this.getDetail();
-
     },
 
     getDetail(action = this.tab) {
@@ -285,35 +297,47 @@ export default {
       });
     },
 
-    getReportConfig() {
+    async getReportConfig() {
+      let result = {};
       const url = "/apis/linkingthing.com/ipam/v1/dispatchconfigs";
-      this.$get({ url }).then(({ data }) => {
+
+      await this.$get({ url }).then(({ data }) => {
 
         if (Array.isArray(data) && data.length) {
-          const [{ reportServerAddr }] = data;
-          this.reportServerAddr = reportServerAddr;
+          const [{ enableReport, reportServerAddr }] = data;
+          result = { enableReport, reportServerAddr }
+          return result
         }
       });
+      return result
     },
-    handleClickReport() {
-      if (this.reportServerAddr === "") {
+    async handleClickReport() {
+      const { enableReport, reportServerAddr } = await this.getReportConfig();
+      if (reportServerAddr === "" || !enableReport) {
         this.$Message.info("请先在系统联动配置上报信息");
         return
       }
-      const url = `${this.links.self}?action=report_forward`;
-      const params = {
-        remoteAddr: this.reportServerAddr,
-        semanticInfos: [
-          {
-            id: this.currentSemanticId
+
+      if (this.list.length) {
+        const [{ dispatch }] = this.list;
+        if (dispatch) {
+          const url = `${this.links.self}?action=report_forward`;
+          const params = {
+            remoteAddr: dispatch.remoteAddr,
+            semanticInfos: [
+              {
+                id: this.currentSemanticId
+              }
+            ]
           }
-        ]
+          this.$post({ url, params }).then(() => {
+            this.$Message.success("上报成功");
+          }).catch(err => {
+            this.$Message.error(err.response.data.message);
+          });
+        }
       }
-      this.$post({ url, params }).then(res => {
-        console.log(res)
-      }).catch(err => {
-        this.$Message.error(err.response.data.message);
-      });
+
     },
 
     handleDispath(row) {
@@ -339,17 +363,17 @@ export default {
         title: "撤销下发确认提示",
         content: `<p>您需要撤销对子系统的下发操作吗？</p>`,
         onOk: () => {
-          const { remoteAddr, id } = row.dispatch;
+          const { remoteAddr } = row.dispatch;
           const params = {
             remoteAddr,
-            semanticInfos: [{ id }]
+            semanticInfos: [{ id: row.id }]
           };
 
           const url = `${this.links.self}?action=repeal_forward`;
 
           this.$post({ url, params }).then(res => {
             this.$Message.success("撤回成功");
-            this.getPlanInfo();
+            this.getDataList();
           }).catch(err => {
             this.$Message.error(err.response.data.message);
           });
