@@ -424,7 +424,7 @@ export default {
       });
     },
     handleDownloadPlan({ links }) {
-      this.$post({ url: `${links.self}?action=exportcsvtemplate` }).then(({ path }) => {
+      this.$post({ url: `${links.self}?action=exportcsv` }).then(({ path }) => {
         downloadFile(path);
       });
     }
