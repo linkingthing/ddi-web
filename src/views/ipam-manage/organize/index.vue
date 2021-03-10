@@ -14,7 +14,7 @@
             @on-import-success="onImportSuccess"
             resource="机构"
           >
-            <button>导出</button>
+            <button>导入/导出</button>
           </import-export-csv>
 
         </div>
