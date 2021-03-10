@@ -492,71 +492,24 @@ export default {
       this.getList();
     },
 
-    async handleEdit(row) {
-      try {
-        let { data } = await this.$get(this.$getApiByRoute(`/address/ipam/assets?mac=${row.mac}`));
-
-        let res = data[0] || {};
-        const switchName = row.switchName || res.switchName;
-        const switchPort = row.switchPort || res.switchPort;
-        const computerRack = row.computerRack || res.computerRack;
-        const computerRoom = row.computerRoom || res.computerRoom;
-
-        const ip = row.ip;
-        const subnet = this.subnet;
-        const vlanId = row.vlanId;
-
-
-        const { uplinkPort, uplinkEquipment } = row;
-
-        console.log(row)
-
-        // 能查询到，进行注册操作
-
-        if (data.length) {
-          const url = `${res.links.self}?action=refresh`;
-          const params = {
-            computerRack,
-            computerRoom,
-            ip,
-            subnet,
-            switchName,
-            switchPort,
-            vlanId,
-            uplinkPort,
-            uplinkEquipment
-          };
-          this.$post({ url, params }).then(() => {
-            this.$Message.success("终端登记成功");
-          }).catch(err => {
-            this.$Message.error(err.response.data.message);
-          });
-          return;
-        }
-
-
-        this.$router.push({
-          name: "ip-assets-manage",
-          query: {
-            id: res.id,
-            ip: row.ip,
-            vlanId: row.vlanId,
-            mac: row.mac,
-            switchName,
-            switchPort,
-            computerRack,
-            computerRoom,
-            subnet,
-            name,
-            uplinkPort,
-            uplinkEquipment
-          }
-        });
-      } catch (err) {
-        this.$handleError(err);
-      }
+    handleCreateBaseLine(row) {
+      const url = `${row.links.self}?action=createipbaseline`;
+      this.$post({ url }).then(() => {
+        this.$Message.success("关联成功");
+        this.getList();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      })
     },
-
+    handleCancelBaseLine(row) {
+      const url = `${row.links.self}?action=deleteipbaseline`;
+      this.$post({ url }).then(() => {
+        this.$Message.success("取消关联成功");
+        this.getList();
+      }).catch(err => {
+        this.$Message.error(err.response.data.message);
+      })
+    },
 
     getSubnetLinks() {
       const params = {
