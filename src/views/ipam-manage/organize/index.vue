@@ -389,7 +389,7 @@ export default {
         loading: true,
         onOk: () => {
           const params = {
-            semanticId: "",
+            semanticId: this.currentId,
             semanticNodes: [{
               id,
               name: ""
