@@ -54,7 +54,10 @@ export default {
         version: 4,
         subnet: "",
         tags: "",
-        domainServers: ""
+        domainServers: "",
+        clientClass: "",
+        relayAgentInterfaceId: "",
+        relayAgentAddresses: "",
       }
 
     };
@@ -186,11 +189,15 @@ export default {
   },
   watch: {
     visible(val) {
-      if (!val) return;
+      if (!val) {
+        return;
+      }
       this.dialogVisible = val;
     },
 
     dialogVisible(val) {
+      this.resetFields();
+
       if (!val) {
         this.formModel = {
           subnet: "",
@@ -199,6 +206,7 @@ export default {
         // 清楚path的query参数
         const { path } = this.$route;
         this.$router.push({ path });
+
       } else {
         if (this.isCreate) {
           const { ipnet, tags } = this.$route.query;
@@ -240,6 +248,19 @@ export default {
   },
 
   methods: {
+    resetFields() {
+      this.formModel = {
+        version: 4,
+        subnet: "",
+        tags: "",
+        domainServers: "",
+        clientClass: "",
+        relayAgentInterfaceId: "",
+        relayAgentAddresses: "",
+      }
+
+      this.$refs.form.resetFields();
+    },
     getData({ self }) {
       this.$get({ url: self }).then(res => {
         resArrayToString(res, ["domainServers", "routers", "relayAgentAddresses"]);
