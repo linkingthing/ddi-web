@@ -436,17 +436,12 @@ import SegmentAxis from "@/components/SegmentAxis";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { cloneDeep } from "lodash";
 import CommonScroller from "@/components/CommonScroller";
-import { isIpv4Segment, includes } from "@/util/common";
 import {
-  executeNextIpv6Segment,
   hasSon,
   hasGrandson,
-  executeValueRecyclePool,
   modifiedEnum,
   planTypeEnum,
 } from "./helper";
-
-const tempSemanticNameMap = {};
 
 const exSlot = {
   functional: true,
@@ -609,9 +604,18 @@ export default {
 
     },
     availableOneKeyPlan() {
-      const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.ONEKEYPLAN || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
+      const autocreate = this.currentTargetNodeAutoCreate === planTypeEnum.ONEKEYPLAN
+        || this.currentTargetNodeAutoCreate === planTypeEnum.UNDEFINED;
 
-      return !autocreate;
+      let hasSet = false;
+      if (this.currentNode.semanticPlan) {
+        const { bitWidth, subSemanticPrefixCount } = this.currentNode.semanticPlan;
+        if (bitWidth && subSemanticPrefixCount) {
+          hasSet = true;
+        }
+      }
+
+      return !autocreate || !hasSet;
     },
     isCustomPlan() {
       return this.currentTargetNodeAutoCreate === planTypeEnum.HANDLEPLAN;
@@ -681,7 +685,6 @@ export default {
           maxWidth: 150,
           minWidth: 100,
           render: (h, { row }) => {
-            console.log(row)
             if (row.networkV6s && Array.isArray(row.networkV6s)) {
               return <div>{row.networkV6s.length}</div>
             }
@@ -1057,7 +1060,6 @@ export default {
       this.$post({ url: `${url}?action=get_plan_detail`, params }).then((data) => {
         if (data) {
           const { planDetails } = data;
-          console.log(row)
           const prefixMap = planDetails.map(item => {
             return {
               ...item,
