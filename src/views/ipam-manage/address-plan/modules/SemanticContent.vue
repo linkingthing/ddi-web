@@ -1109,10 +1109,9 @@ export default {
           const prefixs = [];
           const prefixNumbers = [];
           prefixMap.forEach(({ initCount, count, prefix }) => {
-            if (count > initCount) {
-              prefixs.push(prefix);
-              prefixNumbers.push(count);
-            }
+            prefixs.push(prefix);
+            prefixNumbers.push(count);
+
           });
 
           const { url } = this.$getApiByRoute();
