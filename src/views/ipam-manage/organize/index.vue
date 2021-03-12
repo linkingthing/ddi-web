@@ -8,14 +8,16 @@
             <p>选中机构即可编辑该机构的子机构</p>
           </div>
 
-          <import-export-csv
-            v-if="$hasPermission('semantic', 'POST')"
-            :links="links"
-            @on-import-success="onImportSuccess"
-            resource="机构"
-          >
-            <button>导入/导出</button>
-          </import-export-csv>
+          <template v-if="!noData">
+            <import-export-csv
+              v-if="$hasPermission('semantic', 'POST')"
+              :links="links"
+              @on-import-success="onImportSuccess"
+              resource="机构"
+            >
+              <button>导入/导出</button>
+            </import-export-csv>
+          </template>
 
         </div>
         <div class="organize-tree-content">
@@ -31,31 +33,31 @@
             <div>Loading</div>
           </Spin>
           <template v-else>
-            <tree
-              v-if="treeData.length"
-              :setting="setting"
-              :nodes="treeData"
-              @onClick="handleSelectNode"
-            />
+  <tree
+    v-if="treeData.length"
+    :setting="setting"
+    :nodes="treeData"
+    @onClick="handleSelectNode"
+  />
 
-            <div
-              class="organize-tree-add"
-              v-else
-            >
-              <template v-if="$hasPermission('semantic', 'POST')">
-                <p>暂无机构，请点击添加</p>
-                <Button
-                  type="primary"
-                  style="width: 126px"
-                  @click="handleClickOpenCreate"
-                >添加</Button>
-              </template>
-              <template v-else>
-                <p>暂无机构</p>
+  <div
+    class="organize-tree-add"
+    v-else
+  >
+    <template v-if="$hasPermission('semantic', 'POST')">
+      <p>暂无机构，请点击添加</p>
+      <Button
+        type="primary"
+        style="width: 126px"
+        @click="handleClickOpenCreate"
+      >添加</Button>
+    </template>
+    <template v-else>
+      <p>暂无机构</p>
 
-              </template>
-            </div>
-          </template>
+    </template>
+  </div>
+</template>
         </div>
 
       </div>
