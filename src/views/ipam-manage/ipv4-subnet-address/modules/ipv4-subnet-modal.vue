@@ -112,6 +112,7 @@ export default {
           type: "select",
           placeholder: "请填写组织机构",
           filterable: true,
+          clearable: true,
           children: this.semanticList.map(item => {
             return {
               text: item.name,
@@ -125,6 +126,7 @@ export default {
           type: "select",
           placeholder: "请填写子网类型名称",
           filterable: true,
+          clearable: true,
           children: this.subnetTypeList.map(item => {
             return {
               text: presetSubnetTypeMap[item.name] || item.name,
