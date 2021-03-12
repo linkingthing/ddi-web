@@ -403,7 +403,7 @@ export default {
       this.importVisible = true;
     },
     handleUpload() {
-      const url = `${this.links.self}?action=import`;
+      const url = `${this.links.self}?action=importcsv`;
       const params = this.uploadParams;
       this.loading = true;
       this.$post({ url, params }).then(() => {
