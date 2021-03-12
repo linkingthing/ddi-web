@@ -277,7 +277,7 @@ export default {
 
           resStringToArray(params, ["domainServers", "routers", "relayAgentAddresses"]);
           if (this.isCreate) {
-            this.$post({ url: this.links.create, params }).then(res => {
+            this.$post({ url: this.links.create, params }).then(() => {
               this.$$success("保存成功！");
               this.$emit("success");
               this.dialogVisible = false;
@@ -288,7 +288,7 @@ export default {
               this.loading = false;
             });
           } else {
-            this.$put({ url: this.links.update, params }).then(res => {
+            this.$put({ url: this.links.update, params }).then(() => {
               this.$$success("保存成功！");
               this.$emit("success");
               this.dialogVisible = false;
