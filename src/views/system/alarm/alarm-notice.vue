@@ -182,11 +182,12 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
+        console.log(value)
         this.query = _.cloneDeep({
           ...value,
-          current: +value.current
+          current: +value.current || +value.page_num
         });
-        this.getData(value);
+        this.getData();
       }
     }
   },
