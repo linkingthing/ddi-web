@@ -280,13 +280,14 @@ export const subnetValidateFunc = (rule, value, callback) => {
   }
   callback("请正确输入subnet");
 };
-
+console.dir(Address6);
+console.log( ( new Address6("FF01:10:20:10:10:10:20:1101")) )
 /**
  * 判断是否是合法的ipv6，不校验掩码
  */
 export const ipv6IsValid = address => {
   try {
-    return new Address6(address).isCorrect();
+    return new Address6(address);
   } catch (e) {
     return false;
   }
