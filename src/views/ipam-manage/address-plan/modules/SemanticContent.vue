@@ -1075,11 +1075,11 @@ export default {
       })
     },
     handleCountChange(item) {
-      const maxCount = item.remainAddressCount + item.initCount;
-      if (item.count > maxCount || item.count < item.initCount || Number.isNaN(Number(item.count))) {
-        this.$Message.info(`请输入${item.initCount}到${maxCount}的数字`);
+      const maxCount = item.remainAddressCount + item.prefixUsedCount;
+      if (item.count > maxCount || item.count < 0 || Number.isNaN(Number(item.count))) {
+        this.$Message.info(`请输入0到${maxCount}的数字`);
         this.$nextTick().then(() => {
-          item.count = item.initCount;
+          item.count = item.prefixUsedCount;
         });
       }
     },
@@ -1091,7 +1091,7 @@ export default {
       }
     },
     handlePlusCount(item) {
-      const maxCount = item.remainAddressCount + item.initCount;
+      const maxCount = item.remainAddressCount + item.prefixUsedCount;
       if (item.count < maxCount) {
         item.count += 1;
       }
