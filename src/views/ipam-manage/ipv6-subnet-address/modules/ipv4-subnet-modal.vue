@@ -27,7 +27,13 @@
 </template>
 
 <script>
-
+const presetSubnetTypeMap = {
+  guest: "访客子网",
+  management: "管理子网",
+  office: "办公子网",
+  server: "服务器子网",
+  vpn: "VPN子网"
+}
 import { isIpv6Segment } from "@/util/common";
 
 export default {
@@ -127,7 +133,7 @@ export default {
           filterable: true,
           children: this.subnetTypeList.map(item => {
             return {
-              text: item.name,
+              text: presetSubnetTypeMap[item.name] || item.name,
               label: item.id
             }
           })

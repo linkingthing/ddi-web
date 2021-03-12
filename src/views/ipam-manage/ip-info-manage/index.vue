@@ -21,6 +21,7 @@
           <div class="neck-handle">
             <Button
               type="primary"
+              v-if="$hasPermission('plan', 'POST')"
               @click="$router.push({name: 'ipam-address-plan'})"
             >地址规划</Button>
             <Button
