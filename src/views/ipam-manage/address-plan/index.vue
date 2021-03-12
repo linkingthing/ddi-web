@@ -7,6 +7,9 @@
         v-if="!planList.length && $hasPermissionCreate('plan')"
         button-text="新建规划"
         @add="handleAddPlan"
+        :buttons="buttons"
+        @exportTemplate="handleDownloadTemplate"
+        @importPlan="handleUploadPlan"
       />
       <table-page
         v-else
@@ -102,7 +105,6 @@ import { list2Tree } from "./modules/helper";
 
 
 import PlanTree from "./modules/PlanTree";
-import SemanticTree from "./modules/SemanticTree";
 
 import { LOCK_STATUS_ENUM } from "./modules/SafeLock/config";
 
@@ -115,7 +117,6 @@ export default {
     NoDataList,
     PlanModal,
     PlanTree,
-    SemanticTree
   },
 
   data() {
@@ -251,7 +252,15 @@ export default {
       file: { path: "" },
 
       total: 0,
-      current: 0
+      current: 0,
+
+      buttons: [{
+        text: "导出模板",
+        event: "exportTemplate"
+      }, {
+        text: "导入规划",
+        event: "importPlan"
+      }]
     };
   },
 
@@ -269,7 +278,6 @@ export default {
   },
 
   methods: {
-
     getPlanList() {
       const params = {
         page_num: this.current,

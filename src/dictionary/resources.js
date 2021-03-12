@@ -70,6 +70,8 @@ export default {
   authzoneauthrrs: "权威区",
   authzoneaxfr: "辅区全量资源",
   authzoneixfr: "辅区增量资源",
+
+  semantic: "组织机构",
 };
 
 export const operateMap = {
