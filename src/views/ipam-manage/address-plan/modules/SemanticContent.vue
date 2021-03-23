@@ -1112,7 +1112,7 @@ export default {
           const prefixNumbers = [];
           prefixMap.forEach(({ initCount, count, prefix }) => {
             prefixs.push(prefix);
-            prefixNumbers.push(count);
+            prefixNumbers.push(+count);
 
           });
 

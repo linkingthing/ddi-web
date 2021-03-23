@@ -155,7 +155,7 @@ const actions = {
 
       const root = planTree.find(item => item.parentId === "root");
 
-      if (root && root.networkV6s) {
+      if (root && Array.isArray(root.networkV6s)) {
         const prefixs = root.networkV6s.map(item => item.prefix);
         commit("setPrefixs", prefixs);
       } else {
