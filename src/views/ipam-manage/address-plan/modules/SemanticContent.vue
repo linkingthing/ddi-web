@@ -41,7 +41,7 @@
             <div class="action-box">
               <Spinner
                 class="bitwidth"
-                :disabled="settableNextBitWidth"
+                :disabled="settableNextBitWidth || preposeDisabled"
                 v-model="tempBitWidth"
                 :placeholder="`最大地址位宽${64-prefixLen}`"
                 :min="minBitwidth"
@@ -78,7 +78,7 @@
             <Button
               type="primary"
               style="margin: 0 20px"
-              :disabled="settableNextBitWidth"
+              :disabled="settableNextBitWidth || preposeDisabled"
               @click="handleSetNextBitWidth"
             >确定</Button>
           </div>
@@ -140,8 +140,8 @@
               placeholder="请输入语义节点数"
               :min="semanticNodeList.length"
               :max="allAddressBlockCount"
+              :disabled="preposeDisabled"
             />
-            <!-- :disabled="settableSemanticNodeCount" -->
 
           </div>
         </div>
@@ -153,8 +153,8 @@
               class="action-box-input"
               v-model="prefixBeginValue"
               placeholder="请输入子网地址起始值"
+              :disabled="preposeDisabled"
             />
-            <!-- :disabled="settableStepSize" -->
 
           </div>
         </div>
@@ -163,8 +163,8 @@
           <Button
             type="primary"
             @click="handleClickCreateSemanticNode"
+            :disabled="preposeDisabled"
           >确定</Button>
-          <!-- :disabled="settableCreateSemanticNode" -->
 
         </div>
       </div>
@@ -251,35 +251,6 @@
           </Form>
         </common-modal>
 
-        <!-- <common-modal
-          :visible.sync="dispatchVisible"
-          title="IPv6前缀下发"
-          :width="483"
-          @confirm="handleSaveDispatch('dispatchRef')"
-        >
-          <Form
-            :model="dispatchParams"
-            :label-width="100"
-            :rules="dispatchRule"
-            ref="dispatchRef"
-          >
-            <FormItem
-              prop="remoteaddr"
-              label="子系统选择"
-              :rules="{required: true, message: '请选择子系统'}"
-            >
-              <Select v-model="dispatchParams.remoteaddr">
-                <Option
-                  v-for="item in dispatchclients"
-                  :key="item.id"
-                  :value="item.clientaddr"
-                >{{ item.name }}</Option>
-              </Select>
-            </FormItem>
-          </Form>
-
-        </common-modal> -->
-
       </div>
 
       <section>
@@ -290,14 +261,14 @@
               <Button
                 type="primary"
                 @click="handleOneKeyPlan"
-                :disabled="availableOneKeyPlan"
+                :disabled="availableOneKeyPlan || preposeDisabled"
                 style="margin-right: 10px"
               >一键规划</Button>
               <Button
                 type="primary"
                 ghost
                 @click="handleOpenCustomPlan"
-                :disabled="availableCustomPlan"
+                :disabled="availableCustomPlan || preposeDisabled"
                 v-if="showCustomPlan"
                 style="margin-right: 10px"
               >自定义规划</Button>
@@ -305,7 +276,7 @@
               <Button
                 type="warning"
                 @click="handleCleanPlan"
-                :disabled="availableClearPlan"
+                :disabled="availableClearPlan || preposeDisabled"
               >清空规划</Button>
             </div>
             <div class="action-input-item-right">
@@ -316,23 +287,12 @@
               <Button
                 type="primary"
                 @click="handleFilter"
+                :disabled="preposeDisabled"
               >搜索</Button>
-              <!-- <Button
-                class="reset"
-                @click="handleResetSearch"
-              >重置</Button> -->
 
             </div>
           </div>
 
-          <!-- <Table
-            :loading="tableLoading"
-            ref="selection"
-            class="dataTable"
-            :columns="semanticColumns"
-            :data="filterCurrentNodeChildren"
-            @on-selection-change="handleSelectSemanticList"
-          /> -->
           <div class="scroller">
 
             <div class="scroller-table-header">
@@ -454,6 +414,7 @@ const exSlot = {
     return context.props.render(h, params);
   }
 };
+
 export default {
   components: {
     SegmentAxis,
@@ -536,8 +497,6 @@ export default {
       editIpv4List: [],
       tableLoading: false,
 
-
-
     };
   },
   computed: {
@@ -570,6 +529,21 @@ export default {
     bitWidthValid() {
       const bitWidth = Number(this.bitWidth);
       return !Number.isNaN(bitWidth) && bitWidth;
+    },
+
+    preposeDisabled() {
+      /**
+       * 全部按钮可以编辑的前置条件
+       * 1.上层节点未设置，则下层不能被设置
+       * */
+      const { networkV6s } = this.currentNode;
+
+      if (Array.isArray(networkV6s) && networkV6s.length) {
+        return false
+      } else {
+        return true;
+      }
+
     },
 
     settableSemanticNodeCount() {
@@ -719,9 +693,7 @@ export default {
           key: "action",
           width: 240,
           render: (h, { row }) => {
-
             const has = !!this.nodes.find(item => item.parentsemanticid === row.id);
-            const hasDispath = row.state === "dispatch";
             return h("div", [
 
               h("btn-edit", {
@@ -729,7 +701,7 @@ export default {
                   marginRight: "10px"
                 },
                 props: {
-                  // disabled: !(Array.isArray(row.plannodes) && row.plannodes.length > 0)
+                  disabled: this.preposeDisabled
                 },
                 on: {
                   click: () => this.handleOpenEditNode(row)
@@ -740,7 +712,7 @@ export default {
                   click: () => this.handleDeleteSemantic(row)
                 },
                 props: {
-                  disabled: !!row.sponsordispatch || has
+                  disabled: !!row.sponsordispatch || has || this.preposeDisabled
                 }
               })
             ]);
