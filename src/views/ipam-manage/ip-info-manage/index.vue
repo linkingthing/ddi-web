@@ -109,6 +109,14 @@ import PlanTree from "../address-plan/modules/PlanTree";
 import { list2Tree } from "../address-plan/modules/helper";
 import NoData from "./modules/NoData";
 
+const presetSubnetTypeMap = {
+  guest: "访客子网",
+  management: "管理子网",
+  office: "办公子网",
+  server: "服务器子网",
+  vpn: "VPN子网"
+}
+
 export default {
   components: {
     PlanTree,
@@ -210,6 +218,9 @@ export default {
       }, {
         title: "子网类型",
         key: "networkType",
+        render: (h, { row }) => {
+          return <div>{presetSubnetTypeMap[row.networkType] || row.networkType}</div>
+        }
       }, {
         title: "业务",
         key: "business",
