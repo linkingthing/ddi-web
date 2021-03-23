@@ -1095,7 +1095,7 @@ export default {
     handlePlusCount(item) {
       const maxCount = item.remainAddressCount + item.prefixUsedCount;
       if (item.count < maxCount) {
-        item.count += 1;
+        item.count = 1 + Number(item.count);
       }
     },
 
