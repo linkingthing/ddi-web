@@ -150,16 +150,47 @@ export default {
         key: "apptype"
       }, {
         title: "IPv4",
-        key: "ipv4"
+        key: "ipv4s",
+        render: (h, { row }) => {
+          if (Array.isArray(row.ipv4s)) {
+            return <Tooltip transfer>
+              <div class="ellipsis">{row.ipv4s.join(',')}</div>
+              <div slot="content">
+                {
+                  row.ipv4s.map(item => <p>{item}</p>)
+                }
+              </div>
+            </Tooltip>
+          }
+
+        }
       }, {
         title: "IPv6",
-        key: "ipv6"
+        key: "ipv6s",
+        render: (h, { row }) => {
+          if (Array.isArray(row.ipv6s)) {
+            return <Tooltip transfer>
+              <div class="ellipsis">{row.ipv6s.join(',')}</div>
+              <div slot="content">
+                {
+                  row.ipv6s.map(item => <p>{item}</p>)
+                }
+              </div>
+            </Tooltip>
+          }
+
+        }
       }, {
         title: "业务",
         key: "business"
       }, {
         title: "双栈访问",
-        key: "supportdoublestack"
+        key: "supportdoublestack",
+        render: (h, { row }) => {
+          return (
+            <div>{row.supportdoublestack ? "支持" : "不支持"}</div>
+          )
+        }
       }, {
         title: "运维人员",
         key: "operatesupport"

@@ -251,9 +251,9 @@ export const domainIsValid = value => {
 export const resourceDomainValidateFunc = (rule, { item, all }, callback) => {
   if (item === "*" || item === "@" || domainReg.test(all)) {
     callback();
+  } else {
+    callback("请正确输入域名");
   }
-
-  callback("请正确输入域名");
 };
 
 export const subnetValidateFunc = (rule, value, callback) => {

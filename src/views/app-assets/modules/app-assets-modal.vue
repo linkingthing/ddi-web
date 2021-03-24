@@ -10,7 +10,7 @@
     <Form
       ref="formInline"
       label-position="left"
-      :label-width="100"
+      :label-width="90"
       :label-colon="true"
       :rules="rules"
       :model="formModel"
@@ -19,7 +19,7 @@
       <common-form
         :form-model="formModel"
         :form-item-list="formItemList"
-        :show-fields="isEdit ? ['name'] : []"
+        :show-fields="isEdit ? ['appname'] : []"
       />
 
     </Form>
@@ -27,8 +27,14 @@
 </template>
 
 <script>
+import MutilInput from "@/components/MutilInput";
+import BoolRadio from "@/components/BoolRadio";
+import { domainIsValid } from "@/util/common";
 
 export default {
+  components: {
+
+  },
   props: {
     visible: {
       type: Boolean,
@@ -44,19 +50,43 @@ export default {
   data() {
 
     this.rules = {
-      name: [
-
+      appname: [
+        { required: true, message: "请输入应用名称" }
       ],
-      isp: [{ required: true, message: "请选择网络运营商" }],
-      ips: [
-        { required: true, message: "请填写网络地址,换行分割" },
+      domain: [
+        { required: true, message: "请输入域名" },
+        {
+          validator: (rule, value, callback) => {
+            if (domainIsValid(value)) {
+              callback();
+            } else {
+              callback("请正确输入域名");
+            }
+          }
+        }
+      ],
+      apptype: [
+        { required: true, message: "请选择服务模式" },
+      ],
+      supportdoublestack: [
+        { required: true, message: "请选择是否双栈访问" },
+      ],
 
-      ]
 
     };
     return {
       formModel: {
-
+        appname: "",
+        domain: "",
+        semantic: "",
+        apptype: "",
+        ipv4s: [],
+        ipv6s: [],
+        business: "",
+        supportdoublestack: false,
+        operatesupport: "",
+        phonenumber: "",
+        remark: "",
       },
       loading: false,
       dialogVisible: false
@@ -112,15 +142,21 @@ export default {
         },
         {
           label: "IPv4",
-          model: "ipv4",
-          type: "input",
-          placeholder: "请填写备注"
+          model: "ipv4s",
+          type: "component",
+          component: MutilInput,
+          props: {
+            placeholder: "请填写IPv4",
+          }
         },
         {
           label: "IPv6",
-          model: "ipv6",
-          type: "input",
-          placeholder: "请填写备注"
+          model: "ipv6s",
+          type: "component",
+          component: MutilInput,
+          props: {
+            placeholder: "请填写IPv6",
+          }
         },
         {
           label: "业务",
@@ -130,17 +166,19 @@ export default {
         },
         {
           label: "双栈访问",
-          model: "supportdoublenetwork",
-          type: "select",
+          model: "supportdoublestack",
+          type: "component",
           placeholder: "请填写双栈访问",
-          children: [
-            {
-              label: "支持",
-              text: "支持"
+          component: BoolRadio,
+          props: {
+            children: [{
+              value: true,
+              label: "支持"
             }, {
-              label: "不支持",
-              text: "不支持"
+              value: false,
+              label: "不支持"
             }]
+          }
         },
         {
           label: "运维人员",
@@ -171,8 +209,6 @@ export default {
         return;
       }
 
-      console.log(this.links)
-
       if (this.links.update) {
         this.$get({ url: this.links.self }).then((res) => {
           this.formModel = {
@@ -187,7 +223,6 @@ export default {
       this.$emit("update:visible", val);
     },
 
-
   },
 
   created() {
@@ -200,13 +235,12 @@ export default {
     },
 
     handleConfirm(name) {
-      console.log(this.links)
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = { ...this.formModel };
           this.loading = true;
           if (this.isEdit) {
-            this.$put({ url: this.links.update, params }).then(res => {
+            this.$put({ url: this.links.update, params }).then(() => {
               this.$$success("编辑成功");
               this.$emit("success");
               this.dialogVisible = false;
@@ -216,7 +250,7 @@ export default {
               this.$$error(err.response.data.message);
             });
           } else {
-            this.$post({ url: this.links.self, params }).then(res => {
+            this.$post({ url: this.links.self, params }).then(() => {
               this.$$success("新建成功");
               this.$emit("success");
               this.dialogVisible = false;
@@ -226,8 +260,6 @@ export default {
               this.$$error(err.response.data.message);
             });
           }
-        } else {
-          console.log(this.formModel, "fail")
         }
       });
     }
@@ -237,9 +269,13 @@ export default {
 </script>
 
 <style lang="less">
-.acl-modal {
+.app-assets-modal {
   .ivu-radio-wrapper {
     margin-right: 34px;
+  }
+  .ivu-modal-body {
+    max-height: 700px;
+    overflow: auto;
   }
 }
 </style>
