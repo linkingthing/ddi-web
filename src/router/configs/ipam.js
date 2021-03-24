@@ -57,20 +57,20 @@ export default {
       path: '/address/ipam/assets',
       component: () => import(/* webpackChunkName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
       meta: {
-        title: "终端资产管理",
+        title: "设备资产管理",
         permission: "terminalManage"
 
       }
     },
-    {
-      name: 'device-detect',
-      path: '/address/ipam/networkequipments',
-      component: () => import(/* webpackChunkName: "device-detect" */ "@/views/ipam-manage/device-detect"),
-      meta: {
-        title: "设备资产管理",
-        permission: "deviceManage"
-      }
-    },
+    // {
+    //   name: 'device-detect',
+    //   path: '/address/ipam/networkequipments',
+    //   component: () => import(/* webpackChunkName: "device-detect" */ "@/views/ipam-manage/device-detect"),
+    //   meta: {
+    //     title: "设备资产管理",
+    //     permission: "deviceManage"
+    //   }
+    // },
     // {
     //   name: 'topology',
     //   path: '/address/ipam/topology',
