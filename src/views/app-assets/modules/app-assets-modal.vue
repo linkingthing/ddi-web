@@ -90,7 +90,7 @@ export default {
           label: "所属组织",
           model: "semantic",
           type: "input",
-          placeholder: "请填写域名"
+          placeholder: "请填写所属组织"
         },
         {
           label: "服务模式",

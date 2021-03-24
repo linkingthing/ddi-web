@@ -25,15 +25,15 @@
           <label class="condition-item-label">双栈访问</label>
           <Select
             style="width: 160px"
-            v-model="condition.supportdoublenetwork"
+            v-model="condition.support_double_stack"
             @on-change="handleQuery"
             clearable
           >
             <Option
-              v-for="item in ['支持', '不支持']"
-              :key="item"
-              :value="item"
-            >{{item}}</Option>
+              v-for="item in [{label: '支持',value: 'true'},{label: '不支持',value: 'false'}]"
+              :key="item.label"
+              :value="item.value"
+            >{{item.label}}</Option>
           </Select>
         </div>
 
@@ -41,12 +41,12 @@
           <label class="condition-item-label">服务模式</label>
           <Select
             style="width: 160px"
-            v-model="condition.apptype"
+            v-model="condition.app_type"
             @on-change="handleQuery"
             clearable
           >
             <Option
-              v-for="item in ['负载均衡', '热备']"
+              v-for="item in ['单机','负载均衡', '热备']"
               :key="item"
               :value="item"
             >{{item}}</Option>
@@ -56,7 +56,7 @@
         <div class="condition-item">
           <label class="condition-item-label">运维人员</label>
           <Input
-            v-model="condition.operatesupport"
+            v-model="condition.operate_support"
             placeholder="请输入运维人员"
             class="top-input"
             @on-enter="handleQuery"
@@ -66,7 +66,7 @@
         <div class="condition-item">
           <label class="condition-item-label">联系方式</label>
           <Input
-            v-model="condition.phonenumber"
+            v-model="condition.phone_number"
             placeholder="请输入联系方式"
             class="top-input"
             @on-enter="handleQuery"
@@ -128,7 +128,11 @@ export default {
       url: this.$getApiByRoute().url,
       loading: false,
       condition: {
-
+        domain: "",
+        support_double_stack: "",
+        app_type: "",
+        operate_support: "",
+        phone_number: "",
       },
       loadingPage: false,
       tableData: [],
@@ -155,7 +159,7 @@ export default {
         key: "business"
       }, {
         title: "双栈访问",
-        key: "supportdoublenetwork"
+        key: "supportdoublestack"
       }, {
         title: "运维人员",
         key: "operatesupport"
@@ -217,6 +221,12 @@ export default {
     },
 
     async queryData(params = { ...this.condition }) {
+
+      for (let item in params) {
+        if (typeof params[item] === "undefined") {
+          delete params[item];
+        }
+      }
 
       try {
         const aparams = {
