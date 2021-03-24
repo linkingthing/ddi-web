@@ -71,14 +71,14 @@ export default {
         permission: "deviceManage"
       }
     },
-    // {
-    //   name: 'topology',
-    //   path: '/address/ipam/topology',
-    //   component: () => import(/* webpackChunkName: "device-detect" */ "@/views/ipam-manage/topology"),
-    //   meta: {
-    //     title: "网络拓扑",
-    //     permission: "netTopology"
-    //   }
-    // }
+    {
+      name: 'app-assets',
+      path: '/address/ipam/appassets',
+      component: () => import(/* webpackChunkName: "device-detect" */ "@/views/app-assets"),
+      meta: {
+        title: "应用资产",
+        permission: "netTopology"
+      }
+    }
   ]
 }
