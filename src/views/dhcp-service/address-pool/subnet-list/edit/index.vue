@@ -46,10 +46,12 @@ export default {
     return {
       loading: false,
       dialogVisible: false,
+      networkTypeList: [],
       formModel: {
         version: 4,
         subnet: "",
         tags: "",
+        networkType: "",
         domainServers: ""
       }
 
@@ -91,6 +93,12 @@ export default {
     },
     formItemList() {
       let formListResult = [];
+      const networkTypeSelect = this.networkTypeList.map(item => {
+        return {
+          label: item.id,
+          text: item.name
+        }
+      })
       const ipv4FormList = [
         {
           label: "子网地址",
@@ -103,6 +111,13 @@ export default {
           model: "tags",
           type: "input",
           placeholder: "请输入子网名称"
+        },
+        {
+          label: "子网类型",
+          model: "networkType",
+          type: "select",
+          placeholder: "请输入子网类型",
+          children: networkTypeSelect
         },
         {
           label: "DNS",
@@ -142,6 +157,13 @@ export default {
           model: "tags",
           type: "input",
           placeholder: "请输入子网名称"
+        },
+        {
+          label: "子网类型",
+          model: "networkType",
+          type: "select",
+          placeholder: "请输入子网类型",
+          children: networkTypeSelect
         },
         {
           label: "DNS",
@@ -215,7 +237,7 @@ export default {
         this.$router.push({ path });
       } else {
         if (this.isCreate) {
-          const { ipnet, tags } = this.$route.query;
+          const { ipnet, tags, networkType } = this.$route.query;
           let version = 4;
           if (ipnet && ipv6IsValid(ipnet)) {
             version = 6;
@@ -238,6 +260,10 @@ export default {
             this.$refs.form.validate();
           }
 
+          if (networkType) {
+            this.formModel.networkType = networkType;
+          }
+
 
         } else {
           this.getData(this.links);
@@ -249,6 +275,9 @@ export default {
       this.$refs.form.validate();
     }
   },
+  created() {
+    this.getNetworkType();
+  },
 
   methods: {
     getData({ self }) {
@@ -257,6 +286,14 @@ export default {
         Object.assign(this.formModel, res);
         this.$refs.form.validate();
       });
+    },
+
+    getNetworkType() {
+      this.$get({
+        url: "/apis/linkingthing.com/ipam/v1/networktypes"
+      }).then(({ data }) => {
+        this.networkTypeList = data;
+      })
     },
 
     handleConfirm() {

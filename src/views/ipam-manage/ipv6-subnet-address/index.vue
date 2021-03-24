@@ -206,7 +206,7 @@ export default {
       this.visible = true;
       this.paramsLinks = links;
     },
-    async handleCreateSubnet({ prefix, semanticName }) {
+    async handleCreateSubnet({ prefix, semanticName, networkType }) {
       /**
        * 1. 查询子网
        * 2. 有子网则跳转下级
@@ -215,26 +215,26 @@ export default {
       // prefix
       const { data } = await this.findSubnet(prefix);
       if (data.length) {
-        const [{links}] = data;
-        this.$router.push({path: this.$getRouteByLink(links.pdpools, "address") })
-
-      } else {
-        const url = "/apis/linkingthing.com/dhcp/v1/subnets";
-        const params = {
-          domainServers: [],
-          relayAgentAddresses: [],
-          routers: [],
-          subnet: prefix,
-          tags: semanticName,
-          version: 6,
-        };
-        this.$post({ url, params }).then(res => {
-          this.$Message.success("创建成功");
-        }).catch(err => {
-          this.$Message.error(err.response.data.message);
+        const [{ links }] = data;
+        this.$router.push({
+          path: this.$getRouteByLink(links.pools, "address"), query: {
+            ipnet: prefix,
+            tags: semanticName,
+            networkType
+          }
         })
 
+      } else {
+        this.$router.push({
+          name: "subnet-pool-subnet",
+          query: {
+            ipnet: prefix,
+            tags: semanticName,
+            networkType
+          }
+        });
       }
+
 
     },
 
