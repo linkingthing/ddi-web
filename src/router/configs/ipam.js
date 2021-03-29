@@ -53,6 +53,17 @@ export default {
       }
     },
     {
+      name: 'ipam-base-line',
+      path: '/address/ipam/baselines',
+      component: () => import(/* webpackChunkName: "ipam-network-interface" */ "@/views/ipam-manage/baselines"),
+      meta: {
+        notInMenu: true,
+        active: "ipam-address-manage",
+        from: "ipam-address-manage",
+        title: "基线管理"
+      }
+    },
+    {
       name: 'ip-assets-manage',
       path: '/address/ipam/assets',
       component: () => import(/* webpackChunkName: "ip-assets-manage" */ "@/views/ipam-manage/ip-assets-manage"),
