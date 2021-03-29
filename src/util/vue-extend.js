@@ -45,23 +45,23 @@ Vue.prototype.$vuescrollConfig = {
   }
 };
 
-Vue.prototype.$$success = function (msg) {
+Vue.prototype.$$success = function(msg) {
   showMessage("success", msg, this);
 };
 
-Vue.prototype.$$info = function (msg) {
+Vue.prototype.$$info = function(msg) {
   showMessage("info", msg, this);
 };
 
-Vue.prototype.$$warning = function (msg) {
+Vue.prototype.$$warning = function(msg) {
   showMessage("warning", msg, this);
 };
 
-Vue.prototype.$$error = function (msg) {
+Vue.prototype.$$error = function(msg) {
   showMessage("error", msg, this);
 };
 
-Vue.prototype.$$confirm = function ({
+Vue.prototype.$$confirm = function({
   title = "消息",
   content,
   onOk,
@@ -88,7 +88,7 @@ Vue.prototype.$$confirm = function ({
 /**
  * 处理请求错误
  */
-Vue.prototype.$handleError = function (err = {}, callback) {
+Vue.prototype.$handleError = function(err = {}, callback) {
   if (err.response) {
     showMessage("error", err.response.data.message, this);
   } else if (err.message) {
@@ -100,7 +100,7 @@ Vue.prototype.$handleError = function (err = {}, callback) {
   return callback && callback();
 };
 
-const getStateByKey = async function (name, params = {}) {
+const getStateByKey = async function(name, params = {}) {
   try {
     let _res = store.getters[name];
 
@@ -148,10 +148,10 @@ Vue.prototype.$wait = time => new Promise(r => setTimeout(() => r(), time));
 
 Vue.directive("scroll", {
   // 当绑定元素插入到 DOM 中
-  inserted: function (el, binding) {
+  inserted: function(el, binding) {
     const child = el.children[0];
     var cb = binding.value;
-    el.addEventListener("mousewheel", function (e) {
+    el.addEventListener("mousewheel", function(e) {
       var direction = e.deltaY > 0 ? "down" : "up";
       cb(direction, child, e);
     });
@@ -160,7 +160,7 @@ Vue.directive("scroll", {
 
 Vue.directive("position", {
   // 当绑定元素插入到 DOM 中
-  inserted: function (el, binding) {
+  inserted: function(el, binding) {
     const { ip, master, type, hasSlave, getPosition, node } = binding.value;
 
     const { offsetTop, offsetLeft, offsetHeight, offsetWidth } = el;
@@ -218,18 +218,20 @@ Vue.prototype.$formatQuerys = (params = {}, url) => {
 };
 
 export function hasPermission(resource, operation) {
-  const { userInfo } = store.getters;
-  if (userInfo) {
-    const { userType, menuList } = userInfo;
-    if (userType === USERTYPE_SUPER) {
-      return true;
-    } else {
-      const item = menuList.find(item => item.resource === resource);
-      if (item) {
-        return item.operations.includes(operation);
-      }
-    }
-  }
+  // const { userInfo } = store.getters;
+  // if (userInfo) {
+  //   const { userType, menuList } = userInfo;
+  //   if (userType === USERTYPE_SUPER) {
+  //     return true;
+  //   } else {
+  //     const item = menuList.find(item => item.resource === resource);
+  //     if (item) {
+  //       return item.operations.includes(operation);
+  //     }
+  //   }
+  // }
+
+  return true;
 }
 
 Vue.prototype.$hasPermission = hasPermission;

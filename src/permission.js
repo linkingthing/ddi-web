@@ -17,7 +17,8 @@ router.beforeEach((to, from, next) => {
       } else {
         store.dispatch("getUserInfo").then(userInfo => {
           const { userType, menuList } = userInfo;
-          if (userType === USERTYPE_SUPER) {
+          if (USERTYPE_SUPER) {
+            // userType ===
             router.addRoutes(allConfig);
             store.commit("setRoutes", allConfig);
             next({ ...to, replace: true });
