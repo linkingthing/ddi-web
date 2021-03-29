@@ -188,10 +188,11 @@ export default {
   mounted() { },
   methods: {
     getData() {
+      const { version } = this.$route.query;
       const params = {
         page_num: this.current,
         page_size: 10,
-        version: '4'
+        version
       };
       this.loading = true;
       if (this.search !== "") {

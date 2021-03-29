@@ -151,7 +151,10 @@ export default {
     },
     handleGoBaseLine() {
       this.$router.push({
-        name: "ipam-base-line"
+        name: "ipam-base-line",
+        query: {
+          version: this.active
+        }
       })
     }
   }
