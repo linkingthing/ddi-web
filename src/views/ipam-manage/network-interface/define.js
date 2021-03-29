@@ -109,6 +109,7 @@ export const columns = scope => [
       ];
 
       const ableAddBaseLine = ["reservation", "static"];
+      const hasBaseLineParams = row.uplinkEquipment && row.uplinkPort;
 
       if (row.isIpBaseLineAssociated) {
         buttons.unshift(
@@ -131,7 +132,7 @@ export const columns = scope => [
             "取消关联"
           )
         );
-      } else  {
+      } else {
         buttons.unshift(
           h(
             "Button",
@@ -142,7 +143,8 @@ export const columns = scope => [
               },
               props: {
                 type: "default",
-                disabled: !ableAddBaseLine.includes(row.ipType)
+                disabled:
+                  !hasBaseLineParams || !ableAddBaseLine.includes(row.ipType)
               },
               on: {
                 click: () => {
