@@ -3,18 +3,10 @@
     <div class="header">
       <div class="header-inner">
         <div class="logo">
-          <!-- <div class="logo-image">
-            <img
-              :src="require('@/assets/images/logo.png')"
-              alt
-            >
-          </div>
           <img
-            class="logo-text"
-            :src="require('@/assets/images/logo-words.png')"
-            alt=""
-          > -->
-         <img src="logo.png" alt="logo">
+            src="logo.png"
+            alt="logo"
+          >
         </div>
         <div class="main-menu">
           <Menu
@@ -41,7 +33,6 @@
           <i
             class="header-icon search-icon"
             @click="searchVisible = true"
-            v-if="isSuper"
           ></i>
 
           <Badge
@@ -75,7 +66,6 @@
           </Dropdown>
 
           <Icon
-            v-if="isSuper"
             :type="showAgentEvent? 'ios-arrow-dropup' : 'ios-arrow-dropdown'"
             style="font-size: 20px; cursor: pointer"
             @click="showAgentEvent = !showAgentEvent"
@@ -129,18 +119,7 @@
       </div>
 
     </div>
-    <common-modal
-      :visible.sync="scopeAuthVisible"
-      :width="750"
-      title="权限范围"
-      @confirm="scopeAuthVisible = false"
-    >
-      <Table
-        style="overflow: visible"
-        :columns="scopeColumns"
-        :data="scopeData"
-      />
-    </common-modal>
+
     <QuickSearch :visible.sync="searchVisible" />
   </div>
 </template>
@@ -149,7 +128,6 @@
 import { mapGetters, mapMutations } from "vuex";
 import store from "@/store";
 import logoSrc from "@/assets/images/logo.png";
-import { USERTYPE_SUPER } from "@/config";
 import { resetRouter } from "@/router";
 
 import ChangePassword from "@/components/ChangePassword";
@@ -194,12 +172,7 @@ const userDropdownMenu = [
     key: "permissions",
     permission: "super"
   },
-  {
-    label: "权限范围",
-    key: "getAuthorityInfo",
-    permission: "user",
-    onlyUser: true
-  },
+
   {
     label: "退出系统",
     key: "out",
@@ -255,7 +228,6 @@ export default {
           }, row.content)
         }
       }],
-      scopeData: []
 
     };
   },
@@ -264,34 +236,27 @@ export default {
       "alarmCount",
       "agentEventAll"
     ]),
-    isSuper() {
-      return this.userType === USERTYPE_SUPER;
-    },
+
     mainMenuList() {
-      const userType = this.userType;
-      const { rangeList } = this.$store.getters;
-      if (userType) {
-        if (userType === USERTYPE_SUPER) {
-          return mainMenuList;
-        } else {
-          return mainMenuList.filter(item => {
-            return rangeList.includes(item.module);
-          });
-        }
-      }
-      return [];
+
+      return mainMenuList;
+
+      // const userType = this.userType;
+      // const { rangeList } = this.$store.getters;
+      // if (userType) {
+      //   if (userType === USERTYPE_SUPER) {
+      //     return mainMenuList;
+      //   } else {
+      //     return mainMenuList.filter(item => {
+      //       return rangeList.includes(item.module);
+      //     });
+      //   }
+      // }
+      // return [];
 
     },
     userDropdownMenu() {
-      const userType = this.userType;
-      const resourceList = this.resourceList;
-      if (userType === USERTYPE_SUPER) {
-        return userDropdownMenu.filter(item => !item.onlyUser);
-      } else {
-        return userDropdownMenu.filter(item => {
-          return resourceList.includes(item.permission) || item.permission === "*";
-        });
-      }
+      return userDropdownMenu;
     }
   },
 
@@ -351,39 +316,11 @@ export default {
       }
       if (name === "permissions") {
         self.$router.push({
-          path: "/auth/auth/user/group"
+          path: "/auth/auth/whitelists"
         });
       }
 
-      if (name === "getAuthorityInfo") {
-        this.scopeAuthVisible = true;
-        const url = "/apis/linkingthing.com/auth/v1/users?action=getAuthorityInfo";
-        this.$post({ url }).then(({ prefixs, views }) => {
-          const result = []
-          if (Array.isArray(prefixs)) {
-            const list = prefixs.map(item => {
-              return {
-                ...item,
-                dataType: "IP网段",
-                content: item.semanticName
-              };
-            });
-            result.push(...list);
-          }
-
-          if (Array.isArray(views)) {
-            const list = views.map(item => {
-              return {
-                dataType: "视图",
-                content: item
-              };
-            });
-            result.push(...list);
-          }
-          this.scopeData = result;
-        });
-      }
-
+     
       if (name === "password") {
         this.visible = true;
       }
