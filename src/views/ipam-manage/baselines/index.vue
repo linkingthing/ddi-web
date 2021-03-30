@@ -188,18 +188,19 @@ export default {
   mounted() { },
   methods: {
     getData() {
-      const { version } = this.$route.query;
+      const { scannedsubnetsId } = this.$route.params;
       const params = {
         page_num: this.current,
         page_size: 10,
-        version
       };
       this.loading = true;
       if (this.search !== "") {
         params.ip = this.search.trim();
       }
+      
+      const { url } = this.$getApiByRoute();
       this.$get({
-        url: "/apis/linkingthing.com/ipam/v1/ipbaselines",
+        url,
         params
       }).then(({ data, pagination }) => {
         this.dataList = data;

@@ -19,11 +19,11 @@
           :tab-list="tabList"
           @change="(value) => { active = +value }"
         />
-        <Button
+        <!-- <Button
           class="base-line"
           type="primary"
           @click="handleGoBaseLine"
-        >基线</Button>
+        >基线</Button> -->
       </div>
     </table-page>
   </div>
@@ -149,12 +149,13 @@ export default {
         }
       });
     },
-    handleGoBaseLine() {
+    handleGoBaseLine(data) {
       this.$router.push({
         name: "ipam-base-line",
-        query: {
-          version: this.active
+        params: {
+          scannedsubnetsId: data.id
         }
+        
       })
     }
   }

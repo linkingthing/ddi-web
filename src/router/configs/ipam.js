@@ -54,7 +54,7 @@ export default {
     },
     {
       name: 'ipam-base-line',
-      path: '/address/ipam/baselines',
+      path: '/address/ipam/scannedsubnets/:scannedsubnetsId/ipbaselines',
       component: () => import(/* webpackChunkName: "ipam-network-interface" */ "@/views/ipam-manage/baselines"),
       meta: {
         notInMenu: true,
