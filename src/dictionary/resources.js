@@ -53,6 +53,7 @@ export default {
   networkinterface: "网络接口",
   staticaddress: "静态地址",
   pooltemplate: "地址池模板",
+  ipbaseline: "IP基线",
 
   /** metric */
   node: "node",
@@ -71,6 +72,8 @@ export default {
   authzoneauthrrs: "权威区",
   authzoneaxfr: "辅区全量资源",
   authzoneixfr: "辅区增量资源",
+
+  
 };
 
 export const operateMap = {
