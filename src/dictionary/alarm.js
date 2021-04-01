@@ -11,7 +11,8 @@ export const alarmConfig = {
   nodeOffline: "节点离线",
   qps: "QPS",
   storageUsedRatio: "硬盘使用率",
-  subnetUsedRatio: "地址池使用率"
+  subnetUsedRatio: "地址池使用率",
+  ipBaseLineConflict: "IP基线冲突",
 };
 
 export const alarmLevel = {

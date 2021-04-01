@@ -33,6 +33,24 @@ export const columns = scope => [
     }
   },
   {
+    title: "上联设备",
+    key: "uplinkEquipment",
+    minWidth: 120
+  },
+  {
+    title: "端口",
+    key: "uplinkPort",
+    minWidth: 200
+  },
+  {
+    title: "基线关联", // IP-MAC-PORT
+    key: "isIpBaseLineAssociated",
+    minWidth: 120,
+    render: (h, { row }) => {
+      return h("div", row.isIpBaseLineAssociated ? "已关联" : "未关联");
+    }
+  },
+  {
     title: "租赁时间(s)",
     key: "validLifetime",
     minWidth: 120
@@ -47,25 +65,6 @@ export const columns = scope => [
     width: 300,
     render: (h, { row }) => {
       let buttons = [
-        h(
-          "Button",
-          {
-            class: "table-row-button",
-            style: {
-              width: "70px"
-            },
-            props: {
-              type: "default",
-              disabled: row.ipType === "unmanagered"
-            },
-            on: {
-              click: () => {
-                scope.handleEdit(row);
-              }
-            }
-          },
-          "终端登记"
-        ),
         h(
           "Button",
           {
@@ -108,6 +107,55 @@ export const columns = scope => [
           "转静态"
         )
       ];
+
+      const ableAddBaseLine = ["reservation", "static"];
+      const hasBaseLineParams = row.uplinkEquipment && row.uplinkPort;
+
+      if (row.isIpBaseLineAssociated) {
+        buttons.unshift(
+          h(
+            "Button",
+            {
+              class: "table-row-button",
+              style: {
+                width: "70px"
+              },
+              props: {
+                type: "default"
+              },
+              on: {
+                click: () => {
+                  scope.handleCancelBaseLine(row);
+                }
+              }
+            },
+            "取消关联"
+          )
+        );
+      } else {
+        buttons.unshift(
+          h(
+            "Button",
+            {
+              class: "table-row-button",
+              style: {
+                width: "70px"
+              },
+              props: {
+                type: "default",
+                disabled:
+                  !hasBaseLineParams || !ableAddBaseLine.includes(row.ipType)
+              },
+              on: {
+                click: () => {
+                  scope.handleCreateBaseLine(row);
+                }
+              }
+            },
+            "基线关联"
+          )
+        );
+      }
 
       return buttons;
     }

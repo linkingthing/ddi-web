@@ -74,6 +74,16 @@ export default {
               )
             }
 
+            if (row.name === "ipBaseLineConflict") {
+              return h(
+                "div",
+                [
+                  h("div", `IP基线冲突： ${row.conflictIp} - ${row.conflictMac} - ${row.conflictUplinkEquipment} - ${row.conflictUplinkPort}`),
+                  h("div", `IP基线信息： ${row.conflictIp} - ${row.ipBaseLineMac} -  ${row.ipBaseLineUplinkEquipment} - ${row.ipBaseLineUplinkPort}`)
+                ]
+              )
+            }
+
             if (row.name === "ipConflict") {
               return h("div", `${row.conflictIp} 冲突`);
             }

@@ -19,6 +19,11 @@
           :tab-list="tabList"
           @change="(value) => { active = +value }"
         />
+        <!-- <Button
+          class="base-line"
+          type="primary"
+          @click="handleGoBaseLine"
+        >基线</Button> -->
       </div>
     </table-page>
   </div>
@@ -28,6 +33,11 @@
 @import "./index.less";
 .address-manage-head {
   padding: 16px 26px 0;
+  display: flex;
+
+  .base-line {
+    margin-left: auto;
+  }
 }
 </style>
 
@@ -138,6 +148,15 @@ export default {
           subnet: data.ipnet
         }
       });
+    },
+    handleGoBaseLine(data) {
+      this.$router.push({
+        name: "ipam-base-line",
+        params: {
+          scannedsubnetsId: data.id
+        }
+        
+      })
     }
   }
 };

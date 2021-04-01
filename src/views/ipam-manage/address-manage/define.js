@@ -58,20 +58,38 @@ export const columns = scope => [
     width: "180",
     render: (h, { row }) => {
       if (row.source === "dhcp") {
-        return h(
-          "a",
-          {
-            class: "is-link",
+        return h("div", [
+          h(
+            "a",
+            {
+              class: "is-link",
 
-            attr: {
-              href: "javscript:;"
+              attr: {
+                href: "javscript:;"
+              },
+              on: {
+                click: () => scope.handleGoIpHistory(row)
+              }
             },
-            on: {
-              click: () => scope.handleGoIpHistory(row)
-            }
-          },
-          "IP历史"
-        );
+            "IP历史"
+          ),
+          h(
+            "a",
+            {
+              class: "is-link",
+              style: {
+                marginLeft: "10px"
+              },
+              attr: {
+                href: "javscript:;"
+              },
+              on: {
+                click: () => scope.handleGoBaseLine(row)
+              }
+            },
+            "IP基线"
+          )
+        ]);
       } else {
         return h("div", "--");
       }

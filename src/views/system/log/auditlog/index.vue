@@ -168,6 +168,10 @@ export default {
           case "switchrecursion": return "切换递归";
           case "valid_template": return "验证模板";
 
+          case "createipbaseline": return "创建IP基线";
+          case "deleteipbaseline": return "删除IP基线";
+          
+
         }
       };
 
