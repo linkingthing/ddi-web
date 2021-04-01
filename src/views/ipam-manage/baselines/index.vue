@@ -188,7 +188,6 @@ export default {
   mounted() { },
   methods: {
     getData() {
-      const { scannedsubnetsId } = this.$route.params;
       const params = {
         page_num: this.current,
         page_size: 10,
@@ -197,7 +196,7 @@ export default {
       if (this.search !== "") {
         params.ip = this.search.trim();
       }
-      
+
       const { url } = this.$getApiByRoute();
       this.$get({
         url,
@@ -234,7 +233,8 @@ export default {
       const params = { ...this.formModel };
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$post({ url: "/apis/linkingthing.com/ipam/v1/ipbaselines", params }).then(() => {
+          const { url } = this.$getApiByRoute();
+          this.$post({ url, params }).then(() => {
             this.$Message.success("新建成功");
             this.getData();
           }).catch(err => {
