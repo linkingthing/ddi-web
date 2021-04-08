@@ -181,9 +181,12 @@ export default {
     };
   },
   computed: {},
-  watch: {},
-  created() {
+  watch: {
+    current() {
     this.getData();
+    }
+  },
+  created() {
   },
   mounted() { },
   methods: {
@@ -236,6 +239,8 @@ export default {
           const { url } = this.$getApiByRoute();
           this.$post({ url, params }).then(() => {
             this.$Message.success("新建成功");
+             this.$refs.form.resetFields();
+            this.visible = false;
             this.getData();
           }).catch(err => {
             this.$Message.error(err.response.data.message)
