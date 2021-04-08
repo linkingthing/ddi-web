@@ -364,7 +364,7 @@ export default {
     background: #fff;
     width: 100%;
     box-sizing: border-box;
-    z-index: 100;
+    z-index: 500;
   }
 
   .logo {
@@ -482,7 +482,7 @@ export default {
   bottom: 0;
   width: 300px;
   background: #fff;
-  z-index: 100;
+  z-index: 200;
   border: 1px solid #ddd;
   box-shadow: 0px 0px 46px 0px rgba(120, 120, 120, 0.15);
   .message-title {
